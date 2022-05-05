@@ -32,8 +32,8 @@ namespace Shapoco.Calctus.UI
             this.logBox = new System.Windows.Forms.TextBox();
             this.panel1 = new System.Windows.Forms.Panel();
             this.exprBox = new Shapoco.Calctus.UI.ExpressionBox();
-            this.calcButton = new System.Windows.Forms.Button();
             this.subAnswerLabel = new System.Windows.Forms.Label();
+            this.calcButton = new System.Windows.Forms.Button();
             this.panel1.SuspendLayout();
             this.SuspendLayout();
             // 
@@ -66,16 +66,6 @@ namespace Shapoco.Calctus.UI
             this.exprBox.Size = new System.Drawing.Size(267, 19);
             this.exprBox.TabIndex = 1;
             // 
-            // calcButton
-            // 
-            this.calcButton.Dock = System.Windows.Forms.DockStyle.Right;
-            this.calcButton.Location = new System.Drawing.Point(267, 0);
-            this.calcButton.Name = "calcButton";
-            this.calcButton.Size = new System.Drawing.Size(75, 52);
-            this.calcButton.TabIndex = 1;
-            this.calcButton.Text = "=";
-            this.calcButton.UseVisualStyleBackColor = true;
-            // 
             // subAnswerLabel
             // 
             this.subAnswerLabel.Dock = System.Windows.Forms.DockStyle.Bottom;
@@ -85,6 +75,16 @@ namespace Shapoco.Calctus.UI
             this.subAnswerLabel.TabIndex = 2;
             this.subAnswerLabel.Text = "subanswer";
             this.subAnswerLabel.TextAlign = System.Drawing.ContentAlignment.MiddleRight;
+            // 
+            // calcButton
+            // 
+            this.calcButton.Dock = System.Windows.Forms.DockStyle.Right;
+            this.calcButton.Location = new System.Drawing.Point(267, 0);
+            this.calcButton.Name = "calcButton";
+            this.calcButton.Size = new System.Drawing.Size(75, 52);
+            this.calcButton.TabIndex = 1;
+            this.calcButton.Text = "=";
+            this.calcButton.UseVisualStyleBackColor = true;
             // 
             // MainForm
             // 
