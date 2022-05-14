@@ -29,7 +29,7 @@ namespace Shapoco.Calctus.Model {
         //public static OpDef LogicInvert = new OpDef(OpType.Unary, 90, "!");
         public static OpDef BitNot = new OpDef(OpType.Unary, 90, "~");
 
-        public static OpDef Pow = new OpDef(OpType.Binary, 62, "**");
+        public static OpDef Pow = new OpDef(OpType.Binary, 62, "^");
         public static OpDef Mul = new OpDef(OpType.Binary, 61, "*");
         public static OpDef Div = new OpDef(OpType.Binary, 61, "/");
         public static OpDef IDiv = new OpDef(OpType.Binary, 61, "//");
@@ -43,7 +43,7 @@ namespace Shapoco.Calctus.Model {
         public static OpDef ArithShiftR = new OpDef(OpType.Binary, 50, ">>>");
 
         public static OpDef BitAnd = new OpDef(OpType.Binary, 34, "&");
-        public static OpDef BitXor = new OpDef(OpType.Binary, 33, "^");
+        public static OpDef BitXor = new OpDef(OpType.Binary, 33, "+|");
         public static OpDef BitOr = new OpDef(OpType.Binary, 32, "|");
 
         //public static OpDef LogicAnd = new OpDef(OpType.Binary, 31, "&&");
