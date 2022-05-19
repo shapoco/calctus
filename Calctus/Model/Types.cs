@@ -25,4 +25,10 @@ namespace Shapoco.Calctus.Model {
         Right
     }
 
+    class CalctusError : Exception {
+        public CalctusError(string msg, Exception inner = null) : base(msg, inner) {
+
+        }
+    }
+
 }

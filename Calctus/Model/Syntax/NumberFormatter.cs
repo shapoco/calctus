@@ -28,10 +28,10 @@ namespace Shapoco.Calctus.Model.Syntax {
         public static readonly IntFormatter CStyleOct = new IntFormatter(8, "0", new Regex(@"0([0-7]+)"), 1);
         public static readonly IntFormatter CStyleBin = new IntFormatter(2, "0b", new Regex(@"0[bB]([01]+)"), 1);
 
-        //public static readonly ScalarFormatter VerilogInt = new ScalarFormatter(10, new Regex(@"([1-9][0-9]*)?'s?d([0-9]+)"), 2);
-        //public static readonly ScalarFormatter VerilogHex = new ScalarFormatter(16, new Regex(@"([1-9][0-9]*)?'s?h([0-9a-fA-F]+)"), 2);
-        //public static readonly ScalarFormatter VerilogOct = new ScalarFormatter(2, new Regex(@"([1-9][0-9]*)?'s?h([0-7]+)"), 2);
-        //public static readonly ScalarFormatter VerilogBin = new ScalarFormatter(8, new Regex(@"([1-9][0-9]*)?'s?b([01]+)"), 2);
+        //public static readonly IntFormatter VerilogInt = new IntFormatter(10, "'d", new Regex(@"([1-9][0-9]*)?'s?d([0-9]+)"), 2);
+        //public static readonly IntFormatter VerilogHex = new IntFormatter(16, "'h", new Regex(@"([1-9][0-9]*)?'s?h([0-9a-fA-F]+)"), 2);
+        //public static readonly IntFormatter VerilogOct = new IntFormatter(2, "'o", new Regex(@"([1-9][0-9]*)?'s?h([0-7]+)"), 2);
+        //public static readonly IntFormatter VerilogBin = new IntFormatter(8, "'b", new Regex(@"([1-9][0-9]*)?'s?b([01]+)"), 2);
 
         public static NumberFormatter[] NativeFormats => new NumberFormatter[] {
             CStyleInt, 

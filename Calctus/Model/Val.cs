@@ -54,6 +54,10 @@ namespace Shapoco.Calctus.Model {
         //public static explicit operator Val(int val) => new RealVal((double)val);
         //public static explicit operator int(Val val) => val.AsInt();
 
+        public Val FormatInt() => Format(new ValFormatHint(NumberFormatter.CStyleInt));
+        public Val FormatReal() => Format(new ValFormatHint(NumberFormatter.CStyleReal));
+        public Val FormatHex() => Format(new ValFormatHint(NumberFormatter.CStyleHex));
+
         public Val Format(ValFormatHint fmt) {
             if (this.FormatHint.Equals(fmt)) 
                 return this;

@@ -7,7 +7,7 @@ using System.Threading.Tasks;
 using Shapoco.Calctus.Model;
 
 namespace Shapoco.Calctus.Parser {
-    class SyntaxError : Exception {
+    class SyntaxError : CalctusError {
         public TextPosition Position { get; private set; }
         public SyntaxError(TextPosition pos, string msg) : base(msg) {
             this.Position = pos;

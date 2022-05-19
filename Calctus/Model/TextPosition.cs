@@ -6,6 +6,8 @@ using System.Threading.Tasks;
 
 namespace Shapoco.Calctus.Model {
     struct TextPosition {
+        public static readonly TextPosition Empty = new TextPosition(0);
+
         public int Index;
         public TextPosition(int pos = 0) {
             this.Index = 0;
