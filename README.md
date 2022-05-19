@@ -39,12 +39,12 @@ a Calculator for Windows.
 
 |Category|Functions|
 |:--|:--|
-|Exponential|`sqrt(x)`, `log(x)`, ==`log2(x)`, `log10(x)`==, `clog2(x)`, ==`clog10(x)`==|
-|Trigonometric|`sin(x)`, `cos(x)`, `tan(x)`, ==`asin(x)`, `acos(x)`, `atan(x)`, `atan2(y, x)`==|
+|Exponential|`sqrt(x)`, `log(x)`, `log2(x)`:new:, `log10(x)`:new:, `clog2(x)`, `clog10(x)`:new:|
+|Trigonometric|`sin(x)`, `cos(x)`, `tan(x)`, `asin(x)`:new:, `acos(x)`:new:, `atan(x)`:new:, `atan2(y, x)`:new:|
 |Round|`floor(x)`, `ceil(x)`, `trunc(x)`, `round(x)`|
 |Others|`sign(x)`|
 
-### ==Constants==
+### Constants :new:
 
 |Symbol|Value|
 |:--|--:|
