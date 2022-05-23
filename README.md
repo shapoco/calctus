@@ -2,13 +2,20 @@
 
 a Calculator for Windows.
 
-![image](https://user-images.githubusercontent.com/40152459/166926981-453717a8-5c8c-4115-b679-03020c3b2e66.png)
+![Screen Shot](img/ss.png)
 
 ## Download
 
 → [releases](https://github.com/shapoco/calctus/releases).
 
 ## Features
+
+### Overview
+
+- Displays the evaluation value of a formula in text format.
+- Decimal, hexadecimal, and binary numbers can be mixed.
+- The formula history can be referenced with the up key.
+- Some built-in constants and built-in functions.
 
 ### Numeric Representations
 

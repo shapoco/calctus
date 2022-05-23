@@ -29,6 +29,7 @@ namespace Shapoco.Calctus.UI
         /// </summary>
         private void InitializeComponent()
         {
+            System.ComponentModel.ComponentResourceManager resources = new System.ComponentModel.ComponentResourceManager(typeof(MainForm));
             this.logBox = new System.Windows.Forms.TextBox();
             this.panel1 = new System.Windows.Forms.Panel();
             this.exprBox = new Shapoco.Calctus.UI.ExpressionBox();
@@ -93,6 +94,7 @@ namespace Shapoco.Calctus.UI
             this.ClientSize = new System.Drawing.Size(342, 165);
             this.Controls.Add(this.logBox);
             this.Controls.Add(this.panel1);
+            this.Icon = ((System.Drawing.Icon)(resources.GetObject("$this.Icon")));
             this.Name = "MainForm";
             this.Text = "Form1";
             this.panel1.ResumeLayout(false);

@@ -25,6 +25,12 @@ namespace Shapoco.Calctus.UI {
 
             InitializeComponent();
 
+            try {
+                exprBox.Font = new Font("Consolas", exprBox.Font.Size);
+                logBox.Font = new Font("Consolas", logBox.Font.Size);
+            } 
+            catch { }
+
             this.Text = Application.ProductName + " (v" + System.Reflection.Assembly.GetExecutingAssembly().GetName().Version + ")"; 
             exprBox.AutoSize = false;
             exprBox.Dock = DockStyle.Fill;
@@ -43,8 +49,17 @@ namespace Shapoco.Calctus.UI {
                 var val = expr.Eval(_ctx);
                 var text = "= " + val.ToString();
                 if (val is RealVal rval) {
-                    if (rval.IsDimless)
-                        text += " (無次元)";
+                    if (rval.IsDimless) {
+                        var dval = rval.AsDouble;
+                        if (rval.IsInteger && 0xA <= dval && dval < UInt32.MaxValue) {
+                            var rvalInt = rval.FormatInt();
+                            var rvalHex = rval.FormatHex();
+                            text = "= " + rvalInt.ToString() +  " (" + rvalHex.ToString() + ")";
+                        }
+                        else {
+                            text += " (無次元)";
+                        }
+                    }
                     else
                         text += " (raw=" + rval.Raw + ")";
                 }
