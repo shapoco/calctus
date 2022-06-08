@@ -8,7 +8,7 @@ using Shapoco.Calctus.Model.Syntax;
 using Shapoco.Calctus.Model.UnitSystem;
 
 namespace Shapoco.Calctus.Model {
-    abstract class Val {
+    abstract class Val : ICloneable {
         public readonly ValFormatHint FormatHint;
         public virtual Unit Unit => NativeUnits.Dimless;
 
@@ -85,15 +85,19 @@ namespace Shapoco.Calctus.Model {
         public Val Add(EvalContext ctx, Val b) => this.UpConvert(ctx, b).OnAdd(ctx, b).Format(FormatHint);
         public Val Sub(EvalContext ctx, Val b) => this.UpConvert(ctx, b).OnSub(ctx, b).Format(FormatHint);
         public Val Mul(EvalContext ctx, Val b) => this.UpConvert(ctx, b).OnMul(ctx, b).Format(FormatHint);
+        public Val DotMul(EvalContext ctx, Val b) => this.UpConvert(ctx, b).OnDotMul(ctx, b).Format(FormatHint);
         public Val Div(EvalContext ctx, Val b) => this.UpConvert(ctx, b).OnDiv(ctx, b).Format(FormatHint);
         public Val IDiv(EvalContext ctx, Val b) => this.UpConvert(ctx, b).OnIDiv(ctx, b).Format(FormatHint);
         public Val Mod(EvalContext ctx, Val b) => this.UpConvert(ctx, b).OnMod(ctx, b).Format(FormatHint);
+        public Val Pow(EvalContext ctx, Val b) => this.UpConvert(ctx, b).OnPow(ctx, b).Format(FormatHint);
         protected abstract Val OnAdd(EvalContext ctx, Val b);
         protected abstract Val OnSub(EvalContext ctx, Val b);
         protected abstract Val OnMul(EvalContext ctx, Val b);
+        protected abstract Val OnDotMul(EvalContext ctx, Val b);
         protected abstract Val OnDiv(EvalContext ctx, Val b);
         protected abstract Val OnIDiv(EvalContext ctx, Val b);
         protected abstract Val OnMod(EvalContext ctx, Val b);
+        protected abstract Val OnPow(EvalContext ctx, Val b);
         //public static Val operator +(Val a, Val b) => a.Add(b);
         //public static Val operator -(Val a, Val b) => a.Sub(b);
         //public static Val operator *(Val a, Val b) => a.Mul(b);
@@ -132,6 +136,7 @@ namespace Shapoco.Calctus.Model {
         //protected abstract Val _logicor(Val b);
 
         //public override string ToString() => FormatHint.Formatter.Format(this);
-        
+
+        public virtual object Clone() { return this.MemberwiseClone(); }
     }
 }

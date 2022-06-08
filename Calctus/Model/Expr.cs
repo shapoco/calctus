@@ -67,6 +67,7 @@ namespace Shapoco.Calctus.Model {
             }
             if (Method == OpDef.Pow) return FuncDef.pow.Call(e, new Val[] { A.Eval(e), B.Eval(e) });
             if (Method == OpDef.Mul) return A.Eval(e).Mul(e, B.Eval(e));
+            if (Method == OpDef.DotMul) return A.Eval(e).DotMul(e, B.Eval(e));
             if (Method == OpDef.Div) return A.Eval(e).Div(e, B.Eval(e));
             if (Method == OpDef.IDiv) return A.Eval(e).IDiv(e, B.Eval(e));
             if (Method == OpDef.Mod) return A.Eval(e).Mod(e, B.Eval(e));
@@ -97,10 +98,47 @@ namespace Shapoco.Calctus.Model {
 
     /// <summary>数値リテラル</summary>
     class Number : Literal {
+        public Number(Val v, Token t) : base(v, t) { }
         public Number(Token t) : base(((NumberTokenHint)t.Hint).Value, t) { }
 
         public override Val Eval(EvalContext ctx) => Value;
         public override string ToString() => Value.ToString();
+    }
+
+    /// <summary>数値リテラル</summary>
+    class Matrix : Expr {
+        /// <summary>行数</summary>
+        public readonly int M;
+        /// <summary>列数</summary>
+        public readonly int N;
+        public readonly Expr[] Elements;
+        public Matrix(int m, int n, Expr[] elements) {
+            M = m;
+            N = n;
+            Elements = elements;
+        }
+
+        public override Val Eval(EvalContext ctx) {
+            var vals = new RealVal[M * N];
+            for (int i = 0; i < M * N; i++) {
+                vals[i] = Elements[i].Eval(ctx).AsRealVal();
+            }
+            return new Mat(M, N, vals);
+        }
+
+        public override string ToString() {
+            var sb = new StringBuilder();
+            sb.Append('[');
+            for (int j = 0; j < M; j++) {
+                for (int i = 0; i < N; i++) {
+                    sb.Append(Elements[j * M + i].ToString());
+                    if (i + 1 < N) sb.Append(", ");
+                }
+                if (j + 1 < M) sb.Append("; ");
+            }
+            sb.Append(']');
+            return sb.ToString();
+        }
     }
 
     class VarRef : Expr {

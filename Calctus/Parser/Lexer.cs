@@ -43,7 +43,7 @@ namespace Shapoco.Calctus.Parser {
             // 全ての記号にマッチする正規表現の生成
             var symbols = OpDef.AllSymbols
                 .OrderByDescending(p => p.Length)
-                .Concat(new string[] { "(", ")", "[", "]", "," })
+                .Concat(new string[] { "(", ")", "[", "]", ",", ";" })
                 .Select(p => "(" + Regex.Escape(p) + ")")
                 .ToArray();
             SymbolRule = new Regex("(" + string.Join("|", symbols) + ")");

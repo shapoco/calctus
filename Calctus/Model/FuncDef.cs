@@ -20,21 +20,7 @@ namespace Shapoco.Calctus.Model {
 
         public FuncDef(string name, Func<EvalContext, Val[], Val> method) : this(name, 1, method) { }
 
-        public static readonly FuncDef pow = new FuncDef("pow", 2, (e, a) => {
-            double af = a[0].AsDouble;
-            double bf = a[1].AsDouble;
-            double powf = Math.Pow(af, bf);
-            if (!a[0].IsDimless) {
-                if (a[1].IsInteger) {
-                    var newUnit = a[0].Unit.Pow(e, (int)bf);
-                    return new RealVal(powf, a[0].FormatHint, newUnit);
-                }
-                else {
-                    e.Warning(a[1], "べき乗の根に単位が指定されていますが、指数が整数ではありません");
-                }
-            }
-            return new RealVal(powf, a[0].FormatHint);
-        });
+        public static readonly FuncDef pow = new FuncDef("pow", 2, (e, a) => a[0].Pow(e, a[1]));
         public static readonly FuncDef sqrt = new FuncDef("sqrt", (e, a) => new RealVal(Math.Sqrt(a[0].AsDouble)));
         public static readonly FuncDef log = new FuncDef("log", (e, a) => new RealVal(Math.Log(a[0].AsDouble)));
         public static readonly FuncDef log2 = new FuncDef("log2", (e, a) => new RealVal(Math.Log(a[0].AsDouble) / Math.Log(2.0)));
@@ -55,6 +41,11 @@ namespace Shapoco.Calctus.Model {
         public static readonly FuncDef trunc = new FuncDef("trunc", (e, a) => new RealVal(Math.Truncate(a[0].AsDouble), a[0].FormatHint, a[0].Unit).FormatInt());
         public static readonly FuncDef round = new FuncDef("round", (e, a) => new RealVal(Math.Round(a[0].AsDouble), a[0].FormatHint, a[0].Unit).FormatInt());
         public static readonly FuncDef sign = new FuncDef("sign", (e, a) => new RealVal(Math.Sign(a[0].AsDouble)).FormatInt());
+
+        public static readonly FuncDef mtimes = new FuncDef("mtimes", 2, (e, a) => Mat.Mul(e, a[0], a[1]));
+        public static readonly FuncDef dot = new FuncDef("dot", 2, (e, a) => Mat.Dot(e, a[0], a[1]));
+        public static readonly FuncDef invert = new FuncDef("invert", (e, a) => ((Mat)a[0]).Invert(e));
+        public static readonly FuncDef transpose = new FuncDef("transpose", (e, a) => ((Mat)a[0]).Transpose(e));
 
         /// <summary>ネイティブ関数の一覧</summary>
         public static FuncDef[] NativeFunctions = EnumFunctions().ToArray();

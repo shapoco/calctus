@@ -53,6 +53,7 @@
     <Compile Include="Calctus\Model\EvalContext.cs" />
     <Compile Include="Calctus\Model\Expr.cs" />
     <Compile Include="Calctus\Model\FuncDef.cs" />
+    <Compile Include="Calctus\Model\Mat.cs" />
     <Compile Include="Calctus\Model\Syntax\ValFormatHint.cs" />
     <Compile Include="Calctus\Model\OpDef.cs" />
     <Compile Include="Calctus\Model\RealVal.cs" />

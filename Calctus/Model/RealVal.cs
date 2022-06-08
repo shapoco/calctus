@@ -50,7 +50,8 @@ namespace Shapoco.Calctus.Model {
             var unit = this.Unit.Mul(e, bVal.Unit);
             return new RealVal(val, FormatHint, unit);
         }
-        
+        protected override Val OnDotMul(EvalContext e, Val b) => OnMul(e, b);
+
         protected override Val OnDiv(EvalContext e, Val b) {
             var bVal = b.AsRealVal();
             var val = _raw / bVal._raw;
@@ -67,6 +68,23 @@ namespace Shapoco.Calctus.Model {
 
         protected override Val OnMod(EvalContext e, Val b) {
             return new RealVal(_raw % b.AsDouble, FormatHint, this.Unit);
+        }
+
+        protected override Val OnPow(EvalContext e, Val b) {
+            var a = this;
+            double af = a.AsDouble;
+            double bf = b.AsDouble;
+            double powf = Math.Pow(af, bf);
+            if (!a.IsDimless) {
+                if (b.IsInteger) {
+                    var newUnit = a.Unit.Pow(e, (int)bf);
+                    return new RealVal(powf, a.FormatHint, newUnit);
+                }
+                else {
+                    e.Warning(b, "べき乗の根に単位が指定されていますが、指数が整数ではありません");
+                }
+            }
+            return new RealVal(powf, a.FormatHint);
         }
 
         // todo: 単位の考慮

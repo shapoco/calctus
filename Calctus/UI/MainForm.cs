@@ -67,6 +67,7 @@ namespace Shapoco.Calctus.UI {
             }
             catch (Exception ex) {
                 subAnswerLabel.Text = ex.Message;
+                System.Diagnostics.Debug.WriteLine(ex.ToString());
             }
         }
 

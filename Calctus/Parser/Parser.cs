@@ -79,6 +79,11 @@ namespace Shapoco.Calctus.Parser
                 Expect(")");
                 return ret;
             }
+            else if (ReadIf("[")) {
+                var ret = Matrix();
+                Expect("]");
+                return ret;
+            }
             else if (ReadIf(TokenType.NumericLiteral, out tok)) {
                 return new Number(tok);
             }
@@ -105,6 +110,30 @@ namespace Shapoco.Calctus.Parser
             else {
                 throw new SyntaxError(_lex.Position, "invalid operand: '" + Peek() + "'");
             }
+        }
+
+        public Expr Matrix() {
+            var elms = new List<Expr>();
+
+            // 1行目
+            int n = 0;
+            do {
+                elms.Add(Expr());
+                n += 1;
+            } while (ReadIf(","));
+
+            // 2行目以降
+            int m = 1;
+            while (ReadIf(";")) {
+                m += 1;
+                elms.Add(Expr());
+                for (int i = 1; i < n; i++) {
+                    Expect(",");
+                    elms.Add(Expr());
+                }
+            }
+
+            return new Matrix(m, n, elms.ToArray());
         }
 
         public Expr UnitExpr() {
@@ -173,7 +202,7 @@ namespace Shapoco.Calctus.Parser
             => Peek().Type == TokenType.Eos;
 
         public bool EndOfExpr 
-            => Eos || (Peek().Text == ")") || (Peek().Text == ",");
+            => Eos || (Peek().Text == ")") || (Peek().Text == "]") || (Peek().Text == ";") || (Peek().Text == ",");
 
         public void Expect(string s) {
             if (!ReadIf(s)) {
