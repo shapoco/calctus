@@ -32,7 +32,6 @@ namespace Shapoco.Calctus.UI {
 
             try {
                 exprBox.Font = new Font("Consolas", exprBox.Font.Size);
-                logBox.Font = new Font("Consolas", logBox.Font.Size);
             } 
             catch { }
 
