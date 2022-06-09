@@ -8,14 +8,15 @@ a Calculator for Windows.
 
 → [releases](https://github.com/shapoco/calctus/releases).
 
-## Features
-
-### Overview
+## Overview
 
 - Displays the evaluation value of a formula in text format.
 - Decimal, hexadecimal, and binary numbers can be mixed.
 - The formula history can be referenced with the up key.
+- :new: The formula history can be modified, and if so, the calculation results are regenerated.
 - Some built-in constants and built-in functions.
+
+## Features
 
 ### Numeric Representations
 
@@ -57,7 +58,6 @@ a Calculator for Windows.
 |:--|--:|
 |`PI`|`3.1415926535897931`|
 |`E`|`2.7182818284590451`|
-|`E_FLOAT`|`1.401298E-45f`|
 |`INT_MIN`|`-2147483648`|
 |`INT_MAX`|`2147483647`|
 |`UINT_MIN`|`0`|
