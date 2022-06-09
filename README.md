@@ -1,19 +1,19 @@
 # Calctus
 
-a Calculator for Windows.
+a calculator for Windows.
 
-![Screen Shot](img/ss.png)
+![Screen Shot](img/ss.gif)
 
 ## Download
 
-→ [releases](https://github.com/shapoco/calctus/releases).
+→ see [releases](https://github.com/shapoco/calctus/releases).
 
 ## Overview
 
 - Displays the evaluation value of a formula in text format.
 - Decimal, hexadecimal, and binary numbers can be mixed.
 - The formula history can be referenced with the up key.
-- :new: The formula history can be modified, and if so, the calculation results are regenerated.
+- The formula history can be modified, and if so, the calculation results are regenerated. :new:
 - Some built-in constants and built-in functions.
 
 ## Features
@@ -47,12 +47,12 @@ a Calculator for Windows.
 
 |Category|Functions|
 |:--|:--|
-|Exponential|`sqrt(x)`, `log(x)`, `log2(x)`:new:, `log10(x)`:new:, `clog2(x)`, `clog10(x)`:new:|
-|Trigonometric|`sin(x)`, `cos(x)`, `tan(x)`, `asin(x)`:new:, `acos(x)`:new:, `atan(x)`:new:, `atan2(y, x)`:new:|
+|Exponential|`sqrt(x)`, `log(x)`, `log2(x)`, `log10(x)`, `clog2(x)`, `clog10(x)`|
+|Trigonometric|`sin(x)`, `cos(x)`, `tan(x)`, `asin(x)`, `acos(x)`, `atan(x)`, `atan2(y, x)`|
 |Round|`floor(x)`, `ceil(x)`, `trunc(x)`, `round(x)`|
 |Others|`sign(x)`|
 
-### Constants :new:
+### Constants
 
 |Symbol|Value|
 |:--|--:|
