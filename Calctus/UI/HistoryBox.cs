@@ -17,6 +17,11 @@ namespace Shapoco.Calctus.UI {
             this.MeasureItem += HistoryBox_MeasureItem;
         }
 
+        protected override void OnSelectedIndexChanged(EventArgs e) {
+            base.OnSelectedIndexChanged(e);
+            this.Invalidate();
+        }
+
         /// <summary>アイテムの表示サイズ計算</summary>
         private void HistoryBox_MeasureItem(object sender, MeasureItemEventArgs e) {
             if (this.DesignMode) return;
