@@ -106,7 +106,7 @@ namespace Shapoco.Calctus.Model {
     class VarRef : Expr {
         public Token RefName => Token;
         public VarRef(Token name) : base(name) { }
-        public override Val Eval(EvalContext ctx) => ctx.Ref(RefName).Value;
+        public override Val Eval(EvalContext ctx) => ctx.Ref(RefName, false).Value;
     }
 
     class FuncRef : Expr {

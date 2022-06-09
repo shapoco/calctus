@@ -12,9 +12,9 @@ using Shapoco.Calctus.Model;
 using Shapoco.Calctus.Parser;
 
 namespace Shapoco.Calctus.UI {
-    public partial class MainForm : Form {
-        private EvalContext _ctx = new EvalContext();
+    internal partial class MainForm : Form {
         private char[] _selectionCancelChars;
+        private bool _suppressListIndexChangedEvent = false;
 
         public MainForm() {
             // 全選択された状態で入力されたら選択を解除する文字の一覧
@@ -24,6 +24,11 @@ namespace Shapoco.Calctus.UI {
                 .ToArray();
 
             InitializeComponent();
+            if (this.DesignMode) return;
+
+            historyBox.Items.Add(new HistoryItem());
+            historyBox.SelectedIndex = 0;
+            historyBox.SelectedIndexChanged += HistoryBox_SelectedIndexChanged;
 
             try {
                 exprBox.Font = new Font("Consolas", exprBox.Font.Size);
@@ -36,74 +41,147 @@ namespace Shapoco.Calctus.UI {
             exprBox.Dock = DockStyle.Fill;
             exprBox.KeyPress += ExprBox_KeyPress;
             exprBox.TextChanged += ExprBox_TextChanged;
+            exprBox.KeyDown += ExpressionBox_KeyDown;
             calcButton.Click += CalcButton_Click;
             subAnswerLabel.Text = "";
-            this.Font = new Font("Meiryo UI", SystemFonts.DefaultFont.Size);
-            exprBox.Font = new Font("Meiryo UI", SystemFonts.DefaultFont.Size * 1.5f);
+            try {
+                this.Font = new Font("Meiryo UI", SystemFonts.DefaultFont.Size);
+                historyBox.Font = new Font("Consolas", SystemFonts.DefaultFont.Size * 1.25f);
+                exprBox.Font = new Font("Consolas", SystemFonts.DefaultFont.Size * 1.5f);
+                subAnswerLabel.Font = new Font("Consolas", SystemFonts.DefaultFont.Size);
+            }
+            catch { }
+        }
+
+        private void HistoryBox_SelectedIndexChanged(object sender, EventArgs e) {
+            if (historyBox.SelectedIndex < 0) return;
+            if (_suppressListIndexChangedEvent) return;
+            exprBox.Text = ((HistoryItem)historyBox.Items[historyBox.SelectedIndex]).Expression;
+            exprBox.SelectAll();
         }
 
         private void ExprBox_TextChanged(object sender, EventArgs e) {
-            try {
-                var exprStr = exprBox.Text;
-                var expr = Parser.Parser.Parse(exprStr);
-                var val = expr.Eval(_ctx);
-                var text = "= " + val.ToString();
-                if (val is RealVal rval) {
-                    if (rval.IsDimless) {
-                        var dval = rval.AsDouble;
-                        if (rval.IsInteger && 0xA <= dval && dval < UInt32.MaxValue) {
-                            var rvalInt = rval.FormatInt();
-                            var rvalHex = rval.FormatHex();
-                            text = "= " + rvalInt.ToString() +  " (" + rvalHex.ToString() + ")";
-                        }
-                        else {
-                            text += " (無次元)";
-                        }
-                    }
-                    else
-                        text += " (raw=" + rval.Raw + ")";
-                }
-                subAnswerLabel.Text = text;
-            }
-            catch (Exception ex) {
-                subAnswerLabel.Text = ex.Message;
-            }
+            Recalc();
         }
 
         private void ExprBox_KeyPress(object sender, KeyPressEventArgs e) {
             if (_selectionCancelChars.Contains(e.KeyChar)) {
-                if (exprBox.SelectionStart == 0 && exprBox.SelectionLength == exprBox.TextLength) {
+                if (exprBox.SelectionLength > 0 && exprBox.SelectionStart == 0 && exprBox.SelectionLength == exprBox.TextLength) {
                     // 全選択された状態で演算子が入力された選択を解除して末尾にカーソル移動
+                    exprBox.SelectedText = "Ans";
                     exprBox.SelectionStart = exprBox.TextLength;
                 }
             }
             else if (e.KeyChar == (char)Keys.Return) {
                 e.Handled = true;
-                calcButton.PerformClick();
             }
+        }
+
+        private void ExpressionBox_KeyDown(object sender, KeyEventArgs e) {
+            switch (e.KeyCode) {
+                case Keys.Return:
+                    OnReturnPressed(e.Shift);
+                    e.Handled = true;
+                    break;
+                case Keys.Up:
+                    if (historyBox.SelectedIndex > 0) {
+                        historyBox.SelectedIndex -= 1;
+                    }
+                    e.Handled = true;
+                    break;
+                case Keys.Down:
+                    if (historyBox.SelectedIndex < historyBox.Items.Count - 1) {
+                        historyBox.SelectedIndex += 1;
+                    }
+                    e.Handled = true;
+                    break;
+
+            }
+        }
+
+        private void OnReturnPressed(bool insert) {
+            // 数式をヒストリに設定
+            if (historyBox.SelectedIndex >= 0) {
+                ((HistoryItem)historyBox.Items[historyBox.SelectedIndex]).Expression = exprBox.Text;
+            }
+
+            // 次のアイテムを選択する
+            int nextIndex;
+            if (insert) {
+                nextIndex = historyBox.SelectedIndex;
+            }
+            else {
+                nextIndex = historyBox.SelectedIndex + 1;
+            }
+            if (nextIndex >= historyBox.Items.Count || insert) {
+                historyBox.Items.Insert(nextIndex, new HistoryItem());
+            }
+            historyBox.SelectedIndex = nextIndex;
+            Recalc();
+            if (historyBox.SelectedIndex == historyBox.Items.Count - 1 && historyBox.Items.Count >= 2) {
+                var lastItem = (HistoryItem)historyBox.Items[historyBox.SelectedIndex - 1];
+                if (!lastItem.IsEmpty) {
+                    exprBox.Text = lastItem.Answer;
+                    exprBox.SelectAll();
+                }
+            }
+        }
+
+        private void Recalc() {
+            EvalContext ctx = new EvalContext();
+            for (int i = 0; i < historyBox.Items.Count; i++) {
+                var item = (HistoryItem)historyBox.Items[i];
+                try {
+                    item.Answer = "";
+                    string exprStr;
+                    if (i == historyBox.SelectedIndex) {
+                        exprStr = exprBox.Text;
+                    }
+                    else {
+                        exprStr = item.Expression;
+                    }
+                    var expr = Parser.Parser.Parse(exprStr);
+                    var val = expr.Eval(ctx);
+                    var valStr = val.ToString();
+                    var hintStr = "";
+                    if (val is RealVal realVal) {
+                        if (realVal.IsDimless) {
+                            var doubleVal = realVal.AsDouble;
+                            if (realVal.IsInteger && (doubleVal < 0 || 10 <= doubleVal && doubleVal <= int.MaxValue)) {
+                                // 10以上の整数については 10進と 16進を併記する
+                                if (realVal.FormatHint.Formatter == Shapoco.Calctus.Model.Syntax.IntFormatter.CStyleInt) {
+                                    hintStr = realVal.FormatHex().ToString();
+                                }
+                                else {
+                                    hintStr = realVal.FormatInt().ToString();
+                                }
+                            }
+                        }
+                    }
+
+                    item.Answer = valStr;
+                    item.Error = false;
+                    item.Hint = hintStr;
+                    ctx.Ref("Ans", true).Value = val;
+
+                    if (i == historyBox.SelectedIndex) {
+                        subAnswerLabel.Text = "= " + valStr;
+                    }
+                }
+                catch (Exception ex) {
+                    item.Error = true;
+                    if (i == historyBox.SelectedIndex) {
+                        subAnswerLabel.Text = ex.Message;
+                    }
+                    item.Hint = ex.Message;
+                }
+            }
+            historyBox.Invalidate();
         }
 
         private void CalcButton_Click(object sender, EventArgs e) {
             try {
-                var exprStr = exprBox.Text;
-                var expr = Parser.Parser.Parse(exprStr);
-                var val = expr.Eval(_ctx);
-                
-                exprBox.Text = val.ToString();
-                //exprBox.SelectionStart = exprBox.TextLength;
-                exprBox.SelectAll();
-
-                if (logBox.TextLength > 0) {
-                    logBox.Text += "\r\n";
-                }
-                if (expr is BinaryOp binOpExpr && binOpExpr.Method == OpDef.Assign && binOpExpr.B is Literal) {
-                    logBox.Text += exprStr;
-                }
-                else {
-                    logBox.Text += exprStr + " = " + val.ToString();
-                }
-                logBox.SelectionStart = logBox.TextLength;
-                logBox.ScrollToCaret();
+                OnReturnPressed(false);
             }
             catch (Exception ex) {
                 Console.WriteLine(ex.Message);

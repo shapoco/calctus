@@ -78,9 +78,14 @@
     <Compile Include="Calctus\Model\Val.cs" />
     <Compile Include="Calctus\Model\Var.cs" />
     <Compile Include="Calctus\Parser\Types.cs" />
-    <Compile Include="Calctus\UI\ExpressionBox.cs">
+    <Compile Include="Calctus\UI\ColorUtils.cs" />
+    <Compile Include="Calctus\UI\FlatButton.cs">
       <SubType>Component</SubType>
     </Compile>
+    <Compile Include="Calctus\UI\HistoryBox.cs">
+      <SubType>Component</SubType>
+    </Compile>
+    <Compile Include="Calctus\UI\HistoryItem.cs" />
     <Compile Include="Calctus\UI\MainForm.cs">
       <SubType>Form</SubType>
     </Compile>

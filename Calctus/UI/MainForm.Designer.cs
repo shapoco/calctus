@@ -30,23 +30,13 @@ namespace Shapoco.Calctus.UI
         private void InitializeComponent()
         {
             System.ComponentModel.ComponentResourceManager resources = new System.ComponentModel.ComponentResourceManager(typeof(MainForm));
-            this.logBox = new System.Windows.Forms.TextBox();
             this.panel1 = new System.Windows.Forms.Panel();
-            this.exprBox = new Shapoco.Calctus.UI.ExpressionBox();
+            this.exprBox = new System.Windows.Forms.TextBox();
             this.subAnswerLabel = new System.Windows.Forms.Label();
-            this.calcButton = new System.Windows.Forms.Button();
+            this.calcButton = new Shapoco.Calctus.UI.FlatButton();
+            this.historyBox = new Shapoco.Calctus.UI.HistoryBox();
             this.panel1.SuspendLayout();
             this.SuspendLayout();
-            // 
-            // logBox
-            // 
-            this.logBox.Dock = System.Windows.Forms.DockStyle.Fill;
-            this.logBox.Location = new System.Drawing.Point(0, 0);
-            this.logBox.Multiline = true;
-            this.logBox.Name = "logBox";
-            this.logBox.Size = new System.Drawing.Size(342, 113);
-            this.logBox.TabIndex = 0;
-            this.logBox.TabStop = false;
             // 
             // panel1
             // 
@@ -61,15 +51,20 @@ namespace Shapoco.Calctus.UI
             // 
             // exprBox
             // 
+            this.exprBox.BackColor = System.Drawing.Color.FromArgb(((int)(((byte)(32)))), ((int)(((byte)(32)))), ((int)(((byte)(32)))));
+            this.exprBox.BorderStyle = System.Windows.Forms.BorderStyle.None;
             this.exprBox.Dock = System.Windows.Forms.DockStyle.Fill;
+            this.exprBox.ForeColor = System.Drawing.Color.White;
             this.exprBox.Location = new System.Drawing.Point(0, 0);
             this.exprBox.Name = "exprBox";
-            this.exprBox.Size = new System.Drawing.Size(267, 19);
-            this.exprBox.TabIndex = 1;
+            this.exprBox.Size = new System.Drawing.Size(267, 12);
+            this.exprBox.TabIndex = 0;
             // 
             // subAnswerLabel
             // 
+            this.subAnswerLabel.BackColor = System.Drawing.Color.FromArgb(((int)(((byte)(64)))), ((int)(((byte)(64)))), ((int)(((byte)(64)))));
             this.subAnswerLabel.Dock = System.Windows.Forms.DockStyle.Bottom;
+            this.subAnswerLabel.ForeColor = System.Drawing.Color.FromArgb(((int)(((byte)(224)))), ((int)(((byte)(224)))), ((int)(((byte)(224)))));
             this.subAnswerLabel.Location = new System.Drawing.Point(0, 34);
             this.subAnswerLabel.Name = "subAnswerLabel";
             this.subAnswerLabel.Size = new System.Drawing.Size(267, 18);
@@ -79,20 +74,40 @@ namespace Shapoco.Calctus.UI
             // 
             // calcButton
             // 
+            this.calcButton.BackColor = System.Drawing.Color.FromArgb(((int)(((byte)(76)))), ((int)(((byte)(88)))), ((int)(((byte)(72)))));
             this.calcButton.Dock = System.Windows.Forms.DockStyle.Right;
+            this.calcButton.FlatStyle = System.Windows.Forms.FlatStyle.Flat;
+            this.calcButton.ForeColor = System.Drawing.Color.FromArgb(((int)(((byte)(224)))), ((int)(((byte)(224)))), ((int)(((byte)(224)))));
             this.calcButton.Location = new System.Drawing.Point(267, 0);
             this.calcButton.Name = "calcButton";
             this.calcButton.Size = new System.Drawing.Size(75, 52);
             this.calcButton.TabIndex = 1;
             this.calcButton.Text = "=";
-            this.calcButton.UseVisualStyleBackColor = true;
+            this.calcButton.UseVisualStyleBackColor = false;
+            // 
+            // historyBox
+            // 
+            this.historyBox.BackColor = System.Drawing.Color.FromArgb(((int)(((byte)(64)))), ((int)(((byte)(64)))), ((int)(((byte)(64)))));
+            this.historyBox.BorderStyle = System.Windows.Forms.BorderStyle.None;
+            this.historyBox.Dock = System.Windows.Forms.DockStyle.Fill;
+            this.historyBox.DrawMode = System.Windows.Forms.DrawMode.OwnerDrawVariable;
+            this.historyBox.ForeColor = System.Drawing.Color.FromArgb(((int)(((byte)(224)))), ((int)(((byte)(224)))), ((int)(((byte)(224)))));
+            this.historyBox.FormattingEnabled = true;
+            this.historyBox.IntegralHeight = false;
+            this.historyBox.ItemHeight = 12;
+            this.historyBox.Location = new System.Drawing.Point(0, 0);
+            this.historyBox.Name = "historyBox";
+            this.historyBox.Size = new System.Drawing.Size(342, 113);
+            this.historyBox.TabIndex = 3;
+            this.historyBox.TabStop = false;
             // 
             // MainForm
             // 
             this.AutoScaleDimensions = new System.Drawing.SizeF(6F, 12F);
             this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
+            this.BackColor = System.Drawing.Color.FromArgb(((int)(((byte)(64)))), ((int)(((byte)(64)))), ((int)(((byte)(64)))));
             this.ClientSize = new System.Drawing.Size(342, 165);
-            this.Controls.Add(this.logBox);
+            this.Controls.Add(this.historyBox);
             this.Controls.Add(this.panel1);
             this.Icon = ((System.Drawing.Icon)(resources.GetObject("$this.Icon")));
             this.Name = "MainForm";
@@ -100,17 +115,15 @@ namespace Shapoco.Calctus.UI
             this.panel1.ResumeLayout(false);
             this.panel1.PerformLayout();
             this.ResumeLayout(false);
-            this.PerformLayout();
 
         }
 
         #endregion
-
-        private System.Windows.Forms.TextBox logBox;
         private System.Windows.Forms.Panel panel1;
-        private ExpressionBox exprBox;
-        private System.Windows.Forms.Button calcButton;
+        private System.Windows.Forms.TextBox exprBox;
+        private Shapoco.Calctus.UI.FlatButton calcButton;
         private System.Windows.Forms.Label subAnswerLabel;
+        private HistoryBox historyBox;
     }
 }
 
