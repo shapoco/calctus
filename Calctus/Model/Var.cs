@@ -14,7 +14,7 @@ namespace Shapoco.Calctus.Model {
             get => _value;
             set {
                 if (IsReadonly) {
-                    throw new CalctusError("'" + Name + "'は読み取り専用です。");
+                    throw new CalctusError(Name + " is read only.");
                 }
                 _value = value;
             }

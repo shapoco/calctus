@@ -23,6 +23,8 @@ namespace Shapoco.Calctus.Model {
         public EvalContext() {
             this.AddConstantReal("PI", Math.PI);
             this.AddConstantReal("E", Math.E);
+            this.AddConstantReal("NaN", double.NaN);
+            this.AddConstantReal("∞", double.PositiveInfinity);
             this.AddConstantHex("INT_MIN", Int32.MinValue);
             this.AddConstantHex("INT_MAX", Int32.MaxValue);
             this.AddConstantHex("UINT_MIN", UInt32.MinValue);

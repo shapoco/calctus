@@ -11,23 +11,7 @@ using Shapoco.Calctus.Model.Syntax;
 
 namespace Shapoco.Calctus.Parser {
     class Lexer {
-        private static readonly Regex IntNumber = new Regex(@"([1-9][0-9]*|0)([eE][+-]?[0-9]+)?");
-        private static readonly Regex RealNumber = new Regex(@"([1-9][0-9]*|0)+\.[0-9]+([eE][+-]?[0-9]+)?");
-        private static readonly Regex VerilogIntNumber = new Regex(@"([1-9][0-9]*)?'s?d[0-9]+");
-        private static readonly Regex VerilogHexNumber = new Regex(@"([1-9][0-9]*)?'s?h[0-9a-fA-F]+");
-        private static readonly Regex VerilogBinNumber = new Regex(@"([1-9][0-9]*)?'s?b[01]+");
-        private static readonly Regex VerilogOctNumber = new Regex(@"([1-9][0-9]*)?'s?h[0-7]+");
-        private static readonly Regex CStyleHexNumber = new Regex(@"0[xX][0-9a-fA-F]+");
-        private static readonly Regex CStyleBinNumber = new Regex(@"0[bB][01]+");
-        private static readonly Regex CStyleOctNumber = new Regex(@"0[0-7]+");
-        private static readonly Regex TimeHMS = new Regex(@"[0-9]+h([0-9]+m)?([0-9]+(\.[0-9]+)?s)?");
-        private static readonly Regex TimeMS = new Regex(@"[0-9]+m[0-9]+(\.[0-9]+)?s");
-        private static readonly Regex TimeH = new Regex(@"[0-9]+\.[0-9]+h");
-//      private static readonly Regex TimeM = new Regex(@"[0-9]+\.[0-9]+m"); // メートルと区別つかないので m のみはダメ
-        private static readonly Regex TimeS = new Regex(@"[0-9]+(\.[0-9]+)?s");
-        private static readonly Regex TimeHHMMSS = new Regex(@"([0-9]+:[0-9]+:[0-9]+(\.[0-9]+)?)?");
-
-        private static readonly Regex _wordRegexes = new Regex(@"[a-zA-Z_][a-zA-Z0-9_]*");
+        private static readonly Regex _wordRegexes = new Regex(@"[a-zA-Z_][a-zA-Z0-9_]*|∞");
 
         private StringMatchReader _tr;
         private bool _eosReaded = false;
