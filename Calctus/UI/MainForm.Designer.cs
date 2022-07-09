@@ -35,6 +35,7 @@ namespace Shapoco.Calctus.UI
             this.subAnswerLabel = new System.Windows.Forms.Label();
             this.calcButton = new Shapoco.Calctus.UI.FlatButton();
             this.toolStrip1 = new System.Windows.Forms.ToolStrip();
+            this.helpButton = new System.Windows.Forms.ToolStripButton();
             this.settingsButton = new System.Windows.Forms.ToolStripButton();
             this.historyBox = new Shapoco.Calctus.UI.HistoryBox();
             this.panel1.SuspendLayout();
@@ -91,12 +92,23 @@ namespace Shapoco.Calctus.UI
             // toolStrip1
             // 
             this.toolStrip1.Items.AddRange(new System.Windows.Forms.ToolStripItem[] {
+            this.helpButton,
             this.settingsButton});
             this.toolStrip1.Location = new System.Drawing.Point(0, 0);
             this.toolStrip1.Name = "toolStrip1";
             this.toolStrip1.Size = new System.Drawing.Size(404, 25);
             this.toolStrip1.TabIndex = 4;
             this.toolStrip1.Text = "toolStrip1";
+            // 
+            // helpButton
+            // 
+            this.helpButton.Alignment = System.Windows.Forms.ToolStripItemAlignment.Right;
+            this.helpButton.DisplayStyle = System.Windows.Forms.ToolStripItemDisplayStyle.Image;
+            this.helpButton.Image = global::Shapoco.Properties.Resources.ToolIcon_Help;
+            this.helpButton.ImageTransparentColor = System.Drawing.Color.Magenta;
+            this.helpButton.Name = "helpButton";
+            this.helpButton.Size = new System.Drawing.Size(23, 22);
+            this.helpButton.Text = "Help";
             // 
             // settingsButton
             // 
@@ -106,7 +118,7 @@ namespace Shapoco.Calctus.UI
             this.settingsButton.ImageTransparentColor = System.Drawing.Color.Magenta;
             this.settingsButton.Name = "settingsButton";
             this.settingsButton.Size = new System.Drawing.Size(23, 22);
-            this.settingsButton.Text = "toolStripButton1";
+            this.settingsButton.Text = "Settings";
             // 
             // historyBox
             // 
@@ -153,6 +165,7 @@ namespace Shapoco.Calctus.UI
         private HistoryBox historyBox;
         private System.Windows.Forms.ToolStrip toolStrip1;
         private System.Windows.Forms.ToolStripButton settingsButton;
+        private System.Windows.Forms.ToolStripButton helpButton;
     }
 }
 

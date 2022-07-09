@@ -133,6 +133,7 @@
   </ItemGroup>
   <ItemGroup>
     <Content Include="icon.ico" />
+    <None Include="Resources\ToolIcon_Help.png" />
     <None Include="materials\tool_settings.png" />
     <None Include="Resources\ToolIcon_Settings.png" />
   </ItemGroup>

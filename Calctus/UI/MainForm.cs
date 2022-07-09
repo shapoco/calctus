@@ -53,6 +53,7 @@ namespace Shapoco.Calctus.UI {
             calcButton.Click += CalcButton_Click;
 
             settingsButton.Click += delegate { new SettingsDialog().ShowDialog(); };
+            helpButton.Click += delegate { System.Diagnostics.Process.Start(@"https://github.com/shapoco/calctus"); };
 
             subAnswerLabel.Text = "";
             try {
