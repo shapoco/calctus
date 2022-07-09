@@ -15,6 +15,13 @@ namespace Shapoco.Calctus.UI {
     internal partial class MainForm : Form {
         private char[] _selectionCancelChars;
         private bool _suppressListIndexChangedEvent = false;
+        
+        class CustomProfessionalColors : ProfessionalColorTable {
+            public override Color ToolStripGradientBegin { get { return Color.FromArgb(64, 64, 64); } }
+            public override Color ToolStripGradientMiddle { get { return Color.FromArgb(56, 56, 56); } }
+            public override Color ToolStripGradientEnd { get { return Color.FromArgb(48, 48, 48); } }
+            public override Color ToolStripBorder { get { return Color.FromArgb(64, 64, 64); } }
+        }
 
         public MainForm() {
             // 全選択された状態で入力されたら選択を解除する文字の一覧
@@ -25,6 +32,8 @@ namespace Shapoco.Calctus.UI {
 
             InitializeComponent();
             if (this.DesignMode) return;
+
+            ToolStripManager.Renderer = new ToolStripProfessionalRenderer(new CustomProfessionalColors());
 
             historyBox.Items.Add(new HistoryItem());
             historyBox.SelectedIndex = 0;
@@ -42,6 +51,9 @@ namespace Shapoco.Calctus.UI {
             exprBox.TextChanged += ExprBox_TextChanged;
             exprBox.KeyDown += ExpressionBox_KeyDown;
             calcButton.Click += CalcButton_Click;
+
+            settingsButton.Click += delegate { new SettingsDialog().ShowDialog(); };
+
             subAnswerLabel.Text = "";
             try {
                 this.Font = new Font("Meiryo UI", SystemFonts.DefaultFont.Size);

@@ -20,7 +20,7 @@ namespace Shapoco.Calctus.Model.Syntax {
         public abstract Val Parse(Match m);
 
         public virtual string Format(Val val) => OnFormat(val);
-        protected virtual string OnFormat(Val val) => val.AsDouble.ToString();
+        protected virtual string OnFormat(Val val) => DoubleToString(val.AsDouble);
 
         public static readonly IntFormatter CStyleInt = new IntFormatter(10, "", new Regex(@"([1-9][0-9]*|0)([eE][+-]?[0-9]+)?"), 0 );
         public static readonly RealFormatter CStyleReal = new RealFormatter("", new Regex(@"([1-9][0-9]*|0)+\.[0-9]+([eE][+-]?[0-9]+)?"), 0);
@@ -28,38 +28,44 @@ namespace Shapoco.Calctus.Model.Syntax {
         public static readonly IntFormatter CStyleOct = new IntFormatter(8, "0", new Regex(@"0([0-7]+)"), 1);
         public static readonly IntFormatter CStyleBin = new IntFormatter(2, "0b", new Regex(@"0[bB]([01]+)"), 1);
 
-        //public static readonly IntFormatter VerilogInt = new IntFormatter(10, "'d", new Regex(@"([1-9][0-9]*)?'s?d([0-9]+)"), 2);
-        //public static readonly IntFormatter VerilogHex = new IntFormatter(16, "'h", new Regex(@"([1-9][0-9]*)?'s?h([0-9a-fA-F]+)"), 2);
-        //public static readonly IntFormatter VerilogOct = new IntFormatter(2, "'o", new Regex(@"([1-9][0-9]*)?'s?h([0-7]+)"), 2);
-        //public static readonly IntFormatter VerilogBin = new IntFormatter(8, "'b", new Regex(@"([1-9][0-9]*)?'s?b([01]+)"), 2);
-
         public static NumberFormatter[] NativeFormats => new NumberFormatter[] {
             CStyleInt, 
             CStyleReal, 
             CStyleHex, 
             CStyleOct, 
             CStyleBin,
-            //VerilogInt,
-            //VerilogHex,
-            //VerilogOct,
-            //VerilogBin,
         };
 
-        // private static readonly Regex IntNumber = new Regex(@"([1-9][0-9]*|0)([eE][+-]?[0-9]+)?");
-        // private static readonly Regex RealNumber = new Regex(@"([1-9][0-9]*|0)+\.[0-9]+([eE][+-]?[0-9]+)?");
-        // private static readonly Regex VerilogIntNumber = new Regex(@"([1-9][0-9]*)?'s?d[0-9]+");
-        // private static readonly Regex VerilogHexNumber = new Regex(@"([1-9][0-9]*)?'s?h[0-9a-fA-F]+");
-        // private static readonly Regex VerilogBinNumber = new Regex(@"([1-9][0-9]*)?'s?b[01]+");
-        // private static readonly Regex VerilogOctNumber = new Regex(@"([1-9][0-9]*)?'s?h[0-7]+");
-        // private static readonly Regex CStyleHexNumber = new Regex(@"0[xX][0-9a-fA-F]+");
-        // private static readonly Regex CStyleBinNumber = new Regex(@"0[bB][01]+");
-        // private static readonly Regex CStyleOctNumber = new Regex(@"0[0-7]+");
-        private static readonly Regex TimeHMS = new Regex(@"[0-9]+h([0-9]+m)?([0-9]+(\.[0-9]+)?s)?");
-        private static readonly Regex TimeMS = new Regex(@"[0-9]+m[0-9]+(\.[0-9]+)?s");
-        private static readonly Regex TimeH = new Regex(@"[0-9]+\.[0-9]+h");
-        // private static readonly Regex TimeM = new Regex(@"[0-9]+\.[0-9]+m"); // メートルと区別つかないので m のみはダメ
-        private static readonly Regex TimeS = new Regex(@"[0-9]+(\.[0-9]+)?s");
-        private static readonly Regex TimeHHMMSS = new Regex(@"([0-9]+:[0-9]+:[0-9]+(\.[0-9]+)?)?");
+        public static string DoubleToString(double val) {
+#if true
+            if (double.IsNaN(val)) return "NaN";
+            if (double.IsNegativeInfinity(val)) return "-∞";
+            if (double.IsInfinity(val)) return "∞";
+            if (val == 0.0) return "0.0";
+
+            var s = Settings.Instance;
+            var exp = (int)Math.Truncate(Math.Log10(val));
+            if (s.NumberFormat_Exp_Enabled && exp >= s.NumberFormat_Exp_PositiveMin) {
+                if (s.NumberFormat_Exp_Alignment) {
+                    exp = (int)Math.Floor((double)exp / 3) * 3;
+                }
+                var frac = val / Math.Pow(10.0, exp);
+                return frac.ToString("0.##############") + "e+" + exp;
+            }
+            else if (s.NumberFormat_Exp_Enabled && exp <= s.NumberFormat_Exp_NegativeMax) {
+                if (s.NumberFormat_Exp_Alignment) {
+                    exp = (int)Math.Floor((double)exp / 3) * 3;
+                }
+                var frac = val * Math.Pow(10.0, -exp);
+                return frac.ToString("0.##############") + "e" + exp;
+            }
+            else {
+                return val.ToString("0.##############");
+            }
+#else
+            return val.ToString();
+#endif
+        }
     }
 
 
@@ -78,13 +84,7 @@ namespace Shapoco.Calctus.Model.Syntax {
 
         protected override string OnFormat(Val val) {
             if (val is RealVal) {
-                var fval = val.AsDouble;
-                var ival = val.AsLong;
-                var ret = Math.Abs(fval).ToString();
-                if (fval == ival) ret += ".0";
-                ret = Prefix + ret;
-                if (fval < 0.0) ret = "-" + ret;
-                return ret;
+                return DoubleToString(val.AsDouble);
             }
             else {
                 return base.OnFormat(val);

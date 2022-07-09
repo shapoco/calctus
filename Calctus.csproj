@@ -49,6 +49,7 @@
     <Reference Include="System.Xml" />
   </ItemGroup>
   <ItemGroup>
+    <Compile Include="AppDataManager.cs" />
     <Compile Include="Calctus\Model\Errors.cs" />
     <Compile Include="Calctus\Model\EvalContext.cs" />
     <Compile Include="Calctus\Model\Expr.cs" />
@@ -78,6 +79,7 @@
     <Compile Include="Calctus\Model\Val.cs" />
     <Compile Include="Calctus\Model\Var.cs" />
     <Compile Include="Calctus\Parser\Types.cs" />
+    <Compile Include="Calctus\Settings.cs" />
     <Compile Include="Calctus\UI\ColorUtils.cs" />
     <Compile Include="Calctus\UI\FlatButton.cs">
       <SubType>Component</SubType>
@@ -93,9 +95,18 @@
       <DependentUpon>MainForm.cs</DependentUpon>
     </Compile>
     <Compile Include="Calctus\Program.cs" />
+    <Compile Include="Calctus\UI\SettingsDialog.cs">
+      <SubType>Form</SubType>
+    </Compile>
+    <Compile Include="Calctus\UI\SettingsDialog.Designer.cs">
+      <DependentUpon>SettingsDialog.cs</DependentUpon>
+    </Compile>
     <Compile Include="Properties\AssemblyInfo.cs" />
     <EmbeddedResource Include="Calctus\UI\MainForm.resx">
       <DependentUpon>MainForm.cs</DependentUpon>
+    </EmbeddedResource>
+    <EmbeddedResource Include="Calctus\UI\SettingsDialog.resx">
+      <DependentUpon>SettingsDialog.cs</DependentUpon>
     </EmbeddedResource>
     <EmbeddedResource Include="Properties\Resources.resx">
       <Generator>ResXFileCodeGenerator</Generator>
@@ -122,6 +133,8 @@
   </ItemGroup>
   <ItemGroup>
     <Content Include="icon.ico" />
+    <None Include="materials\tool_settings.png" />
+    <None Include="Resources\ToolIcon_Settings.png" />
   </ItemGroup>
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
 </Project>

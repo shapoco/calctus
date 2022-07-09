@@ -34,8 +34,11 @@ namespace Shapoco.Calctus.UI
             this.exprBox = new System.Windows.Forms.TextBox();
             this.subAnswerLabel = new System.Windows.Forms.Label();
             this.calcButton = new Shapoco.Calctus.UI.FlatButton();
+            this.toolStrip1 = new System.Windows.Forms.ToolStrip();
+            this.settingsButton = new System.Windows.Forms.ToolStripButton();
             this.historyBox = new Shapoco.Calctus.UI.HistoryBox();
             this.panel1.SuspendLayout();
+            this.toolStrip1.SuspendLayout();
             this.SuspendLayout();
             // 
             // panel1
@@ -44,9 +47,9 @@ namespace Shapoco.Calctus.UI
             this.panel1.Controls.Add(this.subAnswerLabel);
             this.panel1.Controls.Add(this.calcButton);
             this.panel1.Dock = System.Windows.Forms.DockStyle.Bottom;
-            this.panel1.Location = new System.Drawing.Point(0, 113);
+            this.panel1.Location = new System.Drawing.Point(0, 204);
             this.panel1.Name = "panel1";
-            this.panel1.Size = new System.Drawing.Size(342, 52);
+            this.panel1.Size = new System.Drawing.Size(404, 52);
             this.panel1.TabIndex = 3;
             // 
             // exprBox
@@ -57,7 +60,7 @@ namespace Shapoco.Calctus.UI
             this.exprBox.ForeColor = System.Drawing.Color.White;
             this.exprBox.Location = new System.Drawing.Point(0, 0);
             this.exprBox.Name = "exprBox";
-            this.exprBox.Size = new System.Drawing.Size(267, 12);
+            this.exprBox.Size = new System.Drawing.Size(329, 12);
             this.exprBox.TabIndex = 0;
             // 
             // subAnswerLabel
@@ -67,7 +70,7 @@ namespace Shapoco.Calctus.UI
             this.subAnswerLabel.ForeColor = System.Drawing.Color.FromArgb(((int)(((byte)(224)))), ((int)(((byte)(224)))), ((int)(((byte)(224)))));
             this.subAnswerLabel.Location = new System.Drawing.Point(0, 34);
             this.subAnswerLabel.Name = "subAnswerLabel";
-            this.subAnswerLabel.Size = new System.Drawing.Size(267, 18);
+            this.subAnswerLabel.Size = new System.Drawing.Size(329, 18);
             this.subAnswerLabel.TabIndex = 2;
             this.subAnswerLabel.Text = "subanswer";
             this.subAnswerLabel.TextAlign = System.Drawing.ContentAlignment.MiddleRight;
@@ -78,12 +81,32 @@ namespace Shapoco.Calctus.UI
             this.calcButton.Dock = System.Windows.Forms.DockStyle.Right;
             this.calcButton.FlatStyle = System.Windows.Forms.FlatStyle.Flat;
             this.calcButton.ForeColor = System.Drawing.Color.FromArgb(((int)(((byte)(224)))), ((int)(((byte)(224)))), ((int)(((byte)(224)))));
-            this.calcButton.Location = new System.Drawing.Point(267, 0);
+            this.calcButton.Location = new System.Drawing.Point(329, 0);
             this.calcButton.Name = "calcButton";
             this.calcButton.Size = new System.Drawing.Size(75, 52);
             this.calcButton.TabIndex = 1;
             this.calcButton.Text = "=";
             this.calcButton.UseVisualStyleBackColor = false;
+            // 
+            // toolStrip1
+            // 
+            this.toolStrip1.Items.AddRange(new System.Windows.Forms.ToolStripItem[] {
+            this.settingsButton});
+            this.toolStrip1.Location = new System.Drawing.Point(0, 0);
+            this.toolStrip1.Name = "toolStrip1";
+            this.toolStrip1.Size = new System.Drawing.Size(404, 25);
+            this.toolStrip1.TabIndex = 4;
+            this.toolStrip1.Text = "toolStrip1";
+            // 
+            // settingsButton
+            // 
+            this.settingsButton.Alignment = System.Windows.Forms.ToolStripItemAlignment.Right;
+            this.settingsButton.DisplayStyle = System.Windows.Forms.ToolStripItemDisplayStyle.Image;
+            this.settingsButton.Image = global::Shapoco.Properties.Resources.ToolIcon_Settings;
+            this.settingsButton.ImageTransparentColor = System.Drawing.Color.Magenta;
+            this.settingsButton.Name = "settingsButton";
+            this.settingsButton.Size = new System.Drawing.Size(23, 22);
+            this.settingsButton.Text = "toolStripButton1";
             // 
             // historyBox
             // 
@@ -95,9 +118,9 @@ namespace Shapoco.Calctus.UI
             this.historyBox.FormattingEnabled = true;
             this.historyBox.IntegralHeight = false;
             this.historyBox.ItemHeight = 12;
-            this.historyBox.Location = new System.Drawing.Point(0, 0);
+            this.historyBox.Location = new System.Drawing.Point(0, 25);
             this.historyBox.Name = "historyBox";
-            this.historyBox.Size = new System.Drawing.Size(342, 113);
+            this.historyBox.Size = new System.Drawing.Size(404, 179);
             this.historyBox.TabIndex = 3;
             this.historyBox.TabStop = false;
             // 
@@ -106,15 +129,19 @@ namespace Shapoco.Calctus.UI
             this.AutoScaleDimensions = new System.Drawing.SizeF(6F, 12F);
             this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
             this.BackColor = System.Drawing.Color.FromArgb(((int)(((byte)(64)))), ((int)(((byte)(64)))), ((int)(((byte)(64)))));
-            this.ClientSize = new System.Drawing.Size(342, 165);
+            this.ClientSize = new System.Drawing.Size(404, 256);
             this.Controls.Add(this.historyBox);
             this.Controls.Add(this.panel1);
+            this.Controls.Add(this.toolStrip1);
             this.Icon = ((System.Drawing.Icon)(resources.GetObject("$this.Icon")));
             this.Name = "MainForm";
             this.Text = "Form1";
             this.panel1.ResumeLayout(false);
             this.panel1.PerformLayout();
+            this.toolStrip1.ResumeLayout(false);
+            this.toolStrip1.PerformLayout();
             this.ResumeLayout(false);
+            this.PerformLayout();
 
         }
 
@@ -124,6 +151,8 @@ namespace Shapoco.Calctus.UI
         private Shapoco.Calctus.UI.FlatButton calcButton;
         private System.Windows.Forms.Label subAnswerLabel;
         private HistoryBox historyBox;
+        private System.Windows.Forms.ToolStrip toolStrip1;
+        private System.Windows.Forms.ToolStripButton settingsButton;
     }
 }
 
