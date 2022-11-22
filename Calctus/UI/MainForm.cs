@@ -15,7 +15,8 @@ namespace Shapoco.Calctus.UI {
     internal partial class MainForm : Form {
         private char[] _selectionCancelChars;
         private bool _suppressListIndexChangedEvent = false;
-        
+        private RadixMode _radixMode = RadixMode.Auto;
+
         class CustomProfessionalColors : ProfessionalColorTable {
             public override Color ToolStripGradientBegin { get { return Color.FromArgb(64, 64, 64); } }
             public override Color ToolStripGradientMiddle { get { return Color.FromArgb(56, 56, 56); } }
@@ -44,13 +45,23 @@ namespace Shapoco.Calctus.UI {
             } 
             catch { }
 
-            this.Text = Application.ProductName + " (v" + System.Reflection.Assembly.GetExecutingAssembly().GetName().Version + ")"; 
+            this.Text = Application.ProductName + " (v" + System.Reflection.Assembly.GetExecutingAssembly().GetName().Version + ")";
+            this.KeyPreview = true;
+            this.KeyDown += MainForm_KeyDown;
+
             exprBox.AutoSize = false;
             exprBox.Dock = DockStyle.Fill;
             exprBox.KeyPress += ExprBox_KeyPress;
             exprBox.TextChanged += ExprBox_TextChanged;
             exprBox.KeyDown += ExpressionBox_KeyDown;
+            
             calcButton.Click += CalcButton_Click;
+            
+            radixAutoButton.CheckedChanged += (s, e) => { RadixButtonClicked((RadioButton)s, RadixMode.Auto); };
+            radixDecButton.CheckedChanged += (s, e) => { RadixButtonClicked((RadioButton)s, RadixMode.Dec); };
+            radixHexButton.CheckedChanged += (s, e) => { RadixButtonClicked((RadioButton)s, RadixMode.Hex); };
+            radixBinButton.CheckedChanged += (s, e) => { RadixButtonClicked((RadioButton)s, RadixMode.Bin); };
+            radixAutoButton.Checked = true;
 
             settingsButton.Click += delegate { new SettingsDialog().ShowDialog(); };
             helpButton.Click += delegate { System.Diagnostics.Process.Start(@"https://github.com/shapoco/calctus"); };
@@ -63,6 +74,39 @@ namespace Shapoco.Calctus.UI {
                 subAnswerLabel.Font = new Font("Consolas", SystemFonts.DefaultFont.Size);
             }
             catch { }
+        }
+
+        private void MainForm_KeyDown(object sender, KeyEventArgs e) {
+            e.SuppressKeyPress = true;
+            switch(e.KeyCode) {
+                case Keys.F9: this.RadixMode = RadixMode.Auto; break;
+                case Keys.F10: this.RadixMode = RadixMode.Dec; break;
+                case Keys.F11: this.RadixMode = RadixMode.Hex; break;
+                case Keys.F12: this.RadixMode = RadixMode.Bin; break;
+                default: e.SuppressKeyPress = false; break;
+            }
+        }
+
+        private void RadixButtonClicked(RadioButton btn, RadixMode mode) {
+            if (btn.Checked) {
+                this.RadixMode = mode;
+            }
+            exprBox.Focus();
+        }
+
+        public RadixMode RadixMode {
+            get => _radixMode;
+            set {
+                if (value == _radixMode) return;
+                _radixMode = value;
+                switch(value) {
+                    case RadixMode.Auto: radixAutoButton.Checked = true; break;
+                    case RadixMode.Dec: radixDecButton.Checked = true; break;
+                    case RadixMode.Hex: radixHexButton.Checked = true; break;
+                    case RadixMode.Bin: radixBinButton.Checked = true; break;
+                }
+                Recalc();
+            }
         }
 
         private void HistoryBox_SelectedIndexChanged(object sender, EventArgs e) {
@@ -148,12 +192,20 @@ namespace Shapoco.Calctus.UI {
                     string exprStr;
                     if (i == historyBox.SelectedIndex) {
                         exprStr = exprBox.Text;
+                        item.RadixMode = this.RadixMode;
                     }
                     else {
                         exprStr = item.Expression;
                     }
                     var expr = Parser.Parser.Parse(exprStr);
                     var val = expr.Eval(ctx);
+
+                    switch (item.RadixMode) {
+                        case RadixMode.Dec: val = val.FormatInt(); break;
+                        case RadixMode.Hex: val = val.FormatHex(); break;
+                        case RadixMode.Bin: val = val.FormatBin(); break;
+                    }
+
                     var valStr = val.ToString();
                     var hintStr = "";
                     if (val is RealVal realVal) {
@@ -194,6 +246,7 @@ namespace Shapoco.Calctus.UI {
         private void CalcButton_Click(object sender, EventArgs e) {
             try {
                 OnReturnPressed(false);
+                exprBox.Focus();
             }
             catch (Exception ex) {
                 Console.WriteLine(ex.Message);

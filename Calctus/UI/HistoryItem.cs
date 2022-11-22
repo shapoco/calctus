@@ -10,6 +10,7 @@ namespace Shapoco.Calctus.UI {
         public string Answer = "";
         public string Hint = "";
         public bool Error = false;
+        public RadixMode RadixMode = RadixMode.Auto;
 
         public HistoryItem() { }
 

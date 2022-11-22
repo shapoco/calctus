@@ -84,6 +84,9 @@
     <Compile Include="Calctus\UI\FlatButton.cs">
       <SubType>Component</SubType>
     </Compile>
+    <Compile Include="Calctus\UI\FlatRadioButton.cs">
+      <SubType>Component</SubType>
+    </Compile>
     <Compile Include="Calctus\UI\HistoryBox.cs">
       <SubType>Component</SubType>
     </Compile>
@@ -101,6 +104,7 @@
     <Compile Include="Calctus\UI\SettingsDialog.Designer.cs">
       <DependentUpon>SettingsDialog.cs</DependentUpon>
     </Compile>
+    <Compile Include="Calctus\UI\Types.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
     <EmbeddedResource Include="Calctus\UI\MainForm.resx">
       <DependentUpon>MainForm.cs</DependentUpon>
