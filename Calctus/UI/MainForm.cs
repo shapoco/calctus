@@ -14,8 +14,9 @@ using Shapoco.Calctus.Parser;
 namespace Shapoco.Calctus.UI {
     internal partial class MainForm : Form {
         private char[] _selectionCancelChars;
-        private bool _suppressListIndexChangedEvent = false;
         private RadixMode _radixMode = RadixMode.Auto;
+        private bool _loadingExpressionFromHistory = false;
+        private HistoryItem _lastItem = null;
 
         class CustomProfessionalColors : ProfessionalColorTable {
             public override Color ToolStripGradientBegin { get { return Color.FromArgb(64, 64, 64); } }
@@ -57,20 +58,20 @@ namespace Shapoco.Calctus.UI {
             
             calcButton.Click += CalcButton_Click;
             
-            radixAutoButton.CheckedChanged += (s, e) => { RadixButtonClicked((RadioButton)s, RadixMode.Auto); };
-            radixDecButton.CheckedChanged += (s, e) => { RadixButtonClicked((RadioButton)s, RadixMode.Dec); };
-            radixHexButton.CheckedChanged += (s, e) => { RadixButtonClicked((RadioButton)s, RadixMode.Hex); };
-            radixBinButton.CheckedChanged += (s, e) => { RadixButtonClicked((RadioButton)s, RadixMode.Bin); };
+            radixAutoButton.CheckedChanged += (s, e) => { RadixCheckedChanged((RadioButton)s, RadixMode.Auto); };
+            radixDecButton.CheckedChanged += (s, e) => { RadixCheckedChanged((RadioButton)s, RadixMode.Dec); };
+            radixHexButton.CheckedChanged += (s, e) => { RadixCheckedChanged((RadioButton)s, RadixMode.Hex); };
+            radixBinButton.CheckedChanged += (s, e) => { RadixCheckedChanged((RadioButton)s, RadixMode.Bin); };
             radixAutoButton.Checked = true;
 
-            settingsButton.Click += delegate { new SettingsDialog().ShowDialog(); ApplyAppearance(); };
+            settingsButton.Click += delegate { new SettingsDialog().ShowDialog(); ReloadSettings(); };
             helpButton.Click += delegate { System.Diagnostics.Process.Start(@"https://github.com/shapoco/calctus"); };
 
             subAnswerLabel.Text = "";
-            ApplyAppearance();
+            ReloadSettings();
         }
 
-        public void ApplyAppearance() {
+        public void ReloadSettings() {
             try {
                 var s = Settings.Instance;
                 var font_large_coeff = 1.25f;
@@ -97,13 +98,6 @@ namespace Shapoco.Calctus.UI {
             }
         }
 
-        private void RadixButtonClicked(RadioButton btn, RadixMode mode) {
-            if (btn.Checked) {
-                this.RadixMode = mode;
-            }
-            exprBox.Focus();
-        }
-
         public RadixMode RadixMode {
             get => _radixMode;
             set {
@@ -121,21 +115,40 @@ namespace Shapoco.Calctus.UI {
 
         private void HistoryBox_SelectedIndexChanged(object sender, EventArgs e) {
             if (historyBox.SelectedIndex < 0) return;
-            if (_suppressListIndexChangedEvent) return;
             var item = ((HistoryItem)historyBox.Items[historyBox.SelectedIndex]);
+            _lastItem?.Deselected();
+            _lastItem = item;
+            _loadingExpressionFromHistory = true;
             exprBox.Text = item.Expression;
             this.RadixMode = item.RadixMode;
+            _loadingExpressionFromHistory = false;
             exprBox.SelectAll();
         }
 
+        private void RadixCheckedChanged(RadioButton btn, RadixMode mode) {
+            if (_loadingExpressionFromHistory) return;
+            if (btn.Checked) {
+                this.RadixMode = mode;
+            }
+            exprBox.Focus();
+        }
+
         private void ExprBox_TextChanged(object sender, EventArgs e) {
+            if (_loadingExpressionFromHistory) return;
+            if (historyBox.SelectedIndex >= 0) {
+                var item = ((HistoryItem)historyBox.Items[historyBox.SelectedIndex]);
+                item.Expression = exprBox.Text;
+            }
             Recalc();
         }
 
         private void ExprBox_KeyPress(object sender, KeyPressEventArgs e) {
-            if (_selectionCancelChars.Contains(e.KeyChar)) {
-                if (exprBox.SelectionLength > 0 && exprBox.SelectionStart == 0 && exprBox.SelectionLength == exprBox.TextLength) {
-                    // 全選択された状態で演算子が入力された選択を解除して末尾にカーソル移動
+            if (_selectionCancelChars.Contains(e.KeyChar) && historyBox.SelectedIndex >= 0) {
+                var item = ((HistoryItem)historyBox.Items[historyBox.SelectedIndex]);
+                var allSelected = exprBox.SelectionLength > 0 && exprBox.SelectionStart == 0 && exprBox.SelectionLength == exprBox.TextLength;
+                if (item.IsFreshAnswer && allSelected) {
+                    // 直前の式の評価値が全選択された状態で演算子が入力されたら、
+                    // 値を Ans に置換し、選択を解除して末尾にカーソル移動
                     exprBox.SelectedText = "Ans";
                     exprBox.SelectionStart = exprBox.TextLength;
                 }
@@ -163,7 +176,6 @@ namespace Shapoco.Calctus.UI {
                     }
                     e.Handled = true;
                     break;
-
             }
         }
 
@@ -181,35 +193,42 @@ namespace Shapoco.Calctus.UI {
             else {
                 nextIndex = historyBox.SelectedIndex + 1;
             }
-            if (nextIndex >= historyBox.Items.Count || insert) {
-                historyBox.Items.Insert(nextIndex, new HistoryItem());
-            }
-            historyBox.SelectedIndex = nextIndex;
-            Recalc();
-            if (historyBox.SelectedIndex == historyBox.Items.Count - 1 && historyBox.Items.Count >= 2) {
-                var lastItem = (HistoryItem)historyBox.Items[historyBox.SelectedIndex - 1];
-                if (!lastItem.IsEmpty) {
-                    exprBox.Text = lastItem.Answer;
-                    exprBox.SelectAll();
+
+            bool append = nextIndex >= historyBox.Items.Count;
+            if (append || insert) {
+                // 必要に応じて新しい履歴の要素を追加する
+                HistoryItem newItem;
+                if (nextIndex > 0) {
+                    // 直前に履歴が存在する場合はその評価値と基数を引き継ぐ
+                    var prevItem = (HistoryItem)historyBox.Items[nextIndex - 1];
+                    newItem = new HistoryItem(prevItem);
                 }
+                else {
+                    newItem = new HistoryItem();
+                }
+                historyBox.Items.Insert(nextIndex, newItem);
+            }
+
+            historyBox.SelectedIndex = nextIndex;
+
+            if (append) {
+                exprBox.SelectAll();
             }
         }
 
         private void Recalc() {
+#if DEBUG
+            Console.WriteLine("Recalc()");
+#endif
             EvalContext ctx = new EvalContext();
             for (int i = 0; i < historyBox.Items.Count; i++) {
                 var item = (HistoryItem)historyBox.Items[i];
                 try {
                     item.Answer = "";
-                    string exprStr;
                     if (i == historyBox.SelectedIndex) {
-                        exprStr = exprBox.Text;
                         item.RadixMode = this.RadixMode;
                     }
-                    else {
-                        exprStr = item.Expression;
-                    }
-                    var expr = Parser.Parser.Parse(exprStr);
+                    var expr = Parser.Parser.Parse(item.Expression);
                     var val = expr.Eval(ctx);
 
                     switch (item.RadixMode) {

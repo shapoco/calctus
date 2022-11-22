@@ -91,6 +91,7 @@
       <SubType>Component</SubType>
     </Compile>
     <Compile Include="Calctus\UI\HistoryItem.cs" />
+    <Compile Include="Calctus\UI\Hotkey.cs" />
     <Compile Include="Calctus\UI\MainForm.cs">
       <SubType>Form</SubType>
     </Compile>

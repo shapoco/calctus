@@ -14,7 +14,7 @@ namespace Shapoco.Calctus.UI {
             InitializeComponent();
 
             try {
-                this.Font = new Font("Meiryo UI", SystemFonts.DefaultFont.Size);
+                this.Font = new Font("Arial", SystemFonts.DefaultFont.Size);
             }
             catch { }
 
