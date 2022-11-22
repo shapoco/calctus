@@ -32,14 +32,30 @@
             this.label1 = new System.Windows.Forms.Label();
             this.NumberFormat_Exp_NegativeMax = new System.Windows.Forms.NumericUpDown();
             this.NumberFormat_Exp_PositiveMin = new System.Windows.Forms.NumericUpDown();
+            this.tabControl = new System.Windows.Forms.TabControl();
+            this.tabPage1 = new System.Windows.Forms.TabPage();
+            this.tabPage2 = new System.Windows.Forms.TabPage();
+            this.fontGroup = new System.Windows.Forms.GroupBox();
+            this.Appearance_Font_Size = new System.Windows.Forms.NumericUpDown();
+            this.label3 = new System.Windows.Forms.Label();
+            this.Appearance_Font_Bold = new System.Windows.Forms.CheckBox();
+            this.Appearance_Font_Button_Name = new System.Windows.Forms.ComboBox();
+            this.label4 = new System.Windows.Forms.Label();
+            this.label5 = new System.Windows.Forms.Label();
+            this.Appearance_Font_Expr_Name = new System.Windows.Forms.ComboBox();
             this.eNoteGroup.SuspendLayout();
             ((System.ComponentModel.ISupportInitialize)(this.NumberFormat_Exp_NegativeMax)).BeginInit();
             ((System.ComponentModel.ISupportInitialize)(this.NumberFormat_Exp_PositiveMin)).BeginInit();
+            this.tabControl.SuspendLayout();
+            this.tabPage1.SuspendLayout();
+            this.tabPage2.SuspendLayout();
+            this.fontGroup.SuspendLayout();
+            ((System.ComponentModel.ISupportInitialize)(this.Appearance_Font_Size)).BeginInit();
             this.SuspendLayout();
             // 
             // closeButton
             // 
-            this.closeButton.Location = new System.Drawing.Point(123, 125);
+            this.closeButton.Location = new System.Drawing.Point(240, 160);
             this.closeButton.Name = "closeButton";
             this.closeButton.Size = new System.Drawing.Size(89, 25);
             this.closeButton.TabIndex = 0;
@@ -51,7 +67,7 @@
             this.NumberFormat_Exp_Enabled.AutoSize = true;
             this.NumberFormat_Exp_Enabled.Checked = true;
             this.NumberFormat_Exp_Enabled.CheckState = System.Windows.Forms.CheckState.Checked;
-            this.NumberFormat_Exp_Enabled.Location = new System.Drawing.Point(16, 12);
+            this.NumberFormat_Exp_Enabled.Location = new System.Drawing.Point(13, 4);
             this.NumberFormat_Exp_Enabled.Name = "NumberFormat_Exp_Enabled";
             this.NumberFormat_Exp_Enabled.Size = new System.Drawing.Size(78, 16);
             this.NumberFormat_Exp_Enabled.TabIndex = 3;
@@ -65,9 +81,9 @@
             this.eNoteGroup.Controls.Add(this.label1);
             this.eNoteGroup.Controls.Add(this.NumberFormat_Exp_NegativeMax);
             this.eNoteGroup.Controls.Add(this.NumberFormat_Exp_PositiveMin);
-            this.eNoteGroup.Location = new System.Drawing.Point(12, 12);
+            this.eNoteGroup.Location = new System.Drawing.Point(6, 6);
             this.eNoteGroup.Name = "eNoteGroup";
-            this.eNoteGroup.Size = new System.Drawing.Size(200, 107);
+            this.eNoteGroup.Size = new System.Drawing.Size(297, 107);
             this.eNoteGroup.TabIndex = 7;
             this.eNoteGroup.TabStop = false;
             this.eNoteGroup.Text = "groupBox1";
@@ -144,27 +160,155 @@
             0,
             0});
             // 
+            // tabControl
+            // 
+            this.tabControl.Controls.Add(this.tabPage1);
+            this.tabControl.Controls.Add(this.tabPage2);
+            this.tabControl.Location = new System.Drawing.Point(12, 12);
+            this.tabControl.Name = "tabControl";
+            this.tabControl.SelectedIndex = 0;
+            this.tabControl.Size = new System.Drawing.Size(317, 142);
+            this.tabControl.TabIndex = 8;
+            // 
+            // tabPage1
+            // 
+            this.tabPage1.Controls.Add(this.NumberFormat_Exp_Enabled);
+            this.tabPage1.Controls.Add(this.eNoteGroup);
+            this.tabPage1.Location = new System.Drawing.Point(4, 22);
+            this.tabPage1.Name = "tabPage1";
+            this.tabPage1.Padding = new System.Windows.Forms.Padding(3);
+            this.tabPage1.Size = new System.Drawing.Size(309, 116);
+            this.tabPage1.TabIndex = 0;
+            this.tabPage1.Text = "General";
+            this.tabPage1.UseVisualStyleBackColor = true;
+            // 
+            // tabPage2
+            // 
+            this.tabPage2.Controls.Add(this.fontGroup);
+            this.tabPage2.Location = new System.Drawing.Point(4, 22);
+            this.tabPage2.Name = "tabPage2";
+            this.tabPage2.Padding = new System.Windows.Forms.Padding(3);
+            this.tabPage2.Size = new System.Drawing.Size(309, 116);
+            this.tabPage2.TabIndex = 1;
+            this.tabPage2.Text = "Appearance";
+            this.tabPage2.UseVisualStyleBackColor = true;
+            // 
+            // fontGroup
+            // 
+            this.fontGroup.Controls.Add(this.Appearance_Font_Size);
+            this.fontGroup.Controls.Add(this.label5);
+            this.fontGroup.Controls.Add(this.label4);
+            this.fontGroup.Controls.Add(this.label3);
+            this.fontGroup.Controls.Add(this.Appearance_Font_Bold);
+            this.fontGroup.Controls.Add(this.Appearance_Font_Expr_Name);
+            this.fontGroup.Controls.Add(this.Appearance_Font_Button_Name);
+            this.fontGroup.Location = new System.Drawing.Point(6, 6);
+            this.fontGroup.Name = "fontGroup";
+            this.fontGroup.Size = new System.Drawing.Size(297, 104);
+            this.fontGroup.TabIndex = 0;
+            this.fontGroup.TabStop = false;
+            this.fontGroup.Text = "Font";
+            // 
+            // Appearance_Font_Size
+            // 
+            this.Appearance_Font_Size.Location = new System.Drawing.Point(39, 75);
+            this.Appearance_Font_Size.Minimum = new decimal(new int[] {
+            1,
+            0,
+            0,
+            0});
+            this.Appearance_Font_Size.Name = "Appearance_Font_Size";
+            this.Appearance_Font_Size.Size = new System.Drawing.Size(65, 19);
+            this.Appearance_Font_Size.TabIndex = 8;
+            this.Appearance_Font_Size.Value = new decimal(new int[] {
+            9,
+            0,
+            0,
+            0});
+            // 
+            // label3
+            // 
+            this.label3.AutoSize = true;
+            this.label3.Location = new System.Drawing.Point(6, 77);
+            this.label3.Name = "label3";
+            this.label3.Size = new System.Drawing.Size(28, 12);
+            this.label3.TabIndex = 2;
+            this.label3.Text = "Size:";
+            // 
+            // Appearance_Font_Bold
+            // 
+            this.Appearance_Font_Bold.AutoSize = true;
+            this.Appearance_Font_Bold.Location = new System.Drawing.Point(244, 76);
+            this.Appearance_Font_Bold.Name = "Appearance_Font_Bold";
+            this.Appearance_Font_Bold.Size = new System.Drawing.Size(47, 16);
+            this.Appearance_Font_Bold.TabIndex = 1;
+            this.Appearance_Font_Bold.Text = "Bold";
+            this.Appearance_Font_Bold.UseVisualStyleBackColor = true;
+            // 
+            // Appearance_Font_Button_Name
+            // 
+            this.Appearance_Font_Button_Name.AutoCompleteMode = System.Windows.Forms.AutoCompleteMode.Suggest;
+            this.Appearance_Font_Button_Name.AutoCompleteSource = System.Windows.Forms.AutoCompleteSource.ListItems;
+            this.Appearance_Font_Button_Name.FormattingEnabled = true;
+            this.Appearance_Font_Button_Name.Location = new System.Drawing.Point(81, 18);
+            this.Appearance_Font_Button_Name.Name = "Appearance_Font_Button_Name";
+            this.Appearance_Font_Button_Name.Size = new System.Drawing.Size(210, 20);
+            this.Appearance_Font_Button_Name.TabIndex = 0;
+            // 
+            // label4
+            // 
+            this.label4.AutoSize = true;
+            this.label4.Location = new System.Drawing.Point(6, 21);
+            this.label4.Name = "label4";
+            this.label4.Size = new System.Drawing.Size(47, 12);
+            this.label4.TabIndex = 2;
+            this.label4.Text = "Buttons:";
+            // 
+            // label5
+            // 
+            this.label5.AutoSize = true;
+            this.label5.Location = new System.Drawing.Point(6, 47);
+            this.label5.Name = "label5";
+            this.label5.Size = new System.Drawing.Size(69, 12);
+            this.label5.TabIndex = 2;
+            this.label5.Text = "Expressions:";
+            // 
+            // Appearance_Font_Expr_Name
+            // 
+            this.Appearance_Font_Expr_Name.AutoCompleteMode = System.Windows.Forms.AutoCompleteMode.Suggest;
+            this.Appearance_Font_Expr_Name.AutoCompleteSource = System.Windows.Forms.AutoCompleteSource.ListItems;
+            this.Appearance_Font_Expr_Name.FormattingEnabled = true;
+            this.Appearance_Font_Expr_Name.Location = new System.Drawing.Point(81, 44);
+            this.Appearance_Font_Expr_Name.Name = "Appearance_Font_Expr_Name";
+            this.Appearance_Font_Expr_Name.Size = new System.Drawing.Size(210, 20);
+            this.Appearance_Font_Expr_Name.TabIndex = 0;
+            // 
             // SettingsDialog
             // 
             this.AutoScaleDimensions = new System.Drawing.SizeF(6F, 12F);
             this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
-            this.ClientSize = new System.Drawing.Size(223, 163);
-            this.Controls.Add(this.NumberFormat_Exp_Enabled);
+            this.ClientSize = new System.Drawing.Size(341, 197);
+            this.Controls.Add(this.tabControl);
             this.Controls.Add(this.closeButton);
-            this.Controls.Add(this.eNoteGroup);
             this.FormBorderStyle = System.Windows.Forms.FormBorderStyle.FixedSingle;
             this.Icon = ((System.Drawing.Icon)(resources.GetObject("$this.Icon")));
             this.MaximizeBox = false;
             this.MinimizeBox = false;
             this.Name = "SettingsDialog";
             this.StartPosition = System.Windows.Forms.FormStartPosition.CenterScreen;
-            this.Text = "SettingsDialog";
+            this.Text = "Settings";
             this.eNoteGroup.ResumeLayout(false);
             this.eNoteGroup.PerformLayout();
             ((System.ComponentModel.ISupportInitialize)(this.NumberFormat_Exp_NegativeMax)).EndInit();
             ((System.ComponentModel.ISupportInitialize)(this.NumberFormat_Exp_PositiveMin)).EndInit();
+            this.tabControl.ResumeLayout(false);
+            this.tabPage1.ResumeLayout(false);
+            this.tabPage1.PerformLayout();
+            this.tabPage2.ResumeLayout(false);
+            this.fontGroup.ResumeLayout(false);
+            this.fontGroup.PerformLayout();
+            ((System.ComponentModel.ISupportInitialize)(this.Appearance_Font_Size)).EndInit();
             this.ResumeLayout(false);
-            this.PerformLayout();
 
         }
 
@@ -178,5 +322,16 @@
         private System.Windows.Forms.Label label1;
         private System.Windows.Forms.NumericUpDown NumberFormat_Exp_NegativeMax;
         private System.Windows.Forms.NumericUpDown NumberFormat_Exp_PositiveMin;
+        private System.Windows.Forms.TabControl tabControl;
+        private System.Windows.Forms.TabPage tabPage1;
+        private System.Windows.Forms.TabPage tabPage2;
+        private System.Windows.Forms.GroupBox fontGroup;
+        private System.Windows.Forms.NumericUpDown Appearance_Font_Size;
+        private System.Windows.Forms.Label label3;
+        private System.Windows.Forms.CheckBox Appearance_Font_Bold;
+        private System.Windows.Forms.ComboBox Appearance_Font_Button_Name;
+        private System.Windows.Forms.Label label5;
+        private System.Windows.Forms.Label label4;
+        private System.Windows.Forms.ComboBox Appearance_Font_Expr_Name;
     }
 }

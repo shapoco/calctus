@@ -63,15 +63,25 @@ namespace Shapoco.Calctus.UI {
             radixBinButton.CheckedChanged += (s, e) => { RadixButtonClicked((RadioButton)s, RadixMode.Bin); };
             radixAutoButton.Checked = true;
 
-            settingsButton.Click += delegate { new SettingsDialog().ShowDialog(); };
+            settingsButton.Click += delegate { new SettingsDialog().ShowDialog(); ApplyAppearance(); };
             helpButton.Click += delegate { System.Diagnostics.Process.Start(@"https://github.com/shapoco/calctus"); };
 
             subAnswerLabel.Text = "";
+            ApplyAppearance();
+        }
+
+        public void ApplyAppearance() {
             try {
-                this.Font = new Font("Meiryo UI", SystemFonts.DefaultFont.Size);
-                historyBox.Font = new Font("Consolas", SystemFonts.DefaultFont.Size * 1.25f);
-                exprBox.Font = new Font("Consolas", SystemFonts.DefaultFont.Size * 1.5f);
-                subAnswerLabel.Font = new Font("Consolas", SystemFonts.DefaultFont.Size);
+                var s = Settings.Instance;
+                var font_large_coeff = 1.25f;
+                var font_style = s.Appearance_Font_Bold ? FontStyle.Bold : FontStyle.Regular;
+                var font_ui_normal = new Font(s.Appearance_Font_Button_Name, s.Appearance_Font_Size, font_style);
+                var font_mono_normal = new Font(s.Appearance_Font_Expr_Name, s.Appearance_Font_Size, font_style);
+                var font_mono_large = new Font(s.Appearance_Font_Expr_Name, s.Appearance_Font_Size * font_large_coeff, font_style);
+                this.Font = font_ui_normal;
+                historyBox.Font = font_mono_large;
+                exprBox.Font = font_mono_large;
+                subAnswerLabel.Font = font_mono_normal;
             }
             catch { }
         }
@@ -112,7 +122,9 @@ namespace Shapoco.Calctus.UI {
         private void HistoryBox_SelectedIndexChanged(object sender, EventArgs e) {
             if (historyBox.SelectedIndex < 0) return;
             if (_suppressListIndexChangedEvent) return;
-            exprBox.Text = ((HistoryItem)historyBox.Items[historyBox.SelectedIndex]).Expression;
+            var item = ((HistoryItem)historyBox.Items[historyBox.SelectedIndex]);
+            exprBox.Text = item.Expression;
+            this.RadixMode = item.RadixMode;
             exprBox.SelectAll();
         }
 

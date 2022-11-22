@@ -21,5 +21,10 @@ namespace Shapoco.Calctus {
         public bool NumberFormat_Exp_Alignment { get; set; } = false;
         public int NumberFormat_Exp_PositiveMin { get; set; } = 15;
         public int NumberFormat_Exp_NegativeMax { get; set; } = -5;
+
+        public string Appearance_Font_Button_Name { get; set; } = "Arial";
+        public string Appearance_Font_Expr_Name { get; set; } = "Consolas";
+        public int Appearance_Font_Size { get; set; } = 9;
+        public bool Appearance_Font_Bold { get; set; } = false;
     }
 }
