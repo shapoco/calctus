@@ -3,6 +3,7 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
+using System.Windows.Forms;
 
 namespace Shapoco.Calctus {
     internal class Settings {
@@ -16,6 +17,12 @@ namespace Shapoco.Calctus {
         public void Save() {
             AppDataManager.SavePropertiesToRoamingAppData(this, Filename);
         }
+
+        public bool Hotkey_Enabled { get; set; } = false;
+        public bool HotKey_Alt { get; set; } = false;
+        public bool HotKey_Ctrl { get; set; } = false;
+        public bool HotKey_Shift { get; set; } = false;
+        public Keys HotKey_KeyCode { get; set; } = Keys.None;
 
         public bool NumberFormat_Exp_Enabled { get; set; } = true;
         public bool NumberFormat_Exp_Alignment { get; set; } = false;

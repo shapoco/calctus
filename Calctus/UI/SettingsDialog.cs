@@ -21,9 +21,21 @@ namespace Shapoco.Calctus.UI {
             tabControl.SelectedIndex = 0;
 
             var s = Settings.Instance;
-            NumberFormat_Exp_Enabled.CheckedChanged += delegate { 
-                s.NumberFormat_Exp_Enabled = NumberFormat_Exp_Enabled.Checked;
-                eNoteGroup.Enabled = s.NumberFormat_Exp_Enabled;
+
+            Hotkey_Enabled.CheckedChanged += (sender, e) => { s.Hotkey_Enabled = ((CheckBox)sender).Checked; };
+            Hotkey_KeyCode.KeyCodeChanged += (sender, e) => {
+                var kcb = (KeyCodeBox)sender;
+                s.HotKey_Alt = kcb.Alt;
+                s.HotKey_Ctrl = kcb.Ctrl;
+                s.HotKey_Shift = kcb.Shift;
+                s.HotKey_KeyCode = kcb.KeyCode;
+            };
+
+            NumberFormat_Exp_Enabled.CheckedChanged += (sender, e) => {
+                s.NumberFormat_Exp_Enabled = ((CheckBox)sender).Checked;
+                NumberFormat_Exp_NegativeMax.Enabled = s.NumberFormat_Exp_Enabled;
+                NumberFormat_Exp_PositiveMin.Enabled = s.NumberFormat_Exp_Enabled;
+                NumberFormat_Exp_Alignment.Enabled = s.NumberFormat_Exp_Enabled;
             };
             NumberFormat_Exp_NegativeMax.ValueChanged += (sender, e) => { s.NumberFormat_Exp_NegativeMax = (int)((NumericUpDown)sender).Value; };
             NumberFormat_Exp_PositiveMin.ValueChanged += (sender, e) => { s.NumberFormat_Exp_PositiveMin = (int)((NumericUpDown)sender).Value; };
@@ -50,10 +62,17 @@ namespace Shapoco.Calctus.UI {
         private void SettingsDialog_Load(object sender, EventArgs e) {
             var s = Settings.Instance;
             try {
+                Hotkey_Enabled.Checked = s.Hotkey_Enabled;
+                Hotkey_KeyCode.Alt = s.HotKey_Alt;
+                Hotkey_KeyCode.Ctrl = s.HotKey_Ctrl;
+                Hotkey_KeyCode.Shift = s.HotKey_Shift;
+                Hotkey_KeyCode.KeyCode = s.HotKey_KeyCode;
+
                 NumberFormat_Exp_Enabled.Checked = s.NumberFormat_Exp_Enabled;
                 NumberFormat_Exp_NegativeMax.Value = s.NumberFormat_Exp_NegativeMax;
                 NumberFormat_Exp_PositiveMin.Value = s.NumberFormat_Exp_PositiveMin;
                 NumberFormat_Exp_Alignment.Checked = s.NumberFormat_Exp_Alignment;
+
                 Appearance_Font_Button_Name.Text = s.Appearance_Font_Button_Name;
                 Appearance_Font_Expr_Name.Text = s.Appearance_Font_Expr_Name;
                 Appearance_Font_Size.Value = s.Appearance_Font_Size;

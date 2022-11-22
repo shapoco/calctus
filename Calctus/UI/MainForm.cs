@@ -17,6 +17,7 @@ namespace Shapoco.Calctus.UI {
         private RadixMode _radixMode = RadixMode.Auto;
         private bool _loadingExpressionFromHistory = false;
         private HistoryItem _lastItem = null;
+        private HotKey _hotkey = null;
 
         class CustomProfessionalColors : ProfessionalColorTable {
             public override Color ToolStripGradientBegin { get { return Color.FromArgb(64, 64, 64); } }
@@ -49,6 +50,7 @@ namespace Shapoco.Calctus.UI {
             this.Text = Application.ProductName + " (v" + System.Reflection.Assembly.GetExecutingAssembly().GetName().Version + ")";
             this.KeyPreview = true;
             this.KeyDown += MainForm_KeyDown;
+            this.FormClosed += MainForm_FormClosed;
 
             exprBox.AutoSize = false;
             exprBox.Dock = DockStyle.Fill;
@@ -64,16 +66,20 @@ namespace Shapoco.Calctus.UI {
             radixBinButton.CheckedChanged += (s, e) => { RadixCheckedChanged((RadioButton)s, RadixMode.Bin); };
             radixAutoButton.Checked = true;
 
-            settingsButton.Click += delegate { new SettingsDialog().ShowDialog(); ReloadSettings(); };
+            settingsButton.Click += delegate { new SettingsDialog().ShowDialog(); reloadSettings(); };
             helpButton.Click += delegate { System.Diagnostics.Process.Start(@"https://github.com/shapoco/calctus"); };
 
             subAnswerLabel.Text = "";
-            ReloadSettings();
+            reloadSettings();
         }
 
-        public void ReloadSettings() {
+        private void reloadSettings() {
             try {
                 var s = Settings.Instance;
+
+                disableHotkey();
+                enableHotkey();
+
                 var font_large_coeff = 1.25f;
                 var font_style = s.Appearance_Font_Bold ? FontStyle.Bold : FontStyle.Regular;
                 var font_ui_normal = new Font(s.Appearance_Font_Button_Name, s.Appearance_Font_Size, font_style);
@@ -85,6 +91,37 @@ namespace Shapoco.Calctus.UI {
                 subAnswerLabel.Font = font_mono_normal;
             }
             catch { }
+        }
+
+        private void MainForm_FormClosed(object sender, FormClosedEventArgs e) {
+            disableHotkey();
+        }
+
+        private void enableHotkey() {
+            var s = Settings.Instance;
+            if (s.Hotkey_Enabled && s.HotKey_KeyCode != Keys.None) {
+                MOD_KEY mod = MOD_KEY.NONE;
+                if (s.HotKey_Alt) mod |= MOD_KEY.ALT;
+                if (s.HotKey_Ctrl) mod |= MOD_KEY.CONTROL;
+                if (s.HotKey_Shift) mod |= MOD_KEY.SHIFT;
+                _hotkey = new HotKey(mod, s.HotKey_KeyCode);
+                _hotkey.HotKeyPush += _hotkey_HotKeyPush;
+            }
+        }
+
+        private void disableHotkey() {
+            if (_hotkey != null) {
+                _hotkey.HotKeyPush -= _hotkey_HotKeyPush;
+                _hotkey.Dispose();
+                _hotkey = null;
+            }
+        }
+
+        private void _hotkey_HotKeyPush(object sender, EventArgs e) {
+            if (this.WindowState == FormWindowState.Minimized) {
+                this.WindowState = FormWindowState.Normal;
+            }
+            Microsoft.VisualBasic.Interaction.AppActivate(this.Text);
         }
 
         private void MainForm_KeyDown(object sender, KeyEventArgs e) {

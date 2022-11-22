@@ -36,6 +36,7 @@
     <ApplicationIcon>icon.ico</ApplicationIcon>
   </PropertyGroup>
   <ItemGroup>
+    <Reference Include="Microsoft.VisualBasic" />
     <Reference Include="System" />
     <Reference Include="System.Core" />
     <Reference Include="System.Xml.Linq" />
@@ -92,6 +93,9 @@
     </Compile>
     <Compile Include="Calctus\UI\HistoryItem.cs" />
     <Compile Include="Calctus\UI\Hotkey.cs" />
+    <Compile Include="Calctus\UI\KeyCodeBox.cs">
+      <SubType>Component</SubType>
+    </Compile>
     <Compile Include="Calctus\UI\MainForm.cs">
       <SubType>Form</SubType>
     </Compile>

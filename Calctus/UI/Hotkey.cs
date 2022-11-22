@@ -80,6 +80,7 @@ namespace Shapoco.Calctus.UI {
     /// HotKeyクラスの初期化時に指定する修飾キー
     /// </summary>
     public enum MOD_KEY : int {
+        NONE = 0x0000,
         ALT = 0x0001,
         CONTROL = 0x0002,
         SHIFT = 0x0004,
