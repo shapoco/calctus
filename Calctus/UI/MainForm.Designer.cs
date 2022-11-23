@@ -29,6 +29,7 @@ namespace Shapoco.Calctus.UI
         /// </summary>
         private void InitializeComponent()
         {
+            this.components = new System.ComponentModel.Container();
             System.ComponentModel.ComponentResourceManager resources = new System.ComponentModel.ComponentResourceManager(typeof(MainForm));
             this.panel1 = new System.Windows.Forms.Panel();
             this.panel2 = new System.Windows.Forms.Panel();
@@ -39,13 +40,19 @@ namespace Shapoco.Calctus.UI
             this.radixAutoButton = new Shapoco.Calctus.UI.FlatRadioButton();
             this.exprBox = new System.Windows.Forms.TextBox();
             this.calcButton = new Shapoco.Calctus.UI.FlatButton();
-            this.toolStrip1 = new System.Windows.Forms.ToolStrip();
+            this.toolStrip = new System.Windows.Forms.ToolStrip();
             this.helpButton = new System.Windows.Forms.ToolStripButton();
             this.settingsButton = new System.Windows.Forms.ToolStripButton();
             this.historyBox = new Shapoco.Calctus.UI.HistoryBox();
+            this.notifyIcon = new System.Windows.Forms.NotifyIcon(this.components);
+            this.trayMenuStrip = new System.Windows.Forms.ContextMenuStrip(this.components);
+            this.contextOpen = new System.Windows.Forms.ToolStripMenuItem();
+            this.toolStripMenuItem1 = new System.Windows.Forms.ToolStripSeparator();
+            this.contextExit = new System.Windows.Forms.ToolStripMenuItem();
             this.panel1.SuspendLayout();
             this.panel2.SuspendLayout();
-            this.toolStrip1.SuspendLayout();
+            this.toolStrip.SuspendLayout();
+            this.trayMenuStrip.SuspendLayout();
             this.SuspendLayout();
             // 
             // panel1
@@ -160,16 +167,16 @@ namespace Shapoco.Calctus.UI
             this.calcButton.Text = "=";
             this.calcButton.UseVisualStyleBackColor = false;
             // 
-            // toolStrip1
+            // toolStrip
             // 
-            this.toolStrip1.Items.AddRange(new System.Windows.Forms.ToolStripItem[] {
+            this.toolStrip.Items.AddRange(new System.Windows.Forms.ToolStripItem[] {
             this.helpButton,
             this.settingsButton});
-            this.toolStrip1.Location = new System.Drawing.Point(0, 0);
-            this.toolStrip1.Name = "toolStrip1";
-            this.toolStrip1.Size = new System.Drawing.Size(402, 25);
-            this.toolStrip1.TabIndex = 4;
-            this.toolStrip1.Text = "toolStrip1";
+            this.toolStrip.Location = new System.Drawing.Point(0, 0);
+            this.toolStrip.Name = "toolStrip";
+            this.toolStrip.Size = new System.Drawing.Size(402, 25);
+            this.toolStrip.TabIndex = 4;
+            this.toolStrip.Text = "toolStrip1";
             // 
             // helpButton
             // 
@@ -207,6 +214,38 @@ namespace Shapoco.Calctus.UI
             this.historyBox.TabIndex = 3;
             this.historyBox.TabStop = false;
             // 
+            // notifyIcon
+            // 
+            this.notifyIcon.Icon = ((System.Drawing.Icon)(resources.GetObject("notifyIcon.Icon")));
+            this.notifyIcon.Text = "notifyIcon1";
+            this.notifyIcon.Visible = true;
+            // 
+            // trayMenuStrip
+            // 
+            this.trayMenuStrip.Items.AddRange(new System.Windows.Forms.ToolStripItem[] {
+            this.contextOpen,
+            this.toolStripMenuItem1,
+            this.contextExit});
+            this.trayMenuStrip.Name = "contextMenuStrip";
+            this.trayMenuStrip.Size = new System.Drawing.Size(124, 54);
+            // 
+            // contextOpen
+            // 
+            this.contextOpen.Name = "contextOpen";
+            this.contextOpen.Size = new System.Drawing.Size(123, 22);
+            this.contextOpen.Text = "Open (&O)";
+            // 
+            // toolStripMenuItem1
+            // 
+            this.toolStripMenuItem1.Name = "toolStripMenuItem1";
+            this.toolStripMenuItem1.Size = new System.Drawing.Size(120, 6);
+            // 
+            // contextExit
+            // 
+            this.contextExit.Name = "contextExit";
+            this.contextExit.Size = new System.Drawing.Size(123, 22);
+            this.contextExit.Text = "Exit (&X)";
+            // 
             // MainForm
             // 
             this.AutoScaleDimensions = new System.Drawing.SizeF(6F, 12F);
@@ -215,15 +254,16 @@ namespace Shapoco.Calctus.UI
             this.ClientSize = new System.Drawing.Size(402, 246);
             this.Controls.Add(this.historyBox);
             this.Controls.Add(this.panel1);
-            this.Controls.Add(this.toolStrip1);
+            this.Controls.Add(this.toolStrip);
             this.Icon = ((System.Drawing.Icon)(resources.GetObject("$this.Icon")));
             this.Name = "MainForm";
             this.Text = "Form1";
             this.panel1.ResumeLayout(false);
             this.panel1.PerformLayout();
             this.panel2.ResumeLayout(false);
-            this.toolStrip1.ResumeLayout(false);
-            this.toolStrip1.PerformLayout();
+            this.toolStrip.ResumeLayout(false);
+            this.toolStrip.PerformLayout();
+            this.trayMenuStrip.ResumeLayout(false);
             this.ResumeLayout(false);
             this.PerformLayout();
 
@@ -235,7 +275,7 @@ namespace Shapoco.Calctus.UI
         private Shapoco.Calctus.UI.FlatButton calcButton;
         private System.Windows.Forms.Label subAnswerLabel;
         private HistoryBox historyBox;
-        private System.Windows.Forms.ToolStrip toolStrip1;
+        private System.Windows.Forms.ToolStrip toolStrip;
         private System.Windows.Forms.ToolStripButton settingsButton;
         private System.Windows.Forms.ToolStripButton helpButton;
         private System.Windows.Forms.Panel panel2;
@@ -243,6 +283,11 @@ namespace Shapoco.Calctus.UI
         private FlatRadioButton radixHexButton;
         private FlatRadioButton radixDecButton;
         private FlatRadioButton radixAutoButton;
+        private System.Windows.Forms.NotifyIcon notifyIcon;
+        private System.Windows.Forms.ContextMenuStrip trayMenuStrip;
+        private System.Windows.Forms.ToolStripMenuItem contextOpen;
+        private System.Windows.Forms.ToolStripSeparator toolStripMenuItem1;
+        private System.Windows.Forms.ToolStripMenuItem contextExit;
     }
 }
 

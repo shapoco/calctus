@@ -22,7 +22,13 @@ namespace Shapoco.Calctus.UI {
 
             var s = Settings.Instance;
 
-            Hotkey_Enabled.CheckedChanged += (sender, e) => { s.Hotkey_Enabled = ((CheckBox)sender).Checked; };
+            Startup_TrayIcon.CheckedChanged += (sender, e) => { s.Startup_TrayIcon = ((CheckBox)sender).Checked; };
+            Startup_AutoStart.CheckedChanged += Startup_AutoStart_CheckedChanged;
+
+            Hotkey_Enabled.CheckedChanged += (sender, e) => {
+                s.Hotkey_Enabled = ((CheckBox)sender).Checked;
+                Hotkey_KeyCode.Enabled = s.Hotkey_Enabled;
+            };
             Hotkey_KeyCode.KeyCodeChanged += (sender, e) => {
                 var kcb = (KeyCodeBox)sender;
                 s.HotKey_Alt = kcb.Alt;
@@ -62,6 +68,10 @@ namespace Shapoco.Calctus.UI {
         private void SettingsDialog_Load(object sender, EventArgs e) {
             var s = Settings.Instance;
             try {
+                Startup_AutoStart.Checked = Shapoco.Windows.StartupShortcut.CheckStartupRegistration();
+
+                Startup_TrayIcon.Checked = s.Startup_TrayIcon;
+
                 Hotkey_Enabled.Checked = s.Hotkey_Enabled;
                 Hotkey_KeyCode.Alt = s.HotKey_Alt;
                 Hotkey_KeyCode.Ctrl = s.HotKey_Ctrl;
@@ -79,7 +89,10 @@ namespace Shapoco.Calctus.UI {
                 Appearance_Font_Bold.Checked = s.Appearance_Font_Bold;
             }
             catch { }
+        }
 
+        private void Startup_AutoStart_CheckedChanged(object sender, EventArgs e) {
+            Shapoco.Windows.StartupShortcut.SetStartupRegistration(((CheckBox)sender).Checked);
         }
 
         private void SettingsDialog_FormClosed(object sender, FormClosedEventArgs e) {

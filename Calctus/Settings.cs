@@ -18,6 +18,8 @@ namespace Shapoco.Calctus {
             AppDataManager.SavePropertiesToRoamingAppData(this, Filename);
         }
 
+        public bool Startup_TrayIcon { get; set; } = false;
+
         public bool Hotkey_Enabled { get; set; } = false;
         public bool HotKey_Alt { get; set; } = false;
         public bool HotKey_Ctrl { get; set; } = false;
@@ -33,5 +35,8 @@ namespace Shapoco.Calctus {
         public string Appearance_Font_Expr_Name { get; set; } = "Consolas";
         public int Appearance_Font_Size { get; set; } = 9;
         public bool Appearance_Font_Bold { get; set; } = false;
+
+        public int Window_Width { get; set; } = 640;
+        public int Window_Height { get; set; } = 480;
     }
 }

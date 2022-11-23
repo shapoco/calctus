@@ -42,15 +42,15 @@ namespace Shapoco.Calctus.UI {
             historyBox.SelectedIndex = 0;
             historyBox.SelectedIndexChanged += HistoryBox_SelectedIndexChanged;
 
-            try {
-                exprBox.Font = new Font("Consolas", exprBox.Font.Size);
-            } 
-            catch { }
-
             this.Text = Application.ProductName + " (v" + System.Reflection.Assembly.GetExecutingAssembly().GetName().Version + ")";
             this.KeyPreview = true;
             this.KeyDown += MainForm_KeyDown;
+            this.Load += MainForm_Load;
+            this.FormClosing += MainForm_FormClosing;
             this.FormClosed += MainForm_FormClosed;
+            this.Resize += MainForm_Resize;
+
+            notifyIcon.MouseClick += NotifyIcon_MouseClick;
 
             exprBox.AutoSize = false;
             exprBox.Dock = DockStyle.Fill;
@@ -60,22 +60,61 @@ namespace Shapoco.Calctus.UI {
             
             calcButton.Click += CalcButton_Click;
             
-            radixAutoButton.CheckedChanged += (s, e) => { RadixCheckedChanged((RadioButton)s, RadixMode.Auto); };
-            radixDecButton.CheckedChanged += (s, e) => { RadixCheckedChanged((RadioButton)s, RadixMode.Dec); };
-            radixHexButton.CheckedChanged += (s, e) => { RadixCheckedChanged((RadioButton)s, RadixMode.Hex); };
-            radixBinButton.CheckedChanged += (s, e) => { RadixCheckedChanged((RadioButton)s, RadixMode.Bin); };
+            radixAutoButton.CheckedChanged += (sender, e) => { RadixCheckedChanged((RadioButton)sender, RadixMode.Auto); };
+            radixDecButton.CheckedChanged += (sender, e) => { RadixCheckedChanged((RadioButton)sender, RadixMode.Dec); };
+            radixHexButton.CheckedChanged += (sender, e) => { RadixCheckedChanged((RadioButton)sender, RadixMode.Hex); };
+            radixBinButton.CheckedChanged += (sender, e) => { RadixCheckedChanged((RadioButton)sender, RadixMode.Bin); };
             radixAutoButton.Checked = true;
 
-            settingsButton.Click += delegate { new SettingsDialog().ShowDialog(); reloadSettings(); };
-            helpButton.Click += delegate { System.Diagnostics.Process.Start(@"https://github.com/shapoco/calctus"); };
+            settingsButton.Click += (sender, e) => { new SettingsDialog().ShowDialog(); reloadSettings(); };
+            helpButton.Click += (sender, e) => { System.Diagnostics.Process.Start(@"https://github.com/shapoco/calctus"); };
+
+            contextOpen.Click += (sender, e) => { showForeground(); };
+            contextExit.Click += (sender, e) => { Application.Exit(); };
 
             subAnswerLabel.Text = "";
+        }
+
+        private void MainForm_Load(object sender, EventArgs e) {
+            // フォントの設定が反映されたときにウィンドウサイズも変わってしまうので
+            // 起動時のウィンドウサイズは保持しておいて最後に反映する
+            var s = Settings.Instance;
+            Size startupWindowSize = new Size(s.Window_Width, s.Window_Height);
+            Console.WriteLine("Load " + s.Window_Width + "x" + s.Window_Height);
+
             reloadSettings();
+
+            try { this.Size = startupWindowSize; }
+            catch { }
+        }
+
+        private void MainForm_FormClosing(object sender, FormClosingEventArgs e) {
+            var s = Settings.Instance;
+            if (e.CloseReason == CloseReason.UserClosing && s.Startup_TrayIcon) {
+                e.Cancel = true;
+                this.Visible = false;
+            }
+        }
+
+        private void MainForm_FormClosed(object sender, FormClosedEventArgs e) {
+            notifyIcon.Visible = false;
+            disableHotkey();
+        }
+
+        private void MainForm_Resize(object sender, EventArgs e) {
+            if (this.WindowState == FormWindowState.Normal) {
+                var s = Settings.Instance;
+                s.Window_Width = this.Width;
+                s.Window_Height = this.Height;
+                Console.WriteLine("Resize " + s.Window_Width + "x" + s.Window_Height);
+            }
         }
 
         private void reloadSettings() {
             try {
                 var s = Settings.Instance;
+
+                notifyIcon.Visible = s.Startup_TrayIcon;
 
                 disableHotkey();
                 enableHotkey();
@@ -91,10 +130,6 @@ namespace Shapoco.Calctus.UI {
                 subAnswerLabel.Font = font_mono_normal;
             }
             catch { }
-        }
-
-        private void MainForm_FormClosed(object sender, FormClosedEventArgs e) {
-            disableHotkey();
         }
 
         private void enableHotkey() {
@@ -117,7 +152,21 @@ namespace Shapoco.Calctus.UI {
             }
         }
 
+        private void NotifyIcon_MouseClick(object sender, MouseEventArgs e) {
+            if (e.Button == MouseButtons.Left) {
+                showForeground();
+            }
+            else {
+                trayMenuStrip.Show(Cursor.Position);
+            }
+        }
+
         private void _hotkey_HotKeyPush(object sender, EventArgs e) {
+            showForeground();
+        }
+        
+        private void showForeground() {
+            this.Visible = true;
             if (this.WindowState == FormWindowState.Minimized) {
                 this.WindowState = FormWindowState.Normal;
             }

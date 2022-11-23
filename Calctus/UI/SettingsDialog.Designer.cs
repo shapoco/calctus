@@ -33,28 +33,32 @@
             this.NumberFormat_Exp_NegativeMax = new System.Windows.Forms.NumericUpDown();
             this.NumberFormat_Exp_PositiveMin = new System.Windows.Forms.NumericUpDown();
             this.tabControl = new System.Windows.Forms.TabControl();
-            this.tabPage1 = new System.Windows.Forms.TabPage();
+            this.tabPage3 = new System.Windows.Forms.TabPage();
+            this.groupBox1 = new System.Windows.Forms.GroupBox();
+            this.Startup_TrayIcon = new System.Windows.Forms.CheckBox();
+            this.Hotkey_KeyCode = new Shapoco.Calctus.UI.KeyCodeBox();
+            this.Hotkey_Enabled = new System.Windows.Forms.CheckBox();
             this.tabPage2 = new System.Windows.Forms.TabPage();
             this.fontGroup = new System.Windows.Forms.GroupBox();
             this.Appearance_Font_Size = new System.Windows.Forms.NumericUpDown();
+            this.label5 = new System.Windows.Forms.Label();
+            this.label4 = new System.Windows.Forms.Label();
             this.label3 = new System.Windows.Forms.Label();
             this.Appearance_Font_Bold = new System.Windows.Forms.CheckBox();
-            this.Appearance_Font_Button_Name = new System.Windows.Forms.ComboBox();
-            this.label4 = new System.Windows.Forms.Label();
-            this.label5 = new System.Windows.Forms.Label();
             this.Appearance_Font_Expr_Name = new System.Windows.Forms.ComboBox();
-            this.tabPage3 = new System.Windows.Forms.TabPage();
-            this.Hotkey_Enabled = new System.Windows.Forms.CheckBox();
-            this.Hotkey_KeyCode = new Shapoco.Calctus.UI.KeyCodeBox();
+            this.Appearance_Font_Button_Name = new System.Windows.Forms.ComboBox();
+            this.tabPage1 = new System.Windows.Forms.TabPage();
+            this.Startup_AutoStart = new System.Windows.Forms.CheckBox();
             this.eNoteGroup.SuspendLayout();
             ((System.ComponentModel.ISupportInitialize)(this.NumberFormat_Exp_NegativeMax)).BeginInit();
             ((System.ComponentModel.ISupportInitialize)(this.NumberFormat_Exp_PositiveMin)).BeginInit();
             this.tabControl.SuspendLayout();
-            this.tabPage1.SuspendLayout();
+            this.tabPage3.SuspendLayout();
+            this.groupBox1.SuspendLayout();
             this.tabPage2.SuspendLayout();
             this.fontGroup.SuspendLayout();
             ((System.ComponentModel.ISupportInitialize)(this.Appearance_Font_Size)).BeginInit();
-            this.tabPage3.SuspendLayout();
+            this.tabPage1.SuspendLayout();
             this.SuspendLayout();
             // 
             // closeButton
@@ -176,16 +180,60 @@
             this.tabControl.Size = new System.Drawing.Size(317, 168);
             this.tabControl.TabIndex = 8;
             // 
-            // tabPage1
+            // tabPage3
             // 
-            this.tabPage1.Controls.Add(this.eNoteGroup);
-            this.tabPage1.Location = new System.Drawing.Point(4, 22);
-            this.tabPage1.Name = "tabPage1";
-            this.tabPage1.Padding = new System.Windows.Forms.Padding(3);
-            this.tabPage1.Size = new System.Drawing.Size(309, 142);
-            this.tabPage1.TabIndex = 0;
-            this.tabPage1.Text = "Details";
-            this.tabPage1.UseVisualStyleBackColor = true;
+            this.tabPage3.Controls.Add(this.groupBox1);
+            this.tabPage3.Location = new System.Drawing.Point(4, 22);
+            this.tabPage3.Name = "tabPage3";
+            this.tabPage3.Size = new System.Drawing.Size(309, 142);
+            this.tabPage3.TabIndex = 2;
+            this.tabPage3.Text = "General";
+            this.tabPage3.UseVisualStyleBackColor = true;
+            // 
+            // groupBox1
+            // 
+            this.groupBox1.Controls.Add(this.Startup_AutoStart);
+            this.groupBox1.Controls.Add(this.Startup_TrayIcon);
+            this.groupBox1.Controls.Add(this.Hotkey_KeyCode);
+            this.groupBox1.Controls.Add(this.Hotkey_Enabled);
+            this.groupBox1.Location = new System.Drawing.Point(6, 6);
+            this.groupBox1.Name = "groupBox1";
+            this.groupBox1.Size = new System.Drawing.Size(296, 122);
+            this.groupBox1.TabIndex = 5;
+            this.groupBox1.TabStop = false;
+            this.groupBox1.Text = "Startup";
+            // 
+            // Startup_TrayIcon
+            // 
+            this.Startup_TrayIcon.AutoSize = true;
+            this.Startup_TrayIcon.Location = new System.Drawing.Point(10, 42);
+            this.Startup_TrayIcon.Name = "Startup_TrayIcon";
+            this.Startup_TrayIcon.Size = new System.Drawing.Size(122, 16);
+            this.Startup_TrayIcon.TabIndex = 4;
+            this.Startup_TrayIcon.Text = "Reside in task tray";
+            this.Startup_TrayIcon.UseVisualStyleBackColor = true;
+            // 
+            // Hotkey_KeyCode
+            // 
+            this.Hotkey_KeyCode.Alt = false;
+            this.Hotkey_KeyCode.Ctrl = false;
+            this.Hotkey_KeyCode.Enabled = false;
+            this.Hotkey_KeyCode.KeyCode = System.Windows.Forms.Keys.None;
+            this.Hotkey_KeyCode.Location = new System.Drawing.Point(46, 83);
+            this.Hotkey_KeyCode.Name = "Hotkey_KeyCode";
+            this.Hotkey_KeyCode.Shift = false;
+            this.Hotkey_KeyCode.Size = new System.Drawing.Size(213, 19);
+            this.Hotkey_KeyCode.TabIndex = 1;
+            // 
+            // Hotkey_Enabled
+            // 
+            this.Hotkey_Enabled.AutoSize = true;
+            this.Hotkey_Enabled.Location = new System.Drawing.Point(10, 64);
+            this.Hotkey_Enabled.Name = "Hotkey_Enabled";
+            this.Hotkey_Enabled.Size = new System.Drawing.Size(60, 16);
+            this.Hotkey_Enabled.TabIndex = 4;
+            this.Hotkey_Enabled.Text = "Hotkey";
+            this.Hotkey_Enabled.UseVisualStyleBackColor = true;
             // 
             // tabPage2
             // 
@@ -231,6 +279,24 @@
             0,
             0});
             // 
+            // label5
+            // 
+            this.label5.AutoSize = true;
+            this.label5.Location = new System.Drawing.Point(6, 47);
+            this.label5.Name = "label5";
+            this.label5.Size = new System.Drawing.Size(69, 12);
+            this.label5.TabIndex = 2;
+            this.label5.Text = "Expressions:";
+            // 
+            // label4
+            // 
+            this.label4.AutoSize = true;
+            this.label4.Location = new System.Drawing.Point(6, 21);
+            this.label4.Name = "label4";
+            this.label4.Size = new System.Drawing.Size(47, 12);
+            this.label4.TabIndex = 2;
+            this.label4.Text = "Buttons:";
+            // 
             // label3
             // 
             this.label3.AutoSize = true;
@@ -250,34 +316,6 @@
             this.Appearance_Font_Bold.Text = "Bold";
             this.Appearance_Font_Bold.UseVisualStyleBackColor = true;
             // 
-            // Appearance_Font_Button_Name
-            // 
-            this.Appearance_Font_Button_Name.AutoCompleteMode = System.Windows.Forms.AutoCompleteMode.Suggest;
-            this.Appearance_Font_Button_Name.AutoCompleteSource = System.Windows.Forms.AutoCompleteSource.ListItems;
-            this.Appearance_Font_Button_Name.FormattingEnabled = true;
-            this.Appearance_Font_Button_Name.Location = new System.Drawing.Point(81, 18);
-            this.Appearance_Font_Button_Name.Name = "Appearance_Font_Button_Name";
-            this.Appearance_Font_Button_Name.Size = new System.Drawing.Size(210, 20);
-            this.Appearance_Font_Button_Name.TabIndex = 0;
-            // 
-            // label4
-            // 
-            this.label4.AutoSize = true;
-            this.label4.Location = new System.Drawing.Point(6, 21);
-            this.label4.Name = "label4";
-            this.label4.Size = new System.Drawing.Size(47, 12);
-            this.label4.TabIndex = 2;
-            this.label4.Text = "Buttons:";
-            // 
-            // label5
-            // 
-            this.label5.AutoSize = true;
-            this.label5.Location = new System.Drawing.Point(6, 47);
-            this.label5.Name = "label5";
-            this.label5.Size = new System.Drawing.Size(69, 12);
-            this.label5.TabIndex = 2;
-            this.label5.Text = "Expressions:";
-            // 
             // Appearance_Font_Expr_Name
             // 
             this.Appearance_Font_Expr_Name.AutoCompleteMode = System.Windows.Forms.AutoCompleteMode.Suggest;
@@ -288,37 +326,36 @@
             this.Appearance_Font_Expr_Name.Size = new System.Drawing.Size(210, 20);
             this.Appearance_Font_Expr_Name.TabIndex = 0;
             // 
-            // tabPage3
+            // Appearance_Font_Button_Name
             // 
-            this.tabPage3.Controls.Add(this.Hotkey_Enabled);
-            this.tabPage3.Controls.Add(this.Hotkey_KeyCode);
-            this.tabPage3.Location = new System.Drawing.Point(4, 22);
-            this.tabPage3.Name = "tabPage3";
-            this.tabPage3.Size = new System.Drawing.Size(309, 142);
-            this.tabPage3.TabIndex = 2;
-            this.tabPage3.Text = "General";
-            this.tabPage3.UseVisualStyleBackColor = true;
+            this.Appearance_Font_Button_Name.AutoCompleteMode = System.Windows.Forms.AutoCompleteMode.Suggest;
+            this.Appearance_Font_Button_Name.AutoCompleteSource = System.Windows.Forms.AutoCompleteSource.ListItems;
+            this.Appearance_Font_Button_Name.FormattingEnabled = true;
+            this.Appearance_Font_Button_Name.Location = new System.Drawing.Point(81, 18);
+            this.Appearance_Font_Button_Name.Name = "Appearance_Font_Button_Name";
+            this.Appearance_Font_Button_Name.Size = new System.Drawing.Size(210, 20);
+            this.Appearance_Font_Button_Name.TabIndex = 0;
             // 
-            // Hotkey_Enabled
+            // tabPage1
             // 
-            this.Hotkey_Enabled.AutoSize = true;
-            this.Hotkey_Enabled.Location = new System.Drawing.Point(13, 12);
-            this.Hotkey_Enabled.Name = "Hotkey_Enabled";
-            this.Hotkey_Enabled.Size = new System.Drawing.Size(98, 16);
-            this.Hotkey_Enabled.TabIndex = 4;
-            this.Hotkey_Enabled.Text = "Enable Hotkey";
-            this.Hotkey_Enabled.UseVisualStyleBackColor = true;
+            this.tabPage1.Controls.Add(this.eNoteGroup);
+            this.tabPage1.Location = new System.Drawing.Point(4, 22);
+            this.tabPage1.Name = "tabPage1";
+            this.tabPage1.Padding = new System.Windows.Forms.Padding(3);
+            this.tabPage1.Size = new System.Drawing.Size(309, 142);
+            this.tabPage1.TabIndex = 0;
+            this.tabPage1.Text = "Details";
+            this.tabPage1.UseVisualStyleBackColor = true;
             // 
-            // Hotkey_KeyCode
+            // Startup_AutoStart
             // 
-            this.Hotkey_KeyCode.Alt = false;
-            this.Hotkey_KeyCode.Ctrl = false;
-            this.Hotkey_KeyCode.KeyCode = System.Windows.Forms.Keys.None;
-            this.Hotkey_KeyCode.Location = new System.Drawing.Point(46, 34);
-            this.Hotkey_KeyCode.Name = "Hotkey_KeyCode";
-            this.Hotkey_KeyCode.Shift = false;
-            this.Hotkey_KeyCode.Size = new System.Drawing.Size(260, 19);
-            this.Hotkey_KeyCode.TabIndex = 1;
+            this.Startup_AutoStart.AutoSize = true;
+            this.Startup_AutoStart.Location = new System.Drawing.Point(10, 20);
+            this.Startup_AutoStart.Name = "Startup_AutoStart";
+            this.Startup_AutoStart.Size = new System.Drawing.Size(121, 16);
+            this.Startup_AutoStart.TabIndex = 4;
+            this.Startup_AutoStart.Text = "Start automatically";
+            this.Startup_AutoStart.UseVisualStyleBackColor = true;
             // 
             // SettingsDialog
             // 
@@ -339,13 +376,14 @@
             ((System.ComponentModel.ISupportInitialize)(this.NumberFormat_Exp_NegativeMax)).EndInit();
             ((System.ComponentModel.ISupportInitialize)(this.NumberFormat_Exp_PositiveMin)).EndInit();
             this.tabControl.ResumeLayout(false);
-            this.tabPage1.ResumeLayout(false);
+            this.tabPage3.ResumeLayout(false);
+            this.groupBox1.ResumeLayout(false);
+            this.groupBox1.PerformLayout();
             this.tabPage2.ResumeLayout(false);
             this.fontGroup.ResumeLayout(false);
             this.fontGroup.PerformLayout();
             ((System.ComponentModel.ISupportInitialize)(this.Appearance_Font_Size)).EndInit();
-            this.tabPage3.ResumeLayout(false);
-            this.tabPage3.PerformLayout();
+            this.tabPage1.ResumeLayout(false);
             this.ResumeLayout(false);
 
         }
@@ -374,5 +412,8 @@
         private System.Windows.Forms.TabPage tabPage3;
         private KeyCodeBox Hotkey_KeyCode;
         private System.Windows.Forms.CheckBox Hotkey_Enabled;
+        private System.Windows.Forms.GroupBox groupBox1;
+        private System.Windows.Forms.CheckBox Startup_TrayIcon;
+        private System.Windows.Forms.CheckBox Startup_AutoStart;
     }
 }
