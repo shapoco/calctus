@@ -17,6 +17,17 @@ namespace Shapoco.Calctus.UI {
             this.MeasureItem += HistoryBox_MeasureItem;
         }
 
+        protected override void OnMouseDown(MouseEventArgs e) {
+            base.OnMouseDown(e);
+            // 右クリックでもアイテムを選択する
+            if (e.Button == MouseButtons.Right) {
+                int index = this.IndexFromPoint(e.Location);
+                if (index >= 0) {
+                    this.SelectedIndex = index;
+                }
+            }
+        }
+
         protected override void OnSelectedIndexChanged(EventArgs e) {
             base.OnSelectedIndexChanged(e);
             this.Invalidate();
@@ -54,6 +65,32 @@ namespace Shapoco.Calctus.UI {
             }
             using (var brush = new SolidBrush(textColor)) {
                 g.DrawString(item.ToString(), Font, brush, e.Bounds.Location);
+            }
+            if (this.Focused) {
+                if (e.Index == this.SelectedIndex) {
+                    e.DrawFocusRectangle();
+                }
+            }
+        }
+
+        public HistoryItem this[int index] {
+            get {
+                return (HistoryItem)this.Items[index];
+            }
+        }
+
+        /// <summary>選択されている履歴アイテム</summary>
+        public HistoryItem SelectedHistoryItem {
+            get {
+                if (this.SelectedIndex >= 0) {
+                    return this[this.SelectedIndex]; 
+                }
+                else {
+                    return null;
+                }
+            }
+            set {
+                this.SelectedItem = value;
             }
         }
     }

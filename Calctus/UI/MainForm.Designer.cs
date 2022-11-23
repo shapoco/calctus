@@ -33,10 +33,10 @@ namespace Shapoco.Calctus.UI
             System.ComponentModel.ComponentResourceManager resources = new System.ComponentModel.ComponentResourceManager(typeof(MainForm));
             this.panel1 = new System.Windows.Forms.Panel();
             this.panel2 = new System.Windows.Forms.Panel();
+            this.subAnswerLabel = new System.Windows.Forms.Label();
             this.radixBinButton = new Shapoco.Calctus.UI.FlatRadioButton();
             this.radixHexButton = new Shapoco.Calctus.UI.FlatRadioButton();
             this.radixDecButton = new Shapoco.Calctus.UI.FlatRadioButton();
-            this.subAnswerLabel = new System.Windows.Forms.Label();
             this.radixAutoButton = new Shapoco.Calctus.UI.FlatRadioButton();
             this.exprBox = new System.Windows.Forms.TextBox();
             this.calcButton = new Shapoco.Calctus.UI.FlatButton();
@@ -49,10 +49,22 @@ namespace Shapoco.Calctus.UI
             this.contextOpen = new System.Windows.Forms.ToolStripMenuItem();
             this.toolStripMenuItem1 = new System.Windows.Forms.ToolStripSeparator();
             this.contextExit = new System.Windows.Forms.ToolStripMenuItem();
+            this.historyMenuStrip = new System.Windows.Forms.ContextMenuStrip(this.components);
+            this.historyMenuCopyText = new System.Windows.Forms.ToolStripMenuItem();
+            this.historyMenuCopyAnswer = new System.Windows.Forms.ToolStripMenuItem();
+            this.toolStripMenuItem2 = new System.Windows.Forms.ToolStripSeparator();
+            this.historyMenuDelete = new System.Windows.Forms.ToolStripMenuItem();
+            this.historyMenuInsert = new System.Windows.Forms.ToolStripMenuItem();
+            this.historyMenuMoveUp = new System.Windows.Forms.ToolStripMenuItem();
+            this.historyMenuMoveDown = new System.Windows.Forms.ToolStripMenuItem();
+            this.toolStripMenuItem3 = new System.Windows.Forms.ToolStripSeparator();
+            this.historyMenuCopyAll = new System.Windows.Forms.ToolStripMenuItem();
+            this.historyMenuDeleteAll = new System.Windows.Forms.ToolStripMenuItem();
             this.panel1.SuspendLayout();
             this.panel2.SuspendLayout();
             this.toolStrip.SuspendLayout();
             this.trayMenuStrip.SuspendLayout();
+            this.historyMenuStrip.SuspendLayout();
             this.SuspendLayout();
             // 
             // panel1
@@ -68,16 +80,28 @@ namespace Shapoco.Calctus.UI
             // 
             // panel2
             // 
+            this.panel2.Controls.Add(this.subAnswerLabel);
             this.panel2.Controls.Add(this.radixBinButton);
             this.panel2.Controls.Add(this.radixHexButton);
             this.panel2.Controls.Add(this.radixDecButton);
-            this.panel2.Controls.Add(this.subAnswerLabel);
             this.panel2.Controls.Add(this.radixAutoButton);
             this.panel2.Dock = System.Windows.Forms.DockStyle.Bottom;
             this.panel2.Location = new System.Drawing.Point(0, 37);
             this.panel2.Name = "panel2";
             this.panel2.Size = new System.Drawing.Size(327, 15);
             this.panel2.TabIndex = 3;
+            // 
+            // subAnswerLabel
+            // 
+            this.subAnswerLabel.BackColor = System.Drawing.Color.FromArgb(((int)(((byte)(64)))), ((int)(((byte)(64)))), ((int)(((byte)(64)))));
+            this.subAnswerLabel.Dock = System.Windows.Forms.DockStyle.Fill;
+            this.subAnswerLabel.ForeColor = System.Drawing.Color.FromArgb(((int)(((byte)(224)))), ((int)(((byte)(224)))), ((int)(((byte)(224)))));
+            this.subAnswerLabel.Location = new System.Drawing.Point(120, 0);
+            this.subAnswerLabel.Name = "subAnswerLabel";
+            this.subAnswerLabel.Size = new System.Drawing.Size(207, 15);
+            this.subAnswerLabel.TabIndex = 2;
+            this.subAnswerLabel.Text = "subanswer";
+            this.subAnswerLabel.TextAlign = System.Drawing.ContentAlignment.MiddleRight;
             // 
             // radixBinButton
             // 
@@ -117,18 +141,6 @@ namespace Shapoco.Calctus.UI
             this.radixDecButton.TabStop = true;
             this.radixDecButton.Text = "Dec";
             this.radixDecButton.UseVisualStyleBackColor = false;
-            // 
-            // subAnswerLabel
-            // 
-            this.subAnswerLabel.BackColor = System.Drawing.Color.FromArgb(((int)(((byte)(64)))), ((int)(((byte)(64)))), ((int)(((byte)(64)))));
-            this.subAnswerLabel.Dock = System.Windows.Forms.DockStyle.Fill;
-            this.subAnswerLabel.ForeColor = System.Drawing.Color.FromArgb(((int)(((byte)(224)))), ((int)(((byte)(224)))), ((int)(((byte)(224)))));
-            this.subAnswerLabel.Location = new System.Drawing.Point(30, 0);
-            this.subAnswerLabel.Name = "subAnswerLabel";
-            this.subAnswerLabel.Size = new System.Drawing.Size(297, 15);
-            this.subAnswerLabel.TabIndex = 2;
-            this.subAnswerLabel.Text = "subanswer";
-            this.subAnswerLabel.TextAlign = System.Drawing.ContentAlignment.MiddleRight;
             // 
             // radixAutoButton
             // 
@@ -210,9 +222,9 @@ namespace Shapoco.Calctus.UI
             this.historyBox.ItemHeight = 12;
             this.historyBox.Location = new System.Drawing.Point(0, 25);
             this.historyBox.Name = "historyBox";
+            this.historyBox.SelectedHistoryItem = null;
             this.historyBox.Size = new System.Drawing.Size(402, 169);
             this.historyBox.TabIndex = 3;
-            this.historyBox.TabStop = false;
             // 
             // notifyIcon
             // 
@@ -246,6 +258,80 @@ namespace Shapoco.Calctus.UI
             this.contextExit.Size = new System.Drawing.Size(123, 22);
             this.contextExit.Text = "Exit (&X)";
             // 
+            // historyMenuStrip
+            // 
+            this.historyMenuStrip.Items.AddRange(new System.Windows.Forms.ToolStripItem[] {
+            this.historyMenuCopyText,
+            this.historyMenuCopyAnswer,
+            this.historyMenuCopyAll,
+            this.toolStripMenuItem3,
+            this.historyMenuMoveUp,
+            this.historyMenuMoveDown,
+            this.toolStripMenuItem2,
+            this.historyMenuInsert,
+            this.historyMenuDelete,
+            this.historyMenuDeleteAll});
+            this.historyMenuStrip.Name = "historyMenuStrip";
+            this.historyMenuStrip.Size = new System.Drawing.Size(144, 192);
+            // 
+            // historyMenuCopyText
+            // 
+            this.historyMenuCopyText.Name = "historyMenuCopyText";
+            this.historyMenuCopyText.Size = new System.Drawing.Size(143, 22);
+            this.historyMenuCopyText.Text = "Copy Text";
+            // 
+            // historyMenuCopyAnswer
+            // 
+            this.historyMenuCopyAnswer.Name = "historyMenuCopyAnswer";
+            this.historyMenuCopyAnswer.Size = new System.Drawing.Size(143, 22);
+            this.historyMenuCopyAnswer.Text = "Copy Answer";
+            // 
+            // toolStripMenuItem2
+            // 
+            this.toolStripMenuItem2.Name = "toolStripMenuItem2";
+            this.toolStripMenuItem2.Size = new System.Drawing.Size(140, 6);
+            // 
+            // historyMenuDelete
+            // 
+            this.historyMenuDelete.Name = "historyMenuDelete";
+            this.historyMenuDelete.Size = new System.Drawing.Size(143, 22);
+            this.historyMenuDelete.Text = "Delete";
+            // 
+            // historyMenuInsert
+            // 
+            this.historyMenuInsert.Name = "historyMenuInsert";
+            this.historyMenuInsert.Size = new System.Drawing.Size(143, 22);
+            this.historyMenuInsert.Text = "Insert";
+            // 
+            // historyMenuMoveUp
+            // 
+            this.historyMenuMoveUp.Name = "historyMenuMoveUp";
+            this.historyMenuMoveUp.Size = new System.Drawing.Size(143, 22);
+            this.historyMenuMoveUp.Text = "Move Up";
+            // 
+            // historyMenuMoveDown
+            // 
+            this.historyMenuMoveDown.Name = "historyMenuMoveDown";
+            this.historyMenuMoveDown.Size = new System.Drawing.Size(143, 22);
+            this.historyMenuMoveDown.Text = "Move Down";
+            // 
+            // toolStripMenuItem3
+            // 
+            this.toolStripMenuItem3.Name = "toolStripMenuItem3";
+            this.toolStripMenuItem3.Size = new System.Drawing.Size(140, 6);
+            // 
+            // historyMenuCopyAll
+            // 
+            this.historyMenuCopyAll.Name = "historyMenuCopyAll";
+            this.historyMenuCopyAll.Size = new System.Drawing.Size(143, 22);
+            this.historyMenuCopyAll.Text = "Copy All";
+            // 
+            // historyMenuDeleteAll
+            // 
+            this.historyMenuDeleteAll.Name = "historyMenuDeleteAll";
+            this.historyMenuDeleteAll.Size = new System.Drawing.Size(143, 22);
+            this.historyMenuDeleteAll.Text = "Clear All";
+            // 
             // MainForm
             // 
             this.AutoScaleDimensions = new System.Drawing.SizeF(6F, 12F);
@@ -264,6 +350,7 @@ namespace Shapoco.Calctus.UI
             this.toolStrip.ResumeLayout(false);
             this.toolStrip.PerformLayout();
             this.trayMenuStrip.ResumeLayout(false);
+            this.historyMenuStrip.ResumeLayout(false);
             this.ResumeLayout(false);
             this.PerformLayout();
 
@@ -288,6 +375,17 @@ namespace Shapoco.Calctus.UI
         private System.Windows.Forms.ToolStripMenuItem contextOpen;
         private System.Windows.Forms.ToolStripSeparator toolStripMenuItem1;
         private System.Windows.Forms.ToolStripMenuItem contextExit;
+        private System.Windows.Forms.ContextMenuStrip historyMenuStrip;
+        private System.Windows.Forms.ToolStripMenuItem historyMenuCopyText;
+        private System.Windows.Forms.ToolStripMenuItem historyMenuCopyAnswer;
+        private System.Windows.Forms.ToolStripSeparator toolStripMenuItem2;
+        private System.Windows.Forms.ToolStripMenuItem historyMenuDelete;
+        private System.Windows.Forms.ToolStripMenuItem historyMenuCopyAll;
+        private System.Windows.Forms.ToolStripSeparator toolStripMenuItem3;
+        private System.Windows.Forms.ToolStripMenuItem historyMenuMoveUp;
+        private System.Windows.Forms.ToolStripMenuItem historyMenuMoveDown;
+        private System.Windows.Forms.ToolStripMenuItem historyMenuInsert;
+        private System.Windows.Forms.ToolStripMenuItem historyMenuDeleteAll;
     }
 }
 

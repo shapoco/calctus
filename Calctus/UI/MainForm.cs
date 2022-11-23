@@ -41,11 +41,23 @@ namespace Shapoco.Calctus.UI {
             historyBox.Items.Add(new HistoryItem());
             historyBox.SelectedIndex = 0;
             historyBox.SelectedIndexChanged += HistoryBox_SelectedIndexChanged;
+            historyBox.KeyUp += HistoryBox_KeyUp;
+            historyBox.MouseUp += HistoryBox_MouseUp;
+
+            historyMenuCopyText.Click += HistoryMenuCopyText_Click;
+            historyMenuCopyAnswer.Click += HistoryMenuCopyAnswer_Click;
+            historyMenuCopyAll.Click += HistoryMenuCopyAll_Click;
+            historyMenuMoveUp.Click += HistoryMenuMoveUp_Click;
+            historyMenuMoveDown.Click += HistoryMenuMoveDown_Click;
+            historyMenuInsert.Click += HistoryMenuInsert_Click;
+            historyMenuDelete.Click += HistoryMenuDelete_Click;
+            historyMenuDeleteAll.Click += HistoryMenuDeleteAll_Click;
 
             this.Text = Application.ProductName + " (v" + System.Reflection.Assembly.GetExecutingAssembly().GetName().Version + ")";
-            this.KeyPreview = true;
+            this.KeyPreview = true; 
             this.KeyDown += MainForm_KeyDown;
             this.Load += MainForm_Load;
+            this.Shown += MainForm_Shown;
             this.FormClosing += MainForm_FormClosing;
             this.FormClosed += MainForm_FormClosed;
             this.Resize += MainForm_Resize;
@@ -77,7 +89,7 @@ namespace Shapoco.Calctus.UI {
 
         private void MainForm_Load(object sender, EventArgs e) {
             // フォントの設定が反映されたときにウィンドウサイズも変わってしまうので
-            // 起動時のウィンドウサイズは保持しておいて最後に反映する
+            // 起動時のウィンドウサイズ設定値は先に保持しておいて最後に反映する
             var s = Settings.Instance;
             Size startupWindowSize = new Size(s.Window_Width, s.Window_Height);
             Console.WriteLine("Load " + s.Window_Width + "x" + s.Window_Height);
@@ -86,6 +98,10 @@ namespace Shapoco.Calctus.UI {
 
             try { this.Size = startupWindowSize; }
             catch { }
+        }
+
+        private void MainForm_Shown(object sender, EventArgs e) {
+            exprBox.Focus();
         }
 
         private void MainForm_FormClosing(object sender, FormClosingEventArgs e) {
@@ -106,7 +122,6 @@ namespace Shapoco.Calctus.UI {
                 var s = Settings.Instance;
                 s.Window_Width = this.Width;
                 s.Window_Height = this.Height;
-                Console.WriteLine("Resize " + s.Window_Width + "x" + s.Window_Height);
             }
         }
 
@@ -130,6 +145,8 @@ namespace Shapoco.Calctus.UI {
                 subAnswerLabel.Font = font_mono_normal;
             }
             catch { }
+
+            Recalc();
         }
 
         private void enableHotkey() {
@@ -199,9 +216,38 @@ namespace Shapoco.Calctus.UI {
             }
         }
 
+        private void HistoryBox_MouseUp(object sender, MouseEventArgs e) {
+            if (e.Button == MouseButtons.Right) {
+                historyMenuStrip.Show(Cursor.Position);
+            }
+        }
+
+        private void HistoryBox_KeyUp(object sender, KeyEventArgs e) {
+            if (e.KeyCode == Keys.Apps) {
+                e.Handled = true;
+
+                int index = historyBox.SelectedIndex;
+                Point menuPos;
+                if (index >= 0) {
+                    var itemRect = historyBox.GetItemRectangle(index);
+                    menuPos = historyBox.PointToScreen(new Point(itemRect.X, itemRect.Bottom));
+                }
+                else {
+                    var clientRect = historyBox.ClientRectangle;
+                    menuPos = historyBox.PointToScreen(new Point(clientRect.X, clientRect.Bottom)); ;
+                }
+                historyMenuStrip.Show(menuPos);
+            }
+        }
+
         private void HistoryBox_SelectedIndexChanged(object sender, EventArgs e) {
-            if (historyBox.SelectedIndex < 0) return;
-            var item = ((HistoryItem)historyBox.Items[historyBox.SelectedIndex]);
+            var itemSelected = historyBox.SelectedIndex >= 0;
+            historyMenuCopyText.Enabled = itemSelected;
+            historyMenuCopyAnswer.Enabled = itemSelected;
+            historyMenuDelete.Enabled = itemSelected;
+            if (!itemSelected) return;
+
+            var item = historyBox.SelectedHistoryItem;
             _lastItem?.Deselected();
             _lastItem = item;
             _loadingExpressionFromHistory = true;
@@ -209,6 +255,84 @@ namespace Shapoco.Calctus.UI {
             this.RadixMode = item.RadixMode;
             _loadingExpressionFromHistory = false;
             exprBox.SelectAll();
+        }
+
+        private void HistoryMenuCopyText_Click(object sender, EventArgs e) {
+            var item = historyBox.SelectedHistoryItem;
+            if (item != null) {
+                Clipboard.Clear();
+                Clipboard.SetText(item.Expression + " = " + item.Answer);
+            }
+        }
+
+        private void HistoryMenuCopyAnswer_Click(object sender, EventArgs e) {
+            var item = historyBox.SelectedHistoryItem;
+            if (item != null) {
+                Clipboard.Clear();
+                Clipboard.SetText(item.Answer);
+            }
+        }
+
+        private void HistoryMenuCopyAll_Click(object sender, EventArgs e) {
+            if (historyBox.Items.Count == 0) return;
+            var sb = new StringBuilder();
+            for(int i = 0; i < historyBox.Items.Count; i++) {
+                var item = historyBox[i];
+                sb.Append(item.Expression).Append(" = ").AppendLine(item.Answer);
+            }
+            Clipboard.Clear();
+            Clipboard.SetText(sb.ToString());
+        }
+
+        private void HistoryMenuMoveUp_Click(object sender, EventArgs e) {
+            var index = historyBox.SelectedIndex;
+            if (index < 1) return;
+            var temp = historyBox[index];
+            historyBox.Items.RemoveAt(index);
+            historyBox.Items.Insert(index - 1, temp);
+            historyBox.SelectedIndex = index - 1;
+            Recalc();
+        }
+
+        private void HistoryMenuMoveDown_Click(object sender, EventArgs e) {
+            var index = historyBox.SelectedIndex;
+            if (index > historyBox.Items.Count - 2) return;
+            var temp = historyBox[index];
+            historyBox.Items.RemoveAt(index);
+            historyBox.Items.Insert(index + 1, temp);
+            historyBox.SelectedIndex = index + 1;
+            Recalc();
+        }
+
+        private void HistoryMenuInsert_Click(object sender, EventArgs e) {
+            var index = historyBox.SelectedIndex;
+            HistoryItem newItem;
+            if (index < 0) {
+                index = historyBox.Items.Count;
+                newItem = new HistoryItem(historyBox[historyBox.Items.Count - 1]);
+            }
+            else if (index == 0) {
+                newItem = new HistoryItem();
+            }
+            else {
+                newItem = new HistoryItem(historyBox[index-1]);
+            }
+            historyBox.Items.Insert(index, newItem);
+            historyBox.SelectedIndex = index;
+            Recalc();
+        }
+
+        private void HistoryMenuDelete_Click(object sender, EventArgs e) {
+            int index = historyBox.SelectedIndex;
+            if (index >= 0) {
+                historyBox.Items.RemoveAt(index);
+                Recalc();
+            }
+        }
+
+        private void HistoryMenuDeleteAll_Click(object sender, EventArgs e) {
+            historyBox.Items.Clear();
+            Recalc();
         }
 
         private void RadixCheckedChanged(RadioButton btn, RadixMode mode) {
@@ -221,16 +345,16 @@ namespace Shapoco.Calctus.UI {
 
         private void ExprBox_TextChanged(object sender, EventArgs e) {
             if (_loadingExpressionFromHistory) return;
-            if (historyBox.SelectedIndex >= 0) {
-                var item = ((HistoryItem)historyBox.Items[historyBox.SelectedIndex]);
+            var item = historyBox.SelectedHistoryItem;
+            if (item != null) {
                 item.Expression = exprBox.Text;
             }
             Recalc();
         }
 
         private void ExprBox_KeyPress(object sender, KeyPressEventArgs e) {
-            if (_selectionCancelChars.Contains(e.KeyChar) && historyBox.SelectedIndex >= 0) {
-                var item = ((HistoryItem)historyBox.Items[historyBox.SelectedIndex]);
+            var item = historyBox.SelectedHistoryItem;
+            if (_selectionCancelChars.Contains(e.KeyChar) && item != null) {
                 var allSelected = exprBox.SelectionLength > 0 && exprBox.SelectionStart == 0 && exprBox.SelectionLength == exprBox.TextLength;
                 if (item.IsFreshAnswer && allSelected) {
                     // 直前の式の評価値が全選択された状態で演算子が入力されたら、
@@ -266,9 +390,18 @@ namespace Shapoco.Calctus.UI {
         }
 
         private void OnReturnPressed(bool insert) {
-            // 数式をヒストリに設定
             if (historyBox.SelectedIndex >= 0) {
-                ((HistoryItem)historyBox.Items[historyBox.SelectedIndex]).Expression = exprBox.Text;
+                // 数式をヒストリに反映
+                historyBox.SelectedHistoryItem.Expression = exprBox.Text;
+            }
+            else {
+                // 選択されていない場合は新規作成
+                var newItem = new HistoryItem();
+                newItem.Expression = exprBox.Text;
+                newItem.RadixMode = this.RadixMode;
+                historyBox.Items.Add(newItem);
+                historyBox.SelectedIndex = historyBox.Items.Count - 1;
+                Recalc();
             }
 
             // 次のアイテムを選択する
@@ -286,7 +419,7 @@ namespace Shapoco.Calctus.UI {
                 HistoryItem newItem;
                 if (nextIndex > 0) {
                     // 直前に履歴が存在する場合はその評価値と基数を引き継ぐ
-                    var prevItem = (HistoryItem)historyBox.Items[nextIndex - 1];
+                    var prevItem = historyBox[nextIndex - 1];
                     newItem = new HistoryItem(prevItem);
                 }
                 else {
@@ -308,7 +441,7 @@ namespace Shapoco.Calctus.UI {
 #endif
             EvalContext ctx = new EvalContext();
             for (int i = 0; i < historyBox.Items.Count; i++) {
-                var item = (HistoryItem)historyBox.Items[i];
+                var item = historyBox[i];
                 try {
                     item.Answer = "";
                     if (i == historyBox.SelectedIndex) {
