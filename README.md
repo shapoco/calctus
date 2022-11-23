@@ -13,7 +13,7 @@ a calculator for Windows.
 - Displays the evaluation value of a formula in text format.
 - Decimal, hexadecimal, and binary numbers can be mixed.
 - The formula history can be referenced with the up key.
-- The formula history can be modified, and if so, the calculation results are regenerated. :new:
+- The formula history can be modified, and if so, the calculation results are regenerated.
 - Some built-in constants and built-in functions.
 
 ## Features
@@ -77,5 +77,15 @@ b = 3 [Return]
 a * b [Return]
 // --> Calctus answers 6.
 ```
+
+### Keyboard Shortcut
+
+|Key|Function|
+|:--|:--|
+|Shift + Return|Insert|
+|F9 :new:|Radix Mode = Auto|
+|F10 :new:|Radix Mode = Dec|
+|F11 :new:|Radix Mode = Hex|
+|F12 :new:|Radix Mode = Bin|
 
 ----
