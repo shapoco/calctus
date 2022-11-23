@@ -22,7 +22,7 @@ namespace Shapoco.Calctus.UI {
             // 右クリックでもアイテムを選択する
             if (e.Button == MouseButtons.Right) {
                 int index = this.IndexFromPoint(e.Location);
-                if (index >= 0) {
+                if (0 <= index && index < this.Items.Count) {
                     this.SelectedIndex = index;
                 }
             }

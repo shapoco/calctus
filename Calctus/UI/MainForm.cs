@@ -241,12 +241,8 @@ namespace Shapoco.Calctus.UI {
         }
 
         private void HistoryBox_SelectedIndexChanged(object sender, EventArgs e) {
-            var itemSelected = historyBox.SelectedIndex >= 0;
-            historyMenuCopyText.Enabled = itemSelected;
-            historyMenuCopyAnswer.Enabled = itemSelected;
-            historyMenuDelete.Enabled = itemSelected;
-            if (!itemSelected) return;
-
+            updateHistoryMenu();
+            if (historyBox.SelectedIndex < 0) return;
             var item = historyBox.SelectedHistoryItem;
             _lastItem?.Deselected();
             _lastItem = item;
@@ -255,6 +251,19 @@ namespace Shapoco.Calctus.UI {
             this.RadixMode = item.RadixMode;
             _loadingExpressionFromHistory = false;
             exprBox.SelectAll();
+        }
+
+        private void updateHistoryMenu() {
+            var itemSelected = historyBox.SelectedIndex >= 0;
+            var itemsExist = historyBox.Items.Count > 0;
+            historyMenuCopyText.Enabled = itemSelected;
+            historyMenuCopyAnswer.Enabled = itemSelected;
+            historyMenuCopyAll.Enabled = itemsExist;
+            historyMenuMoveUp.Enabled = itemSelected;
+            historyMenuMoveDown.Enabled = itemSelected;
+            historyMenuInsert.Enabled = true;
+            historyMenuDelete.Enabled = itemSelected;
+            historyMenuDeleteAll.Enabled = itemsExist;
         }
 
         private void HistoryMenuCopyText_Click(object sender, EventArgs e) {
@@ -309,7 +318,12 @@ namespace Shapoco.Calctus.UI {
             HistoryItem newItem;
             if (index < 0) {
                 index = historyBox.Items.Count;
-                newItem = new HistoryItem(historyBox[historyBox.Items.Count - 1]);
+                if (historyBox.Items.Count == 0) {
+                    newItem = new HistoryItem();
+                }
+                else {
+                    newItem = new HistoryItem(historyBox[historyBox.Items.Count - 1]);
+                }
             }
             else if (index == 0) {
                 newItem = new HistoryItem();
@@ -331,8 +345,12 @@ namespace Shapoco.Calctus.UI {
         }
 
         private void HistoryMenuDeleteAll_Click(object sender, EventArgs e) {
-            historyBox.Items.Clear();
-            Recalc();
+            var ans = MessageBox.Show("Are you sure you want to delete all?", "Confirm", MessageBoxButtons.OKCancel, MessageBoxIcon.Exclamation);
+            if (ans == DialogResult.OK) {
+                historyBox.Items.Clear();
+                Recalc();
+                updateHistoryMenu();
+            }
         }
 
         private void RadixCheckedChanged(RadioButton btn, RadixMode mode) {
