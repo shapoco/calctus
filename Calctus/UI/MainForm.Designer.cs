@@ -52,13 +52,13 @@ namespace Shapoco.Calctus.UI
             this.historyMenuStrip = new System.Windows.Forms.ContextMenuStrip(this.components);
             this.historyMenuCopyText = new System.Windows.Forms.ToolStripMenuItem();
             this.historyMenuCopyAnswer = new System.Windows.Forms.ToolStripMenuItem();
-            this.toolStripMenuItem2 = new System.Windows.Forms.ToolStripSeparator();
-            this.historyMenuDelete = new System.Windows.Forms.ToolStripMenuItem();
-            this.historyMenuInsert = new System.Windows.Forms.ToolStripMenuItem();
+            this.historyMenuCopyAll = new System.Windows.Forms.ToolStripMenuItem();
+            this.toolStripMenuItem3 = new System.Windows.Forms.ToolStripSeparator();
             this.historyMenuMoveUp = new System.Windows.Forms.ToolStripMenuItem();
             this.historyMenuMoveDown = new System.Windows.Forms.ToolStripMenuItem();
-            this.toolStripMenuItem3 = new System.Windows.Forms.ToolStripSeparator();
-            this.historyMenuCopyAll = new System.Windows.Forms.ToolStripMenuItem();
+            this.toolStripMenuItem2 = new System.Windows.Forms.ToolStripSeparator();
+            this.historyMenuInsert = new System.Windows.Forms.ToolStripMenuItem();
+            this.historyMenuDelete = new System.Windows.Forms.ToolStripMenuItem();
             this.historyMenuDeleteAll = new System.Windows.Forms.ToolStripMenuItem();
             this.panel1.SuspendLayout();
             this.panel2.SuspendLayout();
@@ -225,6 +225,7 @@ namespace Shapoco.Calctus.UI
             this.historyBox.SelectedHistoryItem = null;
             this.historyBox.Size = new System.Drawing.Size(402, 169);
             this.historyBox.TabIndex = 3;
+            this.historyBox.TabStop = false;
             // 
             // notifyIcon
             // 
@@ -286,22 +287,16 @@ namespace Shapoco.Calctus.UI
             this.historyMenuCopyAnswer.Size = new System.Drawing.Size(143, 22);
             this.historyMenuCopyAnswer.Text = "Copy Answer";
             // 
-            // toolStripMenuItem2
+            // historyMenuCopyAll
             // 
-            this.toolStripMenuItem2.Name = "toolStripMenuItem2";
-            this.toolStripMenuItem2.Size = new System.Drawing.Size(140, 6);
+            this.historyMenuCopyAll.Name = "historyMenuCopyAll";
+            this.historyMenuCopyAll.Size = new System.Drawing.Size(143, 22);
+            this.historyMenuCopyAll.Text = "Copy All";
             // 
-            // historyMenuDelete
+            // toolStripMenuItem3
             // 
-            this.historyMenuDelete.Name = "historyMenuDelete";
-            this.historyMenuDelete.Size = new System.Drawing.Size(143, 22);
-            this.historyMenuDelete.Text = "Delete";
-            // 
-            // historyMenuInsert
-            // 
-            this.historyMenuInsert.Name = "historyMenuInsert";
-            this.historyMenuInsert.Size = new System.Drawing.Size(143, 22);
-            this.historyMenuInsert.Text = "Insert";
+            this.toolStripMenuItem3.Name = "toolStripMenuItem3";
+            this.toolStripMenuItem3.Size = new System.Drawing.Size(140, 6);
             // 
             // historyMenuMoveUp
             // 
@@ -315,16 +310,22 @@ namespace Shapoco.Calctus.UI
             this.historyMenuMoveDown.Size = new System.Drawing.Size(143, 22);
             this.historyMenuMoveDown.Text = "Move Down";
             // 
-            // toolStripMenuItem3
+            // toolStripMenuItem2
             // 
-            this.toolStripMenuItem3.Name = "toolStripMenuItem3";
-            this.toolStripMenuItem3.Size = new System.Drawing.Size(140, 6);
+            this.toolStripMenuItem2.Name = "toolStripMenuItem2";
+            this.toolStripMenuItem2.Size = new System.Drawing.Size(140, 6);
             // 
-            // historyMenuCopyAll
+            // historyMenuInsert
             // 
-            this.historyMenuCopyAll.Name = "historyMenuCopyAll";
-            this.historyMenuCopyAll.Size = new System.Drawing.Size(143, 22);
-            this.historyMenuCopyAll.Text = "Copy All";
+            this.historyMenuInsert.Name = "historyMenuInsert";
+            this.historyMenuInsert.Size = new System.Drawing.Size(143, 22);
+            this.historyMenuInsert.Text = "Insert";
+            // 
+            // historyMenuDelete
+            // 
+            this.historyMenuDelete.Name = "historyMenuDelete";
+            this.historyMenuDelete.Size = new System.Drawing.Size(143, 22);
+            this.historyMenuDelete.Text = "Delete";
             // 
             // historyMenuDeleteAll
             // 

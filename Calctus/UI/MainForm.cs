@@ -18,6 +18,7 @@ namespace Shapoco.Calctus.UI {
         private bool _loadingExpressionFromHistory = false;
         private HistoryItem _lastItem = null;
         private HotKey _hotkey = null;
+        private bool _startup = true;
 
         class CustomProfessionalColors : ProfessionalColorTable {
             public override Color ToolStripGradientBegin { get { return Color.FromArgb(64, 64, 64); } }
@@ -101,6 +102,14 @@ namespace Shapoco.Calctus.UI {
         }
 
         private void MainForm_Shown(object sender, EventArgs e) {
+            if (_startup) {
+                _startup = false;
+                if (Settings.Instance.Startup_TrayIcon) {
+                    // トレイアイコンが有効になっている場合は非表示状態で起動する
+                    // Form_Load で実施しても効かないので、Form_Shown で 1回だけ実施する
+                    this.Visible = false;
+                }
+            }
             exprBox.Focus();
         }
 
@@ -192,12 +201,29 @@ namespace Shapoco.Calctus.UI {
 
         private void MainForm_KeyDown(object sender, KeyEventArgs e) {
             e.SuppressKeyPress = true;
-            switch(e.KeyCode) {
-                case Keys.F9: this.RadixMode = RadixMode.Auto; break;
-                case Keys.F10: this.RadixMode = RadixMode.Dec; break;
-                case Keys.F11: this.RadixMode = RadixMode.Hex; break;
-                case Keys.F12: this.RadixMode = RadixMode.Bin; break;
-                default: e.SuppressKeyPress = false; break;
+            if (e.KeyCode == Keys.F9) {
+                this.RadixMode = RadixMode.Auto;
+            }
+            else if (e.KeyCode == Keys.F10) {
+                this.RadixMode = RadixMode.Dec;
+            }
+            else if (e.KeyCode == Keys.F11) {
+                this.RadixMode = RadixMode.Hex;
+            }
+            else if (e.KeyCode == Keys.F12) {
+                this.RadixMode = RadixMode.Bin;
+            }
+            else if (e.Modifiers == (Keys.Control | Keys.Shift) && e.KeyCode == Keys.C) {
+                historyMenuCopyAll.PerformClick();
+            }
+            else if (e.Modifiers == Keys.Shift && e.KeyCode == Keys.Delete) {
+                historyMenuDelete.PerformClick();
+            }
+            else if (e.Modifiers == (Keys.Control | Keys.Shift) && e.KeyCode == Keys.Delete) {
+                historyMenuDeleteAll.PerformClick();
+            }
+            else {
+                e.SuppressKeyPress = false;
             }
         }
 
@@ -340,6 +366,12 @@ namespace Shapoco.Calctus.UI {
             int index = historyBox.SelectedIndex;
             if (index >= 0) {
                 historyBox.Items.RemoveAt(index);
+                if (index < historyBox.Items.Count) {
+                    historyBox.SelectedIndex = index;
+                }
+                else if (historyBox.Items.Count > 0) {
+                    historyBox.SelectedIndex = historyBox.Items.Count - 1;
+                }
                 Recalc();
             }
         }

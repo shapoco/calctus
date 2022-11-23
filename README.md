@@ -82,10 +82,13 @@ a * b [Return]
 
 |Key|Function|
 |:--|:--|
-|Shift + Return|Insert|
-|F9 :new:|Radix Mode = Auto|
-|F10 :new:|Radix Mode = Dec|
-|F11 :new:|Radix Mode = Hex|
-|F12 :new:|Radix Mode = Bin|
+|`Shift` + `Return`|Insert|
+|`Shift` + `Delete` :new:|Delete current expression|
+|`Ctrl` + `Shift` + `C` :new:|Copy all expressions and answers|
+|`Ctrl` + `Shift` + `Del` :new:|Delete all expressions|
+|`F9` :new:|Radix Mode = Auto|
+|`F10` :new:|Radix Mode = Dec|
+|`F11` :new:|Radix Mode = Hex|
+|`F12` :new:|Radix Mode = Bin|
 
 ----
