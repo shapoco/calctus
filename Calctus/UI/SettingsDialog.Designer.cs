@@ -36,7 +36,6 @@
             this.tabPage3 = new System.Windows.Forms.TabPage();
             this.groupBox1 = new System.Windows.Forms.GroupBox();
             this.Startup_TrayIcon = new System.Windows.Forms.CheckBox();
-            this.Hotkey_KeyCode = new Shapoco.Calctus.UI.KeyCodeBox();
             this.Hotkey_Enabled = new System.Windows.Forms.CheckBox();
             this.tabPage2 = new System.Windows.Forms.TabPage();
             this.fontGroup = new System.Windows.Forms.GroupBox();
@@ -49,6 +48,7 @@
             this.Appearance_Font_Button_Name = new System.Windows.Forms.ComboBox();
             this.tabPage1 = new System.Windows.Forms.TabPage();
             this.Startup_AutoStart = new System.Windows.Forms.CheckBox();
+            this.Hotkey_KeyCode = new Shapoco.Calctus.UI.KeyCodeBox();
             this.eNoteGroup.SuspendLayout();
             ((System.ComponentModel.ISupportInitialize)(this.NumberFormat_Exp_NegativeMax)).BeginInit();
             ((System.ComponentModel.ISupportInitialize)(this.NumberFormat_Exp_PositiveMin)).BeginInit();
@@ -102,9 +102,9 @@
             this.NumberFormat_Exp_Alignment.AutoSize = true;
             this.NumberFormat_Exp_Alignment.Location = new System.Drawing.Point(18, 97);
             this.NumberFormat_Exp_Alignment.Name = "NumberFormat_Exp_Alignment";
-            this.NumberFormat_Exp_Alignment.Size = new System.Drawing.Size(164, 16);
+            this.NumberFormat_Exp_Alignment.Size = new System.Drawing.Size(138, 16);
             this.NumberFormat_Exp_Alignment.TabIndex = 11;
-            this.NumberFormat_Exp_Alignment.Text = "Align to multiple of 3 digits";
+            this.NumberFormat_Exp_Alignment.Text = "Engineering Alignment";
             this.NumberFormat_Exp_Alignment.UseVisualStyleBackColor = true;
             // 
             // label2
@@ -212,18 +212,6 @@
             this.Startup_TrayIcon.TabIndex = 4;
             this.Startup_TrayIcon.Text = "Reside in task tray";
             this.Startup_TrayIcon.UseVisualStyleBackColor = true;
-            // 
-            // Hotkey_KeyCode
-            // 
-            this.Hotkey_KeyCode.Alt = false;
-            this.Hotkey_KeyCode.Ctrl = false;
-            this.Hotkey_KeyCode.Enabled = false;
-            this.Hotkey_KeyCode.KeyCode = System.Windows.Forms.Keys.None;
-            this.Hotkey_KeyCode.Location = new System.Drawing.Point(46, 83);
-            this.Hotkey_KeyCode.Name = "Hotkey_KeyCode";
-            this.Hotkey_KeyCode.Shift = false;
-            this.Hotkey_KeyCode.Size = new System.Drawing.Size(213, 19);
-            this.Hotkey_KeyCode.TabIndex = 1;
             // 
             // Hotkey_Enabled
             // 
@@ -356,6 +344,18 @@
             this.Startup_AutoStart.TabIndex = 4;
             this.Startup_AutoStart.Text = "Start automatically";
             this.Startup_AutoStart.UseVisualStyleBackColor = true;
+            // 
+            // Hotkey_KeyCode
+            // 
+            this.Hotkey_KeyCode.Alt = false;
+            this.Hotkey_KeyCode.Ctrl = false;
+            this.Hotkey_KeyCode.Enabled = false;
+            this.Hotkey_KeyCode.KeyCode = System.Windows.Forms.Keys.None;
+            this.Hotkey_KeyCode.Location = new System.Drawing.Point(46, 83);
+            this.Hotkey_KeyCode.Name = "Hotkey_KeyCode";
+            this.Hotkey_KeyCode.Shift = false;
+            this.Hotkey_KeyCode.Size = new System.Drawing.Size(213, 19);
+            this.Hotkey_KeyCode.TabIndex = 1;
             // 
             // SettingsDialog
             // 
