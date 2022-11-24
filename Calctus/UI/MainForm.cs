@@ -380,6 +380,8 @@ namespace Shapoco.Calctus.UI {
             var ans = MessageBox.Show("Are you sure you want to delete all?", "Confirm", MessageBoxButtons.OKCancel, MessageBoxIcon.Exclamation);
             if (ans == DialogResult.OK) {
                 historyBox.Items.Clear();
+                historyBox.Items.Add(new HistoryItem());
+                historyBox.SelectedIndex = 0;
                 Recalc();
                 updateHistoryMenu();
             }
