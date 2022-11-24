@@ -7,12 +7,16 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 using System.Windows.Forms;
+using System.Runtime.InteropServices;
 
 using Shapoco.Calctus.Model;
 using Shapoco.Calctus.Parser;
 
 namespace Shapoco.Calctus.UI {
     internal partial class MainForm : Form {
+        [DllImport("user32.dll")]
+        public static extern IntPtr GetForegroundWindow();
+
         private char[] _selectionCancelChars;
         private RadixMode _radixMode = RadixMode.Auto;
         private bool _loadingExpressionFromHistory = false;
@@ -188,7 +192,12 @@ namespace Shapoco.Calctus.UI {
         }
 
         private void _hotkey_HotKeyPush(object sender, EventArgs e) {
-            showForeground();
+            if (GetForegroundWindow() == this.Handle) {
+                this.WindowState = FormWindowState.Minimized;
+            }
+            else {
+                showForeground();
+            }
         }
         
         private void showForeground() {
