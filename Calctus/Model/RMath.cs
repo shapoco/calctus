@@ -51,11 +51,17 @@ namespace Shapoco.Calctus.Model {
         public static real Atan2(real a, real b) => (real)Math.Atan2((double)a.Raw, (double)b.Raw);
 
         // 丸め関数
-        // 暫定的に System.Math の関数を使用する
         public static real Floor(real val) => (real)Math.Floor(val.Raw);
         public static real Ceiling(real val) => (real)Math.Ceiling(val.Raw);
         public static real Truncate(real val) => (real)Math.Truncate(val.Raw);
         public static real Round(real val) => (real)Math.Round(val.Raw);
+        
+        // 絶対値と符号
+        public static real Abs(real val) => val >= 0 ? val : -val;
         public static int Sign(real val) => Math.Sign(val.Raw);
+
+        // 最大最小
+        public static real Max(real a, real b) => a > b ? a : b;
+        public static real Min(real a, real b) => a < b ? a : b;
     }
 }

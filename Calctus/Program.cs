@@ -23,6 +23,7 @@ namespace Shapoco.Calctus
             Shapoco.Calctus.Parser.Parser.Test("2*3+4");
             Shapoco.Calctus.Parser.Parser.Test("(2+3)*4");
             Shapoco.Calctus.Parser.Parser.Test("2*(3+4)");
+            Model.Standard.PreferredNumbers.Test();
 #endif
             Application.EnableVisualStyles();
             Application.SetCompatibleTextRenderingDefault(false);

@@ -51,12 +51,15 @@
   </ItemGroup>
   <ItemGroup>
     <Compile Include="AppDataManager.cs" />
+    <Compile Include="Calctus\Assert.cs" />
     <Compile Include="Calctus\Model\RMath.cs" />
     <Compile Include="Calctus\Model\Errors.cs" />
     <Compile Include="Calctus\Model\EvalContext.cs" />
     <Compile Include="Calctus\Model\Expr.cs" />
     <Compile Include="Calctus\Model\FuncDef.cs" />
     <Compile Include="Calctus\Model\real.cs" />
+    <Compile Include="Calctus\Model\Standard\Eseries.cs" />
+    <Compile Include="Calctus\Model\Standard\PreferredNumbers.cs" />
     <Compile Include="Calctus\Model\Syntax\ValFormatHint.cs" />
     <Compile Include="Calctus\Model\OpDef.cs" />
     <Compile Include="Calctus\Model\RealVal.cs" />
