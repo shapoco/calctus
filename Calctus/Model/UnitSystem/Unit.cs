@@ -215,10 +215,10 @@ namespace Shapoco.Calctus.Model.UnitSystem {
         public bool HasSymbol => !string.IsNullOrEmpty(this.Syntax.Symbol);
 
         /// <summary>スケールされていない内部表現に変換する(1km2-->1000000m2)</summary>
-        public abstract double UnscaleValue(EvalContext e, double val);
+        public abstract real UnscaleValue(EvalContext e, real val);
 
         /// <summary>スケールされた表現に変換する(1000000m2-->km2)</summary>
-        public abstract double ScaleValue(EvalContext e, double val);
+        public abstract real ScaleValue(EvalContext e, real val);
 
         public bool IsDimless => this.Equals(NativeUnits.Dimless);
 

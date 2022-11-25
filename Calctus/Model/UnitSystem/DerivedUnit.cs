@@ -15,16 +15,16 @@ namespace Shapoco.Calctus.Model.UnitSystem {
         public DerivedUnit(IEnumerable<UnitElement> units) : this(units.ToArray(), null) { }
         public DerivedUnit(params UnitElement[] units) : this(units, null) { }
 
-        public override double UnscaleValue(EvalContext e, double val) {
+        public override real UnscaleValue(EvalContext e, real val) {
             foreach (var elm in Elements) {
-                val = val * Math.Pow(elm.Unit.UnscaleValue(e, 1), elm.Exp);
+                val = val * RMath.Pow(elm.Unit.UnscaleValue(e, 1), elm.Exp);
             }
             return val;
         }
 
-        public override double ScaleValue(EvalContext e, double val) {
+        public override real ScaleValue(EvalContext e, real val) {
             foreach (var elm in Elements) {
-                val = val / Math.Pow(elm.Unit.UnscaleValue(e, 1), elm.Exp);
+                val = val / RMath.Pow(elm.Unit.UnscaleValue(e, 1), elm.Exp);
             }
             return val;
         }

@@ -28,7 +28,7 @@ namespace Shapoco.Calctus.Model {
 
         public Var(Token name) {
             this.Name = name;
-            this.Value = new RealVal(0.0);
+            this.Value = new RealVal(0);
             this.IsReadonly = false;
         }
     }

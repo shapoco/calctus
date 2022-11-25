@@ -20,7 +20,7 @@ namespace Shapoco.Calctus.Model.Syntax {
         public abstract Val Parse(Match m);
 
         public virtual string Format(Val val) => OnFormat(val);
-        protected virtual string OnFormat(Val val) => DoubleToString(val.AsDouble);
+        protected virtual string OnFormat(Val val) => RealToString(val.AsReal);
 
         public static readonly IntFormatter CStyleInt = new IntFormatter(10, "", new Regex(@"([1-9][0-9]*|0)([eE][+-]?[0-9]+)?"), 0 );
         public static readonly RealFormatter CStyleReal = new RealFormatter("", new Regex(@"([1-9][0-9]*|0)+\.[0-9]+([eE][+-]?[0-9]+)?"), 0);
@@ -36,35 +36,28 @@ namespace Shapoco.Calctus.Model.Syntax {
             CStyleBin,
         };
 
-        public static string DoubleToString(double val) {
-#if true
-            if (double.IsNaN(val)) return "NaN";
-            if (double.IsNegativeInfinity(val)) return "-∞";
-            if (double.IsInfinity(val)) return "∞";
-            if (val == 0.0) return "0.0";
+        public static string RealToString(real val) {
+            if (val == 0.0m) return "0.0";
 
             var s = Settings.Instance;
-            var exp = (int)Math.Truncate(Math.Log10(val));
+            int exp = (int)RMath.Truncate(RMath.Log10(val));
             if (s.NumberFormat_Exp_Enabled && exp >= s.NumberFormat_Exp_PositiveMin) {
                 if (s.NumberFormat_Exp_Alignment) {
                     exp = (int)Math.Floor((double)exp / 3) * 3;
                 }
-                var frac = val / Math.Pow(10.0, exp);
-                return frac.ToString("0.##############") + "e+" + exp;
+                var frac = val / RMath.Pow10(exp);
+                return frac.ToString("0.############################") + "e+" + exp;
             }
             else if (s.NumberFormat_Exp_Enabled && exp <= s.NumberFormat_Exp_NegativeMax) {
                 if (s.NumberFormat_Exp_Alignment) {
                     exp = (int)Math.Floor((double)exp / 3) * 3;
                 }
-                var frac = val * Math.Pow(10.0, -exp);
-                return frac.ToString("0.##############") + "e" + exp;
+                var frac = val * RMath.Pow10(-exp);
+                return frac.ToString("0.############################") + "e" + exp;
             }
             else {
-                return val.ToString("0.##############");
+                return val.ToString("0.############################");
             }
-#else
-            return val.ToString();
-#endif
         }
     }
 
@@ -79,12 +72,12 @@ namespace Shapoco.Calctus.Model.Syntax {
         public override Val Parse(Match m) {
             System.Diagnostics.Debug.Assert(m.Groups[CaptureGroupIndex].Length > 0);
             var tok = m.Groups[CaptureGroupIndex].Value;
-            return new RealVal(double.Parse(tok), new ValFormatHint(this));
+            return new RealVal(real.Parse(tok), new ValFormatHint(this));
         }
 
         protected override string OnFormat(Val val) {
             if (val is RealVal) {
-                return DoubleToString(val.AsDouble);
+                return RealToString(val.AsReal);
             }
             else {
                 return base.OnFormat(val);
@@ -105,7 +98,7 @@ namespace Shapoco.Calctus.Model.Syntax {
             System.Diagnostics.Debug.Assert(m.Groups[CaptureGroupIndex].Length > 0);
             var tok = m.Groups[CaptureGroupIndex].Value;
             if (Radix == 10) {
-                return new RealVal(double.Parse(tok), new ValFormatHint(this));
+                return new RealVal(real.Parse(tok), new ValFormatHint(this));
             }
             else {
                 return new RealVal(Convert.ToInt32(tok, Radix), new ValFormatHint(this));
@@ -114,7 +107,7 @@ namespace Shapoco.Calctus.Model.Syntax {
 
         protected override string OnFormat(Val val) {
             if (val is RealVal) {
-                var fval = val.AsDouble;
+                var fval = val.AsReal;
                 var i64val = val.AsLong;
                 if (fval != i64val || i64val < int.MinValue || int.MaxValue < i64val) {
                     return base.OnFormat(val);

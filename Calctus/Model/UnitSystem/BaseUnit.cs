@@ -17,8 +17,8 @@ namespace Shapoco.Calctus.Model.UnitSystem {
             this.Dimension = dim;
         }
 
-        public override double ScaleValue(EvalContext e, double val) => val;
-        public override double UnscaleValue(EvalContext e, double val) => val;
+        public override real ScaleValue(EvalContext e, real val) => val;
+        public override real UnscaleValue(EvalContext e, real val) => val;
 
         protected override IEnumerable<UnitElement> OnEnumElements() { yield break; }
 

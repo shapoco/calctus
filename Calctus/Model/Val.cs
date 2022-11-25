@@ -22,7 +22,7 @@ namespace Shapoco.Calctus.Model {
         public bool IsDimless => this.Unit.IsDimless;
         public Val AsDimless(EvalContext ctx, bool warning = true) {
             if (warning && IsDimless) {
-                ctx.Warning(this, this.ToString() + " は無次元ではありません");
+                ctx.Warning(this, this.ToString() + " is not dimensionless");
             }
             return OnAsDimless(ctx);
         }
@@ -41,6 +41,7 @@ namespace Shapoco.Calctus.Model {
         }
         protected abstract RealVal OnAsRealVal();
 
+        public abstract real AsReal { get; }
         public abstract double AsDouble { get; }
         public abstract long AsLong { get; }
         public abstract int AsInt { get; }

@@ -12,8 +12,8 @@ namespace Shapoco.Calctus.Model {
         private Unit _unit;
         public override Unit Unit => _unit;
 
-        private double _raw;
-        public RealVal(double val, ValFormatHint fmt = null, Unit unit = null) : base(fmt) {
+        private real _raw;
+        public RealVal(real val, ValFormatHint fmt = null, Unit unit = null) : base(fmt) {
             this._raw = val;
             this._unit = unit != null ? unit : NativeUnits.Dimless;
         }
@@ -37,11 +37,11 @@ namespace Shapoco.Calctus.Model {
 
         protected override Val OnAdd(EvalContext e, Val b) {
             this.Unit.AssertDimensionEquality( b.Unit, UnitEnumMode.Dimension);
-            return new RealVal(_raw + b.AsDouble, FormatHint, Unit);
+            return new RealVal(_raw + b.AsReal, FormatHint, Unit);
         }
         protected override Val OnSub(EvalContext e, Val b) {
             this.Unit.AssertDimensionEquality(b.Unit, UnitEnumMode.Dimension);
-            return new RealVal(_raw - b.AsDouble, FormatHint, Unit);
+            return new RealVal(_raw - b.AsReal, FormatHint, Unit);
         }
         
         protected override Val OnMul(EvalContext e, Val b) {
@@ -60,18 +60,18 @@ namespace Shapoco.Calctus.Model {
 
         protected override Val OnIDiv(EvalContext e, Val b) {
             var bVal = b.AsRealVal();
-            var val = Math.Truncate(_raw / bVal._raw);
+            var val = RMath.Truncate(_raw / bVal._raw);
             var unit = this.Unit.Mul(e, bVal.Unit.Invert(e));
             return new RealVal(val, FormatHint, unit);
         }
 
         protected override Val OnMod(EvalContext e, Val b) {
-            return new RealVal(_raw % b.AsDouble, FormatHint, this.Unit);
+            return new RealVal(_raw % b.AsReal, FormatHint, this.Unit);
         }
 
         // todo: 単位の考慮
         protected override Val OnLogicShiftL(EvalContext e, Val b) => new RealVal(this.AsInt << b.AsInt, FormatHint);
-        protected override Val OnLogicShiftR(EvalContext e, Val b) => new RealVal((int)((uint)this.AsInt >> b.AsInt), FormatHint);
+        protected override Val OnLogicShiftR(EvalContext e, Val b) => new RealVal((uint)this.AsInt >> b.AsInt, FormatHint);
         protected override Val OnArithShiftL(EvalContext e, Val b) {
             var a = this.AsInt;
             var sign = a & (1 << 31);
@@ -87,8 +87,9 @@ namespace Shapoco.Calctus.Model {
 
         protected override Val OnFormat(ValFormatHint fmt) => new RealVal(_raw, fmt, Unit);
 
-        protected override RealVal OnAsRealVal() => new RealVal((double)Raw, FormatHint, Unit);
-        public override double AsDouble => _raw;
+        protected override RealVal OnAsRealVal() => new RealVal((real)Raw, FormatHint, Unit);
+        public override real AsReal => _raw;
+        public override double AsDouble => (double)_raw;
         public override long AsLong => (long)_raw; // todo: 丸め/切り捨ての明示は不要？
         public override int AsInt => (int)_raw; // todo: 丸め/切り捨ての明示は不要？
 
@@ -101,7 +102,7 @@ namespace Shapoco.Calctus.Model {
                 return FormatHint.Formatter.Format(this);
             }
             else {
-                return Unit.ScaleValue(e, this.AsDouble).ToString() + "[" + Unit.ToString() + "]";
+                return Unit.ScaleValue(e, this.AsReal).ToString() + "[" + Unit.ToString() + "]";
             }
         }
         //public static implicit operator double(RealVal val) => val.AsDouble();

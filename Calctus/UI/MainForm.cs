@@ -521,7 +521,7 @@ namespace Shapoco.Calctus.UI {
                     var hintStr = "";
                     if (val is RealVal realVal) {
                         if (realVal.IsDimless) {
-                            var doubleVal = realVal.AsDouble;
+                            var doubleVal = realVal.AsReal;
                             if (realVal.IsInteger && (doubleVal < 0 || 10 <= doubleVal && doubleVal <= int.MaxValue)) {
                                 // 10以上の整数については 10進と 16進を併記する
                                 if (realVal.FormatHint.Formatter == Shapoco.Calctus.Model.Syntax.IntFormatter.CStyleInt) {

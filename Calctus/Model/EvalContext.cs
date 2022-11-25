@@ -12,27 +12,23 @@ namespace Shapoco.Calctus.Model {
         private Dictionary<string, Var> _vars = new Dictionary<string, Var>();
         public readonly UnitFactory Units = new UnitFactory();
 
-        private void AddConstantReal(string name, double value) {
+        private void AddConstantReal(string name, real value) {
             _vars.Add(name, new Var(new Token(TokenType.Symbol, TextPosition.Empty, name), new RealVal(value), true));
         }
 
         private void AddConstantHex(string name, long value) {
-            _vars.Add(name, new Var(new Token(TokenType.Symbol, TextPosition.Empty, name), new RealVal(value).FormatHex(), true));
+            _vars.Add(name, new Var(new Token(TokenType.Symbol, TextPosition.Empty, name), new RealVal((real)value).FormatHex(), true));
         }
 
         public EvalContext() {
-            this.AddConstantReal("PI", Math.PI);
-            this.AddConstantReal("E", Math.E);
-            this.AddConstantReal("NaN", double.NaN);
-            this.AddConstantReal("∞", double.PositiveInfinity);
+            this.AddConstantReal("PI", (real)Math.PI);
+            this.AddConstantReal("E", (real)Math.E);
             this.AddConstantHex("INT_MIN", Int32.MinValue);
             this.AddConstantHex("INT_MAX", Int32.MaxValue);
             this.AddConstantHex("UINT_MIN", UInt32.MinValue);
             this.AddConstantHex("UINT_MAX", UInt32.MaxValue);
-            this.AddConstantReal("FLOAT_MIN", float.MinValue);
-            this.AddConstantReal("FLOAT_MAX", float.MaxValue);
-            this.AddConstantReal("DOUBLE_MIN", double.MinValue);
-            this.AddConstantReal("DOUBLE_MAX", double.MaxValue);
+            this.AddConstantReal("DECIMAL_MIN", real.MinValue);
+            this.AddConstantReal("DECIMAL_MAX", real.MaxValue);
         }
 
         public Var Ref(Token name, bool allowCreate) {

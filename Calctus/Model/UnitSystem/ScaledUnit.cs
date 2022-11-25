@@ -7,10 +7,10 @@ using System.Threading.Tasks;
 namespace Shapoco.Calctus.Model.UnitSystem {
     class ScaledUnit : Unit {
         public readonly Unit Base;
-        public readonly double Multiplyer;
-        public readonly double Divisor;
+        public readonly real Multiplyer;
+        public readonly real Divisor;
 
-        public ScaledUnit(Unit baseUnit, double mult, double div, UnitSyntax syn) : base(syn) {
+        public ScaledUnit(Unit baseUnit, real mult, real div, UnitSyntax syn) : base(syn) {
             if (!this.HasSymbol) {
                 throw new UnitException(this, "Internal Error: Scaled unit has to be named.");
             }
@@ -19,10 +19,10 @@ namespace Shapoco.Calctus.Model.UnitSystem {
             this.Divisor = div;
         }
 
-        public ScaledUnit(Unit baseUnit, double mult, UnitSyntax syn) : this(baseUnit, mult, 1, syn) { }
+        public ScaledUnit(Unit baseUnit, real mult, UnitSyntax syn) : this(baseUnit, mult, 1, syn) { }
 
-        public override double UnscaleValue(EvalContext e, double val) => Base.UnscaleValue(e, val) * Multiplyer / Divisor;
-        public override double ScaleValue(EvalContext e, double val) => Base.ScaleValue(e, val) * Divisor / Multiplyer;
+        public override real UnscaleValue(EvalContext e, real val) => Base.UnscaleValue(e, val) * Multiplyer / Divisor;
+        public override real ScaleValue(EvalContext e, real val) => Base.ScaleValue(e, val) * Divisor / Multiplyer;
 
         protected override Unit OnSqrt(EvalContext e) => Base.Sqrt(e);
 
