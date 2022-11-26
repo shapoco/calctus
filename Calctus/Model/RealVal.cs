@@ -33,7 +33,7 @@ namespace Shapoco.Calctus.Model {
 
         protected override Val OnUnaryPlus(EvalContext e) => this;
         protected override Val OnAtirhInv(EvalContext e) => new RealVal(-_raw, FormatHint, Unit);
-        protected override Val OnBitNot(EvalContext e) => new RealVal(~this.AsInt, FormatHint, Unit);
+        protected override Val OnBitNot(EvalContext e) => new RealVal(~this.AsLong, FormatHint, Unit);
 
         protected override Val OnAdd(EvalContext e, Val b) {
             this.Unit.AssertDimensionEquality( b.Unit, UnitEnumMode.Dimension);
@@ -70,20 +70,20 @@ namespace Shapoco.Calctus.Model {
         }
 
         // todo: 単位の考慮
-        protected override Val OnLogicShiftL(EvalContext e, Val b) => new RealVal(this.AsInt << b.AsInt, FormatHint);
-        protected override Val OnLogicShiftR(EvalContext e, Val b) => new RealVal((uint)this.AsInt >> b.AsInt, FormatHint);
+        protected override Val OnLogicShiftL(EvalContext e, Val b) => new RealVal(this.AsLong << b.AsInt, FormatHint);
+        protected override Val OnLogicShiftR(EvalContext e, Val b) => new RealVal((UInt64)this.AsLong >> b.AsInt, FormatHint);
         protected override Val OnArithShiftL(EvalContext e, Val b) {
-            var a = this.AsInt;
-            var sign = a & (1 << 31);
-            var lshift = (a << b.AsInt) & 0x7fffffff;
+            var a = this.AsLong;
+            var sign = a & (1L << 63);
+            var lshift = (a << b.AsInt) & 0x7fffffffffffffffL;
             return new RealVal(sign | lshift, FormatHint);
         }
-        protected override Val OnArithShiftR(EvalContext e, Val b) => new RealVal(this.AsInt >> b.AsInt, FormatHint);
+        protected override Val OnArithShiftR(EvalContext e, Val b) => new RealVal(this.AsLong >> b.AsInt, FormatHint);
 
         // todo: 単位の考慮
-        protected override Val OnBitAnd(EvalContext e, Val b) => new RealVal(this.AsInt & b.AsInt, FormatHint);
-        protected override Val OnBitXor(EvalContext e, Val b) => new RealVal(this.AsInt ^ b.AsInt, FormatHint);
-        protected override Val OnBitOr(EvalContext e, Val b) => new RealVal(this.AsInt | b.AsInt, FormatHint);
+        protected override Val OnBitAnd(EvalContext e, Val b) => new RealVal(this.AsLong & b.AsLong, FormatHint);
+        protected override Val OnBitXor(EvalContext e, Val b) => new RealVal(this.AsLong ^ b.AsLong, FormatHint);
+        protected override Val OnBitOr(EvalContext e, Val b) => new RealVal(this.AsLong | b.AsLong, FormatHint);
 
         protected override Val OnFormat(ValFormatHint fmt) => new RealVal(_raw, fmt, Unit);
 

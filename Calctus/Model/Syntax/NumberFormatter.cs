@@ -200,14 +200,14 @@ namespace Shapoco.Calctus.Model.Syntax {
                 return new RealVal(real.Parse(tok), new ValFormatHint(this));
             }
             else {
-                return new RealVal(Convert.ToInt32(tok, Radix), new ValFormatHint(this));
+                return new RealVal(Convert.ToInt64(tok, Radix), new ValFormatHint(this));
             }
         }
 
         protected override string OnFormat(Val val, EvalContext e) {
             if (val is RealVal) {
                 var fval = val.AsReal;
-                var i64val = val.AsLong;
+                var ival = RMath.Truncate(fval);
 
                 // 10進表記、かつ指数表記対象に該当する場合はデフォルトの数値表現を使う
                 int exp = RMath.FLog10(val.AsReal);
@@ -217,21 +217,21 @@ namespace Shapoco.Calctus.Model.Syntax {
                     s.ENotationEnabled && 
                     (exp >= s.ENotationExpPositiveMin || exp <= s.ENotationExpNegativeMax);
 
-                if (fval != i64val || i64val < int.MinValue || int.MaxValue < i64val || enotation) {
+                if (fval != ival || ival < long.MinValue || long.MaxValue < ival || enotation) {
                     // デフォルトの数値表現
                     return base.OnFormat(val, e);
                 }
                 else if (Radix == 10) {
                     // 10進表現
-                    var abs64val = i64val >= 0 ? i64val : -i64val;
-                    var ret = Convert.ToString(abs64val, Radix);
+                    var abs64val = ival >= 0 ? (decimal)ival : -(decimal)ival;
+                    var ret = Convert.ToString(abs64val);
                     ret = Prefix + ret;
-                    if (i64val < 0) ret = "-" + ret;
+                    if (ival < 0) ret = "-" + ret;
                     return ret;
                 }
                 else {
                     // 10進以外
-                    return Prefix + Convert.ToString((Int32)i64val, Radix);
+                    return Prefix + Convert.ToString((Int64)ival, Radix);
                 }
             }
             else {
