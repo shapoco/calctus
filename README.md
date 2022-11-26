@@ -4,9 +4,13 @@ a calculator for Windows.
 
 ![Screen Shot](img/ss.gif)
 
+----
+
 ## Download
 
 → see [releases](https://github.com/shapoco/calctus/releases).
+
+----
 
 ## Overview
 
@@ -15,6 +19,8 @@ a calculator for Windows.
 - The formula history can be referenced with the up key.
 - The formula history can be modified, and if so, the calculation results are regenerated.
 - Some built-in constants and built-in functions.
+
+----
 
 ## Features
 
@@ -29,28 +35,29 @@ a calculator for Windows.
 
 ### Operators
 
-|Category|Symbol|
-|:--|:--|
-|Add, Sub, Mul, Div|`+`, `-`, `*`, `/`|
-|Integral Division|`//`|
-|Remainder|`%`|
-|Power|`^`|
-|Logical NOT|`~`|
-|Logical AND|`&`|
-|Logical OR|`\|`|
-|Logical XOR|`+\|`|
-|Logical shift|`<<`, `>>`|
-|Arithmetic shift|`<<<`, `>>>`|
+|Category|Symbol|Precision|
+|:--|:--|:--|
+|Add, Sub, Mul, Div|`+`, `-`, `*`, `/`|`Decimal`|
+|Integral Division|`//`|`Decimal`|
+|Remainder|`%`|`Decimal`|
+|Power|`^`|`Double`|
+|Logical NOT|`~`|`Int64`|
+|Logical AND|`&`|`Int64`|
+|Logical OR|`\|`|`Int64`|
+|Logical XOR|`+\|`|`Int64`|
+|Logical shift|`<<`, `>>`|`Int64`|
+|Arithmetic shift|`<<<`, `>>>`|`Int64`|
 
 
 ### Embedded Functions
 
-|Category|Functions|
-|:--|:--|
-|Exponential|`sqrt(x)`, `log(x)`, `log2(x)`, `log10(x)`, `clog2(x)`, `clog10(x)`|
-|Trigonometric|`sin(x)`, `cos(x)`, `tan(x)`, `asin(x)`, `acos(x)`, `atan(x)`, `atan2(y, x)`, `sinh(x)`, `cosh(x)`, `tanh(x)`|
-|Round|`floor(x)`, `ceil(x)`, `trunc(x)`, `round(x)`|
-|Others|`abs(x)`, `sign(x)`, `max(a, b)`, `min(a, b)`|
+|Category|Functions|Precision|
+|:--|:--|:--|
+|Exponential|`sqrt(x)`, `log(x)`, `log2(x)`, `log10(x)`, `clog2(x)`, `clog10(x)`|`Double`|
+|Trigonometric|`sin(x)`, `cos(x)`, `tan(x)`,`asin(x)`, `acos(x)`, `atan(x)`, `atan2(y, x)`,`sinh(x)`:new:, `cosh(x)`:new:, `tanh(x)`:new:|`Double`|
+|Round|`floor(x)`, `ceil(x)`, `trunc(x)`, `round(x)`|`Decimal`|
+|E-series:new:|Rounding to the E-series value: `eXfloor(x)`, `eXceil(x)`, `eXround(x)`<br>Calculation of voltage divider resistance: `eXratiol(x)`, `eXratioh(x)`<br> (`X`=`3`, `6`, `12`, `24`, `48`, `96`, `192`)|`Decimal`|
+|Others|`abs(x)`:new:, `sign(x)`, `max(a, b)`:new:, `min(a, b)`:new:|`Decimal`|
 
 ### Constants
 
@@ -58,14 +65,20 @@ a calculator for Windows.
 |:--|--:|
 |`PI`|`3.1415926535897931`|
 |`E`|`2.7182818284590451`|
-|`INT_MIN`|`-2147483648`|
-|`INT_MAX`|`2147483647`|
+|`INT_MIN`|`-2,147,483,648`|
+|`INT_MAX`|`2,147,483,647`|
 |`UINT_MIN`|`0`|
-|`UINT_MAX`|`4294967295`|
-|`FLOAT_MIN`|`-3.40282347E+38f`|
-|`FLOAT_MAX`|`3.40282347E+38f`|
-|`DOUBLE_MIN`|`-1.7976931348623157E+308`|
-|`DOUBLE_MAX`|`1.7976931348623157E+308`|
+|`UINT_MAX`|`4,294,967,295`|
+|`LONG_MIN`:new:|`-9,223,372,036,854,775,808`|
+|`LONG_MAX`:new:|`9,223,372,036,854,775,807`|
+|`ULONG_MIN`:new:|`0`|
+|`ULONG_MAX`:new:|`18,446,744,073,709,551,615`|
+|~~`FLOAT_MIN`~~|~~`-3.40282347E+38f`~~|
+|~~`FLOAT_MAX`~~|~~`3.40282347E+38f`~~|
+|~~`DOUBLE_MIN`~~|~~`-1.7976931348623157E+308`~~|
+|~~`DOUBLE_MAX`~~|~~`1.7976931348623157E+308`~~|
+|`DECIMAL_MIN`:new:|`-79,228,162,514,264,337,593,543,950,335`|
+|`DECIMAL_MAX`:new:|`79,228,162,514,264,337,593,543,950,335`|
 
 ### Variables
 
@@ -90,5 +103,15 @@ a * b [Return]
 |`F10` :new:|Radix Mode = Dec|
 |`F11` :new:|Radix Mode = Hex|
 |`F12` :new:|Radix Mode = Bin|
+
+----
+
+## Settings
+
+![](img/settings_general.png)
+
+![](img/settings_appearance.png)
+
+![](img/settings_details.png)
 
 ----
