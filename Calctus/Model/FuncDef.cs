@@ -48,6 +48,9 @@ namespace Shapoco.Calctus.Model {
         public static readonly FuncDef acos = new FuncDef("acos", (e, a) => new RealVal(RMath.Acos(a[0].AsReal)));
         public static readonly FuncDef atan = new FuncDef("atan", (e, a) => new RealVal(RMath.Atan(a[0].AsReal)));
         public static readonly FuncDef atan2 = new FuncDef("atan2", 2, (e, a) => new RealVal(RMath.Atan2(a[0].AsReal, a[1].AsReal)));
+        public static readonly FuncDef sinh = new FuncDef("sinh", (e, a) => new RealVal(RMath.Sinh(a[0].AsReal)));
+        public static readonly FuncDef cosh = new FuncDef("cosh", (e, a) => new RealVal(RMath.Cosh(a[0].AsReal)));
+        public static readonly FuncDef tanh = new FuncDef("tanh", (e, a) => new RealVal(RMath.Tanh(a[0].AsReal)));
 
         public static readonly FuncDef floor = new FuncDef("floor", (e, a) => new RealVal(RMath.Floor(a[0].AsReal), a[0].FormatHint, a[0].Unit).FormatInt());
         public static readonly FuncDef ceil = new FuncDef("ceil", (e, a) => new RealVal(RMath.Ceiling(a[0].AsReal), a[0].FormatHint, a[0].Unit).FormatInt());

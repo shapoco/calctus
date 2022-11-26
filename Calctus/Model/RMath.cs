@@ -49,6 +49,9 @@ namespace Shapoco.Calctus.Model {
         public static real Acos(real a) => (real)Math.Acos((double)a.Raw);
         public static real Atan(real a) => (real)Math.Atan((double)a.Raw);
         public static real Atan2(real a, real b) => (real)Math.Atan2((double)a.Raw, (double)b.Raw);
+        public static real Sinh(real a) => (real)Math.Sinh((double)a.Raw);
+        public static real Cosh(real a) => (real)Math.Cosh((double)a.Raw);
+        public static real Tanh(real a) => (real)Math.Tanh((double)a.Raw);
 
         // 丸め関数
         public static real Floor(real val) => (real)Math.Floor(val.Raw);
