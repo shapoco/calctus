@@ -17,7 +17,7 @@ namespace Shapoco.Calctus.Model {
             _vars.Add(name, new Var(new Token(TokenType.Symbol, TextPosition.Empty, name), new RealVal(value), true));
         }
 
-        private void AddConstantHex(string name, long value) {
+        private void AddConstantHex(string name, decimal value) {
             _vars.Add(name, new Var(new Token(TokenType.Symbol, TextPosition.Empty, name), new RealVal((real)value).FormatHex(), true));
         }
 
@@ -28,6 +28,10 @@ namespace Shapoco.Calctus.Model {
             this.AddConstantHex("INT_MAX", Int32.MaxValue);
             this.AddConstantHex("UINT_MIN", UInt32.MinValue);
             this.AddConstantHex("UINT_MAX", UInt32.MaxValue);
+            this.AddConstantHex("LONG_MIN", Int64.MinValue);
+            this.AddConstantHex("LONG_MAX", Int64.MaxValue);
+            this.AddConstantHex("ULONG_MIN", UInt64.MinValue);
+            this.AddConstantHex("ULONG_MAX", UInt64.MaxValue);
             this.AddConstantReal("DECIMAL_MIN", real.MinValue);
             this.AddConstantReal("DECIMAL_MAX", real.MaxValue);
         }

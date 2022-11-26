@@ -48,9 +48,9 @@ a calculator for Windows.
 |Category|Functions|
 |:--|:--|
 |Exponential|`sqrt(x)`, `log(x)`, `log2(x)`, `log10(x)`, `clog2(x)`, `clog10(x)`|
-|Trigonometric|`sin(x)`, `cos(x)`, `tan(x)`, `asin(x)`, `acos(x)`, `atan(x)`, `atan2(y, x)`|
+|Trigonometric|`sin(x)`, `cos(x)`, `tan(x)`, `asin(x)`, `acos(x)`, `atan(x)`, `atan2(y, x)`, `sinh(x)`, `cosh(x)`, `tanh(x)`|
 |Round|`floor(x)`, `ceil(x)`, `trunc(x)`, `round(x)`|
-|Others|`sign(x)`|
+|Others|`abs(x)`, `sign(x)`, `max(a, b)`, `min(a, b)`|
 
 ### Constants
 
