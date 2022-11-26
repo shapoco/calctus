@@ -97,7 +97,6 @@ namespace Shapoco.Calctus.UI {
             // 起動時のウィンドウサイズ設定値は先に保持しておいて最後に反映する
             var s = Settings.Instance;
             Size startupWindowSize = new Size(s.Window_Width, s.Window_Height);
-            Console.WriteLine("Load " + s.Window_Width + "x" + s.Window_Height);
 
             reloadSettings();
 

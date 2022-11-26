@@ -192,23 +192,23 @@ namespace Shapoco.Calctus.Model.Standard {
         }
 
         public static void Test_Ratio() {
-            Assert.Equal("Ratio", FindSplitPair(Eseries.E6, 0m), new real[] { 0, 1 });
-            Assert.Equal("Ratio", FindSplitPair(Eseries.E6, 0.01m), new real[] { 1, 100 });
-            Assert.Equal("Ratio", FindSplitPair(Eseries.E6, 0.02m), new real[] { 6.8, 330 });
-            Assert.Equal("Ratio", FindSplitPair(Eseries.E6, 0.05m), new real[] { 3.3, 68 });
-            Assert.Equal("Ratio", FindSplitPair(Eseries.E6, 0.1m), new real[] { 1, 10 });
-            Assert.Equal("Ratio", FindSplitPair(Eseries.E6, 0.2m), new real[] { 1.5, 6.8 });
-            Assert.Equal("Ratio", FindSplitPair(Eseries.E6, 0.3m), new real[] { 6.8, 15 });
-            Assert.Equal("Ratio", FindSplitPair(Eseries.E6, 0.4m), new real[] { 1, 1.5 });
-            Assert.Equal("Ratio", FindSplitPair(Eseries.E6, 0.5m), new real[] { 1, 1 });
-            Assert.Equal("Ratio", FindSplitPair(Eseries.E6, 0.6m), new real[] { 1.5, 1 });
-            Assert.Equal("Ratio", FindSplitPair(Eseries.E6, 0.7m), new real[] { 15, 6.8 });
-            Assert.Equal("Ratio", FindSplitPair(Eseries.E6, 0.8m), new real[] { 6.8, 1.5 });
-            Assert.Equal("Ratio", FindSplitPair(Eseries.E6, 0.9m), new real[] { 10, 1 });
-            Assert.Equal("Ratio", FindSplitPair(Eseries.E6, 0.95m), new real[] { 68, 3.3 });
-            Assert.Equal("Ratio", FindSplitPair(Eseries.E6, 0.98m), new real[] { 330, 6.8 });
-            Assert.Equal("Ratio", FindSplitPair(Eseries.E6, 0.99m), new real[] { 100, 1 });
-            Assert.Equal("Ratio", FindSplitPair(Eseries.E6, 1m), new real[] { 1, 0 });
+            Assert.Equal("Ratio", FindSplitPair(Eseries.E6, 0m), new real[] { 0m, 1m });
+            Assert.Equal("Ratio", FindSplitPair(Eseries.E6, 0.01m), new real[] { 1m, 100m });
+            Assert.Equal("Ratio", FindSplitPair(Eseries.E6, 0.02m), new real[] { 6.8m, 330m });
+            Assert.Equal("Ratio", FindSplitPair(Eseries.E6, 0.05m), new real[] { 3.3m, 68m });
+            Assert.Equal("Ratio", FindSplitPair(Eseries.E6, 0.1m), new real[] { 1m, 10m });
+            Assert.Equal("Ratio", FindSplitPair(Eseries.E6, 0.2m), new real[] { 1.5m, 6.8m });
+            Assert.Equal("Ratio", FindSplitPair(Eseries.E6, 0.3m), new real[] { 6.8m, 15m });
+            Assert.Equal("Ratio", FindSplitPair(Eseries.E6, 0.4m), new real[] { 1m, 1.5m });
+            Assert.Equal("Ratio", FindSplitPair(Eseries.E6, 0.5m), new real[] { 1m, 1m });
+            Assert.Equal("Ratio", FindSplitPair(Eseries.E6, 0.6m), new real[] { 1.5m, 1m });
+            Assert.Equal("Ratio", FindSplitPair(Eseries.E6, 0.7m), new real[] { 15m, 6.8m });
+            Assert.Equal("Ratio", FindSplitPair(Eseries.E6, 0.8m), new real[] { 6.8m, 1.5m });
+            Assert.Equal("Ratio", FindSplitPair(Eseries.E6, 0.9m), new real[] { 10m, 1m });
+            Assert.Equal("Ratio", FindSplitPair(Eseries.E6, 0.95m), new real[] { 68m, 3.3m });
+            Assert.Equal("Ratio", FindSplitPair(Eseries.E6, 0.98m), new real[] { 330m, 6.8m });
+            Assert.Equal("Ratio", FindSplitPair(Eseries.E6, 0.99m), new real[] { 100m, 1m });
+            Assert.Equal("Ratio", FindSplitPair(Eseries.E6, 1m), new real[] { 1m, 0m });
         }
     }
 }

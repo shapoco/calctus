@@ -7,19 +7,24 @@ using Shapoco.Calctus.Model;
 
 namespace Shapoco.Calctus {
     public static class Assert {
+        public static void Fail(string msg) {
+            Console.Error.WriteLine("TEST FAILD!! : " + msg);
+        }
+
         public static void Equal<T>(string subject, T a, T b) {
             if (!a.Equals(b)) {
-                throw new TestFailedException(subject + " : " + a + " != " + b);
+                Fail(subject + " : " + a + " != " + b);
             }
         }
 
         public static void Equal<T>(string subject, T[] a, T[] b) {
             if (a.Length != b.Length) {
-                throw new TestFailedException(subject + " : a.Length(" + a.Length + ") != b.Length(" + b.Length + ")");
+                Fail(subject + " : a.Length(" + a.Length + ") != b.Length(" + b.Length + ")");
+                return;
             }
             for (int i = 0; i < a.Length; i++) {
                 if (!a[i].Equals(b[i])) {
-                    throw new TestFailedException(subject + " : a[" + i + "](" + a[i] + ") != b[" + i + "](" + b[i] + ")");
+                    Fail(subject + " : a[" + i + "](" + a[i] + ") != b[" + i + "](" + b[i] + ")");
                 }
             }
         }

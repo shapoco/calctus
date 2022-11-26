@@ -57,7 +57,7 @@ namespace Shapoco.Calctus.Model {
         public static explicit operator int(real val) => (int)val._raw;
 
         public static implicit operator real(decimal val) => new real(val);
-        public static implicit operator real(double val) => new real((decimal)val);
+        public static explicit operator real(double val) => new real((decimal)val);
         public static implicit operator real(long val) => new real(val);
         public static implicit operator real(int val) => new real(val);
 

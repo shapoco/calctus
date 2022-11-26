@@ -16,13 +16,6 @@ namespace Shapoco.Calctus
         static void Main()
         {
 #if DEBUG
-            Shapoco.Calctus.Parser.Lexer.Test("1+2*3/4//5");
-            Shapoco.Calctus.Parser.Parser.Test("2");
-            Shapoco.Calctus.Parser.Parser.Test("2+3");
-            Shapoco.Calctus.Parser.Parser.Test("2+3*4");
-            Shapoco.Calctus.Parser.Parser.Test("2*3+4");
-            Shapoco.Calctus.Parser.Parser.Test("(2+3)*4");
-            Shapoco.Calctus.Parser.Parser.Test("2*(3+4)");
             Model.Standard.PreferredNumbers.Test();
 #endif
             Application.EnableVisualStyles();

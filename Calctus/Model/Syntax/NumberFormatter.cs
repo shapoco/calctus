@@ -40,7 +40,7 @@ namespace Shapoco.Calctus.Model.Syntax {
             if (val == 0.0m) return "0.0";
 
             var s = Settings.Instance;
-            int exp = (int)RMath.Truncate(RMath.Log10(val));
+            int exp = (int)RMath.Truncate(RMath.Log10(RMath.Abs(val)));
             if (s.NumberFormat_Exp_Enabled && exp >= s.NumberFormat_Exp_PositiveMin) {
                 if (s.NumberFormat_Exp_Alignment) {
                     exp = (int)Math.Floor((double)exp / 3) * 3;
