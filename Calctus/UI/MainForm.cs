@@ -500,6 +500,14 @@ namespace Shapoco.Calctus.UI {
             Console.WriteLine("Recalc()");
 #endif
             EvalContext ctx = new EvalContext();
+
+            // 設定を評価コンテキストに反映する
+            var s = Settings.Instance;
+            ctx.Settings.ENotationEnabled = s.NumberFormat_Exp_Enabled;
+            ctx.Settings.ENotationExpPositiveMin = s.NumberFormat_Exp_PositiveMin;
+            ctx.Settings.ENotationExpNegativeMax = s.NumberFormat_Exp_NegativeMax;
+            ctx.Settings.ENotationAlignment = s.NumberFormat_Exp_Alignment;
+
             for (int i = 0; i < historyBox.Items.Count; i++) {
                 var item = historyBox[i];
                 try {
@@ -516,7 +524,7 @@ namespace Shapoco.Calctus.UI {
                         case RadixMode.Bin: val = val.FormatBin(); break;
                     }
 
-                    var valStr = val.ToString();
+                    var valStr = val.ToString(ctx);
                     var hintStr = "";
                     if (val is RealVal realVal) {
                         if (realVal.IsDimless) {

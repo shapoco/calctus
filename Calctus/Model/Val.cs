@@ -133,7 +133,7 @@ namespace Shapoco.Calctus.Model {
         //protected abstract Val _logicand(Val b);
         //protected abstract Val _logicor(Val b);
 
-        //public override string ToString() => FormatHint.Formatter.Format(this);
-        
+        public override string ToString() => this.ToString(new EvalContext());
+        public abstract string ToString(EvalContext e);
     }
 }

@@ -15,6 +15,18 @@ namespace Shapoco.Calctus.Model {
         public static real Log10(real a) => (real)Math.Log10((double)a.Raw);
         
         /// <summary>
+        /// a が 0 の場合は 0 を返し、それ以外の場合は floor(log10(abs(a))) を返す。
+        /// </summary>
+        public static int FLog10(real a) {
+            if (a == 0) {
+                return 0;
+            }
+            else {
+                return (int)Floor(Log10(Abs(a)));
+            }
+        }
+
+        /// <summary>
         /// 10のe乗を返す。
         /// 数値を文字列に変換する際に桁合わせのために使用する。
         /// Math.Pow() をそのまま使用すると double の仮数部のビット数が足りずに誤差が出るため、10進10桁ずつに分割して計算する。

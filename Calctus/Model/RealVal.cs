@@ -93,13 +93,9 @@ namespace Shapoco.Calctus.Model {
         public override long AsLong => (long)_raw; // todo: 丸め/切り捨ての明示は不要？
         public override int AsInt => (int)_raw; // todo: 丸め/切り捨ての明示は不要？
 
-        public override string ToString() {
-            return ToString(new EvalContext());
-        }
-
-        public string ToString(EvalContext e) {
+        public override string ToString(EvalContext e) {
             if (Unit.IsDimless) {
-                return FormatHint.Formatter.Format(this);
+                return FormatHint.Formatter.Format(this, e);
             }
             else {
                 return Unit.ScaleValue(e, this.AsReal).ToString() + "[" + Unit.ToString() + "]";

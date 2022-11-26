@@ -11,16 +11,15 @@ namespace Shapoco.Calctus.Model {
         public static readonly real MaxValue = (real)decimal.MaxValue;
         public static readonly real MinValue = (real)decimal.MinValue;
 
-        private decimal _raw;
-        public decimal Raw => _raw;
+        public readonly decimal Raw;
 
         public real(decimal raw) {
-            _raw = raw;
+            Raw = raw;
         }
 
         public override bool Equals(object obj) {
             if (obj is real obj1) {
-                return _raw == obj1._raw;
+                return Raw == obj1.Raw;
             }
             else {
                 return false;
@@ -47,33 +46,33 @@ namespace Shapoco.Calctus.Model {
             }
         }
 
-        public override int GetHashCode() => decimal.GetBits(_raw)[0];
-        public override string ToString() => _raw.ToString();
-        public string ToString(string format) => _raw.ToString(format);
+        public override int GetHashCode() => decimal.GetBits(Raw)[0];
+        public override string ToString() => Raw.ToString();
+        public string ToString(string format) => Raw.ToString(format);
 
-        public static explicit operator double(real val) => (double)val._raw;
-        public static implicit operator decimal(real val) => val._raw;
-        public static explicit operator long(real val) => (long)val._raw;
-        public static explicit operator int(real val) => (int)val._raw;
+        public static explicit operator double(real val) => (double)val.Raw;
+        public static implicit operator decimal(real val) => val.Raw;
+        public static explicit operator long(real val) => (long)val.Raw;
+        public static explicit operator int(real val) => (int)val.Raw;
 
         public static implicit operator real(decimal val) => new real(val);
         public static explicit operator real(double val) => new real((decimal)val);
         public static implicit operator real(long val) => new real(val);
         public static implicit operator real(int val) => new real(val);
 
-        public static real operator -(real val) => new real(-val._raw);
-        public static real operator +(real a, real b) => new real(a._raw + b._raw);
-        public static real operator -(real a, real b) => new real(a._raw - b._raw);
-        public static real operator *(real a, real b) => new real(a._raw * b._raw);
-        public static real operator /(real a, real b) => new real(a._raw / b._raw);
-        public static real operator %(real a, real b) => new real(a._raw % b._raw);
+        public static real operator -(real val) => new real(-val.Raw);
+        public static real operator +(real a, real b) => new real(a.Raw + b.Raw);
+        public static real operator -(real a, real b) => new real(a.Raw - b.Raw);
+        public static real operator *(real a, real b) => new real(a.Raw * b.Raw);
+        public static real operator /(real a, real b) => new real(a.Raw / b.Raw);
+        public static real operator %(real a, real b) => new real(a.Raw % b.Raw);
 
-        public static bool operator ==(real a, real b) => a._raw == b._raw;
-        public static bool operator !=(real a, real b) => a._raw != b._raw;
-        public static bool operator <(real a, real b) => a._raw < b._raw;
-        public static bool operator >(real a, real b) => a._raw > b._raw;
-        public static bool operator <=(real a, real b) => a._raw <= b._raw;
-        public static bool operator >=(real a, real b) => a._raw >= b._raw;
+        public static bool operator ==(real a, real b) => a.Raw == b.Raw;
+        public static bool operator !=(real a, real b) => a.Raw != b.Raw;
+        public static bool operator <(real a, real b) => a.Raw < b.Raw;
+        public static bool operator >(real a, real b) => a.Raw > b.Raw;
+        public static bool operator <=(real a, real b) => a.Raw <= b.Raw;
+        public static bool operator >=(real a, real b) => a.Raw >= b.Raw;
 
     }
 }

@@ -186,12 +186,5 @@ namespace Shapoco.Calctus.Parser
                 throw new SyntaxError(_lex.Position, "missing: '" + typ + "'");
             }
         }
-
-        public static void Test(string s) {
-            var expr = Parser.Parse(s);
-            Console.Write(s + "=>");
-            Console.Write(expr.ToString() + " = ");
-            Console.WriteLine(expr.Eval(new EvalContext()));
-        }
     }
 }

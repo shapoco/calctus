@@ -16,6 +16,7 @@ namespace Shapoco.Calctus
         static void Main()
         {
 #if DEBUG
+            Model.Syntax.NumberFormatter.Test();
             Model.Standard.PreferredNumbers.Test();
 #endif
             Application.EnableVisualStyles();

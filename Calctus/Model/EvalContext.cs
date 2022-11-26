@@ -11,6 +11,7 @@ namespace Shapoco.Calctus.Model {
     class EvalContext {
         private Dictionary<string, Var> _vars = new Dictionary<string, Var>();
         public readonly UnitFactory Units = new UnitFactory();
+        public readonly EvalSettings Settings = new EvalSettings();
 
         private void AddConstantReal(string name, real value) {
             _vars.Add(name, new Var(new Token(TokenType.Symbol, TextPosition.Empty, name), new RealVal(value), true));
