@@ -9,11 +9,14 @@ namespace Shapoco.Calctus.UI {
     public class KeyCodeBox : Panel {
         public event EventHandler KeyCodeChanged;
 
-        private CheckBox _altKey = new CheckBox();
-        private CheckBox _ctrlKey = new CheckBox();
-        private CheckBox _shiftKey = new CheckBox();
-        private TextBox _keyBox = new TextBox();
+        private CheckBox _altBox = new CheckBox();
+        private CheckBox _ctrlBox = new CheckBox();
+        private CheckBox _shiftBox = new CheckBox();
+        private TextBox _keyCodeBox = new TextBox();
 
+        private bool _alt = false;
+        private bool _ctrl = false;
+        private bool _shift = false;
         private Keys _keyCode = Keys.None;
 
         public KeyCodeBox() {
@@ -24,31 +27,31 @@ namespace Shapoco.Calctus.UI {
                 return;
             }
 
-            _altKey.Dock = DockStyle.Left;
-            _ctrlKey.Dock = DockStyle.Left;
-            _shiftKey.Dock = DockStyle.Left;
-            _keyBox.Dock = DockStyle.Fill;
-            _altKey.AutoSize = false;
-            _ctrlKey.AutoSize = false;
-            _shiftKey.AutoSize = false;
-            _keyBox.AutoSize = false;
-            _altKey.Text = "Alt";
-            _ctrlKey.Text = "Ctrl";
-            _shiftKey.Text = "Shift";
-            _altKey.Size = _altKey.PreferredSize;
-            _ctrlKey.Size = _ctrlKey.PreferredSize;
-            _shiftKey.Size = _shiftKey.PreferredSize;
-            this.Controls.Add(_keyBox);
-            this.Controls.Add(_shiftKey);
-            this.Controls.Add(_ctrlKey);
-            this.Controls.Add(_altKey);
+            _altBox.Dock = DockStyle.Left;
+            _ctrlBox.Dock = DockStyle.Left;
+            _shiftBox.Dock = DockStyle.Left;
+            _keyCodeBox.Dock = DockStyle.Fill;
+            _altBox.AutoSize = false;
+            _ctrlBox.AutoSize = false;
+            _shiftBox.AutoSize = false;
+            _keyCodeBox.AutoSize = false;
+            _altBox.Text = "Alt";
+            _ctrlBox.Text = "Ctrl";
+            _shiftBox.Text = "Shift";
+            _altBox.Size = _altBox.PreferredSize;
+            _ctrlBox.Size = _ctrlBox.PreferredSize;
+            _shiftBox.Size = _shiftBox.PreferredSize;
+            this.Controls.Add(_keyCodeBox);
+            this.Controls.Add(_shiftBox);
+            this.Controls.Add(_ctrlBox);
+            this.Controls.Add(_altBox);
 
-            _altKey.CheckedChanged += (s, e) => { this.Alt = ((CheckBox)s).Checked; };
-            _ctrlKey.CheckedChanged += (s, e) => { this.Ctrl = ((CheckBox)s).Checked; };
-            _shiftKey.CheckedChanged += (s, e) => { this.Shift = ((CheckBox)s).Checked; };
-            _keyBox.KeyDown += _keyBox_KeyDown;
-            _keyBox.KeyUp += _keyBox_KeyUp;
-            _keyBox.KeyPress += _keyBox_KeyPress;
+            _altBox.CheckedChanged += (s, e) => { this.Alt = ((CheckBox)s).Checked; };
+            _ctrlBox.CheckedChanged += (s, e) => { this.Ctrl = ((CheckBox)s).Checked; };
+            _shiftBox.CheckedChanged += (s, e) => { this.Shift = ((CheckBox)s).Checked; };
+            _keyCodeBox.KeyDown += _keyBox_KeyDown;
+            _keyCodeBox.KeyUp += _keyBox_KeyUp;
+            _keyCodeBox.KeyPress += _keyBox_KeyPress;
         }
 
         private void _keyBox_KeyDown(object sender, KeyEventArgs e) {
@@ -64,28 +67,30 @@ namespace Shapoco.Calctus.UI {
             e.Handled = true;
         }
 
+        public void SetKeyCode(bool alt, bool ctrl, bool shift, Keys keyCode) {
+            bool changed = (alt != _alt) || (ctrl != _ctrl) || (shift != _shift) || (keyCode != _keyCode);
+            if (!changed) return;
+            _altBox.Checked = _alt = alt;
+            _ctrlBox.Checked = _ctrl = ctrl;
+            _shiftBox.Checked = _shift = shift;
+            _keyCode = keyCode;
+            _keyCodeBox.Text = keyCode.ToString();
+            KeyCodeChanged?.Invoke(this, EventArgs.Empty);
+        }
+
         public bool Alt {
-            get => _altKey.Checked;
-            set {
-                if (_altKey.Checked == value) return;
-                _altKey.Checked = value;
-            }
+            get => _altBox.Checked;
+            set => SetKeyCode(value, _ctrl, _shift, _keyCode);
         }
 
         public bool Ctrl {
-            get => _ctrlKey.Checked;
-            set {
-                if (_ctrlKey.Checked == value) return;
-                _ctrlKey.Checked = value;
-            }
+            get => _ctrlBox.Checked;
+            set => SetKeyCode(_alt, value, _shift, _keyCode);
         }
 
         public bool Shift {
-            get => _shiftKey.Checked;
-            set {
-                if (_shiftKey.Checked == value) return;
-                _shiftKey.Checked = value;
-            }
+            get => _shiftBox.Checked;
+            set => SetKeyCode(_alt, _ctrl, value, _keyCode);
         }
 
         public Keys KeyCode {
@@ -99,11 +104,7 @@ namespace Shapoco.Calctus.UI {
                     value = Keys.None;
                 }
 
-                if (value == _keyCode) return;
-
-                _keyCode = value;
-                _keyBox.Text = value.ToString();
-                KeyCodeChanged?.Invoke(this, EventArgs.Empty);
+                SetKeyCode(_alt, _ctrl, _shift, value);
             }
         }
     }

@@ -73,10 +73,7 @@ namespace Shapoco.Calctus.UI {
                 Startup_TrayIcon.Checked = s.Startup_TrayIcon;
 
                 Hotkey_Enabled.Checked = s.Hotkey_Enabled;
-                Hotkey_KeyCode.Alt = s.HotKey_Alt;
-                Hotkey_KeyCode.Ctrl = s.HotKey_Ctrl;
-                Hotkey_KeyCode.Shift = s.HotKey_Shift;
-                Hotkey_KeyCode.KeyCode = s.HotKey_KeyCode;
+                Hotkey_KeyCode.SetKeyCode(s.HotKey_Alt, s.HotKey_Ctrl, s.HotKey_Shift, s.HotKey_KeyCode);
 
                 NumberFormat_Exp_Enabled.Checked = s.NumberFormat_Exp_Enabled;
                 NumberFormat_Exp_NegativeMax.Value = s.NumberFormat_Exp_NegativeMax;
