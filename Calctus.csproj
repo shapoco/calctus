@@ -87,17 +87,19 @@
     <Compile Include="Calctus\Model\Var.cs" />
     <Compile Include="Calctus\Parser\Types.cs" />
     <Compile Include="Calctus\Settings.cs" />
+    <Compile Include="Calctus\UI\CalcListItem.cs">
+      <SubType>Component</SubType>
+    </Compile>
     <Compile Include="Calctus\UI\ColorUtils.cs" />
+    <Compile Include="Calctus\UI\CalcListBox.cs">
+      <SubType>Component</SubType>
+    </Compile>
     <Compile Include="Calctus\UI\FlatButton.cs">
       <SubType>Component</SubType>
     </Compile>
     <Compile Include="Calctus\UI\FlatRadioButton.cs">
       <SubType>Component</SubType>
     </Compile>
-    <Compile Include="Calctus\UI\HistoryBox.cs">
-      <SubType>Component</SubType>
-    </Compile>
-    <Compile Include="Calctus\UI\HistoryItem.cs" />
     <Compile Include="Calctus\UI\Hotkey.cs" />
     <Compile Include="Calctus\UI\KeyCodeBox.cs">
       <SubType>Component</SubType>
@@ -116,6 +118,9 @@
       <DependentUpon>SettingsDialog.cs</DependentUpon>
     </Compile>
     <Compile Include="Calctus\UI\Types.cs" />
+    <Compile Include="Calctus\UI\ExpressionBox.cs">
+      <SubType>Component</SubType>
+    </Compile>
     <Compile Include="Properties\AssemblyInfo.cs" />
     <Compile Include="Windows\StartupShortcut.cs" />
     <EmbeddedResource Include="Calctus\UI\MainForm.resx">

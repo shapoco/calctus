@@ -17,10 +17,7 @@ namespace Shapoco.Calctus.UI {
         [DllImport("user32.dll")]
         public static extern IntPtr GetForegroundWindow();
 
-        private char[] _selectionCancelChars;
         private RadixMode _radixMode = RadixMode.Auto;
-        private bool _loadingExpressionFromHistory = false;
-        private HistoryItem _lastItem = null;
         private HotKey _hotkey = null;
         private bool _startup = true;
 
@@ -32,31 +29,10 @@ namespace Shapoco.Calctus.UI {
         }
 
         public MainForm() {
-            // 全選択された状態で入力されたら選択を解除する文字の一覧
-            _selectionCancelChars = OpDef.AllSymbols
-                .Select(p => p[0])
-                .Distinct()
-                .ToArray();
-
             InitializeComponent();
             if (this.DesignMode) return;
 
             ToolStripManager.Renderer = new ToolStripProfessionalRenderer(new CustomProfessionalColors());
-
-            historyBox.Items.Add(new HistoryItem());
-            historyBox.SelectedIndex = 0;
-            historyBox.SelectedIndexChanged += HistoryBox_SelectedIndexChanged;
-            historyBox.KeyUp += HistoryBox_KeyUp;
-            historyBox.MouseUp += HistoryBox_MouseUp;
-
-            historyMenuCopyText.Click += HistoryMenuCopyText_Click;
-            historyMenuCopyAnswer.Click += HistoryMenuCopyAnswer_Click;
-            historyMenuCopyAll.Click += HistoryMenuCopyAll_Click;
-            historyMenuMoveUp.Click += HistoryMenuMoveUp_Click;
-            historyMenuMoveDown.Click += HistoryMenuMoveDown_Click;
-            historyMenuInsert.Click += HistoryMenuInsert_Click;
-            historyMenuDelete.Click += HistoryMenuDelete_Click;
-            historyMenuDeleteAll.Click += HistoryMenuDeleteAll_Click;
 
             this.Text = Application.ProductName + " (v" + System.Reflection.Assembly.GetExecutingAssembly().GetName().Version + ")";
             this.KeyPreview = true; 
@@ -69,13 +45,7 @@ namespace Shapoco.Calctus.UI {
 
             notifyIcon.MouseClick += NotifyIcon_MouseClick;
 
-            exprBox.AutoSize = false;
-            exprBox.Dock = DockStyle.Fill;
-            exprBox.KeyPress += ExprBox_KeyPress;
-            exprBox.TextChanged += ExprBox_TextChanged;
-            exprBox.KeyDown += ExpressionBox_KeyDown;
-            
-            calcButton.Click += CalcButton_Click;
+            calcListBox.RadixModeChanged += (sender, e) => { this.RadixMode = ((CalcListBox)sender).RadixMode; };
             
             radixAutoButton.CheckedChanged += (sender, e) => { RadixCheckedChanged((RadioButton)sender, RadixMode.Auto); };
             radixDecButton.CheckedChanged += (sender, e) => { RadixCheckedChanged((RadioButton)sender, RadixMode.Dec); };
@@ -88,8 +58,6 @@ namespace Shapoco.Calctus.UI {
 
             contextOpen.Click += (sender, e) => { showForeground(); };
             contextExit.Click += (sender, e) => { Application.Exit(); };
-
-            subAnswerLabel.Text = "";
         }
 
         private void MainForm_Load(object sender, EventArgs e) {
@@ -113,7 +81,7 @@ namespace Shapoco.Calctus.UI {
                     this.Visible = false;
                 }
             }
-            exprBox.Focus();
+            calcListBox.Refocus();
         }
 
         private void MainForm_FormClosing(object sender, FormClosingEventArgs e) {
@@ -152,13 +120,10 @@ namespace Shapoco.Calctus.UI {
                 var font_mono_normal = new Font(s.Appearance_Font_Expr_Name, s.Appearance_Font_Size, font_style);
                 var font_mono_large = new Font(s.Appearance_Font_Expr_Name, s.Appearance_Font_Size * font_large_coeff, font_style);
                 this.Font = font_ui_normal;
-                historyBox.Font = font_mono_large;
-                exprBox.Font = font_mono_large;
-                subAnswerLabel.Font = font_mono_normal;
+                calcListBox.Font = font_mono_large;
             }
             catch { }
-
-            Recalc();
+            calcListBox.Recalc();
         }
 
         private void enableHotkey() {
@@ -221,15 +186,6 @@ namespace Shapoco.Calctus.UI {
             else if (e.KeyCode == Keys.F12) {
                 this.RadixMode = RadixMode.Bin;
             }
-            else if (e.Modifiers == (Keys.Control | Keys.Shift) && e.KeyCode == Keys.C) {
-                historyMenuCopyAll.PerformClick();
-            }
-            else if (e.Modifiers == Keys.Shift && e.KeyCode == Keys.Delete) {
-                historyMenuDelete.PerformClick();
-            }
-            else if (e.Modifiers == (Keys.Control | Keys.Shift) && e.KeyCode == Keys.Delete) {
-                historyMenuDeleteAll.PerformClick();
-            }
             else {
                 e.SuppressKeyPress = false;
             }
@@ -246,319 +202,13 @@ namespace Shapoco.Calctus.UI {
                     case RadixMode.Hex: radixHexButton.Checked = true; break;
                     case RadixMode.Bin: radixBinButton.Checked = true; break;
                 }
-                Recalc();
-            }
-        }
-
-        private void HistoryBox_MouseUp(object sender, MouseEventArgs e) {
-            if (e.Button == MouseButtons.Right) {
-                historyMenuStrip.Show(Cursor.Position);
-            }
-        }
-
-        private void HistoryBox_KeyUp(object sender, KeyEventArgs e) {
-            if (e.KeyCode == Keys.Apps) {
-                e.Handled = true;
-
-                int index = historyBox.SelectedIndex;
-                Point menuPos;
-                if (index >= 0) {
-                    var itemRect = historyBox.GetItemRectangle(index);
-                    menuPos = historyBox.PointToScreen(new Point(itemRect.X, itemRect.Bottom));
-                }
-                else {
-                    var clientRect = historyBox.ClientRectangle;
-                    menuPos = historyBox.PointToScreen(new Point(clientRect.X, clientRect.Bottom)); ;
-                }
-                historyMenuStrip.Show(menuPos);
-            }
-        }
-
-        private void HistoryBox_SelectedIndexChanged(object sender, EventArgs e) {
-            updateHistoryMenu();
-            if (historyBox.SelectedIndex < 0) return;
-            var item = historyBox.SelectedHistoryItem;
-            _lastItem?.Deselected();
-            _lastItem = item;
-            _loadingExpressionFromHistory = true;
-            exprBox.Text = item.Expression;
-            this.RadixMode = item.RadixMode;
-            _loadingExpressionFromHistory = false;
-            exprBox.SelectAll();
-        }
-
-        private void updateHistoryMenu() {
-            var itemSelected = historyBox.SelectedIndex >= 0;
-            var itemsExist = historyBox.Items.Count > 0;
-            historyMenuCopyText.Enabled = itemSelected;
-            historyMenuCopyAnswer.Enabled = itemSelected;
-            historyMenuCopyAll.Enabled = itemsExist;
-            historyMenuMoveUp.Enabled = itemSelected;
-            historyMenuMoveDown.Enabled = itemSelected;
-            historyMenuInsert.Enabled = true;
-            historyMenuDelete.Enabled = itemSelected;
-            historyMenuDeleteAll.Enabled = itemsExist;
-        }
-
-        private void HistoryMenuCopyText_Click(object sender, EventArgs e) {
-            var item = historyBox.SelectedHistoryItem;
-            if (item != null) {
-                Clipboard.Clear();
-                Clipboard.SetText(item.Expression + " = " + item.Answer);
-            }
-        }
-
-        private void HistoryMenuCopyAnswer_Click(object sender, EventArgs e) {
-            var item = historyBox.SelectedHistoryItem;
-            if (item != null) {
-                Clipboard.Clear();
-                Clipboard.SetText(item.Answer);
-            }
-        }
-
-        private void HistoryMenuCopyAll_Click(object sender, EventArgs e) {
-            if (historyBox.Items.Count == 0) return;
-            var sb = new StringBuilder();
-            for(int i = 0; i < historyBox.Items.Count; i++) {
-                var item = historyBox[i];
-                sb.Append(item.Expression).Append(" = ").AppendLine(item.Answer);
-            }
-            Clipboard.Clear();
-            Clipboard.SetText(sb.ToString());
-        }
-
-        private void HistoryMenuMoveUp_Click(object sender, EventArgs e) {
-            var index = historyBox.SelectedIndex;
-            if (index < 1) return;
-            var temp = historyBox[index];
-            historyBox.Items.RemoveAt(index);
-            historyBox.Items.Insert(index - 1, temp);
-            historyBox.SelectedIndex = index - 1;
-            Recalc();
-        }
-
-        private void HistoryMenuMoveDown_Click(object sender, EventArgs e) {
-            var index = historyBox.SelectedIndex;
-            if (index > historyBox.Items.Count - 2) return;
-            var temp = historyBox[index];
-            historyBox.Items.RemoveAt(index);
-            historyBox.Items.Insert(index + 1, temp);
-            historyBox.SelectedIndex = index + 1;
-            Recalc();
-        }
-
-        private void HistoryMenuInsert_Click(object sender, EventArgs e) {
-            var index = historyBox.SelectedIndex;
-            HistoryItem newItem;
-            if (index < 0) {
-                index = historyBox.Items.Count;
-                if (historyBox.Items.Count == 0) {
-                    newItem = new HistoryItem();
-                }
-                else {
-                    newItem = new HistoryItem(historyBox[historyBox.Items.Count - 1]);
-                }
-            }
-            else if (index == 0) {
-                newItem = new HistoryItem();
-            }
-            else {
-                newItem = new HistoryItem(historyBox[index-1]);
-            }
-            historyBox.Items.Insert(index, newItem);
-            historyBox.SelectedIndex = index;
-            Recalc();
-        }
-
-        private void HistoryMenuDelete_Click(object sender, EventArgs e) {
-            int index = historyBox.SelectedIndex;
-            if (index >= 0) {
-                historyBox.Items.RemoveAt(index);
-                if (index < historyBox.Items.Count) {
-                    historyBox.SelectedIndex = index;
-                }
-                else if (historyBox.Items.Count > 0) {
-                    historyBox.SelectedIndex = historyBox.Items.Count - 1;
-                }
-                Recalc();
-            }
-        }
-
-        private void HistoryMenuDeleteAll_Click(object sender, EventArgs e) {
-            var ans = MessageBox.Show("Are you sure you want to delete all?", "Confirm", MessageBoxButtons.OKCancel, MessageBoxIcon.Exclamation);
-            if (ans == DialogResult.OK) {
-                historyBox.Items.Clear();
-                historyBox.Items.Add(new HistoryItem());
-                historyBox.SelectedIndex = 0;
-                Recalc();
-                updateHistoryMenu();
+                calcListBox.RadixMode = value;
             }
         }
 
         private void RadixCheckedChanged(RadioButton btn, RadixMode mode) {
-            if (_loadingExpressionFromHistory) return;
             if (btn.Checked) {
                 this.RadixMode = mode;
-            }
-            exprBox.Focus();
-        }
-
-        private void ExprBox_TextChanged(object sender, EventArgs e) {
-            if (_loadingExpressionFromHistory) return;
-            var item = historyBox.SelectedHistoryItem;
-            if (item != null) {
-                item.Expression = exprBox.Text;
-            }
-            Recalc();
-        }
-
-        private void ExprBox_KeyPress(object sender, KeyPressEventArgs e) {
-            var item = historyBox.SelectedHistoryItem;
-            if (_selectionCancelChars.Contains(e.KeyChar) && item != null) {
-                var allSelected = exprBox.SelectionLength > 0 && exprBox.SelectionStart == 0 && exprBox.SelectionLength == exprBox.TextLength;
-                if (item.IsFreshAnswer && allSelected) {
-                    // 直前の式の評価値が全選択された状態で演算子が入力されたら、
-                    // 値を Ans に置換し、選択を解除して末尾にカーソル移動
-                    exprBox.SelectedText = "Ans";
-                    exprBox.SelectionStart = exprBox.TextLength;
-                }
-            }
-            else if (e.KeyChar == (char)Keys.Return) {
-                e.Handled = true;
-            }
-        }
-
-        private void ExpressionBox_KeyDown(object sender, KeyEventArgs e) {
-            switch (e.KeyCode) {
-                case Keys.Return:
-                    OnReturnPressed(e.Shift);
-                    e.Handled = true;
-                    break;
-                case Keys.Up:
-                    if (historyBox.SelectedIndex > 0) {
-                        historyBox.SelectedIndex -= 1;
-                    }
-                    e.Handled = true;
-                    break;
-                case Keys.Down:
-                    if (historyBox.SelectedIndex < historyBox.Items.Count - 1) {
-                        historyBox.SelectedIndex += 1;
-                    }
-                    e.Handled = true;
-                    break;
-            }
-        }
-
-        private void OnReturnPressed(bool insert) {
-            if (historyBox.SelectedIndex >= 0) {
-                // 数式をヒストリに反映
-                historyBox.SelectedHistoryItem.Expression = exprBox.Text;
-            }
-            else {
-                // 選択されていない場合は新規作成
-                var newItem = new HistoryItem();
-                newItem.Expression = exprBox.Text;
-                newItem.RadixMode = this.RadixMode;
-                historyBox.Items.Add(newItem);
-                historyBox.SelectedIndex = historyBox.Items.Count - 1;
-                Recalc();
-            }
-
-            // 次のアイテムを選択する
-            int nextIndex;
-            if (insert) {
-                nextIndex = historyBox.SelectedIndex;
-            }
-            else {
-                nextIndex = historyBox.SelectedIndex + 1;
-            }
-
-            bool append = nextIndex >= historyBox.Items.Count;
-            if (append || insert) {
-                // 必要に応じて新しい履歴の要素を追加する
-                HistoryItem newItem;
-                if (nextIndex > 0) {
-                    // 直前に履歴が存在する場合はその評価値と基数を引き継ぐ
-                    var prevItem = historyBox[nextIndex - 1];
-                    newItem = new HistoryItem(prevItem);
-                }
-                else {
-                    newItem = new HistoryItem();
-                }
-                historyBox.Items.Insert(nextIndex, newItem);
-            }
-
-            historyBox.SelectedIndex = nextIndex;
-
-            if (append) {
-                exprBox.SelectAll();
-            }
-        }
-
-        private void Recalc() {
-#if DEBUG
-            Console.WriteLine("Recalc()");
-#endif
-            EvalContext ctx = new EvalContext();
-
-            // 設定を評価コンテキストに反映する
-            var s = Settings.Instance;
-            ctx.Settings.ENotationEnabled = s.NumberFormat_Exp_Enabled;
-            ctx.Settings.ENotationExpPositiveMin = s.NumberFormat_Exp_PositiveMin;
-            ctx.Settings.ENotationExpNegativeMax = s.NumberFormat_Exp_NegativeMax;
-            ctx.Settings.ENotationAlignment = s.NumberFormat_Exp_Alignment;
-
-            for (int i = 0; i < historyBox.Items.Count; i++) {
-                var item = historyBox[i];
-                try {
-                    item.Answer = "";
-                    if (i == historyBox.SelectedIndex) {
-                        item.RadixMode = this.RadixMode;
-                    }
-                    var expr = Parser.Parser.Parse(item.Expression);
-                    var val = expr.Eval(ctx);
-
-                    switch (item.RadixMode) {
-                        case RadixMode.Dec: val = val.FormatInt(); break;
-                        case RadixMode.Hex: val = val.FormatHex(); break;
-                        case RadixMode.Bin: val = val.FormatBin(); break;
-                    }
-
-                    var valStr = val.ToString(ctx);
-                    var hintStr = "";
-                    if (val is RealVal realVal) {
-                        if (realVal.IsDimless) {
-                            var doubleVal = realVal.AsReal;
-                        }
-                    }
-
-                    item.Answer = valStr;
-                    item.Error = false;
-                    item.Hint = hintStr;
-                    ctx.Ref("Ans", true).Value = val;
-
-                    if (i == historyBox.SelectedIndex) {
-                        subAnswerLabel.Text = "= " + valStr;
-                    }
-                }
-                catch (Exception ex) {
-                    item.Error = true;
-                    if (i == historyBox.SelectedIndex) {
-                        subAnswerLabel.Text = ex.Message;
-                    }
-                    item.Hint = ex.Message;
-                }
-            }
-            historyBox.Invalidate();
-        }
-
-        private void CalcButton_Click(object sender, EventArgs e) {
-            try {
-                OnReturnPressed(false);
-                exprBox.Focus();
-            }
-            catch (Exception ex) {
-                Console.WriteLine(ex.Message);
             }
         }
     }
