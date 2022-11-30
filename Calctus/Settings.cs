@@ -8,7 +8,11 @@ using System.Windows.Forms;
 namespace Shapoco.Calctus {
     internal class Settings {
         public static readonly Settings Instance = new Settings();
+#if DEBUG
+        private const string Filename = "Settings.Debug.cfg";
+#else
         private const string Filename = "Settings.cfg";
+#endif
 
         private Settings() {
             AppDataManager.LoadPropertiesFromRoamingAppData(this, Filename);
