@@ -37,6 +37,8 @@ namespace Shapoco.Calctus.UI {
                 s.HotKey_KeyCode = kcb.KeyCode;
             };
 
+            NumberFormat_Decimal_MaxLen.ValueChanged += (sender, e) => { s.NumberFormat_Decimal_MaxLen = (int)((NumericUpDown)sender).Value; };
+
             NumberFormat_Exp_Enabled.CheckedChanged += (sender, e) => {
                 s.NumberFormat_Exp_Enabled = ((CheckBox)sender).Checked;
                 NumberFormat_Exp_NegativeMax.Enabled = s.NumberFormat_Exp_Enabled;
@@ -74,6 +76,8 @@ namespace Shapoco.Calctus.UI {
 
                 Hotkey_Enabled.Checked = s.Hotkey_Enabled;
                 Hotkey_KeyCode.SetKeyCode(s.HotKey_Alt, s.HotKey_Ctrl, s.HotKey_Shift, s.HotKey_KeyCode);
+
+                NumberFormat_Decimal_MaxLen.Value = s.NumberFormat_Decimal_MaxLen;
 
                 NumberFormat_Exp_Enabled.Checked = s.NumberFormat_Exp_Enabled;
                 NumberFormat_Exp_NegativeMax.Value = s.NumberFormat_Exp_NegativeMax;

@@ -35,7 +35,9 @@
             this.tabControl = new System.Windows.Forms.TabControl();
             this.tabPage3 = new System.Windows.Forms.TabPage();
             this.groupBox1 = new System.Windows.Forms.GroupBox();
+            this.Startup_AutoStart = new System.Windows.Forms.CheckBox();
             this.Startup_TrayIcon = new System.Windows.Forms.CheckBox();
+            this.Hotkey_KeyCode = new Shapoco.Calctus.UI.KeyCodeBox();
             this.Hotkey_Enabled = new System.Windows.Forms.CheckBox();
             this.tabPage2 = new System.Windows.Forms.TabPage();
             this.fontGroup = new System.Windows.Forms.GroupBox();
@@ -47,8 +49,9 @@
             this.Appearance_Font_Expr_Name = new System.Windows.Forms.ComboBox();
             this.Appearance_Font_Button_Name = new System.Windows.Forms.ComboBox();
             this.tabPage1 = new System.Windows.Forms.TabPage();
-            this.Startup_AutoStart = new System.Windows.Forms.CheckBox();
-            this.Hotkey_KeyCode = new Shapoco.Calctus.UI.KeyCodeBox();
+            this.groupBox2 = new System.Windows.Forms.GroupBox();
+            this.label6 = new System.Windows.Forms.Label();
+            this.NumberFormat_Decimal_MaxLen = new System.Windows.Forms.NumericUpDown();
             this.eNoteGroup.SuspendLayout();
             ((System.ComponentModel.ISupportInitialize)(this.NumberFormat_Exp_NegativeMax)).BeginInit();
             ((System.ComponentModel.ISupportInitialize)(this.NumberFormat_Exp_PositiveMin)).BeginInit();
@@ -59,11 +62,13 @@
             this.fontGroup.SuspendLayout();
             ((System.ComponentModel.ISupportInitialize)(this.Appearance_Font_Size)).BeginInit();
             this.tabPage1.SuspendLayout();
+            this.groupBox2.SuspendLayout();
+            ((System.ComponentModel.ISupportInitialize)(this.NumberFormat_Decimal_MaxLen)).BeginInit();
             this.SuspendLayout();
             // 
             // closeButton
             // 
-            this.closeButton.Location = new System.Drawing.Point(240, 186);
+            this.closeButton.Location = new System.Drawing.Point(240, 234);
             this.closeButton.Name = "closeButton";
             this.closeButton.Size = new System.Drawing.Size(89, 25);
             this.closeButton.TabIndex = 0;
@@ -90,9 +95,9 @@
             this.eNoteGroup.Controls.Add(this.label1);
             this.eNoteGroup.Controls.Add(this.NumberFormat_Exp_NegativeMax);
             this.eNoteGroup.Controls.Add(this.NumberFormat_Exp_PositiveMin);
-            this.eNoteGroup.Location = new System.Drawing.Point(6, 6);
+            this.eNoteGroup.Location = new System.Drawing.Point(6, 60);
             this.eNoteGroup.Name = "eNoteGroup";
-            this.eNoteGroup.Size = new System.Drawing.Size(297, 130);
+            this.eNoteGroup.Size = new System.Drawing.Size(297, 126);
             this.eNoteGroup.TabIndex = 7;
             this.eNoteGroup.TabStop = false;
             this.eNoteGroup.Text = "Exponential Notation";
@@ -177,7 +182,7 @@
             this.tabControl.Location = new System.Drawing.Point(12, 12);
             this.tabControl.Name = "tabControl";
             this.tabControl.SelectedIndex = 0;
-            this.tabControl.Size = new System.Drawing.Size(317, 168);
+            this.tabControl.Size = new System.Drawing.Size(317, 216);
             this.tabControl.TabIndex = 8;
             // 
             // tabPage3
@@ -203,6 +208,16 @@
             this.groupBox1.TabStop = false;
             this.groupBox1.Text = "Startup";
             // 
+            // Startup_AutoStart
+            // 
+            this.Startup_AutoStart.AutoSize = true;
+            this.Startup_AutoStart.Location = new System.Drawing.Point(10, 20);
+            this.Startup_AutoStart.Name = "Startup_AutoStart";
+            this.Startup_AutoStart.Size = new System.Drawing.Size(121, 16);
+            this.Startup_AutoStart.TabIndex = 4;
+            this.Startup_AutoStart.Text = "Start automatically";
+            this.Startup_AutoStart.UseVisualStyleBackColor = true;
+            // 
             // Startup_TrayIcon
             // 
             this.Startup_TrayIcon.AutoSize = true;
@@ -212,6 +227,18 @@
             this.Startup_TrayIcon.TabIndex = 4;
             this.Startup_TrayIcon.Text = "Reside in task tray";
             this.Startup_TrayIcon.UseVisualStyleBackColor = true;
+            // 
+            // Hotkey_KeyCode
+            // 
+            this.Hotkey_KeyCode.Alt = false;
+            this.Hotkey_KeyCode.Ctrl = false;
+            this.Hotkey_KeyCode.Enabled = false;
+            this.Hotkey_KeyCode.KeyCode = System.Windows.Forms.Keys.None;
+            this.Hotkey_KeyCode.Location = new System.Drawing.Point(46, 83);
+            this.Hotkey_KeyCode.Name = "Hotkey_KeyCode";
+            this.Hotkey_KeyCode.Shift = false;
+            this.Hotkey_KeyCode.Size = new System.Drawing.Size(213, 19);
+            this.Hotkey_KeyCode.TabIndex = 1;
             // 
             // Hotkey_Enabled
             // 
@@ -229,7 +256,7 @@
             this.tabPage2.Location = new System.Drawing.Point(4, 22);
             this.tabPage2.Name = "tabPage2";
             this.tabPage2.Padding = new System.Windows.Forms.Padding(3);
-            this.tabPage2.Size = new System.Drawing.Size(309, 142);
+            this.tabPage2.Size = new System.Drawing.Size(309, 195);
             this.tabPage2.TabIndex = 1;
             this.tabPage2.Text = "Appearance";
             this.tabPage2.UseVisualStyleBackColor = true;
@@ -326,42 +353,63 @@
             // 
             // tabPage1
             // 
+            this.tabPage1.Controls.Add(this.groupBox2);
             this.tabPage1.Controls.Add(this.eNoteGroup);
             this.tabPage1.Location = new System.Drawing.Point(4, 22);
             this.tabPage1.Name = "tabPage1";
             this.tabPage1.Padding = new System.Windows.Forms.Padding(3);
-            this.tabPage1.Size = new System.Drawing.Size(309, 142);
+            this.tabPage1.Size = new System.Drawing.Size(309, 190);
             this.tabPage1.TabIndex = 0;
             this.tabPage1.Text = "Details";
             this.tabPage1.UseVisualStyleBackColor = true;
             // 
-            // Startup_AutoStart
+            // groupBox2
             // 
-            this.Startup_AutoStart.AutoSize = true;
-            this.Startup_AutoStart.Location = new System.Drawing.Point(10, 20);
-            this.Startup_AutoStart.Name = "Startup_AutoStart";
-            this.Startup_AutoStart.Size = new System.Drawing.Size(121, 16);
-            this.Startup_AutoStart.TabIndex = 4;
-            this.Startup_AutoStart.Text = "Start automatically";
-            this.Startup_AutoStart.UseVisualStyleBackColor = true;
+            this.groupBox2.Controls.Add(this.NumberFormat_Decimal_MaxLen);
+            this.groupBox2.Controls.Add(this.label6);
+            this.groupBox2.Location = new System.Drawing.Point(6, 6);
+            this.groupBox2.Name = "groupBox2";
+            this.groupBox2.Size = new System.Drawing.Size(297, 48);
+            this.groupBox2.TabIndex = 8;
+            this.groupBox2.TabStop = false;
+            this.groupBox2.Text = "Decimal";
             // 
-            // Hotkey_KeyCode
+            // label6
             // 
-            this.Hotkey_KeyCode.Alt = false;
-            this.Hotkey_KeyCode.Ctrl = false;
-            this.Hotkey_KeyCode.Enabled = false;
-            this.Hotkey_KeyCode.KeyCode = System.Windows.Forms.Keys.None;
-            this.Hotkey_KeyCode.Location = new System.Drawing.Point(46, 83);
-            this.Hotkey_KeyCode.Name = "Hotkey_KeyCode";
-            this.Hotkey_KeyCode.Shift = false;
-            this.Hotkey_KeyCode.Size = new System.Drawing.Size(213, 19);
-            this.Hotkey_KeyCode.TabIndex = 1;
+            this.label6.AutoSize = true;
+            this.label6.Location = new System.Drawing.Point(11, 21);
+            this.label6.Name = "label6";
+            this.label6.Size = new System.Drawing.Size(205, 12);
+            this.label6.TabIndex = 0;
+            this.label6.Text = "Max length of decimal place to display:";
+            // 
+            // NumberFormat_Decimal_MaxLen
+            // 
+            this.NumberFormat_Decimal_MaxLen.Location = new System.Drawing.Point(222, 18);
+            this.NumberFormat_Decimal_MaxLen.Maximum = new decimal(new int[] {
+            28,
+            0,
+            0,
+            0});
+            this.NumberFormat_Decimal_MaxLen.Minimum = new decimal(new int[] {
+            1,
+            0,
+            0,
+            0});
+            this.NumberFormat_Decimal_MaxLen.Name = "NumberFormat_Decimal_MaxLen";
+            this.NumberFormat_Decimal_MaxLen.Size = new System.Drawing.Size(65, 19);
+            this.NumberFormat_Decimal_MaxLen.TabIndex = 8;
+            this.NumberFormat_Decimal_MaxLen.Value = new decimal(new int[] {
+            8,
+            0,
+            0,
+            0});
             // 
             // SettingsDialog
             // 
             this.AutoScaleDimensions = new System.Drawing.SizeF(6F, 12F);
             this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
-            this.ClientSize = new System.Drawing.Size(341, 223);
+            this.ClientSize = new System.Drawing.Size(341, 272);
             this.Controls.Add(this.tabControl);
             this.Controls.Add(this.closeButton);
             this.FormBorderStyle = System.Windows.Forms.FormBorderStyle.FixedSingle;
@@ -384,6 +432,9 @@
             this.fontGroup.PerformLayout();
             ((System.ComponentModel.ISupportInitialize)(this.Appearance_Font_Size)).EndInit();
             this.tabPage1.ResumeLayout(false);
+            this.groupBox2.ResumeLayout(false);
+            this.groupBox2.PerformLayout();
+            ((System.ComponentModel.ISupportInitialize)(this.NumberFormat_Decimal_MaxLen)).EndInit();
             this.ResumeLayout(false);
 
         }
@@ -415,5 +466,8 @@
         private System.Windows.Forms.GroupBox groupBox1;
         private System.Windows.Forms.CheckBox Startup_TrayIcon;
         private System.Windows.Forms.CheckBox Startup_AutoStart;
+        private System.Windows.Forms.GroupBox groupBox2;
+        private System.Windows.Forms.NumericUpDown NumberFormat_Decimal_MaxLen;
+        private System.Windows.Forms.Label label6;
     }
 }

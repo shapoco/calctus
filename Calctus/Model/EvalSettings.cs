@@ -6,6 +6,7 @@ using System.Threading.Tasks;
 
 namespace Shapoco.Calctus.Model {
     class EvalSettings {
+        public int DecimalLengthToDisplay { get; set; } = 9;
         public bool ENotationEnabled { get; set; } = true;
         public int ENotationExpPositiveMin { get; set; } = 15;
         public int ENotationExpNegativeMax { get; set; } = -5;

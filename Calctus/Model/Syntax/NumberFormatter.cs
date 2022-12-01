@@ -42,24 +42,31 @@ namespace Shapoco.Calctus.Model.Syntax {
         public static string RealToString(real val, EvalContext e) {
             if (val == 0.0m) return "0.0";
 
-            int exp = RMath.FLog10(val);
             var s = e.Settings;
+
+            var sbDecFormat = new StringBuilder("0.");
+            for (int i = 0; i < s.DecimalLengthToDisplay; i++) {
+                sbDecFormat.Append('#');
+            }
+            var decFormat = sbDecFormat.ToString();
+
+            int exp = RMath.FLog10(val);
             if (s.ENotationEnabled && exp >= s.ENotationExpPositiveMin) {
                 if (s.ENotationAlignment) {
                     exp = (int)Math.Floor((double)exp / 3) * 3;
                 }
                 var frac = val / RMath.Pow10(exp);
-                return frac.ToString("0.############################") + "e+" + exp;
+                return frac.ToString(decFormat) + "e+" + exp;
             }
             else if (s.ENotationEnabled && exp <= s.ENotationExpNegativeMax) {
                 if (s.ENotationAlignment) {
                     exp = (int)Math.Floor((double)exp / 3) * 3;
                 }
                 var frac = val * RMath.Pow10(-exp);
-                return frac.ToString("0.############################") + "e" + exp;
+                return frac.ToString(decFormat) + "e" + exp;
             }
             else {
-                return val.ToString("0.############################");
+                return val.ToString(decFormat);
             }
         }
 
