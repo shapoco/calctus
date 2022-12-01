@@ -20,6 +20,7 @@ namespace Shapoco.Calctus.UI {
         private RadixMode _radixMode = RadixMode.Auto;
         private HotKey _hotkey = null;
         private bool _startup = true;
+        private Timer _focusTimer = new Timer();
 
         class CustomProfessionalColors : ProfessionalColorTable {
             public override Color ToolStripGradientBegin { get { return Color.FromArgb(64, 64, 64); } }
@@ -39,6 +40,7 @@ namespace Shapoco.Calctus.UI {
             this.KeyDown += MainForm_KeyDown;
             this.Load += MainForm_Load;
             this.Shown += MainForm_Shown;
+            this.VisibleChanged += MainForm_VisibleChanged;
             this.FormClosing += MainForm_FormClosing;
             this.FormClosed += MainForm_FormClosed;
             this.Resize += MainForm_Resize;
@@ -59,6 +61,8 @@ namespace Shapoco.Calctus.UI {
 
             contextOpen.Click += (sender, e) => { showForeground(); };
             contextExit.Click += (sender, e) => { Application.Exit(); };
+
+            _focusTimer.Tick += _focusTimer_Tick;
         }
 
         private void MainForm_Load(object sender, EventArgs e) {
@@ -82,7 +86,13 @@ namespace Shapoco.Calctus.UI {
                     this.Visible = false;
                 }
             }
-            calcListBox.Refocus();
+            refocus();
+        }
+
+        private void MainForm_VisibleChanged(object sender, EventArgs e) {
+            if (((Form)sender).Visible) {
+                refocus();
+            }
         }
 
         private void MainForm_FormClosing(object sender, FormClosingEventArgs e) {
@@ -183,6 +193,19 @@ namespace Shapoco.Calctus.UI {
                 this.WindowState = FormWindowState.Normal;
             }
             Microsoft.VisualBasic.Interaction.AppActivate(this.Text);
+        }
+
+        private void refocus() {
+            // イベントハンドラ内でコントロールにフォーカスしてもなぜか反映されないことがあるため
+            // タイマで遅延させてフォーカスを実施する
+            _focusTimer.Stop();
+            _focusTimer.Interval = 100;
+            _focusTimer.Start();
+        }
+
+        private void _focusTimer_Tick(object sender, EventArgs e) {
+            _focusTimer.Stop();
+            calcListBox.Refocus();
         }
 
         private void MainForm_KeyDown(object sender, KeyEventArgs e) {
