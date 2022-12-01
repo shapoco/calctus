@@ -31,6 +31,7 @@ namespace Shapoco.Calctus.UI {
             };
             Hotkey_KeyCode.KeyCodeChanged += (sender, e) => {
                 var kcb = (KeyCodeBox)sender;
+                s.HotKey_Win = kcb.Win;
                 s.HotKey_Alt = kcb.Alt;
                 s.HotKey_Ctrl = kcb.Ctrl;
                 s.HotKey_Shift = kcb.Shift;
@@ -75,7 +76,7 @@ namespace Shapoco.Calctus.UI {
                 Startup_TrayIcon.Checked = s.Startup_TrayIcon;
 
                 Hotkey_Enabled.Checked = s.Hotkey_Enabled;
-                Hotkey_KeyCode.SetKeyCode(s.HotKey_Alt, s.HotKey_Ctrl, s.HotKey_Shift, s.HotKey_KeyCode);
+                Hotkey_KeyCode.SetKeyCode(s.HotKey_Win, s.HotKey_Alt, s.HotKey_Ctrl, s.HotKey_Shift, s.HotKey_KeyCode);
 
                 NumberFormat_Decimal_MaxLen.Value = s.NumberFormat_Decimal_MaxLen;
 

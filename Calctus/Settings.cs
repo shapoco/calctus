@@ -25,6 +25,7 @@ namespace Shapoco.Calctus {
         public bool Startup_TrayIcon { get; set; } = false;
 
         public bool Hotkey_Enabled { get; set; } = false;
+        public bool HotKey_Win { get; set; } = false;
         public bool HotKey_Alt { get; set; } = false;
         public bool HotKey_Ctrl { get; set; } = false;
         public bool HotKey_Shift { get; set; } = false;

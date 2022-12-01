@@ -37,7 +37,6 @@
             this.groupBox1 = new System.Windows.Forms.GroupBox();
             this.Startup_AutoStart = new System.Windows.Forms.CheckBox();
             this.Startup_TrayIcon = new System.Windows.Forms.CheckBox();
-            this.Hotkey_KeyCode = new Shapoco.Calctus.UI.KeyCodeBox();
             this.Hotkey_Enabled = new System.Windows.Forms.CheckBox();
             this.tabPage2 = new System.Windows.Forms.TabPage();
             this.fontGroup = new System.Windows.Forms.GroupBox();
@@ -52,6 +51,7 @@
             this.groupBox2 = new System.Windows.Forms.GroupBox();
             this.label6 = new System.Windows.Forms.Label();
             this.NumberFormat_Decimal_MaxLen = new System.Windows.Forms.NumericUpDown();
+            this.Hotkey_KeyCode = new Shapoco.Calctus.UI.KeyCodeBox();
             this.eNoteGroup.SuspendLayout();
             ((System.ComponentModel.ISupportInitialize)(this.NumberFormat_Exp_NegativeMax)).BeginInit();
             ((System.ComponentModel.ISupportInitialize)(this.NumberFormat_Exp_PositiveMin)).BeginInit();
@@ -190,7 +190,7 @@
             this.tabPage3.Controls.Add(this.groupBox1);
             this.tabPage3.Location = new System.Drawing.Point(4, 22);
             this.tabPage3.Name = "tabPage3";
-            this.tabPage3.Size = new System.Drawing.Size(309, 142);
+            this.tabPage3.Size = new System.Drawing.Size(309, 190);
             this.tabPage3.TabIndex = 2;
             this.tabPage3.Text = "General";
             this.tabPage3.UseVisualStyleBackColor = true;
@@ -228,18 +228,6 @@
             this.Startup_TrayIcon.Text = "Reside in task tray";
             this.Startup_TrayIcon.UseVisualStyleBackColor = true;
             // 
-            // Hotkey_KeyCode
-            // 
-            this.Hotkey_KeyCode.Alt = false;
-            this.Hotkey_KeyCode.Ctrl = false;
-            this.Hotkey_KeyCode.Enabled = false;
-            this.Hotkey_KeyCode.KeyCode = System.Windows.Forms.Keys.None;
-            this.Hotkey_KeyCode.Location = new System.Drawing.Point(46, 83);
-            this.Hotkey_KeyCode.Name = "Hotkey_KeyCode";
-            this.Hotkey_KeyCode.Shift = false;
-            this.Hotkey_KeyCode.Size = new System.Drawing.Size(213, 19);
-            this.Hotkey_KeyCode.TabIndex = 1;
-            // 
             // Hotkey_Enabled
             // 
             this.Hotkey_Enabled.AutoSize = true;
@@ -256,7 +244,7 @@
             this.tabPage2.Location = new System.Drawing.Point(4, 22);
             this.tabPage2.Name = "tabPage2";
             this.tabPage2.Padding = new System.Windows.Forms.Padding(3);
-            this.tabPage2.Size = new System.Drawing.Size(309, 195);
+            this.tabPage2.Size = new System.Drawing.Size(309, 190);
             this.tabPage2.TabIndex = 1;
             this.tabPage2.Text = "Appearance";
             this.tabPage2.UseVisualStyleBackColor = true;
@@ -404,6 +392,19 @@
             0,
             0,
             0});
+            // 
+            // Hotkey_KeyCode
+            // 
+            this.Hotkey_KeyCode.Alt = false;
+            this.Hotkey_KeyCode.Ctrl = false;
+            this.Hotkey_KeyCode.Enabled = false;
+            this.Hotkey_KeyCode.KeyCode = System.Windows.Forms.Keys.None;
+            this.Hotkey_KeyCode.Location = new System.Drawing.Point(41, 83);
+            this.Hotkey_KeyCode.Name = "Hotkey_KeyCode";
+            this.Hotkey_KeyCode.Shift = false;
+            this.Hotkey_KeyCode.Size = new System.Drawing.Size(249, 19);
+            this.Hotkey_KeyCode.TabIndex = 1;
+            this.Hotkey_KeyCode.Win = false;
             // 
             // SettingsDialog
             // 

@@ -130,6 +130,7 @@ namespace Shapoco.Calctus.UI {
             var s = Settings.Instance;
             if (s.Hotkey_Enabled && s.HotKey_KeyCode != Keys.None) {
                 MOD_KEY mod = MOD_KEY.NONE;
+                if (s.HotKey_Win) mod |= MOD_KEY.WIN;
                 if (s.HotKey_Alt) mod |= MOD_KEY.ALT;
                 if (s.HotKey_Ctrl) mod |= MOD_KEY.CONTROL;
                 if (s.HotKey_Shift) mod |= MOD_KEY.SHIFT;

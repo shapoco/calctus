@@ -51,11 +51,16 @@ namespace Shapoco.Calctus.UI {
 
             public HotKeyForm(MOD_KEY modKey, Keys key, ThreadStart proc) {
                 this.proc = proc;
+                bool success = false;
                 for (int i = 0x0000; i <= 0xbfff; i++) {
                     if (RegisterHotKey(this.Handle, i, modKey, key) != 0) {
                         id = i;
+                        success = true;
                         break;
                     }
+                }
+                if (!success) {
+                    MessageBox.Show("Hotkey register failed.", Application.ProductName, MessageBoxButtons.OK, MessageBoxIcon.Error);
                 }
             }
 
@@ -84,5 +89,6 @@ namespace Shapoco.Calctus.UI {
         ALT = 0x0001,
         CONTROL = 0x0002,
         SHIFT = 0x0004,
+        WIN = 0x0008,
     }
 }
