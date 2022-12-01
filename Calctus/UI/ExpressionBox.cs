@@ -19,6 +19,12 @@ namespace Shapoco.Calctus.UI {
         public static readonly Color ColorId = Color.FromArgb(192, 255, 128);
         public static readonly Color ColorSymbols = Color.FromArgb(64, 192, 255);
         public static readonly Color ColorSelection = Color.FromArgb(128, 0, 128, 255);
+        public static readonly Color[] ColorParenthesis = new Color[] {
+            Color.FromArgb(64, 192 , 255),
+            Color.FromArgb(128, 64 , 255),
+            Color.FromArgb(255, 64 , 128),
+            Color.FromArgb(255, 192 , 64),
+        };
 
         public event MouseEventHandler ContextMenuOpening;
 
@@ -330,6 +336,12 @@ namespace Shapoco.Calctus.UI {
                     text = text.Remove(selStart, selLen);
                 }
                 text = text.Insert(selStart, e.KeyChar.ToString());
+
+                // 閉じ括弧の補完
+                if (e.KeyChar == '(') {
+                    text = text.Insert(selStart + 1, ")");
+                }
+
                 this.Text = text;
                 setSelection(selStart + 1);
             }
@@ -585,6 +597,34 @@ namespace Shapoco.Calctus.UI {
                     for (int j = 0; j < m.Length; j++) {
                         _chars[m.Index + j].Style.ForeColor = ColorSymbols;
                     }
+                }
+            }
+
+            // 括弧の強調表示
+            {
+                var stack = new Stack<int>();
+                for (int i = 0; i < text.Length; i++ ) {
+                    var c = text[i];
+                    if (c == '(') {
+                        stack.Push(i);
+                    }
+                    else if (c == ')') {
+                        if (stack.Count > 0) {
+                            int start = stack.Pop();
+                            var color = ColorParenthesis[stack.Count % ColorParenthesis.Length];
+                            _chars[start].Style.ForeColor = color;
+                            _chars[i].Style.ForeColor = color;
+                        }
+                        else {
+                            _chars[i].Style.ForeColor = Color.White;
+                            _chars[i].Style.BackColor = Color.Red;
+                        }
+                    }
+                }
+                while (stack.Count > 0) {
+                    int start = stack.Pop();
+                    _chars[start].Style.ForeColor = Color.White;
+                    _chars[start].Style.BackColor = Color.Red;
                 }
             }
 
