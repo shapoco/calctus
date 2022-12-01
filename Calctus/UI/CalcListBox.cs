@@ -280,15 +280,15 @@ namespace Shapoco.Calctus.UI {
                     else {
                         var newItem = new CalcListItem(this, item);
                         this.insert(index + 1, newItem);
-                        this.SelectedIndex = index + 1;
                         relayout();
+                        this.SelectedIndex = index + 1;
                     }
                 }
                 else if (e.Modifiers == Keys.Shift) {
                     e.Handled = true;
                     this.insert(index, new CalcListItem(this));
-                    performSelectedIndexChanged(this.SelectedIndex);
                     relayout();
+                    performSelectedIndexChanged(this.SelectedIndex);
                 }
             }
             else if (e.KeyCode == Keys.Up && e.Modifiers == Keys.None) {

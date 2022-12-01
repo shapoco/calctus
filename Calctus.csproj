@@ -59,6 +59,7 @@
     <Compile Include="Calctus\Model\Expr.cs" />
     <Compile Include="Calctus\Model\FuncDef.cs" />
     <Compile Include="Calctus\Model\real.cs" />
+    <Compile Include="Calctus\Model\Standard\ColorSpace.cs" />
     <Compile Include="Calctus\Model\Standard\Eseries.cs" />
     <Compile Include="Calctus\Model\Standard\PreferredNumbers.cs" />
     <Compile Include="Calctus\Model\Syntax\ValFormatHint.cs" />

@@ -14,9 +14,9 @@ namespace Shapoco.Calctus.UI {
         public static readonly Regex RegexSymbols = new Regex(@"[+\-*/%^|&=<>]");
         public static readonly Regex RegexHexBinNumbers = new Regex(@"\b(0x[0-9a-fA-F]+|0b[01]+)\b");
         public static readonly Regex RegexIDs = new Regex(@"\b[a-zA-Z_][a-zA-Z0-9_]*\b");
+        public static readonly Regex RegexColors = new Regex(@"#([0-9a-fA-F]{6}|[0-9a-fA-F]{3})\b");
 
         public static readonly Color ColorId = Color.FromArgb(192, 255, 128);
-        //public static readonly Color ColorHexBinNumbers = Color.FromArgb(255, 255, 192);
         public static readonly Color ColorSymbols = Color.FromArgb(64, 192, 255);
         public static readonly Color ColorSelection = Color.FromArgb(128, 0, 128, 255);
 
@@ -39,6 +39,7 @@ namespace Shapoco.Calctus.UI {
 
         public ExpressionBox() {
             this.Cursor = Cursors.IBeam;
+            this.ImeMode = ImeMode.Disable;
             if (this.DesignMode) return;
             this.DoubleBuffered = true;
         }
@@ -355,16 +356,21 @@ namespace Shapoco.Calctus.UI {
 
             if (string.IsNullOrEmpty(this.Text)) {
                 // 空欄の場合
-                using (var foreBrush = new SolidBrush(Color.FromArgb(128, this.ForeColor))) {
-                    g.DrawString(_placeHolder, this.Font, foreBrush, _offset.X, _offset.Y);
+                using (var brush = new SolidBrush(Color.FromArgb(128, this.ForeColor))) {
+                    g.DrawString(_placeHolder, this.Font, brush, _offset.X, _offset.Y);
                 }
             }
 
             // 文字列の描画
             g.TranslateTransform(-_scrollX, 0);
             foreach (var seg in _segments) {
-                using (var foreBrush = new SolidBrush(seg.Style.ForeColor)) {
-                    g.DrawString(seg.Text, this.Font, foreBrush, seg.X, _offset.Y);
+                if (seg.Style.BackColor.A != 0) {
+                    using (var brush = new SolidBrush(seg.Style.BackColor)) {
+                        g.FillRectangle(brush, seg.X, _offset.Y, seg.Width, _charHeight);
+                    }
+                }
+                using (var brush = new SolidBrush(seg.Style.ForeColor)) {
+                    g.DrawString(seg.Text, this.Font, brush, seg.X, _offset.Y);
                 }
             }
             g.ResetTransform();
@@ -513,6 +519,7 @@ namespace Shapoco.Calctus.UI {
                     _chars[i].X = x;
                     _chars[i].Width = charSize.Width;
                     _chars[i].Style.ForeColor = this.ForeColor;
+                    _chars[i].Style.BackColor = Color.Transparent;
                     x += charSize.Width;
                 }
             }
@@ -521,28 +528,62 @@ namespace Shapoco.Calctus.UI {
             {
                 var matches = RegexIDs.Matches(text);
                 for (int i = 0; i < matches.Count; i++) {
-                    for (int j = 0; j < matches[i].Length; j++) {
-                        _chars[matches[i].Index + j].Style.ForeColor = ColorId;
+                    var m = matches[i];
+                    for (int j = 0; j < m.Length; j++) {
+                        _chars[m.Index + j].Style.ForeColor = ColorId;
                     }
                 }
             }
 
-            //// 16進/2進の強調表示
-            //{
-            //    var matches = RegexHexBinNumbers.Matches(text);
-            //    for (int i = 0; i < matches.Count; i++) {
-            //        for (int j = 0; j < matches[i].Length; j++) {
-            //            _chars[matches[i].Index + j].Style.ForeColor = ColorHexBinNumbers;
-            //        }
-            //    }
-            //}
+            // 色の強調表示
+            {
+                var matches = RegexColors.Matches(text);
+                for (int i = 0; i < matches.Count; i++) {
+                    var m = matches[i];
+                    var s = m.Value.Substring(1);
+                    var rgb = Convert.ToInt32(s, 16);
+                    
+                    // 背景色
+                    Color back = Color.Black;
+                    if (s.Length == 3) {
+                        var r = (rgb >> 8) & 0xf;
+                        var g = (rgb >> 4) & 0xf;
+                        var b = rgb & 0xf;
+                        r |= r << 4;
+                        g |= g << 4;
+                        b |= b << 4;
+                        rgb = (0xff << 24) | (r << 16) | (g << 8) | b;
+                        back = Color.FromArgb(rgb);
+                    }
+                    else {
+                        rgb |= (0xff << 24);
+                        back = Color.FromArgb(rgb);
+                    }
+
+                    // 前景色
+                    Color fore;
+                    int gray = ((30 * back.R) + (59 * back.G) + (11 * back.B)) / 100;
+                    if (gray < 128) {
+                        fore = Color.White;
+                    }
+                    else {
+                        fore = Color.Black;
+                    }
+
+                    for (int j = 0; j < m.Length; j++) {
+                        _chars[m.Index + j].Style.BackColor = back;
+                        _chars[m.Index + j].Style.ForeColor = fore;
+                    }
+                }
+            }
 
             // 記号の強調表示
             {
                 var matches = RegexSymbols.Matches(text);
                 for (int i = 0; i < matches.Count; i++) {
-                    for (int j = 0; j < matches[i].Length; j++) {
-                        _chars[matches[i].Index + j].Style.ForeColor = ColorSymbols;
+                    var m = matches[i];
+                    for (int j = 0; j < m.Length; j++) {
+                        _chars[m.Index + j].Style.ForeColor = ColorSymbols;
                     }
                 }
             }
@@ -562,6 +603,7 @@ namespace Shapoco.Calctus.UI {
                 var seg = new TextSegment();
                 seg.Text = text.Substring(from, to - from);
                 seg.X = _chars[from].X;
+                seg.Width = _chars[to - 1].X + _chars[to - 1].Width - _chars[from].X;
                 seg.Style = style;
                 segs.Add(seg);
 
@@ -574,11 +616,13 @@ namespace Shapoco.Calctus.UI {
 
         struct Style {
             public Color ForeColor;
+            public Color BackColor;
             public override int GetHashCode() => base.GetHashCode();
             public override bool Equals(object obj) {
                 if (obj is Style s) {
                     return 
-                        ForeColor == s.ForeColor;
+                        ForeColor == s.ForeColor &&
+                        BackColor == s.BackColor;
                 }
                 else {
                     return false;
@@ -595,6 +639,7 @@ namespace Shapoco.Calctus.UI {
         struct TextSegment {
             public string Text;
             public float X;
+            public float Width;
             public Style Style;
         }
     }
