@@ -21,6 +21,8 @@ namespace Shapoco.Calctus.UI {
         private HotKey _hotkey = null;
         private bool _startup = true;
         private Timer _focusTimer = new Timer();
+        private Point _startupWindowPos;
+        private Size _startupWindowSize;
 
         class CustomProfessionalColors : ProfessionalColorTable {
             public override Color ToolStripGradientBegin { get { return Color.FromArgb(64, 64, 64); } }
@@ -30,6 +32,12 @@ namespace Shapoco.Calctus.UI {
         }
 
         public MainForm() {
+            // フォントの設定が反映されたときにウィンドウサイズも変わってしまうので
+            // 起動時のウィンドウサイズ設定値は先に保持しておいて最後に反映する
+            var s = Settings.Instance;
+            _startupWindowPos = new Point(s.Window_X, s.Window_Y);
+            _startupWindowSize = new Size(s.Window_Width, s.Window_Height);
+
             InitializeComponent();
             if (this.DesignMode) return;
 
@@ -44,6 +52,7 @@ namespace Shapoco.Calctus.UI {
             this.FormClosing += MainForm_FormClosing;
             this.FormClosed += MainForm_FormClosed;
             this.Resize += MainForm_Resize;
+            this.LocationChanged += MainForm_LocationChanged;
 
             notifyIcon.MouseClick += NotifyIcon_MouseClick;
 
@@ -66,14 +75,21 @@ namespace Shapoco.Calctus.UI {
         }
 
         private void MainForm_Load(object sender, EventArgs e) {
-            // フォントの設定が反映されたときにウィンドウサイズも変わってしまうので
-            // 起動時のウィンドウサイズ設定値は先に保持しておいて最後に反映する
-            var s = Settings.Instance;
-            Size startupWindowSize = new Size(s.Window_Width, s.Window_Height);
-
             reloadSettings();
 
-            try { this.Size = startupWindowSize; }
+            try {
+                if (Settings.Instance.Window_RememberPosition) {
+                    // 見えない位置にウィンドウが表示されないよう、
+                    // 座標がスクリーン内に含まれていることを確認する
+                    foreach (var screen in Screen.AllScreens) {
+                        if (screen.Bounds.Contains(_startupWindowPos)) {
+                            this.Location = _startupWindowPos;
+                            break;
+                        }
+                    }
+                }
+                this.Size = _startupWindowSize; 
+            }
             catch { }
         }
 
@@ -113,6 +129,14 @@ namespace Shapoco.Calctus.UI {
                 var s = Settings.Instance;
                 s.Window_Width = this.Width;
                 s.Window_Height = this.Height;
+            }
+        }
+
+        private void MainForm_LocationChanged(object sender, EventArgs e) {
+            if (this.WindowState == FormWindowState.Normal) {
+                var s = Settings.Instance;
+                s.Window_X = this.Left;
+                s.Window_Y = this.Top;
             }
         }
 

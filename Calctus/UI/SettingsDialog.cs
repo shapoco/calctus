@@ -24,6 +24,7 @@ namespace Shapoco.Calctus.UI {
 
             Startup_TrayIcon.CheckedChanged += (sender, e) => { s.Startup_TrayIcon = ((CheckBox)sender).Checked; };
             Startup_AutoStart.CheckedChanged += Startup_AutoStart_CheckedChanged;
+            Window_RememberPosition.CheckedChanged += (sender, e) => { s.Window_RememberPosition = ((CheckBox)sender).Checked; };
 
             Hotkey_Enabled.CheckedChanged += (sender, e) => {
                 s.Hotkey_Enabled = ((CheckBox)sender).Checked;
@@ -74,6 +75,7 @@ namespace Shapoco.Calctus.UI {
                 Startup_AutoStart.Checked = Shapoco.Windows.StartupShortcut.CheckStartupRegistration();
 
                 Startup_TrayIcon.Checked = s.Startup_TrayIcon;
+                Window_RememberPosition.Checked = s.Window_RememberPosition;
 
                 Hotkey_Enabled.Checked = s.Hotkey_Enabled;
                 Hotkey_KeyCode.SetKeyCode(s.HotKey_Win, s.HotKey_Alt, s.HotKey_Ctrl, s.HotKey_Shift, s.HotKey_KeyCode);

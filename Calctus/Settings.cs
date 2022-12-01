@@ -43,6 +43,9 @@ namespace Shapoco.Calctus {
         public int Appearance_Font_Size { get; set; } = 9;
         public bool Appearance_Font_Bold { get; set; } = false;
 
+        public bool Window_RememberPosition { get; set; } = true;
+        public int Window_X { get; set; } = 100;
+        public int Window_Y { get; set; } = 100;
         public int Window_Width { get; set; } = 640;
         public int Window_Height { get; set; } = 480;
     }

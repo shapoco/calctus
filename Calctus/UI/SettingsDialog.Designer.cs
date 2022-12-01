@@ -37,6 +37,7 @@
             this.groupBox1 = new System.Windows.Forms.GroupBox();
             this.Startup_AutoStart = new System.Windows.Forms.CheckBox();
             this.Startup_TrayIcon = new System.Windows.Forms.CheckBox();
+            this.Hotkey_KeyCode = new Shapoco.Calctus.UI.KeyCodeBox();
             this.Hotkey_Enabled = new System.Windows.Forms.CheckBox();
             this.tabPage2 = new System.Windows.Forms.TabPage();
             this.fontGroup = new System.Windows.Forms.GroupBox();
@@ -49,9 +50,9 @@
             this.Appearance_Font_Button_Name = new System.Windows.Forms.ComboBox();
             this.tabPage1 = new System.Windows.Forms.TabPage();
             this.groupBox2 = new System.Windows.Forms.GroupBox();
-            this.label6 = new System.Windows.Forms.Label();
             this.NumberFormat_Decimal_MaxLen = new System.Windows.Forms.NumericUpDown();
-            this.Hotkey_KeyCode = new Shapoco.Calctus.UI.KeyCodeBox();
+            this.label6 = new System.Windows.Forms.Label();
+            this.Window_RememberPosition = new System.Windows.Forms.CheckBox();
             this.eNoteGroup.SuspendLayout();
             ((System.ComponentModel.ISupportInitialize)(this.NumberFormat_Exp_NegativeMax)).BeginInit();
             ((System.ComponentModel.ISupportInitialize)(this.NumberFormat_Exp_PositiveMin)).BeginInit();
@@ -200,13 +201,14 @@
             this.groupBox1.Controls.Add(this.Startup_AutoStart);
             this.groupBox1.Controls.Add(this.Startup_TrayIcon);
             this.groupBox1.Controls.Add(this.Hotkey_KeyCode);
+            this.groupBox1.Controls.Add(this.Window_RememberPosition);
             this.groupBox1.Controls.Add(this.Hotkey_Enabled);
             this.groupBox1.Location = new System.Drawing.Point(6, 6);
             this.groupBox1.Name = "groupBox1";
-            this.groupBox1.Size = new System.Drawing.Size(296, 122);
+            this.groupBox1.Size = new System.Drawing.Size(296, 140);
             this.groupBox1.TabIndex = 5;
             this.groupBox1.TabStop = false;
-            this.groupBox1.Text = "Startup";
+            this.groupBox1.Text = "Start";
             // 
             // Startup_AutoStart
             // 
@@ -227,6 +229,19 @@
             this.Startup_TrayIcon.TabIndex = 4;
             this.Startup_TrayIcon.Text = "Reside in task tray";
             this.Startup_TrayIcon.UseVisualStyleBackColor = true;
+            // 
+            // Hotkey_KeyCode
+            // 
+            this.Hotkey_KeyCode.Alt = false;
+            this.Hotkey_KeyCode.Ctrl = false;
+            this.Hotkey_KeyCode.Enabled = false;
+            this.Hotkey_KeyCode.KeyCode = System.Windows.Forms.Keys.None;
+            this.Hotkey_KeyCode.Location = new System.Drawing.Point(41, 83);
+            this.Hotkey_KeyCode.Name = "Hotkey_KeyCode";
+            this.Hotkey_KeyCode.Shift = false;
+            this.Hotkey_KeyCode.Size = new System.Drawing.Size(249, 19);
+            this.Hotkey_KeyCode.TabIndex = 1;
+            this.Hotkey_KeyCode.Win = false;
             // 
             // Hotkey_Enabled
             // 
@@ -362,15 +377,6 @@
             this.groupBox2.TabStop = false;
             this.groupBox2.Text = "Decimal";
             // 
-            // label6
-            // 
-            this.label6.AutoSize = true;
-            this.label6.Location = new System.Drawing.Point(11, 21);
-            this.label6.Name = "label6";
-            this.label6.Size = new System.Drawing.Size(205, 12);
-            this.label6.TabIndex = 0;
-            this.label6.Text = "Max length of decimal place to display:";
-            // 
             // NumberFormat_Decimal_MaxLen
             // 
             this.NumberFormat_Decimal_MaxLen.Location = new System.Drawing.Point(222, 18);
@@ -393,18 +399,24 @@
             0,
             0});
             // 
-            // Hotkey_KeyCode
+            // label6
             // 
-            this.Hotkey_KeyCode.Alt = false;
-            this.Hotkey_KeyCode.Ctrl = false;
-            this.Hotkey_KeyCode.Enabled = false;
-            this.Hotkey_KeyCode.KeyCode = System.Windows.Forms.Keys.None;
-            this.Hotkey_KeyCode.Location = new System.Drawing.Point(41, 83);
-            this.Hotkey_KeyCode.Name = "Hotkey_KeyCode";
-            this.Hotkey_KeyCode.Shift = false;
-            this.Hotkey_KeyCode.Size = new System.Drawing.Size(249, 19);
-            this.Hotkey_KeyCode.TabIndex = 1;
-            this.Hotkey_KeyCode.Win = false;
+            this.label6.AutoSize = true;
+            this.label6.Location = new System.Drawing.Point(11, 21);
+            this.label6.Name = "label6";
+            this.label6.Size = new System.Drawing.Size(205, 12);
+            this.label6.TabIndex = 0;
+            this.label6.Text = "Max length of decimal place to display:";
+            // 
+            // Window_RememberPosition
+            // 
+            this.Window_RememberPosition.AutoSize = true;
+            this.Window_RememberPosition.Location = new System.Drawing.Point(10, 108);
+            this.Window_RememberPosition.Name = "Window_RememberPosition";
+            this.Window_RememberPosition.Size = new System.Drawing.Size(163, 16);
+            this.Window_RememberPosition.TabIndex = 4;
+            this.Window_RememberPosition.Text = "Remember window position";
+            this.Window_RememberPosition.UseVisualStyleBackColor = true;
             // 
             // SettingsDialog
             // 
@@ -470,5 +482,6 @@
         private System.Windows.Forms.GroupBox groupBox2;
         private System.Windows.Forms.NumericUpDown NumberFormat_Decimal_MaxLen;
         private System.Windows.Forms.Label label6;
+        private System.Windows.Forms.CheckBox Window_RememberPosition;
     }
 }
