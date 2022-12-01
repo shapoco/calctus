@@ -54,6 +54,7 @@ namespace Shapoco.Calctus.UI {
             radixAutoButton.Checked = true;
 
             settingsButton.Click += (sender, e) => { new SettingsDialog().ShowDialog(); reloadSettings(); };
+            topMostButton.Click += TopMostButton_Click;
             helpButton.Click += (sender, e) => { System.Diagnostics.Process.Start(@"https://github.com/shapoco/calctus"); };
 
             contextOpen.Click += (sender, e) => { showForeground(); };
@@ -144,6 +145,17 @@ namespace Shapoco.Calctus.UI {
                 _hotkey.HotKeyPush -= _hotkey_HotKeyPush;
                 _hotkey.Dispose();
                 _hotkey = null;
+            }
+        }
+
+        private void TopMostButton_Click(object sender, EventArgs e) {
+            var btn = (ToolStripButton)sender;
+            this.TopMost = !this.TopMost;
+            if (this.TopMost) {
+                btn.Image = Properties.Resources.ToolIcon_TopMostOn;
+            }
+            else {
+                btn.Image = Properties.Resources.ToolIcon_TopMostOff;
             }
         }
 
