@@ -374,18 +374,21 @@ namespace Shapoco.Calctus.UI {
             }
 
             // 文字列の描画
-            g.TranslateTransform(-_scrollX, 0);
-            foreach (var seg in _segments) {
-                if (seg.Style.BackColor.A != 0) {
-                    using (var brush = new SolidBrush(seg.Style.BackColor)) {
-                        g.FillRectangle(brush, seg.X, _offset.Y, seg.Width, _charHeight);
+            if (_segments.Length > 0) {
+                float head_padding = _chars[0].X;
+                g.TranslateTransform(-_scrollX, 0);
+                foreach (var seg in _segments) {
+                    if (seg.Style.BackColor.A != 0) {
+                        using (var brush = new SolidBrush(seg.Style.BackColor)) {
+                            g.FillRectangle(brush, seg.X, _offset.Y, seg.Width, _charHeight);
+                        }
+                    }
+                    using (var brush = new SolidBrush(seg.Style.ForeColor)) {
+                        g.DrawString(seg.Text, this.Font, brush, new PointF(seg.X - head_padding, _offset.Y));
                     }
                 }
-                using (var brush = new SolidBrush(seg.Style.ForeColor)) {
-                    g.DrawString(seg.Text, this.Font, brush, seg.X, _offset.Y);
-                }
+                g.ResetTransform();
             }
-            g.ResetTransform();
 
             if (this.Focused && this.SelectionLength != 0) {
                 // 選択範囲の描画
@@ -521,18 +524,17 @@ namespace Shapoco.Calctus.UI {
                 // クリック座標からカーソル位置を割り出したりするのに使う
                 // Textの値そのままだとなぜか末尾の空白スペースの幅を正しく計測できないため
                 // 末尾に適当に文字を追加して計測する
-                float x = _offset.X;
                 string textForMeas = text + ".";
                 for (int i = 0; i < text.Length; i++) {
-                    var sf = new StringFormat();
-                    sf.SetMeasurableCharacterRanges(new CharacterRange[] { new CharacterRange(i, 1) });
-                    var range = g.MeasureCharacterRanges(textForMeas, this.Font, new RectangleF(0, 0, int.MaxValue, int.MaxValue), sf);
-                    var charSize = range[0].GetBounds(g);
-                    _chars[i].X = x;
-                    _chars[i].Width = charSize.Width;
-                    _chars[i].Style.ForeColor = this.ForeColor;
-                    _chars[i].Style.BackColor = Color.Transparent;
-                    x += charSize.Width;
+                    using (var sf = new StringFormat()) {
+                        sf.SetMeasurableCharacterRanges(new CharacterRange[] { new CharacterRange(i, 1) });
+                        var range = g.MeasureCharacterRanges(textForMeas, this.Font, new RectangleF(0, 0, int.MaxValue, int.MaxValue), sf);
+                        var charSize = range[0].GetBounds(g);
+                        _chars[i].X = charSize.X;
+                        _chars[i].Width = charSize.Width;
+                        _chars[i].Style.ForeColor = this.ForeColor;
+                        _chars[i].Style.BackColor = Color.Transparent;
+                    }
                 }
             }
 
