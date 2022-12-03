@@ -21,6 +21,11 @@ namespace Shapoco.Calctus.Model {
 
         public FuncDef(string name, Func<EvalContext, Val[], Val> method) : this(name, 1, method) { }
 
+        public static readonly FuncDef dec = new FuncDef("dec", (e, a) => a[0].FormatInt());
+        public static readonly FuncDef hex = new FuncDef("hex", (e, a) => a[0].FormatHex());
+        public static readonly FuncDef bin = new FuncDef("bin", (e, a) => a[0].FormatBin());
+        public static readonly FuncDef char_1 = new FuncDef("char", (e, a) => a[0].FormatChar());
+
         public static readonly FuncDef pow = new FuncDef("pow", 2, (e, a) => {
             var pow = RMath.Pow(a[0].AsReal, a[1].AsReal);
             if (!a[0].IsDimless) {
@@ -106,7 +111,7 @@ namespace Shapoco.Calctus.Model {
         public static readonly FuncDef e192ratio_h = new FuncDef("e192ratio_h", (e, a) => new RealVal(PreferredNumbers.FindSplitPair(Eseries.E192, a[0].AsReal)[1]));
 
         public static readonly FuncDef rgb_3 = new FuncDef("rgb", 3, (e, a) => new RealVal(ColorSpace.SatPack(a[0].AsReal, a[1].AsReal, a[2].AsReal)).FormatWebColor());
-        public static readonly FuncDef rgb_1 = new FuncDef("rgb", (e, a) => new RealVal(a[0].AsInt).FormatWebColor());
+        public static readonly FuncDef rgb_1 = new FuncDef("rgb", (e, a) => a[0].FormatWebColor());
 
         public static readonly FuncDef hsv2rgb = new FuncDef("hsv2rgb", 3, (e, a) => new RealVal(ColorSpace.HsvToRgb(a[0].AsReal, a[1].AsReal, a[2].AsReal)).FormatWebColor());
         public static readonly FuncDef hsv2rgb_r = new FuncDef("hsv2rgb_r", (e, a) => new RealVal(ColorSpace.HsvToRgb_R(a[0].AsReal, a[1].AsReal, a[2].AsReal)));

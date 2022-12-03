@@ -27,7 +27,7 @@ namespace Shapoco.Calctus.Model.Syntax {
         public static readonly IntFormatter CStyleHex = new IntFormatter(16, "0x", new Regex(@"0[xX]([0-9a-fA-F]+)"), 1);
         public static readonly IntFormatter CStyleOct = new IntFormatter(8, "0", new Regex(@"0([0-7]+)"), 1);
         public static readonly IntFormatter CStyleBin = new IntFormatter(2, "0b", new Regex(@"0[bB]([01]+)"), 1);
-
+        public static readonly CharFormatter CStyleChar = new CharFormatter();
         public static readonly WebColorFormatter WebColor = new WebColorFormatter();
 
         public static NumberFormatter[] NativeFormats => new NumberFormatter[] {
@@ -36,6 +36,7 @@ namespace Shapoco.Calctus.Model.Syntax {
             CStyleHex, 
             CStyleOct, 
             CStyleBin,
+            CStyleChar,
             WebColor,
         };
 
@@ -246,6 +247,83 @@ namespace Shapoco.Calctus.Model.Syntax {
             }
             else {
                 return base.OnFormat(val, e);
+            }
+        }
+    }
+
+    class CharFormatter : NumberFormatter {
+        public CharFormatter() : base(new Regex("'([^'\\\\]|\\\\[abfnrtv\\\\\'0]|\\\\o[0-7]{3}|\\\\x[0-9a-fA-F]{2}|\\\\u[0-9a-fA-F]{4})'"), 1) { }
+
+        public override Val Parse(Match m) {
+            System.Diagnostics.Debug.Assert(m.Groups[CaptureGroupIndex].Length > 0);
+            var tok = m.Groups[CaptureGroupIndex].Value;
+            char c;
+            switch (tok) {
+                case "\\a": c = '\a'; break;
+                case "\\b": c = '\b'; break;
+                case "\\f": c = '\f'; break;
+                case "\\n": c = '\n'; break;
+                case "\\r": c = '\r'; break;
+                case "\\t": c = '\t'; break;
+                case "\\v": c = '\v'; break;
+                case "\\\\": c = '\\'; break;
+                case "\\'": c = '\''; break;
+                case "\\0": c = '\0'; break;
+                default:
+                    if (tok.StartsWith("\\o")) {
+                        var code = Convert.ToUInt64(tok.Substring(2), 8);
+                        if (code < char.MinValue || char.MaxValue < code) {
+                            throw new CalctusError("Char code out of range.");
+                        }
+                        c = (char)code;
+                    }
+                    else if (tok.StartsWith("\\x") || tok.StartsWith("\\u")) {
+                        var code = Convert.ToUInt64(tok.Substring(2), 16);
+                        if (code < char.MinValue || char.MaxValue < code) {
+                            throw new CalctusError("Char code out of range.");
+                        }
+                        c = (char)code;
+                    }
+                    else {
+                        c = tok[0];
+                    }
+                    break;
+            }
+            return new RealVal(c, new ValFormatHint(this));
+        }
+
+        protected override string OnFormat(Val val, EvalContext e) {
+            if (!val.IsInteger) {
+                // 整数でない場合はデフォルトの数値表現を使用
+                return base.OnFormat(val, e);
+            }
+
+            var ival = val.AsReal;
+            if (ival < char.MinValue || char.MaxValue < ival) {
+                // 小数やcharの範囲外の値はデフォルトの数値表現を使用
+                return base.OnFormat(val, e);
+            }
+
+            var cval = (char)ival;
+            switch (cval) {
+                case '\a': return "'\\a'";
+                case '\b': return "'\\b'";
+                case '\f': return "'\\f'";
+                case '\n': return "'\\n'";
+                case '\r': return "'\\r'";
+                case '\t': return "'\\t'";
+                case '\v': return "'\\v'";
+                case '\\': return "'\\\\'";
+                case '\'': return "'\\''";
+                case '\0': return "'\\0'";
+                default:
+                    if (char.IsLetter(cval) || cval == ' ') {
+                        return "'" + cval + "'";
+                    }
+                    else {
+                        var hex = "0000" + Convert.ToString(cval, 16);
+                        return "'\\u" + hex.Substring(hex.Length - 4, 4) + "'";
+                    }
             }
         }
     }

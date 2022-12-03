@@ -6,25 +6,200 @@ using System.Text.RegularExpressions;
 using System.Threading.Tasks;
 using System.Windows.Forms;
 using System.Drawing;
+using System.Runtime.InteropServices;
 
 namespace Shapoco.Calctus.UI {
     class ExpressionBox : Control {
         public const int TextMargin = 0;
 
         public static readonly Regex RegexSymbols = new Regex(@"[+\-*/%^|&=<>]");
-        public static readonly Regex RegexHexBinNumbers = new Regex(@"\b(0x[0-9a-fA-F]+|0b[01]+)\b");
         public static readonly Regex RegexIDs = new Regex(@"\b[a-zA-Z_][a-zA-Z0-9_]*\b");
         public static readonly Regex RegexColors = new Regex(@"#([0-9a-fA-F]{6}|[0-9a-fA-F]{3})\b");
+        public static readonly Regex RegexChar = new Regex("'([^'\\\\]|\\\\[abfnrtv\\\\\'0]|\\\\o[0-7]{3}|\\\\x[0-9a-fA-F]{2}|\\\\u[0-9a-fA-F]{4})'");
 
-        public static readonly Color ColorId = Color.FromArgb(192, 255, 128);
         public static readonly Color ColorSymbols = Color.FromArgb(64, 192, 255);
-        public static readonly Color ColorSelection = Color.FromArgb(128, 0, 128, 255);
+        public static readonly Color ColorId = Color.FromArgb(192, 255, 128);
+        public static readonly Color ColorChar = Color.FromArgb(255, 192, 64);
         public static readonly Color[] ColorParenthesis = new Color[] {
             Color.FromArgb(64, 192 , 255),
             Color.FromArgb(128, 64 , 255),
             Color.FromArgb(255, 64 , 128),
             Color.FromArgb(255, 192 , 64),
         };
+        public static readonly Color ColorSelection = Color.FromArgb(128, 0, 128, 255);
+
+        // C#でIMEの入力を受けるユーザーコントロールの作成 - Qiita
+        // https://qiita.com/takao_mofumofu/items/24c060a1d4f6b3df5c73
+        // [C#] IME変換領域(ウィンドウ)のフォントを設定する - iPentec
+        // https://www.ipentec.com/document/csharp-call-immsetcompositionfont
+        #region "IME関連"
+
+        private const int WM_IME_COMPOSITION = 0x010F;
+        private const int GCS_RESULTREADSTR = 0x0200;
+        private const int WM_IME_STARTCOMPOSITION = 0x10D; // IME変換開始
+        private const int WM_IME_ENDCOMPOSITION = 0x10E;   // IME変換終了
+        private const int WM_IME_NOTIFY = 0x0282;
+        private const int WM_IME_SETCONTEXT = 0x0281;
+
+        private enum ImmAssociateContextExFlags : uint {
+            IACE_CHILDREN = 0x0001,
+            IACE_DEFAULT = 0x0010,
+            IACE_IGNORENOCONTEXT = 0x0020
+        }
+
+        [StructLayout(LayoutKind.Sequential)]
+        private struct C_RECT {
+            public int _Left;
+            public int _Top;
+            public int _Right;
+            public int _Bottom;
+        }
+
+        [StructLayout(LayoutKind.Sequential)]
+        private struct C_POINT {
+            public int x;
+            public int y;
+        }
+
+        private const uint CFS_POINT = 0x0002;
+
+        private struct COMPOSITIONFORM {
+            public uint dwStyle;
+            public C_POINT ptCurrentPos;
+            public C_RECT rcArea;
+        }
+
+        //LOGFONT
+        public enum FontWeight : int {
+            FW_DONTCARE = 0,
+            FW_THIN = 100,
+            FW_EXTRALIGHT = 200,
+            FW_LIGHT = 300,
+            FW_NORMAL = 400,
+            FW_MEDIUM = 500,
+            FW_SEMIBOLD = 600,
+            FW_BOLD = 700,
+            FW_EXTRABOLD = 800,
+            FW_HEAVY = 900,
+        }
+
+        public enum FontCharSet : byte {
+            ANSI_CHARSET = 0,
+            DEFAULT_CHARSET = 1,
+            SYMBOL_CHARSET = 2,
+            SHIFTJIS_CHARSET = 128,
+            HANGEUL_CHARSET = 129,
+            HANGUL_CHARSET = 129,
+            GB2312_CHARSET = 134,
+            CHINESEBIG5_CHARSET = 136,
+            OEM_CHARSET = 255,
+            JOHAB_CHARSET = 130,
+            HEBREW_CHARSET = 177,
+            ARABIC_CHARSET = 178,
+            GREEK_CHARSET = 161,
+            TURKISH_CHARSET = 162,
+            VIETNAMESE_CHARSET = 163,
+            THAI_CHARSET = 222,
+            EASTEUROPE_CHARSET = 238,
+            RUSSIAN_CHARSET = 204,
+            MAC_CHARSET = 77,
+            BALTIC_CHARSET = 186,
+        }
+
+        public enum FontPrecision : byte {
+            OUT_DEFAULT_PRECIS = 0,
+            OUT_STRING_PRECIS = 1,
+            OUT_CHARACTER_PRECIS = 2,
+            OUT_STROKE_PRECIS = 3,
+            OUT_TT_PRECIS = 4,
+            OUT_DEVICE_PRECIS = 5,
+            OUT_RASTER_PRECIS = 6,
+            OUT_TT_ONLY_PRECIS = 7,
+            OUT_OUTLINE_PRECIS = 8,
+            OUT_SCREEN_OUTLINE_PRECIS = 9,
+            OUT_PS_ONLY_PRECIS = 10,
+        }
+
+        public enum FontClipPrecision : byte {
+            CLIP_DEFAULT_PRECIS = 0,
+            CLIP_CHARACTER_PRECIS = 1,
+            CLIP_STROKE_PRECIS = 2,
+            CLIP_MASK = 0xf,
+            CLIP_LH_ANGLES = (1 << 4),
+            CLIP_TT_ALWAYS = (2 << 4),
+            CLIP_DFA_DISABLE = (4 << 4),
+            CLIP_EMBEDDED = (8 << 4),
+        }
+
+        public enum FontQuality : byte {
+            DEFAULT_QUALITY = 0,
+            DRAFT_QUALITY = 1,
+            PROOF_QUALITY = 2,
+            NONANTIALIASED_QUALITY = 3,
+            ANTIALIASED_QUALITY = 4,
+            CLEARTYPE_QUALITY = 5,
+            CLEARTYPE_NATURAL_QUALITY = 6,
+        }
+
+        [Flags]
+        public enum FontPitchAndFamily : byte {
+            DEFAULT_PITCH = 0,
+            FIXED_PITCH = 1,
+            VARIABLE_PITCH = 2,
+            FF_DONTCARE = (0 << 4),
+            FF_ROMAN = (1 << 4),
+            FF_SWISS = (2 << 4),
+            FF_MODERN = (3 << 4),
+            FF_SCRIPT = (4 << 4),
+            FF_DECORATIVE = (5 << 4),
+        }
+
+        const int LF_FACESIZE = 32;
+
+        [StructLayout(LayoutKind.Sequential, CharSet = CharSet.Ansi)]
+        public class LOGFONT {
+            public int lfHeight;
+            public int lfWidth;
+            public int lfEscapement;
+            public int lfOrientation;
+            public FontWeight lfWeight;
+            [MarshalAs(UnmanagedType.U1)]
+            public bool lfItalic;
+            [MarshalAs(UnmanagedType.U1)]
+            public bool lfUnderline;
+            [MarshalAs(UnmanagedType.U1)]
+            public bool lfStrikeOut;
+            public FontCharSet lfCharSet;
+            public FontPrecision lfOutPrecision;
+            public FontClipPrecision lfClipPrecision;
+            public FontQuality lfQuality;
+            public FontPitchAndFamily lfPitchAndFamily;
+            [MarshalAs(UnmanagedType.ByValTStr, SizeConst = LF_FACESIZE * 2)]
+            public string lfFaceName;
+        }
+        [DllImport("Imm32.dll")]
+        private static extern IntPtr ImmGetContext(IntPtr hWnd);
+        [DllImport("Imm32.dll")]
+        private static extern int ImmGetCompositionString(IntPtr hIMC, int dwIndex, StringBuilder lpBuf, int dwBufLen);
+        [DllImport("Imm32.dll")]
+        private static extern bool ImmReleaseContext(IntPtr hWnd, IntPtr hIMC);
+        [DllImport("imm32.dll")]
+        private static extern IntPtr ImmCreateContext();
+        [DllImport("imm32.dll")]
+        private static extern bool ImmAssociateContextEx(IntPtr hWnd, IntPtr hIMC, ImmAssociateContextExFlags dwFlags);
+        [DllImport("imm32.dll")]
+        private static extern int ImmSetCompositionWindow(IntPtr hIMC, ref COMPOSITIONFORM lpCompositionForm);
+        [DllImport("kernel32.dll")]
+        private static extern IntPtr GlobalLock(IntPtr hMem);
+        [DllImport("kernel32.dll")]
+        [return: MarshalAs(UnmanagedType.Bool)]
+        private static extern bool GlobalUnlock(IntPtr hMem);
+        [DllImport("imm32.dll")]
+        private static extern int ImmSetCompositionFont(IntPtr hIMC, [In, Out] IntPtr lplf);
+
+        #endregion
+
+        private IntPtr himc = IntPtr.Zero;
 
         public event MouseEventHandler ContextMenuOpening;
 
@@ -45,9 +220,16 @@ namespace Shapoco.Calctus.UI {
 
         public ExpressionBox() {
             this.Cursor = Cursors.IBeam;
-            this.ImeMode = ImeMode.Disable;
             if (this.DesignMode) return;
             this.DoubleBuffered = true;
+        }
+
+        protected override void Dispose(bool disposing) {
+            if (himc != IntPtr.Zero) {
+                ImmReleaseContext(this.Handle, himc);
+                himc = IntPtr.Zero;
+            }
+            base.Dispose(disposing);
         }
 
         public bool ReadOnly { get; set; } = false;
@@ -326,7 +508,7 @@ namespace Shapoco.Calctus.UI {
             if (_pressedMouseButtons != MouseButtons.None) return;
             if (this.ReadOnly) return;
 
-            if (' ' <= e.KeyChar && e.KeyChar <= '~') {
+            if (!char.IsControl(e.KeyChar)) {
                 // カーソル位置に文字を挿入する
                 e.Handled = true;
                 var text = this.Text;
@@ -365,6 +547,7 @@ namespace Shapoco.Calctus.UI {
         protected override void OnPaint(PaintEventArgs e) {
             base.OnPaint(e);
             var g = e.Graphics;
+            g.TextRenderingHint = System.Drawing.Text.TextRenderingHint.AntiAlias;
 
             if (string.IsNullOrEmpty(this.Text)) {
                 // 空欄の場合
@@ -459,6 +642,57 @@ namespace Shapoco.Calctus.UI {
             this.Invalidate();
         }
 
+        // C#でIMEの入力を受けるユーザーコントロールの作成 - Qiita
+        // https://qiita.com/takao_mofumofu/items/24c060a1d4f6b3df5c73
+        // [C#] IME変換領域(ウィンドウ)のフォントを設定する - iPentec
+        // https://www.ipentec.com/document/csharp-call-immsetcompositionfont
+        protected override void WndProc(ref Message m) {
+            switch (m.Msg) {
+                case WM_IME_SETCONTEXT: {
+                        //Imeを関連付ける
+                        himc = ImmCreateContext();
+                        ImmAssociateContextEx(this.Handle, himc, ImmAssociateContextExFlags.IACE_DEFAULT);
+                        base.WndProc(ref m);
+                        break;
+                    }
+                case WM_IME_STARTCOMPOSITION: {
+                        //入力コンテキストにアクセスするためのお約束
+                        IntPtr himc = ImmGetContext(this.Handle);
+
+                        var cursorRect = this.GetCursorRectangle();
+
+                        //コンポジションウィンドウの位置を設定
+                        COMPOSITIONFORM info = new COMPOSITIONFORM();
+                        info.dwStyle = CFS_POINT;
+                        info.ptCurrentPos.x = cursorRect.X;
+                        info.ptCurrentPos.y = cursorRect.Y;
+                        ImmSetCompositionWindow(himc, ref info);
+
+                        //コンポジションウィンドウのフォントを設定
+                        IntPtr hHGlobalLOGFONT = Marshal.AllocHGlobal(Marshal.SizeOf(typeof(LOGFONT)));
+                        IntPtr pLogFont = GlobalLock(hHGlobalLOGFONT);
+                        LOGFONT logFont = new LOGFONT();
+                        this.Font.ToLogFont(logFont);
+                        logFont.lfFaceName = this.Font.Name;
+                        Marshal.StructureToPtr(logFont, pLogFont, false);
+                        GlobalUnlock(hHGlobalLOGFONT);
+                        ImmSetCompositionFont(himc, hHGlobalLOGFONT);
+                        Marshal.FreeHGlobal(hHGlobalLOGFONT);
+
+                        //入力コンテキストへのアクセスが終了したらロックを解除する
+                        ImmReleaseContext(Handle, himc);
+
+
+                        base.WndProc(ref m);
+                        break;
+                    }
+                default:
+                    //IME以外のメッセージは元のプロシージャで処理
+                    base.WndProc(ref m);
+                    break;
+            }
+        }
+
         private void setSelection(int selStart) {
             setSelection(selStart, selStart);
         }
@@ -517,22 +751,24 @@ namespace Shapoco.Calctus.UI {
             _chars = new CharInfo[text.Length];
 
             using (var g = this.CreateGraphics()) {
+                // 欧文フォントで日本語の文字の位置を知るのに AntiAlias に設定する必要がある
+                g.TextRenderingHint = System.Drawing.Text.TextRenderingHint.AntiAlias;
+
                 // 文字の高さ
                 _charHeight = (int)g.MeasureString("|", this.Font).Height;
 
                 // 各文字の位置を割り出す
                 // クリック座標からカーソル位置を割り出したりするのに使う
-                // Textの値そのままだとなぜか末尾の空白スペースの幅を正しく計測できないため
-                // 末尾に適当に文字を追加して計測する
-                string textForMeas = text + ".";
                 for (int i = 0; i < text.Length; i++) {
                     using (var sf = new StringFormat()) {
+                        // 両端の空白も含めて位置を知るのに MeasureTrailingSpaces が必要
+                        sf.FormatFlags = StringFormatFlags.MeasureTrailingSpaces;
                         sf.SetMeasurableCharacterRanges(new CharacterRange[] { new CharacterRange(i, 1) });
-                        var range = g.MeasureCharacterRanges(textForMeas, this.Font, new RectangleF(0, 0, int.MaxValue, int.MaxValue), sf);
+                        var range = g.MeasureCharacterRanges(text, this.Font, new RectangleF(0, 0, int.MaxValue, int.MaxValue), sf);
                         var charSize = range[0].GetBounds(g);
                         _chars[i].X = charSize.X;
                         _chars[i].Width = charSize.Width;
-                        _chars[i].Style.ForeColor = this.ForeColor;
+                        _chars[i].Style.ForeColor = Color.Transparent;
                         _chars[i].Style.BackColor = Color.Transparent;
                     }
                 }
@@ -602,15 +838,27 @@ namespace Shapoco.Calctus.UI {
                 }
             }
 
+            // 文字リテラルの強調表示
+            {
+                var matches = RegexChar.Matches(text);
+                for (int i = 0; i < matches.Count; i++) {
+                    var m = matches[i];
+                    for (int j = 0; j < m.Length; j++) {
+                        _chars[m.Index + j].Style.ForeColor = ColorChar;
+                    }
+                }
+            }
+
             // 括弧の強調表示
             {
                 var stack = new Stack<int>();
                 for (int i = 0; i < text.Length; i++ ) {
                     var c = text[i];
-                    if (c == '(') {
+                    var foreColor = _chars[i].Style.ForeColor;
+                    if (c == '(' && foreColor == Color.Transparent) {
                         stack.Push(i);
                     }
-                    else if (c == ')') {
+                    else if (c == ')' && foreColor == Color.Transparent) {
                         if (stack.Count > 0) {
                             int start = stack.Pop();
                             var color = ColorParenthesis[stack.Count % ColorParenthesis.Length];
@@ -627,6 +875,13 @@ namespace Shapoco.Calctus.UI {
                     int start = stack.Pop();
                     _chars[start].Style.ForeColor = Color.White;
                     _chars[start].Style.BackColor = Color.Red;
+                }
+            }
+
+            // 色の付いてない文字はデフォルトの色にする
+            for (int i = 0; i < text.Length; i++) {
+                if (_chars[i].Style.ForeColor == Color.Transparent) {
+                    _chars[i].Style.ForeColor = this.ForeColor;
                 }
             }
 
