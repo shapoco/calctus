@@ -61,15 +61,17 @@ namespace Shapoco.Calctus.Parser
         }
 
         public Expr OperandWithUnit() {
-            var operand = Operand();
-            if (ReadIf("[", out Token tok)) {
-                var ret = UnitExpr();
-                Expect("]");
-                return new UnitifyOp(tok, operand, ret);
-            }
-            else {
-                return operand;
-            }
+            return Operand();
+            // 正式に搭載すると決めるまで単位系の機能は無効にする
+            //var operand = Operand();
+            //if (ReadIf("[", out Token tok)) {
+            //    var ret = UnitExpr();
+            //    Expect("]");
+            //    return new UnitifyOp(tok, operand, ret);
+            //}
+            //else {
+            //    return operand;
+            //}
         }
 
         public Expr Operand() {
