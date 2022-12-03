@@ -398,6 +398,7 @@ namespace Shapoco.Calctus.UI {
                         case RadixMode.Dec: val = val.FormatInt(); break;
                         case RadixMode.Hex: val = val.FormatHex(); break;
                         case RadixMode.Bin: val = val.FormatBin(); break;
+                        case RadixMode.Oct: val = val.FormatOct(); break;
                     }
             
                     var valStr = val.ToString(ctx);

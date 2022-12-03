@@ -32,7 +32,9 @@ namespace Shapoco.Calctus.UI
             this.components = new System.ComponentModel.Container();
             System.ComponentModel.ComponentResourceManager resources = new System.ComponentModel.ComponentResourceManager(typeof(MainForm));
             this.toolStrip = new System.Windows.Forms.ToolStrip();
+            this.helpButton = new System.Windows.Forms.ToolStripButton();
             this.topMostButton = new System.Windows.Forms.ToolStripButton();
+            this.settingsButton = new System.Windows.Forms.ToolStripButton();
             this.notifyIcon = new System.Windows.Forms.NotifyIcon(this.components);
             this.trayMenuStrip = new System.Windows.Forms.ContextMenuStrip(this.components);
             this.contextOpen = new System.Windows.Forms.ToolStripMenuItem();
@@ -44,8 +46,7 @@ namespace Shapoco.Calctus.UI
             this.radixDecButton = new Shapoco.Calctus.UI.FlatRadioButton();
             this.radixAutoButton = new Shapoco.Calctus.UI.FlatRadioButton();
             this.calcListBox = new Shapoco.Calctus.UI.CalcListBox();
-            this.helpButton = new System.Windows.Forms.ToolStripButton();
-            this.settingsButton = new System.Windows.Forms.ToolStripButton();
+            this.radixOctButton = new Shapoco.Calctus.UI.FlatRadioButton();
             this.toolStrip.SuspendLayout();
             this.trayMenuStrip.SuspendLayout();
             this.panel2.SuspendLayout();
@@ -63,6 +64,16 @@ namespace Shapoco.Calctus.UI
             this.toolStrip.TabIndex = 4;
             this.toolStrip.Text = "toolStrip1";
             // 
+            // helpButton
+            // 
+            this.helpButton.Alignment = System.Windows.Forms.ToolStripItemAlignment.Right;
+            this.helpButton.DisplayStyle = System.Windows.Forms.ToolStripItemDisplayStyle.Image;
+            this.helpButton.Image = global::Shapoco.Properties.Resources.ToolIcon_Help;
+            this.helpButton.ImageTransparentColor = System.Drawing.Color.Magenta;
+            this.helpButton.Name = "helpButton";
+            this.helpButton.Size = new System.Drawing.Size(23, 22);
+            this.helpButton.Text = "Help";
+            // 
             // topMostButton
             // 
             this.topMostButton.Alignment = System.Windows.Forms.ToolStripItemAlignment.Right;
@@ -72,6 +83,16 @@ namespace Shapoco.Calctus.UI
             this.topMostButton.Name = "topMostButton";
             this.topMostButton.Size = new System.Drawing.Size(23, 22);
             this.topMostButton.Text = "Always on top";
+            // 
+            // settingsButton
+            // 
+            this.settingsButton.Alignment = System.Windows.Forms.ToolStripItemAlignment.Right;
+            this.settingsButton.DisplayStyle = System.Windows.Forms.ToolStripItemDisplayStyle.Image;
+            this.settingsButton.Image = global::Shapoco.Properties.Resources.ToolIcon_Settings;
+            this.settingsButton.ImageTransparentColor = System.Drawing.Color.Magenta;
+            this.settingsButton.Name = "settingsButton";
+            this.settingsButton.Size = new System.Drawing.Size(23, 22);
+            this.settingsButton.Text = "Settings";
             // 
             // notifyIcon
             // 
@@ -107,6 +128,7 @@ namespace Shapoco.Calctus.UI
             // 
             // panel2
             // 
+            this.panel2.Controls.Add(this.radixOctButton);
             this.panel2.Controls.Add(this.radixBinButton);
             this.panel2.Controls.Add(this.radixHexButton);
             this.panel2.Controls.Add(this.radixDecButton);
@@ -180,25 +202,18 @@ namespace Shapoco.Calctus.UI
             this.calcListBox.TabIndex = 7;
             this.calcListBox.Text = "calcListBox1";
             // 
-            // helpButton
+            // radixOctButton
             // 
-            this.helpButton.Alignment = System.Windows.Forms.ToolStripItemAlignment.Right;
-            this.helpButton.DisplayStyle = System.Windows.Forms.ToolStripItemDisplayStyle.Image;
-            this.helpButton.Image = global::Shapoco.Properties.Resources.ToolIcon_Help;
-            this.helpButton.ImageTransparentColor = System.Drawing.Color.Magenta;
-            this.helpButton.Name = "helpButton";
-            this.helpButton.Size = new System.Drawing.Size(23, 22);
-            this.helpButton.Text = "Help";
-            // 
-            // settingsButton
-            // 
-            this.settingsButton.Alignment = System.Windows.Forms.ToolStripItemAlignment.Right;
-            this.settingsButton.DisplayStyle = System.Windows.Forms.ToolStripItemDisplayStyle.Image;
-            this.settingsButton.Image = global::Shapoco.Properties.Resources.ToolIcon_Settings;
-            this.settingsButton.ImageTransparentColor = System.Drawing.Color.Magenta;
-            this.settingsButton.Name = "settingsButton";
-            this.settingsButton.Size = new System.Drawing.Size(23, 22);
-            this.settingsButton.Text = "Settings";
+            this.radixOctButton.BackColor = System.Drawing.Color.FromArgb(((int)(((byte)(76)))), ((int)(((byte)(88)))), ((int)(((byte)(72)))));
+            this.radixOctButton.Dock = System.Windows.Forms.DockStyle.Left;
+            this.radixOctButton.ForeColor = System.Drawing.Color.White;
+            this.radixOctButton.Location = new System.Drawing.Point(120, 0);
+            this.radixOctButton.Name = "radixOctButton";
+            this.radixOctButton.Size = new System.Drawing.Size(30, 15);
+            this.radixOctButton.TabIndex = 7;
+            this.radixOctButton.TabStop = true;
+            this.radixOctButton.Text = "Oct";
+            this.radixOctButton.UseVisualStyleBackColor = false;
             // 
             // MainForm
             // 
@@ -238,6 +253,7 @@ namespace Shapoco.Calctus.UI
         private FlatRadioButton radixAutoButton;
         private CalcListBox calcListBox;
         private System.Windows.Forms.ToolStripButton topMostButton;
+        private FlatRadioButton radixOctButton;
     }
 }
 

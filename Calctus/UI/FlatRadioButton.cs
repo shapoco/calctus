@@ -51,6 +51,7 @@ namespace Shapoco.Calctus.UI {
             using (var format = new StringFormat()) {
                 format.LineAlignment = StringAlignment.Center;
                 format.Alignment = StringAlignment.Center;
+                g.TextRenderingHint = System.Drawing.Text.TextRenderingHint.AntiAlias;
                 g.DrawString(this.Text, this.Font, brush, this.ClientRectangle, format);
             }
         }

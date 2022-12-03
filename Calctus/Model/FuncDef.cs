@@ -24,6 +24,7 @@ namespace Shapoco.Calctus.Model {
         public static readonly FuncDef dec = new FuncDef("dec", (e, a) => a[0].FormatInt());
         public static readonly FuncDef hex = new FuncDef("hex", (e, a) => a[0].FormatHex());
         public static readonly FuncDef bin = new FuncDef("bin", (e, a) => a[0].FormatBin());
+        public static readonly FuncDef oct = new FuncDef("oct", (e, a) => a[0].FormatOct());
         public static readonly FuncDef char_1 = new FuncDef("char", (e, a) => a[0].FormatChar());
 
         public static readonly FuncDef pow = new FuncDef("pow", 2, (e, a) => {

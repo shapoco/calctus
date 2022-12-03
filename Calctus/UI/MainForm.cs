@@ -62,6 +62,7 @@ namespace Shapoco.Calctus.UI {
             radixDecButton.CheckedChanged += (sender, e) => { RadixCheckedChanged((RadioButton)sender, RadixMode.Dec); };
             radixHexButton.CheckedChanged += (sender, e) => { RadixCheckedChanged((RadioButton)sender, RadixMode.Hex); };
             radixBinButton.CheckedChanged += (sender, e) => { RadixCheckedChanged((RadioButton)sender, RadixMode.Bin); };
+            radixOctButton.CheckedChanged += (sender, e) => { RadixCheckedChanged((RadioButton)sender, RadixMode.Oct); };
             radixAutoButton.Checked = true;
 
             settingsButton.Click += (sender, e) => { new SettingsDialog().ShowDialog(); reloadSettings(); };
@@ -261,6 +262,7 @@ namespace Shapoco.Calctus.UI {
                     case RadixMode.Dec: radixDecButton.Checked = true; break;
                     case RadixMode.Hex: radixHexButton.Checked = true; break;
                     case RadixMode.Bin: radixBinButton.Checked = true; break;
+                    case RadixMode.Oct: radixBinButton.Checked = true; break;
                 }
                 calcListBox.RadixMode = value;
             }
