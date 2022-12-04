@@ -50,6 +50,7 @@ namespace Shapoco.Calctus.Model {
         public Val FormatBin() => Format(new ValFormatHint(NumberFormatter.CStyleBin));
         public Val FormatOct() => Format(new ValFormatHint(NumberFormatter.CStyleOct));
         public Val FormatChar() => Format(new ValFormatHint(NumberFormatter.CStyleChar));
+        public Val FormatDateTime() => Format(new ValFormatHint(NumberFormatter.DateTime));
         public Val FormatWebColor() => Format(new ValFormatHint(NumberFormatter.WebColor));
 
         public Val Format(ValFormatHint fmt) {

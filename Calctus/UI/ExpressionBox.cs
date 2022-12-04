@@ -7,26 +7,27 @@ using System.Threading.Tasks;
 using System.Windows.Forms;
 using System.Drawing;
 using System.Runtime.InteropServices;
+using Shapoco.Calctus.Model.Syntax;
 
 namespace Shapoco.Calctus.UI {
     class ExpressionBox : Control {
         public const int TextMargin = 0;
 
-        public static readonly Regex RegexSymbols = new Regex(@"[+\-*/%^|&=<>]");
-        public static readonly Regex RegexIDs = new Regex(@"\b[a-zA-Z_][a-zA-Z0-9_]*\b");
-        public static readonly Regex RegexColors = new Regex(@"#([0-9a-fA-F]{6}|[0-9a-fA-F]{3})\b");
-        public static readonly Regex RegexChar = new Regex("'([^'\\\\]|\\\\[abfnrtv\\\\\'0]|\\\\o[0-7]{3}|\\\\x[0-9a-fA-F]{2}|\\\\u[0-9a-fA-F]{4})'");
+        public static readonly Regex SymbolRegex = new Regex(@"[+\-*/%^|&=<>]");
+        public static readonly Regex IdRegex = new Regex(@"\b[a-zA-Z_][a-zA-Z0-9_]*\b");
+        public static readonly Regex ColorRegex = new Regex(@"#([0-9a-fA-F]{6}|[0-9a-fA-F]{3})\b");
+        public static readonly Regex CharRegex = new Regex("'([^'\\\\]|\\\\[abfnrtv\\\\\'0]|\\\\o[0-7]{3}|\\\\x[0-9a-fA-F]{2}|\\\\u[0-9a-fA-F]{4})'");
 
-        public static readonly Color ColorSymbols = Color.FromArgb(64, 192, 255);
-        public static readonly Color ColorId = Color.FromArgb(192, 255, 128);
-        public static readonly Color ColorChar = Color.FromArgb(255, 192, 64);
-        public static readonly Color[] ColorParenthesis = new Color[] {
+        public static readonly Color SymbolColor = Color.FromArgb(64, 192, 255);
+        public static readonly Color IdColor = Color.FromArgb(192, 255, 128);
+        public static readonly Color LiteralColor = Color.FromArgb(255, 192, 64);
+        public static readonly Color[] ParenthesisColors = new Color[] {
             Color.FromArgb(64, 192 , 255),
             Color.FromArgb(128, 64 , 255),
             Color.FromArgb(255, 64 , 128),
             Color.FromArgb(255, 192 , 64),
         };
-        public static readonly Color ColorSelection = Color.FromArgb(128, 0, 128, 255);
+        public static readonly Color SelectionColor = Color.FromArgb(128, 0, 128, 255);
 
         // C#でIMEの入力を受けるユーザーコントロールの作成 - Qiita
         // https://qiita.com/takao_mofumofu/items/24c060a1d4f6b3df5c73
@@ -226,7 +227,10 @@ namespace Shapoco.Calctus.UI {
 
         protected override void Dispose(bool disposing) {
             if (himc != IntPtr.Zero) {
-                ImmReleaseContext(this.Handle, himc);
+                try {
+                    ImmReleaseContext(this.Handle, himc);
+                }
+                catch { }
                 himc = IntPtr.Zero;
             }
             base.Dispose(disposing);
@@ -575,7 +579,7 @@ namespace Shapoco.Calctus.UI {
 
             if (this.Focused && this.SelectionLength != 0) {
                 // 選択範囲の描画
-                using (var brush = new SolidBrush(ColorSelection)) {
+                using (var brush = new SolidBrush(SelectionColor)) {
                     g.FillRectangle(brush, GetSelectionRectangle());
                 }
             }
@@ -776,18 +780,18 @@ namespace Shapoco.Calctus.UI {
 
             // 識別子の強調表示
             {
-                var matches = RegexIDs.Matches(text);
+                var matches = IdRegex.Matches(text);
                 for (int i = 0; i < matches.Count; i++) {
                     var m = matches[i];
                     for (int j = 0; j < m.Length; j++) {
-                        _chars[m.Index + j].Style.ForeColor = ColorId;
+                        _chars[m.Index + j].Style.ForeColor = IdColor;
                     }
                 }
             }
 
             // 色の強調表示
             {
-                var matches = RegexColors.Matches(text);
+                var matches = ColorRegex.Matches(text);
                 for (int i = 0; i < matches.Count; i++) {
                     var m = matches[i];
                     var s = m.Value.Substring(1);
@@ -829,22 +833,33 @@ namespace Shapoco.Calctus.UI {
 
             // 記号の強調表示
             {
-                var matches = RegexSymbols.Matches(text);
+                var matches = SymbolRegex.Matches(text);
                 for (int i = 0; i < matches.Count; i++) {
                     var m = matches[i];
                     for (int j = 0; j < m.Length; j++) {
-                        _chars[m.Index + j].Style.ForeColor = ColorSymbols;
+                        _chars[m.Index + j].Style.ForeColor = SymbolColor;
+                    }
+                }
+            }
+
+            // 日付リテラルの強調表示
+            {
+                var matches = NumberFormatter.DateTime.Pattern.Matches(text);
+                for (int i = 0; i < matches.Count; i++) {
+                    var m = matches[i];
+                    for (int j = 0; j < m.Length; j++) {
+                        _chars[m.Index + j].Style.ForeColor = LiteralColor;
                     }
                 }
             }
 
             // 文字リテラルの強調表示
             {
-                var matches = RegexChar.Matches(text);
+                var matches = CharRegex.Matches(text);
                 for (int i = 0; i < matches.Count; i++) {
                     var m = matches[i];
                     for (int j = 0; j < m.Length; j++) {
-                        _chars[m.Index + j].Style.ForeColor = ColorChar;
+                        _chars[m.Index + j].Style.ForeColor = LiteralColor;
                     }
                 }
             }
@@ -861,7 +876,7 @@ namespace Shapoco.Calctus.UI {
                     else if (c == ')' && foreColor == Color.Transparent) {
                         if (stack.Count > 0) {
                             int start = stack.Pop();
-                            var color = ColorParenthesis[stack.Count % ColorParenthesis.Length];
+                            var color = ParenthesisColors[stack.Count % ParenthesisColors.Length];
                             _chars[start].Style.ForeColor = color;
                             _chars[i].Style.ForeColor = color;
                         }

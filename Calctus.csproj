@@ -62,10 +62,16 @@
     <Compile Include="Calctus\Model\Standard\ColorSpace.cs" />
     <Compile Include="Calctus\Model\Standard\Eseries.cs" />
     <Compile Include="Calctus\Model\Standard\PreferredNumbers.cs" />
+    <Compile Include="Calctus\Model\Standard\UnixTime.cs" />
+    <Compile Include="Calctus\Model\Syntax\CharFormatter.cs" />
+    <Compile Include="Calctus\Model\Syntax\DateTimeFormatter.cs" />
+    <Compile Include="Calctus\Model\Syntax\IntFormatter.cs" />
+    <Compile Include="Calctus\Model\Syntax\RealFormatter.cs" />
     <Compile Include="Calctus\Model\Syntax\ValFormatHint.cs" />
     <Compile Include="Calctus\Model\OpDef.cs" />
     <Compile Include="Calctus\Model\RealVal.cs" />
     <Compile Include="Calctus\Model\Syntax\NumberFormatter.cs" />
+    <Compile Include="Calctus\Model\Syntax\WebColorFormatter.cs" />
     <Compile Include="Calctus\Parser\Errors.cs" />
     <Compile Include="Calctus\Parser\Lexer.cs" />
     <Compile Include="Calctus\Parser\Parser.cs" />

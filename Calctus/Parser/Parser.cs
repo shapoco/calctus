@@ -73,11 +73,13 @@ namespace Shapoco.Calctus.Parser {
             else if (ReadIf(TokenType.Word, out tok)) {
                 var args = new List<Expr>();
                 if (ReadIf("(")) {
-                    args.Add(Expr());
-                    while (ReadIf(",")) {
+                    if (!ReadIf(")")) {
                         args.Add(Expr());
+                        while (ReadIf(",")) {
+                            args.Add(Expr());
+                        }
+                        Expect(")");
                     }
-                    Expect(")");
                     return new FuncRef(tok, args.ToArray());
                 }
                 else {

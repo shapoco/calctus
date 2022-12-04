@@ -25,6 +25,7 @@ namespace Shapoco.Calctus.Model {
         public static readonly FuncDef bin = new FuncDef("bin", (e, a) => a[0].FormatBin());
         public static readonly FuncDef oct = new FuncDef("oct", (e, a) => a[0].FormatOct());
         public static readonly FuncDef char_1 = new FuncDef("char", (e, a) => a[0].FormatChar());
+        public static readonly FuncDef datetime = new FuncDef("datetime", (e, a) => a[0].FormatDateTime());
 
         public static readonly FuncDef pow = new FuncDef("pow", 2, (e, a) => new RealVal(RMath.Pow(a[0].AsReal, a[1].AsReal), a[0].FormatHint));
         public static readonly FuncDef sqrt = new FuncDef("sqrt", (e, a) => new RealVal(RMath.Sqrt(a[0].AsReal)));
@@ -55,6 +56,18 @@ namespace Shapoco.Calctus.Model {
 
         public static readonly FuncDef max = new FuncDef("max", 2, (e, a) => new RealVal(RMath.Max(a[0].AsReal, a[1].AsReal), a[0].FormatHint));
         public static readonly FuncDef min = new FuncDef("min", 2, (e, a) => new RealVal(RMath.Min(a[0].AsReal, a[1].AsReal), a[0].FormatHint));
+
+        public static readonly FuncDef now = new FuncDef("now",0, (e, a) => new RealVal(UnixTime.FromLocalTime(DateTime.Now)).FormatDateTime());
+
+        public static readonly FuncDef todays = new FuncDef("todays", (e, a) => a[0].Div(e, new RealVal(24 * 60 * 60)).FormatReal());
+        public static readonly FuncDef tohours = new FuncDef("tohours", (e, a) => a[0].Div(e, new RealVal(60 * 60)).FormatReal());
+        public static readonly FuncDef tominutes = new FuncDef("tominutes", (e, a) => a[0].Div(e, new RealVal(60)).FormatReal());
+        public static readonly FuncDef toseconds = new FuncDef("toseconds", (e, a) => a[0].FormatReal());
+        
+        public static readonly FuncDef fromdays = new FuncDef("fromdays", (e, a) => a[0].Mul(e, new RealVal(24 * 60 * 60)).FormatReal());
+        public static readonly FuncDef fromhours = new FuncDef("fromhours", (e, a) => a[0].Mul(e, new RealVal(60 * 60)).FormatReal());
+        public static readonly FuncDef fromminutes = new FuncDef("fromminutes", (e, a) => a[0].Mul(e, new RealVal(60)).FormatReal());
+        public static readonly FuncDef fromseconds = new FuncDef("fromseconds", (e, a) => a[0].FormatReal());
 
         public static readonly FuncDef e3floor = new FuncDef("e3floor", (e, a) => new RealVal(PreferredNumbers.Floor(Eseries.E3, a[0].AsReal), a[0].FormatHint));
         public static readonly FuncDef e3ceil = new FuncDef("e3ceil", (e, a) => new RealVal(PreferredNumbers.Ceiling(Eseries.E3, a[0].AsReal), a[0].FormatHint));
