@@ -2,7 +2,7 @@
 
 A calculator for Windows.
 
-![Screen Shot](img/ss.gif)
+![Screen Shot](img/ss.png)
 
 ----
 
@@ -32,6 +32,8 @@ A calculator for Windows.
 |Hexadecimal|`0x7b`, `0x7B`|
 |Octadecimal|`0173`|
 |Binary|`0b1111011`|
+|Character:new:|`'A'`|
+|Date Time:new:|`#2022/34/56 12:34:56#`|
 |Web Color:new:|`#123`, `#112233`|
 
 ### Operators
@@ -57,9 +59,13 @@ A calculator for Windows.
 |Exponential|`sqrt(x)`, `log(x)`, `log2(x)`, `log10(x)`, `clog2(x)`, `clog10(x)`|`Double`|
 |Trigonometric|`sin(x)`, `cos(x)`, `tan(x)`,`asin(x)`, `acos(x)`, `atan(x)`, `atan2(y, x)`,`sinh(x)`:new:, `cosh(x)`:new:, `tanh(x)`:new:|`Double`|
 |Round|`floor(x)`, `ceil(x)`, `trunc(x)`, `round(x)`|`Decimal`|
+|Absolute/Sign|`abs(x)`:new:, `sign(x)`|`Decimal`|
+|Max/Min|`max(a, b)`:new:, `min(a, b)`:new:|`Decimal`|
+|Representation:new:|`dec(x)`, `hex(x)`, `bin(x)`, `oct(x)`, `char(x)`, `datetime(x)`|`Decimal`|
+|Date Time:new:|`now()`, `fromyears(x)`, `fromdays(x)`, `fromhours(x)`, `fromminutes(x)`, `fromseconds(x)`, `toyears(x)`, `todays(x)`, `tohours(x)`, `tominutes(x)`, `toseconds(x)`|`Double`|
 |Color:new:|`rgb(r,g,b)`, `rgb(rgb)`, `hsv2rgb(h,s,v)`, `hsv2rgb_r(h,s,v)`, `hsv2rgb_g(h,s,v)`, `hsv2rgb_b(h,s,v)`, `rgb2hsv_h(rgb)`, `rgb2hsv_s(rgb)`, `rgb2hsv_v(rgb)`, `hsl2rgb(h,s,l)`, `hsl2rgb_r(h,s,l)`, `hsl2rgb_g(h,s,l)`, `hsl2rgb_b(h,s,l)`, `rgb2hsl_h(rgb)`, `rgb2hsl_s(rgb)`, `rgb2hsl_l(rgb)`, `yuv2rgb(y,u,v)`, `yuv2rgb(yuv)`, `yuv2rgb_r(yuv)`, `yuv2rgb_g(yuv)`, `yuv2rgb_b(yuv)`, `rgb2yuv(r,g,b)`, `rgb2yuv(rgb)`, `rgb2yuv_y(rgb)`, `rgb2yuv_u(rgb)`, `rgb2yuv_v(rgb)`|`Decimal`|
 |E-series:new:|Rounding to the E-series value: `eXfloor(x)`, `eXceil(x)`, `eXround(x)`<br>Calculation of voltage divider resistance: `eXratiol(x)`, `eXratioh(x)`<br> (`X`=`3`, `6`, `12`, `24`, `48`, `96`, `192`)|`Decimal`|
-|Others|`abs(x)`:new:, `sign(x)`, `max(a, b)`:new:, `min(a, b)`:new:|`Decimal`|
+
 
 ### Constants
 
