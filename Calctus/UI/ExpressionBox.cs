@@ -377,6 +377,15 @@ namespace Shapoco.Calctus.UI {
             }
         }
 
+        public void Undo() {
+            if (this.ReadOnly) {
+                System.Media.SystemSounds.Beep.Play();
+                return;
+            }
+            this.Text = _undoBuff1;
+            setSelection(this.Text.Length);
+        }
+
         protected override void OnFontChanged(EventArgs e) {
             base.OnFontChanged(e);
             // 文字の再レイアウト
@@ -501,8 +510,7 @@ namespace Shapoco.Calctus.UI {
                 }
                 else if (e.KeyCode == Keys.Z) {
                     e.Handled = true;
-                    this.Text = _undoBuff1;
-                    setSelection(this.Text.Length);
+                    Undo();
                 }
             }
             
