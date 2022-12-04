@@ -4,7 +4,6 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 using System.Drawing;
-using Shapoco.Calctus.Model.UnitSystem;
 using Shapoco.Calctus.Model.Standard;
 
 namespace Shapoco.Calctus.Model {
@@ -27,19 +26,7 @@ namespace Shapoco.Calctus.Model {
         public static readonly FuncDef oct = new FuncDef("oct", (e, a) => a[0].FormatOct());
         public static readonly FuncDef char_1 = new FuncDef("char", (e, a) => a[0].FormatChar());
 
-        public static readonly FuncDef pow = new FuncDef("pow", 2, (e, a) => {
-            var pow = RMath.Pow(a[0].AsReal, a[1].AsReal);
-            if (!a[0].IsDimless) {
-                if (a[1].IsInteger) {
-                    var newUnit = a[0].Unit.Pow(e, (int)a[1].AsReal);
-                    return new RealVal(pow, a[0].FormatHint, newUnit);
-                }
-                else {
-                    e.Warning(a[1], "べき乗の根に単位が指定されていますが、指数が整数ではありません");
-                }
-            }
-            return new RealVal(pow, a[0].FormatHint);
-        });
+        public static readonly FuncDef pow = new FuncDef("pow", 2, (e, a) => new RealVal(RMath.Pow(a[0].AsReal, a[1].AsReal), a[0].FormatHint));
         public static readonly FuncDef sqrt = new FuncDef("sqrt", (e, a) => new RealVal(RMath.Sqrt(a[0].AsReal)));
         public static readonly FuncDef log = new FuncDef("log", (e, a) => new RealVal(RMath.Log(a[0].AsReal)));
         public static readonly FuncDef log2 = new FuncDef("log2", (e, a) => new RealVal(RMath.Log(a[0].AsReal) / RMath.Log(2.0m)));
@@ -58,56 +45,56 @@ namespace Shapoco.Calctus.Model {
         public static readonly FuncDef cosh = new FuncDef("cosh", (e, a) => new RealVal(RMath.Cosh(a[0].AsReal)));
         public static readonly FuncDef tanh = new FuncDef("tanh", (e, a) => new RealVal(RMath.Tanh(a[0].AsReal)));
 
-        public static readonly FuncDef floor = new FuncDef("floor", (e, a) => new RealVal(RMath.Floor(a[0].AsReal), a[0].FormatHint, a[0].Unit).FormatInt());
-        public static readonly FuncDef ceil = new FuncDef("ceil", (e, a) => new RealVal(RMath.Ceiling(a[0].AsReal), a[0].FormatHint, a[0].Unit).FormatInt());
-        public static readonly FuncDef trunc = new FuncDef("trunc", (e, a) => new RealVal(RMath.Truncate(a[0].AsReal), a[0].FormatHint, a[0].Unit).FormatInt());
-        public static readonly FuncDef round = new FuncDef("round", (e, a) => new RealVal(RMath.Round(a[0].AsReal), a[0].FormatHint, a[0].Unit).FormatInt());
-        
-        public static readonly FuncDef abs = new FuncDef("abs", (e, a) => new RealVal(RMath.Abs(a[0].AsReal), a[0].FormatHint, a[0].Unit));
+        public static readonly FuncDef floor = new FuncDef("floor", (e, a) => new RealVal(RMath.Floor(a[0].AsReal), a[0].FormatHint).FormatInt());
+        public static readonly FuncDef ceil = new FuncDef("ceil", (e, a) => new RealVal(RMath.Ceiling(a[0].AsReal), a[0].FormatHint).FormatInt());
+        public static readonly FuncDef trunc = new FuncDef("trunc", (e, a) => new RealVal(RMath.Truncate(a[0].AsReal), a[0].FormatHint).FormatInt());
+        public static readonly FuncDef round = new FuncDef("round", (e, a) => new RealVal(RMath.Round(a[0].AsReal), a[0].FormatHint).FormatInt());
+
+        public static readonly FuncDef abs = new FuncDef("abs", (e, a) => new RealVal(RMath.Abs(a[0].AsReal), a[0].FormatHint));
         public static readonly FuncDef sign = new FuncDef("sign", (e, a) => new RealVal(RMath.Sign(a[0].AsReal)).FormatInt());
 
-        public static readonly FuncDef max = new FuncDef("max", 2, (e, a) => new RealVal(RMath.Max(a[0].AsReal, a[1].AsReal), a[0].FormatHint, a[0].Unit));
-        public static readonly FuncDef min = new FuncDef("min", 2, (e, a) => new RealVal(RMath.Min(a[0].AsReal, a[1].AsReal), a[0].FormatHint, a[0].Unit));
+        public static readonly FuncDef max = new FuncDef("max", 2, (e, a) => new RealVal(RMath.Max(a[0].AsReal, a[1].AsReal), a[0].FormatHint));
+        public static readonly FuncDef min = new FuncDef("min", 2, (e, a) => new RealVal(RMath.Min(a[0].AsReal, a[1].AsReal), a[0].FormatHint));
 
-        public static readonly FuncDef e3floor = new FuncDef("e3floor", (e, a) => new RealVal(PreferredNumbers.Floor(Eseries.E3, a[0].AsReal), a[0].FormatHint, a[0].Unit));
-        public static readonly FuncDef e3ceil = new FuncDef("e3ceil", (e, a) => new RealVal(PreferredNumbers.Ceiling(Eseries.E3, a[0].AsReal), a[0].FormatHint, a[0].Unit));
-        public static readonly FuncDef e3round = new FuncDef("e3round", (e, a) => new RealVal(PreferredNumbers.Round(Eseries.E3, a[0].AsReal), a[0].FormatHint, a[0].Unit));
+        public static readonly FuncDef e3floor = new FuncDef("e3floor", (e, a) => new RealVal(PreferredNumbers.Floor(Eseries.E3, a[0].AsReal), a[0].FormatHint));
+        public static readonly FuncDef e3ceil = new FuncDef("e3ceil", (e, a) => new RealVal(PreferredNumbers.Ceiling(Eseries.E3, a[0].AsReal), a[0].FormatHint));
+        public static readonly FuncDef e3round = new FuncDef("e3round", (e, a) => new RealVal(PreferredNumbers.Round(Eseries.E3, a[0].AsReal), a[0].FormatHint));
         public static readonly FuncDef e3ratio_l = new FuncDef("e3ratio_l", (e, a) => new RealVal(PreferredNumbers.FindSplitPair(Eseries.E3, a[0].AsReal)[0]));
         public static readonly FuncDef e3ratio_h = new FuncDef("e3ratio_h", (e, a) => new RealVal(PreferredNumbers.FindSplitPair(Eseries.E3, a[0].AsReal)[1]));
 
-        public static readonly FuncDef e6floor = new FuncDef("e6floor", (e, a) => new RealVal(PreferredNumbers.Floor(Eseries.E6, a[0].AsReal), a[0].FormatHint, a[0].Unit));
-        public static readonly FuncDef e6ceil = new FuncDef("e6ceil", (e, a) => new RealVal(PreferredNumbers.Ceiling(Eseries.E6, a[0].AsReal), a[0].FormatHint, a[0].Unit));
-        public static readonly FuncDef e6round = new FuncDef("e6round", (e, a) => new RealVal(PreferredNumbers.Round(Eseries.E6, a[0].AsReal), a[0].FormatHint, a[0].Unit));
+        public static readonly FuncDef e6floor = new FuncDef("e6floor", (e, a) => new RealVal(PreferredNumbers.Floor(Eseries.E6, a[0].AsReal), a[0].FormatHint));
+        public static readonly FuncDef e6ceil = new FuncDef("e6ceil", (e, a) => new RealVal(PreferredNumbers.Ceiling(Eseries.E6, a[0].AsReal), a[0].FormatHint));
+        public static readonly FuncDef e6round = new FuncDef("e6round", (e, a) => new RealVal(PreferredNumbers.Round(Eseries.E6, a[0].AsReal), a[0].FormatHint));
         public static readonly FuncDef e6ratio_l = new FuncDef("e6ratio_l", (e, a) => new RealVal(PreferredNumbers.FindSplitPair(Eseries.E6, a[0].AsReal)[0]));
         public static readonly FuncDef e6ratio_h = new FuncDef("e6ratio_h", (e, a) => new RealVal(PreferredNumbers.FindSplitPair(Eseries.E6, a[0].AsReal)[1]));
 
-        public static readonly FuncDef e12floor = new FuncDef("e12floor", (e, a) => new RealVal(PreferredNumbers.Floor(Eseries.E12, a[0].AsReal), a[0].FormatHint, a[0].Unit));
-        public static readonly FuncDef e12ceil = new FuncDef("e12ceil", (e, a) => new RealVal(PreferredNumbers.Ceiling(Eseries.E12, a[0].AsReal), a[0].FormatHint, a[0].Unit));
-        public static readonly FuncDef e12round = new FuncDef("e12round", (e, a) => new RealVal(PreferredNumbers.Round(Eseries.E12, a[0].AsReal), a[0].FormatHint, a[0].Unit));
+        public static readonly FuncDef e12floor = new FuncDef("e12floor", (e, a) => new RealVal(PreferredNumbers.Floor(Eseries.E12, a[0].AsReal), a[0].FormatHint));
+        public static readonly FuncDef e12ceil = new FuncDef("e12ceil", (e, a) => new RealVal(PreferredNumbers.Ceiling(Eseries.E12, a[0].AsReal), a[0].FormatHint));
+        public static readonly FuncDef e12round = new FuncDef("e12round", (e, a) => new RealVal(PreferredNumbers.Round(Eseries.E12, a[0].AsReal), a[0].FormatHint));
         public static readonly FuncDef e12ratio_l = new FuncDef("e12ratio_l", (e, a) => new RealVal(PreferredNumbers.FindSplitPair(Eseries.E12, a[0].AsReal)[0]));
         public static readonly FuncDef e12ratio_h = new FuncDef("e12ratio_h", (e, a) => new RealVal(PreferredNumbers.FindSplitPair(Eseries.E12, a[0].AsReal)[1]));
 
-        public static readonly FuncDef e24floor = new FuncDef("e24floor", (e, a) => new RealVal(PreferredNumbers.Floor(Eseries.E24, a[0].AsReal), a[0].FormatHint, a[0].Unit));
-        public static readonly FuncDef e24ceil = new FuncDef("e24ceil", (e, a) => new RealVal(PreferredNumbers.Ceiling(Eseries.E24, a[0].AsReal), a[0].FormatHint, a[0].Unit));
-        public static readonly FuncDef e24round = new FuncDef("e24round", (e, a) => new RealVal(PreferredNumbers.Round(Eseries.E24, a[0].AsReal), a[0].FormatHint, a[0].Unit));
+        public static readonly FuncDef e24floor = new FuncDef("e24floor", (e, a) => new RealVal(PreferredNumbers.Floor(Eseries.E24, a[0].AsReal), a[0].FormatHint));
+        public static readonly FuncDef e24ceil = new FuncDef("e24ceil", (e, a) => new RealVal(PreferredNumbers.Ceiling(Eseries.E24, a[0].AsReal), a[0].FormatHint));
+        public static readonly FuncDef e24round = new FuncDef("e24round", (e, a) => new RealVal(PreferredNumbers.Round(Eseries.E24, a[0].AsReal), a[0].FormatHint));
         public static readonly FuncDef e24ratio_l = new FuncDef("e24ratio_l", (e, a) => new RealVal(PreferredNumbers.FindSplitPair(Eseries.E24, a[0].AsReal)[0]));
         public static readonly FuncDef e24ratio_h = new FuncDef("e24ratio_h", (e, a) => new RealVal(PreferredNumbers.FindSplitPair(Eseries.E24, a[0].AsReal)[1]));
 
-        public static readonly FuncDef e48floor = new FuncDef("e48floor", (e, a) => new RealVal(PreferredNumbers.Floor(Eseries.E48, a[0].AsReal), a[0].FormatHint, a[0].Unit));
-        public static readonly FuncDef e48ceil = new FuncDef("e48ceil", (e, a) => new RealVal(PreferredNumbers.Ceiling(Eseries.E48, a[0].AsReal), a[0].FormatHint, a[0].Unit));
-        public static readonly FuncDef e48round = new FuncDef("e48round", (e, a) => new RealVal(PreferredNumbers.Round(Eseries.E48, a[0].AsReal), a[0].FormatHint, a[0].Unit));
+        public static readonly FuncDef e48floor = new FuncDef("e48floor", (e, a) => new RealVal(PreferredNumbers.Floor(Eseries.E48, a[0].AsReal), a[0].FormatHint));
+        public static readonly FuncDef e48ceil = new FuncDef("e48ceil", (e, a) => new RealVal(PreferredNumbers.Ceiling(Eseries.E48, a[0].AsReal), a[0].FormatHint));
+        public static readonly FuncDef e48round = new FuncDef("e48round", (e, a) => new RealVal(PreferredNumbers.Round(Eseries.E48, a[0].AsReal), a[0].FormatHint));
         public static readonly FuncDef e48ratio_l = new FuncDef("e48ratio_l", (e, a) => new RealVal(PreferredNumbers.FindSplitPair(Eseries.E48, a[0].AsReal)[0]));
         public static readonly FuncDef e48ratio_h = new FuncDef("e48ratio_h", (e, a) => new RealVal(PreferredNumbers.FindSplitPair(Eseries.E48, a[0].AsReal)[1]));
 
-        public static readonly FuncDef e96floor = new FuncDef("e96floor", (e, a) => new RealVal(PreferredNumbers.Floor(Eseries.E96, a[0].AsReal), a[0].FormatHint, a[0].Unit));
-        public static readonly FuncDef e96ceil = new FuncDef("e96ceil", (e, a) => new RealVal(PreferredNumbers.Ceiling(Eseries.E96, a[0].AsReal), a[0].FormatHint, a[0].Unit));
-        public static readonly FuncDef e96round = new FuncDef("e96round", (e, a) => new RealVal(PreferredNumbers.Round(Eseries.E96, a[0].AsReal), a[0].FormatHint, a[0].Unit));
+        public static readonly FuncDef e96floor = new FuncDef("e96floor", (e, a) => new RealVal(PreferredNumbers.Floor(Eseries.E96, a[0].AsReal), a[0].FormatHint));
+        public static readonly FuncDef e96ceil = new FuncDef("e96ceil", (e, a) => new RealVal(PreferredNumbers.Ceiling(Eseries.E96, a[0].AsReal), a[0].FormatHint));
+        public static readonly FuncDef e96round = new FuncDef("e96round", (e, a) => new RealVal(PreferredNumbers.Round(Eseries.E96, a[0].AsReal), a[0].FormatHint));
         public static readonly FuncDef e96ratio_l = new FuncDef("e96ratio_l", (e, a) => new RealVal(PreferredNumbers.FindSplitPair(Eseries.E96, a[0].AsReal)[0]));
         public static readonly FuncDef e96ratio_h = new FuncDef("e96ratio_h", (e, a) => new RealVal(PreferredNumbers.FindSplitPair(Eseries.E96, a[0].AsReal)[1]));
 
-        public static readonly FuncDef e192floor = new FuncDef("e192floor", (e, a) => new RealVal(PreferredNumbers.Floor(Eseries.E192, a[0].AsReal), a[0].FormatHint, a[0].Unit));
-        public static readonly FuncDef e192ceil = new FuncDef("e192ceil", (e, a) => new RealVal(PreferredNumbers.Ceiling(Eseries.E192, a[0].AsReal), a[0].FormatHint, a[0].Unit));
-        public static readonly FuncDef e192round = new FuncDef("e192round", (e, a) => new RealVal(PreferredNumbers.Round(Eseries.E192, a[0].AsReal), a[0].FormatHint, a[0].Unit));
+        public static readonly FuncDef e192floor = new FuncDef("e192floor", (e, a) => new RealVal(PreferredNumbers.Floor(Eseries.E192, a[0].AsReal), a[0].FormatHint));
+        public static readonly FuncDef e192ceil = new FuncDef("e192ceil", (e, a) => new RealVal(PreferredNumbers.Ceiling(Eseries.E192, a[0].AsReal), a[0].FormatHint));
+        public static readonly FuncDef e192round = new FuncDef("e192round", (e, a) => new RealVal(PreferredNumbers.Round(Eseries.E192, a[0].AsReal), a[0].FormatHint));
         public static readonly FuncDef e192ratio_l = new FuncDef("e192ratio_l", (e, a) => new RealVal(PreferredNumbers.FindSplitPair(Eseries.E192, a[0].AsReal)[0]));
         public static readonly FuncDef e192ratio_h = new FuncDef("e192ratio_h", (e, a) => new RealVal(PreferredNumbers.FindSplitPair(Eseries.E192, a[0].AsReal)[1]));
 
@@ -137,7 +124,7 @@ namespace Shapoco.Calctus.Model {
         public static readonly FuncDef yuv2rgb_r = new FuncDef("yuv2rgb_r", (e, a) => new RealVal(ColorSpace.YuvToRgb_R(a[0].AsReal)));
         public static readonly FuncDef yuv2rgb_g = new FuncDef("yuv2rgb_g", (e, a) => new RealVal(ColorSpace.YuvToRgb_G(a[0].AsReal)));
         public static readonly FuncDef yuv2rgb_b = new FuncDef("yuv2rgb_b", (e, a) => new RealVal(ColorSpace.YuvToRgb_B(a[0].AsReal)));
-        
+
         public static readonly FuncDef rgb2yuv_3 = new FuncDef("rgb2yuv", 3, (e, a) => new RealVal(ColorSpace.RgbToYuv(a[0].AsReal, a[1].AsReal, a[2].AsReal)).FormatHex());
         public static readonly FuncDef rgb2yuv_1 = new FuncDef("rgb2yuv", (e, a) => new RealVal(ColorSpace.RgbToYuv(a[0].AsReal)).FormatHex());
         public static readonly FuncDef rgb2yuv_y = new FuncDef("rgb2yuv_y", (e, a) => new RealVal(ColorSpace.RgbToYuv_Y(a[0].AsReal)));

@@ -7,10 +7,8 @@ using System.IO;
 
 using Shapoco.Calctus.Model;
 
-namespace Shapoco.Calctus.Parser
-{
-    class Parser
-    {
+namespace Shapoco.Calctus.Parser {
+    class Parser {
         private Token _buff = null;
         private Lexer _lex;
         public Lexer Lexer => _lex;
@@ -29,18 +27,17 @@ namespace Shapoco.Calctus.Parser
             var vals = new Stack<Expr>();
             var ops = new Stack<BinaryOp>();
 
-            vals.Push(OperandWithUnit());
+            vals.Push(Operand());
 
             while (!EndOfExpr) {
                 var rightOp = new BinaryOp(Read(), null, null);
-                //while (ops.Count > 0 && ops.Peek().Method.Priority >= rightOp.Method.Priority) {
                 while (ops.Count > 0 && ops.Peek().Method.ComparePriority(rightOp.Method) == OpPriorityDir.Left) {
                     var b = vals.Pop();
                     var a = vals.Pop();
                     vals.Push(new BinaryOp(ops.Pop().Token, a, b));
                 }
                 ops.Push(rightOp);
-                vals.Push(OperandWithUnit());
+                vals.Push(Operand());
             }
 
             while (ops.Count > 0) {
@@ -55,23 +52,9 @@ namespace Shapoco.Calctus.Parser
 
             var expr = vals.Pop();
             if (last && !Eos) {
-                throw new SyntaxError(_lex.Position, "operator missing");
+                throw new SyntaxError(_lex.Position, "Operator missing");
             }
             return expr;
-        }
-
-        public Expr OperandWithUnit() {
-            return Operand();
-            // 正式に搭載すると決めるまで単位系の機能は無効にする
-            //var operand = Operand();
-            //if (ReadIf("[", out Token tok)) {
-            //    var ret = UnitExpr();
-            //    Expect("]");
-            //    return new UnitifyOp(tok, operand, ret);
-            //}
-            //else {
-            //    return operand;
-            //}
         }
 
         public Expr Operand() {
@@ -102,34 +85,14 @@ namespace Shapoco.Calctus.Parser
                 }
             }
             else if (EndOfExpr) {
-                throw new SyntaxError(_lex.Position, "missing operand");
+                throw new SyntaxError(_lex.Position, "Operand missing");
             }
             else {
-                throw new SyntaxError(_lex.Position, "invalid operand: '" + Peek() + "'");
+                throw new SyntaxError(_lex.Position, "Invalid operand: '" + Peek() + "'");
             }
-        }
-
-        public Expr UnitExpr() {
-            Token tok;
-            var a = Unit();
-            while (ReadIf("*", out tok)) {
-                var b = Unit();
-                a = new UnitMultOp(tok, a, b);
-            }
-            while (ReadIf("/", out tok)) {
-                var b = Unit();
-                a = new UnitDivOp(tok, a, b);
-            }
-            return a;
-        }
-
-        public Expr Unit() {
-            Expect(TokenType.Word, out Token tok);
-            return new UnitRef(tok);
         }
 
         public Token Peek() {
-            //_lex.SkipWhite();
             if (_buff == null) {
                 _buff = _lex.Pop();
             }
@@ -171,21 +134,21 @@ namespace Shapoco.Calctus.Parser
             }
         }
 
-        public bool Eos 
+        public bool Eos
             => Peek().Type == TokenType.Eos;
 
-        public bool EndOfExpr 
+        public bool EndOfExpr
             => Eos || (Peek().Text == ")") || (Peek().Text == ",");
 
         public void Expect(string s) {
             if (!ReadIf(s)) {
-                throw new SyntaxError(_lex.Position, "missing: '" + s + "'");
+                throw new SyntaxError(_lex.Position, "Missing: '" + s + "'");
             }
         }
 
         public void Expect(TokenType typ, out Token tok) {
             if (!ReadIf(typ, out tok)) {
-                throw new SyntaxError(_lex.Position, "missing: '" + typ + "'");
+                throw new SyntaxError(_lex.Position, "Missing: '" + typ + "'");
             }
         }
     }

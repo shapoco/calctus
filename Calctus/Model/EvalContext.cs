@@ -5,12 +5,10 @@ using System.Text;
 using System.Threading.Tasks;
 
 using Shapoco.Calctus.Model.Syntax;
-using Shapoco.Calctus.Model.UnitSystem;
 
 namespace Shapoco.Calctus.Model {
     class EvalContext {
         private Dictionary<string, Var> _vars = new Dictionary<string, Var>();
-        public readonly UnitFactory Units = new UnitFactory();
         public readonly EvalSettings Settings = new EvalSettings();
 
         private void AddConstantReal(string name, real value) {

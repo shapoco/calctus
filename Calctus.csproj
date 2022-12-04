@@ -66,17 +66,6 @@
     <Compile Include="Calctus\Model\OpDef.cs" />
     <Compile Include="Calctus\Model\RealVal.cs" />
     <Compile Include="Calctus\Model\Syntax\NumberFormatter.cs" />
-    <Compile Include="Calctus\Model\UnitSystem\BaseUnit.cs" />
-    <Compile Include="Calctus\Model\UnitSystem\DerivedUnit.cs" />
-    <Compile Include="Calctus\Model\UnitSystem\UnitElement.cs" />
-    <Compile Include="Calctus\Model\UnitSystem\NativeUnits.cs" />
-    <Compile Include="Calctus\Model\UnitSystem\Dim.cs" />
-    <Compile Include="Calctus\Model\UnitSystem\Types.cs" />
-    <Compile Include="Calctus\Model\UnitSystem\Unit.cs" />
-    <Compile Include="Calctus\Model\UnitSystem\UnitException.cs" />
-    <Compile Include="Calctus\Model\UnitSystem\UnitFactory.cs" />
-    <Compile Include="Calctus\Model\UnitSystem\ScaledUnit.cs" />
-    <Compile Include="Calctus\Model\UnitSystem\UnitSyntax.cs" />
     <Compile Include="Calctus\Parser\Errors.cs" />
     <Compile Include="Calctus\Parser\Lexer.cs" />
     <Compile Include="Calctus\Parser\Parser.cs" />

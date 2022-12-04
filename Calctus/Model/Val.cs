@@ -5,12 +5,10 @@ using System.Text;
 using System.Threading.Tasks;
 
 using Shapoco.Calctus.Model.Syntax;
-using Shapoco.Calctus.Model.UnitSystem;
 
 namespace Shapoco.Calctus.Model {
     abstract class Val {
         public readonly ValFormatHint FormatHint;
-        public virtual Unit Unit => NativeUnits.Dimless;
 
         public Val(ValFormatHint fmt = null) {
             this.FormatHint = fmt != null ? fmt : ValFormatHint.Default;
@@ -18,15 +16,6 @@ namespace Shapoco.Calctus.Model {
 
         public string ValTypeName => this.GetType().Name;
         public abstract object Raw { get; }
-
-        public bool IsDimless => this.Unit.IsDimless;
-        public Val AsDimless(EvalContext ctx, bool warning = true) {
-            if (warning && IsDimless) {
-                ctx.Warning(this, this.ToString() + " is not dimensionless");
-            }
-            return OnAsDimless(ctx);
-        }
-        protected abstract Val OnAsDimless(EvalContext ctx);
 
         public abstract bool IsScalar { get; }
         public abstract bool IsInteger { get; }

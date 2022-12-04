@@ -11,7 +11,7 @@ using Shapoco.Calctus.Model.Syntax;
 
 namespace Shapoco.Calctus.Parser {
     class Lexer {
-        private static readonly Regex _wordRegexes = new Regex(@"[a-zA-Z_][a-zA-Z0-9_]*|∞");
+        private static readonly Regex _wordRegexes = new Regex(@"[a-zA-Z_][a-zA-Z0-9_]*");
 
         private StringMatchReader _tr;
         private bool _eosReaded = false;
@@ -81,7 +81,7 @@ namespace Shapoco.Calctus.Parser {
                 return new Token(TokenType.Symbol, pos, tok);
             }
             else {
-                throw new SyntaxError(pos, "unknown token starts with: '" + (char)_tr.Peek() + "'");
+                throw new SyntaxError(pos, "Unknown token starts with: '" + (char)_tr.Peek() + "'");
             }
         }
 

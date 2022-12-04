@@ -4,7 +4,6 @@ using System.Linq;
 using System.Text;
 using System.Text.RegularExpressions;
 using System.Threading.Tasks;
-using Shapoco.Calctus.Model.UnitSystem;
 using Shapoco.Calctus.Model.Standard;
 
 namespace Shapoco.Calctus.Model.Syntax {
@@ -79,6 +78,7 @@ namespace Shapoco.Calctus.Model.Syntax {
             var cint = new ValFormatHint(CStyleInt);
             {
                 EvalContext e = new EvalContext();
+                e.Settings.DecimalLengthToDisplay = 28;
                 e.Settings.ENotationEnabled = false;
                 e.Settings.ENotationExpPositiveMin = 4;
                 e.Settings.ENotationExpNegativeMax = -3;
@@ -102,6 +102,7 @@ namespace Shapoco.Calctus.Model.Syntax {
             }
             {
                 EvalContext e = new EvalContext();
+                e.Settings.DecimalLengthToDisplay = 28;
                 e.Settings.ENotationEnabled = true;
                 e.Settings.ENotationExpPositiveMin = 4;
                 e.Settings.ENotationExpNegativeMax = -3;
@@ -131,6 +132,7 @@ namespace Shapoco.Calctus.Model.Syntax {
             }
             {
                 EvalContext e = new EvalContext();
+                e.Settings.DecimalLengthToDisplay = 28;
                 e.Settings.ENotationEnabled = true;
                 e.Settings.ENotationExpPositiveMin = 4;
                 e.Settings.ENotationExpNegativeMax = -3;
@@ -168,6 +170,19 @@ namespace Shapoco.Calctus.Model.Syntax {
                 Test(e, new RealVal(-0.00012345m, cint), "-123.45e-6");
                 Test(e, new RealVal(-0.000012345m, cint), "-12.345e-6");
                 Test(e, new RealVal(-0.0000000000000012345m, cint), "-1.2345e-15");
+            }
+            {
+                EvalContext e = new EvalContext();
+                e.Settings.DecimalLengthToDisplay = 5;
+                e.Settings.ENotationEnabled = false;
+                Test(e, new RealVal(10000, cint), "10000");
+                Test(e, new RealVal(100000, cint), "100000");
+                Test(e, new RealVal(1000000, cint), "1000000");
+                Test(e, new RealVal(0.0001m, cint), "0.0001");
+                Test(e, new RealVal(0.00001m, cint), "0.00001");
+                Test(e, new RealVal(0.000009m, cint), "0.00001");
+                Test(e, new RealVal(0.000005m, cint), "0.00001");
+                Test(e, new RealVal(0.000004999m, cint), "0");
             }
         }
     }

@@ -4,8 +4,6 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 
-using Shapoco.Calctus.Model.UnitSystem;
-
 namespace Shapoco.Calctus.Model {
     /// <summary>式</summary>
     abstract class Expr {
@@ -123,59 +121,4 @@ namespace Shapoco.Calctus.Model {
             return f.Call(ctx, args);
         }
     }
-
-    /// <summary>単位の付加</summary>
-    class UnitifyOp : Expr {
-        public Expr A { get; private set; }
-        public Expr B { get; private set; }
-
-        public UnitifyOp(Token tok, Expr a, Expr b) : base(tok) {
-            this.A = a;
-            this.B = b;
-        }
-
-        public override Val Eval(EvalContext e) => A.Eval(e).Mul(e, B.Eval(e));
-        public override string ToString() => "(" + A.ToString() + "[" + B.ToString() + "])";
-    }
-
-    /// <summary>単位同士の乗算</summary>
-    class UnitMultOp : Expr {
-        public Expr A { get; private set; }
-        public Expr B { get; private set; }
-
-        public UnitMultOp(Token tok, Expr a, Expr b) : base(tok) {
-            this.A = a;
-            this.B = b;
-        }
-
-        public override Val Eval(EvalContext e) => A.Eval(e).Mul(e, B.Eval(e));
-        public override string ToString() => A.ToString() + "*" + B.ToString();
-    }
-
-    /// <summary>単位同士の除算</summary>
-    class UnitDivOp : Expr {
-        public Expr A { get; private set; }
-        public Expr B { get; private set; }
-
-        public UnitDivOp(Token tok, Expr a, Expr b) : base(tok) {
-            this.A = a;
-            this.B = b;
-        }
-
-        public override Val Eval(EvalContext e) => A.Eval(e).Div(e, B.Eval(e));
-        public override string ToString() => A.ToString() + "/" + B.ToString();
-    }
-
-    class UnitRef : Expr {
-        public Token Name => Token;
-        public readonly Unit Unit;
-
-        public UnitRef(Token tok) : base(tok) {
-            this.Unit = UnitFactory.Default.Solve(tok.Text);
-        }
-
-        public override Val Eval(EvalContext e) => new RealVal(Unit.UnscaleValue(e, 1), null, Unit);
-        public override string ToString() => Unit.ToString();
-    }
-
 }

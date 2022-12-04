@@ -401,14 +401,7 @@ namespace Shapoco.Calctus.UI {
                         case RadixMode.Oct: val = val.FormatOct(); break;
                     }
             
-                    var valStr = val.ToString(ctx);
-                    if (val is RealVal realVal) {
-                        if (realVal.IsDimless) {
-                            var doubleVal = realVal.AsReal;
-                        }
-                    }
-
-                    item.Answer = valStr;
+                    item.Answer = val.ToString(ctx);
                     item.Hint = "";
                     ctx.Ref("Ans", true).Value = val;
                 }
