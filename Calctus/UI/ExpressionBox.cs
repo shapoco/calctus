@@ -215,6 +215,8 @@ namespace Shapoco.Calctus.UI {
         private int _scrollX = 0;
         private int _charHeight = 20;
         private string _placeHolder = "";
+        private string _undoBuff0 = "";
+        private string _undoBuff1 = "";
 
         private MouseButtons _pressedMouseButtons = MouseButtons.None;
         private Keys _pressedModifiers = Keys.None;
@@ -497,6 +499,11 @@ namespace Shapoco.Calctus.UI {
                     e.Handled = true;
                     SelectAll();
                 }
+                else if (e.KeyCode == Keys.Z) {
+                    e.Handled = true;
+                    this.Text = _undoBuff1;
+                    setSelection(this.Text.Length);
+                }
             }
             
             restartCursorBlink();
@@ -536,8 +543,11 @@ namespace Shapoco.Calctus.UI {
         }
 
         protected override void OnTextChanged(EventArgs e) {
-            // カーソル位置の調整
             var text = this.Text;
+            // Undoバッファの更新
+            _undoBuff1 = _undoBuff0;
+            _undoBuff0 = text;
+            // カーソル位置の調整
             if (_selEnd > text.Length) _selEnd = text.Length;
             if (_selStart > text.Length) _selStart = text.Length;
             // 文字の再レイアウト
