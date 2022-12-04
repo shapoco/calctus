@@ -22,10 +22,10 @@ namespace Shapoco.Calctus.UI {
         public static readonly Color IdColor = Color.FromArgb(192, 255, 128);
         public static readonly Color LiteralColor = Color.FromArgb(255, 192, 64);
         public static readonly Color[] ParenthesisColors = new Color[] {
-            Color.FromArgb(64, 192 , 255),
-            Color.FromArgb(128, 64 , 255),
-            Color.FromArgb(255, 64 , 128),
-            Color.FromArgb(255, 192 , 64),
+            Color.FromArgb(64, 192, 255),
+            Color.FromArgb(192, 128, 255),
+            Color.FromArgb(255, 128, 192),
+            Color.FromArgb(255, 192, 64),
         };
         public static readonly Color SelectionColor = Color.FromArgb(128, 0, 128, 255);
 

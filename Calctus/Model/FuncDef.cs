@@ -59,11 +59,13 @@ namespace Shapoco.Calctus.Model {
 
         public static readonly FuncDef now = new FuncDef("now",0, (e, a) => new RealVal(UnixTime.FromLocalTime(DateTime.Now)).FormatDateTime());
 
+        public static readonly FuncDef toyears = new FuncDef("toyears", (e, a) => a[0].Div(e, new RealVal(365.2425m * 24 * 60 * 60)).FormatReal());
         public static readonly FuncDef todays = new FuncDef("todays", (e, a) => a[0].Div(e, new RealVal(24 * 60 * 60)).FormatReal());
         public static readonly FuncDef tohours = new FuncDef("tohours", (e, a) => a[0].Div(e, new RealVal(60 * 60)).FormatReal());
         public static readonly FuncDef tominutes = new FuncDef("tominutes", (e, a) => a[0].Div(e, new RealVal(60)).FormatReal());
         public static readonly FuncDef toseconds = new FuncDef("toseconds", (e, a) => a[0].FormatReal());
         
+        public static readonly FuncDef fromyears = new FuncDef("fromyears", (e, a) => a[0].Mul(e, new RealVal(365.2425m * 24 * 60 * 60)).FormatReal());
         public static readonly FuncDef fromdays = new FuncDef("fromdays", (e, a) => a[0].Mul(e, new RealVal(24 * 60 * 60)).FormatReal());
         public static readonly FuncDef fromhours = new FuncDef("fromhours", (e, a) => a[0].Mul(e, new RealVal(60 * 60)).FormatReal());
         public static readonly FuncDef fromminutes = new FuncDef("fromminutes", (e, a) => a[0].Mul(e, new RealVal(60)).FormatReal());
