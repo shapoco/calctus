@@ -54,6 +54,10 @@ namespace Shapoco.Calctus.UI {
                 g.TextRenderingHint = System.Drawing.Text.TextRenderingHint.AntiAlias;
                 g.DrawString(this.Text, this.Font, brush, this.ClientRectangle, format);
             }
+
+            if (Focused) {
+                g.DrawRectangle(SystemPens.ActiveBorder, new Rectangle(this.ClientRectangle.X, this.ClientRectangle.Y, this.ClientRectangle.Width - 1, this.ClientRectangle.Height - 1));
+            }
         }
     }
 }
