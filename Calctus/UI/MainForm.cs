@@ -54,6 +54,7 @@ namespace Shapoco.Calctus.UI {
             this.Resize += MainForm_Resize;
             this.LocationChanged += MainForm_LocationChanged;
 
+            notifyIcon.Text = Application.ProductName;
             notifyIcon.MouseClick += NotifyIcon_MouseClick;
 
             calcListBox.RadixModeChanged += (sender, e) => { this.RadixMode = ((CalcListBox)sender).RadixMode; };
