@@ -262,7 +262,7 @@ namespace Shapoco.Calctus.UI {
                     case RadixMode.Dec: radixDecButton.Checked = true; break;
                     case RadixMode.Hex: radixHexButton.Checked = true; break;
                     case RadixMode.Bin: radixBinButton.Checked = true; break;
-                    case RadixMode.Oct: radixBinButton.Checked = true; break;
+                    case RadixMode.Oct: radixOctButton.Checked = true; break;
                 }
                 calcListBox.RadixMode = value;
             }
