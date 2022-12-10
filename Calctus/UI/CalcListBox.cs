@@ -238,6 +238,7 @@ namespace Shapoco.Calctus.UI {
             _innerPanel.Controls.Add(item);
             item.ExpressionChanged += Item_ExpressionChanged;
             item.ItemKeyDown += Item_PreviewKeyDown;
+            item.ItemKeyUp += Item_KeyUp;
             item.ItemGotFocus += Item_GotFocus;
             item.ItemMouseUp += Item_MouseUp;
         }
@@ -245,6 +246,7 @@ namespace Shapoco.Calctus.UI {
         private void delete(CalcListItem item) {
             item.ExpressionChanged -= Item_ExpressionChanged;
             item.ItemKeyDown -= Item_PreviewKeyDown;
+            item.ItemKeyUp -= Item_KeyUp;
             item.ItemGotFocus -= Item_GotFocus;
             item.ItemMouseUp -= Item_MouseUp;
             _innerPanel.Controls.Remove(item);
@@ -314,6 +316,13 @@ namespace Shapoco.Calctus.UI {
             else if (e.KeyCode == Keys.Delete && e.Modifiers == (Keys.Control | Keys.Shift)) {
                 e.Handled = true;
                 Clear();
+            }
+        }
+
+        private void Item_KeyUp(object sender, KeyEventArgs e) {
+            var item = (CalcListItem)sender;
+            if (e.KeyCode == Keys.Apps && e.Modifiers == Keys.None) {
+                openContextMenu(item.PointToScreen(new Point(0, item.Height)));
             }
         }
 
