@@ -72,7 +72,7 @@
             this.closeButton.Location = new System.Drawing.Point(240, 234);
             this.closeButton.Name = "closeButton";
             this.closeButton.Size = new System.Drawing.Size(89, 25);
-            this.closeButton.TabIndex = 0;
+            this.closeButton.TabIndex = 1;
             this.closeButton.Text = "Close";
             this.closeButton.UseVisualStyleBackColor = true;
             // 
@@ -84,7 +84,7 @@
             this.NumberFormat_Exp_Enabled.Location = new System.Drawing.Point(8, 18);
             this.NumberFormat_Exp_Enabled.Name = "NumberFormat_Exp_Enabled";
             this.NumberFormat_Exp_Enabled.Size = new System.Drawing.Size(58, 16);
-            this.NumberFormat_Exp_Enabled.TabIndex = 3;
+            this.NumberFormat_Exp_Enabled.TabIndex = 0;
             this.NumberFormat_Exp_Enabled.Text = "Enable";
             this.NumberFormat_Exp_Enabled.UseVisualStyleBackColor = true;
             // 
@@ -99,7 +99,7 @@
             this.eNoteGroup.Location = new System.Drawing.Point(6, 60);
             this.eNoteGroup.Name = "eNoteGroup";
             this.eNoteGroup.Size = new System.Drawing.Size(297, 126);
-            this.eNoteGroup.TabIndex = 7;
+            this.eNoteGroup.TabIndex = 1;
             this.eNoteGroup.TabStop = false;
             this.eNoteGroup.Text = "Exponential Notation";
             // 
@@ -109,7 +109,7 @@
             this.NumberFormat_Exp_Alignment.Location = new System.Drawing.Point(18, 97);
             this.NumberFormat_Exp_Alignment.Name = "NumberFormat_Exp_Alignment";
             this.NumberFormat_Exp_Alignment.Size = new System.Drawing.Size(138, 16);
-            this.NumberFormat_Exp_Alignment.TabIndex = 11;
+            this.NumberFormat_Exp_Alignment.TabIndex = 5;
             this.NumberFormat_Exp_Alignment.Text = "Engineering Alignment";
             this.NumberFormat_Exp_Alignment.UseVisualStyleBackColor = true;
             // 
@@ -119,7 +119,7 @@
             this.label2.Location = new System.Drawing.Point(16, 46);
             this.label2.Name = "label2";
             this.label2.Size = new System.Drawing.Size(62, 12);
-            this.label2.TabIndex = 10;
+            this.label2.TabIndex = 1;
             this.label2.Text = "log10(x) ≧";
             // 
             // label1
@@ -128,7 +128,7 @@
             this.label1.Location = new System.Drawing.Point(16, 71);
             this.label1.Name = "label1";
             this.label1.Size = new System.Drawing.Size(62, 12);
-            this.label1.TabIndex = 9;
+            this.label1.TabIndex = 3;
             this.label1.Text = "log10(x) ≦";
             // 
             // NumberFormat_Exp_NegativeMax
@@ -146,7 +146,7 @@
             -2147483648});
             this.NumberFormat_Exp_NegativeMax.Name = "NumberFormat_Exp_NegativeMax";
             this.NumberFormat_Exp_NegativeMax.Size = new System.Drawing.Size(65, 19);
-            this.NumberFormat_Exp_NegativeMax.TabIndex = 8;
+            this.NumberFormat_Exp_NegativeMax.TabIndex = 4;
             this.NumberFormat_Exp_NegativeMax.Value = new decimal(new int[] {
             6,
             0,
@@ -168,7 +168,7 @@
             0});
             this.NumberFormat_Exp_PositiveMin.Name = "NumberFormat_Exp_PositiveMin";
             this.NumberFormat_Exp_PositiveMin.Size = new System.Drawing.Size(65, 19);
-            this.NumberFormat_Exp_PositiveMin.TabIndex = 7;
+            this.NumberFormat_Exp_PositiveMin.TabIndex = 2;
             this.NumberFormat_Exp_PositiveMin.Value = new decimal(new int[] {
             12,
             0,
@@ -184,7 +184,7 @@
             this.tabControl.Name = "tabControl";
             this.tabControl.SelectedIndex = 0;
             this.tabControl.Size = new System.Drawing.Size(317, 216);
-            this.tabControl.TabIndex = 8;
+            this.tabControl.TabIndex = 0;
             // 
             // tabPage3
             // 
@@ -192,7 +192,7 @@
             this.tabPage3.Location = new System.Drawing.Point(4, 22);
             this.tabPage3.Name = "tabPage3";
             this.tabPage3.Size = new System.Drawing.Size(309, 190);
-            this.tabPage3.TabIndex = 2;
+            this.tabPage3.TabIndex = 0;
             this.tabPage3.Text = "General";
             this.tabPage3.UseVisualStyleBackColor = true;
             // 
@@ -206,7 +206,7 @@
             this.groupBox1.Location = new System.Drawing.Point(6, 6);
             this.groupBox1.Name = "groupBox1";
             this.groupBox1.Size = new System.Drawing.Size(296, 140);
-            this.groupBox1.TabIndex = 5;
+            this.groupBox1.TabIndex = 0;
             this.groupBox1.TabStop = false;
             this.groupBox1.Text = "Start";
             // 
@@ -216,7 +216,7 @@
             this.Startup_AutoStart.Location = new System.Drawing.Point(10, 20);
             this.Startup_AutoStart.Name = "Startup_AutoStart";
             this.Startup_AutoStart.Size = new System.Drawing.Size(121, 16);
-            this.Startup_AutoStart.TabIndex = 4;
+            this.Startup_AutoStart.TabIndex = 0;
             this.Startup_AutoStart.Text = "Start automatically";
             this.Startup_AutoStart.UseVisualStyleBackColor = true;
             // 
@@ -226,7 +226,7 @@
             this.Startup_TrayIcon.Location = new System.Drawing.Point(10, 42);
             this.Startup_TrayIcon.Name = "Startup_TrayIcon";
             this.Startup_TrayIcon.Size = new System.Drawing.Size(122, 16);
-            this.Startup_TrayIcon.TabIndex = 4;
+            this.Startup_TrayIcon.TabIndex = 1;
             this.Startup_TrayIcon.Text = "Reside in task tray";
             this.Startup_TrayIcon.UseVisualStyleBackColor = true;
             // 
@@ -240,7 +240,7 @@
             this.Hotkey_KeyCode.Name = "Hotkey_KeyCode";
             this.Hotkey_KeyCode.Shift = false;
             this.Hotkey_KeyCode.Size = new System.Drawing.Size(249, 19);
-            this.Hotkey_KeyCode.TabIndex = 1;
+            this.Hotkey_KeyCode.TabIndex = 3;
             this.Hotkey_KeyCode.Win = false;
             // 
             // Hotkey_Enabled
@@ -249,7 +249,7 @@
             this.Hotkey_Enabled.Location = new System.Drawing.Point(10, 64);
             this.Hotkey_Enabled.Name = "Hotkey_Enabled";
             this.Hotkey_Enabled.Size = new System.Drawing.Size(60, 16);
-            this.Hotkey_Enabled.TabIndex = 4;
+            this.Hotkey_Enabled.TabIndex = 2;
             this.Hotkey_Enabled.Text = "Hotkey";
             this.Hotkey_Enabled.UseVisualStyleBackColor = true;
             // 
@@ -260,7 +260,7 @@
             this.tabPage2.Name = "tabPage2";
             this.tabPage2.Padding = new System.Windows.Forms.Padding(3);
             this.tabPage2.Size = new System.Drawing.Size(309, 190);
-            this.tabPage2.TabIndex = 1;
+            this.tabPage2.TabIndex = 0;
             this.tabPage2.Text = "Appearance";
             this.tabPage2.UseVisualStyleBackColor = true;
             // 
@@ -290,7 +290,7 @@
             0});
             this.Appearance_Font_Size.Name = "Appearance_Font_Size";
             this.Appearance_Font_Size.Size = new System.Drawing.Size(65, 19);
-            this.Appearance_Font_Size.TabIndex = 8;
+            this.Appearance_Font_Size.TabIndex = 5;
             this.Appearance_Font_Size.Value = new decimal(new int[] {
             9,
             0,
@@ -312,7 +312,7 @@
             this.label4.Location = new System.Drawing.Point(6, 21);
             this.label4.Name = "label4";
             this.label4.Size = new System.Drawing.Size(47, 12);
-            this.label4.TabIndex = 2;
+            this.label4.TabIndex = 0;
             this.label4.Text = "Buttons:";
             // 
             // label3
@@ -321,7 +321,7 @@
             this.label3.Location = new System.Drawing.Point(6, 72);
             this.label3.Name = "label3";
             this.label3.Size = new System.Drawing.Size(28, 12);
-            this.label3.TabIndex = 2;
+            this.label3.TabIndex = 4;
             this.label3.Text = "Size:";
             // 
             // Appearance_Font_Bold
@@ -330,7 +330,7 @@
             this.Appearance_Font_Bold.Location = new System.Drawing.Point(244, 71);
             this.Appearance_Font_Bold.Name = "Appearance_Font_Bold";
             this.Appearance_Font_Bold.Size = new System.Drawing.Size(47, 16);
-            this.Appearance_Font_Bold.TabIndex = 1;
+            this.Appearance_Font_Bold.TabIndex = 6;
             this.Appearance_Font_Bold.Text = "Bold";
             this.Appearance_Font_Bold.UseVisualStyleBackColor = true;
             // 
@@ -342,7 +342,7 @@
             this.Appearance_Font_Expr_Name.Location = new System.Drawing.Point(81, 44);
             this.Appearance_Font_Expr_Name.Name = "Appearance_Font_Expr_Name";
             this.Appearance_Font_Expr_Name.Size = new System.Drawing.Size(210, 20);
-            this.Appearance_Font_Expr_Name.TabIndex = 0;
+            this.Appearance_Font_Expr_Name.TabIndex = 3;
             // 
             // Appearance_Font_Button_Name
             // 
@@ -352,7 +352,7 @@
             this.Appearance_Font_Button_Name.Location = new System.Drawing.Point(81, 18);
             this.Appearance_Font_Button_Name.Name = "Appearance_Font_Button_Name";
             this.Appearance_Font_Button_Name.Size = new System.Drawing.Size(210, 20);
-            this.Appearance_Font_Button_Name.TabIndex = 0;
+            this.Appearance_Font_Button_Name.TabIndex = 1;
             // 
             // tabPage1
             // 
@@ -362,7 +362,7 @@
             this.tabPage1.Name = "tabPage1";
             this.tabPage1.Padding = new System.Windows.Forms.Padding(3);
             this.tabPage1.Size = new System.Drawing.Size(309, 190);
-            this.tabPage1.TabIndex = 0;
+            this.tabPage1.TabIndex = 2;
             this.tabPage1.Text = "Details";
             this.tabPage1.UseVisualStyleBackColor = true;
             // 
@@ -373,7 +373,7 @@
             this.groupBox2.Location = new System.Drawing.Point(6, 6);
             this.groupBox2.Name = "groupBox2";
             this.groupBox2.Size = new System.Drawing.Size(297, 48);
-            this.groupBox2.TabIndex = 8;
+            this.groupBox2.TabIndex = 0;
             this.groupBox2.TabStop = false;
             this.groupBox2.Text = "Decimal";
             // 
@@ -392,7 +392,7 @@
             0});
             this.NumberFormat_Decimal_MaxLen.Name = "NumberFormat_Decimal_MaxLen";
             this.NumberFormat_Decimal_MaxLen.Size = new System.Drawing.Size(65, 19);
-            this.NumberFormat_Decimal_MaxLen.TabIndex = 8;
+            this.NumberFormat_Decimal_MaxLen.TabIndex = 1;
             this.NumberFormat_Decimal_MaxLen.Value = new decimal(new int[] {
             8,
             0,
