@@ -29,6 +29,11 @@ namespace Shapoco.Calctus.UI {
                 return;
             }
 
+            _winBox.TabIndex = 0;
+            _altBox.TabIndex = 1;
+            _ctrlBox.TabIndex = 2;
+            _shiftBox.TabIndex = 3;
+            _keyCodeBox.TabIndex = 4;
             _winBox.Dock = DockStyle.Left;
             _altBox.Dock = DockStyle.Left;
             _ctrlBox.Dock = DockStyle.Left;
