@@ -16,6 +16,7 @@ namespace Shapoco.Calctus.UI {
 
         public event EventHandler ExpressionChanged;
         public event KeyEventHandler ItemKeyDown;
+        public event KeyEventHandler ItemKeyUp;
         public event MouseEventHandler ItemMouseUp;
         public event EventHandler ItemGotFocus;
         public event EventHandler ItemLostFocus;
@@ -33,6 +34,7 @@ namespace Shapoco.Calctus.UI {
             _ansBox.PlaceHolder = "?";
             _ansBox.ReadOnly = true;
             _exprBox.KeyDown += box_PreviewKeyDown;
+            _exprBox.KeyUp += box_KeyUp;
             _exprBox.KeyPress += exprBox_KeyPress;
             _exprBox.TextChanged += exprBox_TextChanged;
             _exprBox.GotFocus += box_GotFocus;
@@ -196,6 +198,10 @@ namespace Shapoco.Calctus.UI {
 
         private void box_PreviewKeyDown(object sender, KeyEventArgs e) {
             ItemKeyDown?.Invoke(this, e);
+        }
+
+        private void box_KeyUp(object sender, KeyEventArgs e) {
+            ItemKeyUp?.Invoke(this, e);
         }
 
         private void box_GotFocus(object sender, EventArgs e) {
