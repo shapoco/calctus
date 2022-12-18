@@ -248,6 +248,9 @@ namespace Shapoco.Calctus.UI {
             else if (e.KeyCode == Keys.F12) {
                 this.RadixMode = RadixMode.Bin;
             }
+            else if (e.KeyCode == Keys.F8) {
+                this.RadixMode = RadixMode.Oct;
+            }
             else {
                 e.SuppressKeyPress = false;
             }
