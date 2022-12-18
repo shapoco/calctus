@@ -420,8 +420,10 @@
             // 
             // SettingsDialog
             // 
+            this.AcceptButton = this.closeButton;
             this.AutoScaleDimensions = new System.Drawing.SizeF(6F, 12F);
             this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
+            this.CancelButton = this.closeButton;
             this.ClientSize = new System.Drawing.Size(341, 272);
             this.Controls.Add(this.tabControl);
             this.Controls.Add(this.closeButton);
