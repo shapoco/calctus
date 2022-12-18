@@ -52,6 +52,15 @@ namespace Shapoco.Calctus.Model {
             return Ref(new Token(TokenType.Word, TextPosition.Empty, name), allowCreate);
         }
 
+        public void Undef(string name, bool ignoreError) {
+            if (_vars.ContainsKey(name)) { 
+                _vars.Remove(name);
+            }
+            else if (!ignoreError) {
+                throw new IndexOutOfRangeException();
+            }
+        }
+
         public void Warning(object place, string msg) {
             Console.WriteLine("*WARNING: " + msg);
         }

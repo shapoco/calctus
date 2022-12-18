@@ -642,6 +642,11 @@ namespace Shapoco.Calctus.UI {
             }
         }
 
+        protected override void OnDoubleClick(EventArgs e) {
+            base.OnDoubleClick(e);
+            this.SelectAll();
+        }
+
         protected override void OnResize(EventArgs e) {
             base.OnResize(e);
             adjustScroll();
