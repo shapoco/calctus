@@ -420,6 +420,7 @@ namespace Shapoco.Calctus.UI {
                 catch (Exception ex) {
                     item.Answer = "";
                     item.Hint = "? " + ex.Message;
+                    ctx.Undef("Ans", true);
                 }
             }
         }
