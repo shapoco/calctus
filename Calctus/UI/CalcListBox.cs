@@ -305,6 +305,18 @@ namespace Shapoco.Calctus.UI {
                     this.SelectedIndex++;
                 }
             }
+            else if (e.KeyCode == Keys.PageUp && e.Modifiers == Keys.None) {
+                if (this.SelectedIndex > 0) {
+                    e.Handled = true;
+                    this.SelectedIndex = Math.Max(this.SelectedIndex - 10, 0);
+                }
+            }
+            else if (e.KeyCode == Keys.PageDown && e.Modifiers == Keys.None) {
+                if (this.SelectedIndex < _items.Count - 1) {
+                    e.Handled = true;
+                    this.SelectedIndex = Math.Min(this.SelectedIndex + 10, _items.Count - 1);
+                }
+            }
             else if (e.KeyCode == Keys.C && e.Modifiers == (Keys.Control | Keys.Shift)) {
                 e.Handled = true;
                 CopyAll();
