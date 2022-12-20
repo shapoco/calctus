@@ -50,6 +50,16 @@ namespace Shapoco.Calctus.UI {
             };
             //this.Click += (sender, e) => { this.SelectedIndex = -1; };
 
+            _cmenuTextCut.ShortcutKeyDisplayString = "Ctrl+X";
+            _cmenuTextCopy.ShortcutKeyDisplayString = "Ctrl+C";
+            _cmenuTextPaste.ShortcutKeyDisplayString = "Ctrl+V";
+            _cmenuCopyAll.ShortcutKeyDisplayString = "Ctrl+Shift+C";
+            _cmenuMoveUp.ShortcutKeyDisplayString = "Ctrl+Shift+Up";
+            _cmenuMoveDown.ShortcutKeyDisplayString = "Ctrl+Shift+Down";
+            _cmenuItemInsert.ShortcutKeyDisplayString = "Shift+Enter";
+            _cmenuItemDelete.ShortcutKeyDisplayString = "Shift+Del";
+            _cmenuClear.ShortcutKeyDisplayString = "Ctrl+Shift+Del";
+
             _cmenuTextCut.Click += (sender, e) => { this.SelectedItem?.OnCutText(); };
             _cmenuTextCopy.Click += (sender, e) => { this.SelectedItem?.OnCopyText(); };
             _cmenuTextPaste.Click += (sender, e) => { this.SelectedItem?.OnPasteText(); };
