@@ -17,6 +17,8 @@ namespace Shapoco.Calctus.UI {
         public static readonly Regex IdRegex = new Regex(@"\b[a-zA-Z_][a-zA-Z0-9_]*\b");
         public static readonly Regex ColorRegex = new Regex(@"#([0-9a-fA-F]{6}|[0-9a-fA-F]{3})\b");
         public static readonly Regex CharRegex = new Regex("'([^'\\\\]|\\\\[abfnrtv\\\\\'0]|\\\\o[0-7]{3}|\\\\x[0-9a-fA-F]{2}|\\\\u[0-9a-fA-F]{4})'");
+        public static readonly Regex NonWordRegex = new Regex(@"\W");
+        public static readonly Regex NonWordRtlRegex = new Regex(@"\W", RegexOptions.RightToLeft);
 
         public static readonly Color SymbolColor = Color.FromArgb(64, 192, 255);
         public static readonly Color IdColor = Color.FromArgb(192, 255, 128);
@@ -419,6 +421,16 @@ namespace Shapoco.Calctus.UI {
                 e.Handled = true;
                 int selStart = _selStart;
                 int selEnd = _selEnd;
+                if (e.Control) {
+                    var match = NonWordRtlRegex.Match(this.Text, 0, selEnd);
+                    if (match.Success) {
+                        selEnd = match.Index;
+                    }
+                    else {
+                        selEnd = 0;
+                    }
+                }
+                else
                 if (!e.Shift && selStart != selEnd) {
                     selEnd = this.SelectionStart;
                 }
@@ -435,6 +447,16 @@ namespace Shapoco.Calctus.UI {
                 e.Handled = true;
                 int selStart = _selStart;
                 int selEnd = _selEnd;
+                if (e.Control) {
+                    var match = NonWordRegex.Match(this.Text, selEnd);
+                    if (match.Success) {
+                        selEnd = match.Index + 1;
+                    }
+                    else {
+                        selEnd = this.Text.Length;
+                    }
+                }
+                else
                 if (!e.Shift && selEnd != selStart) {
                     selEnd = this.SelectionStart + this.SelectionLength;
                 }
