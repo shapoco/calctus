@@ -66,11 +66,11 @@ namespace Shapoco.Calctus.UI {
             radixOctButton.CheckedChanged += (sender, e) => { RadixCheckedChanged((RadioButton)sender, RadixMode.Oct); };
             radixAutoButton.Checked = true;
 
-            toolTip.SetToolTip(radixAutoButton, "Automatic (F9)");
-            toolTip.SetToolTip(radixDecButton, "Decimal (F10)");
-            toolTip.SetToolTip(radixHexButton, "Hexadecimal (F11)");
-            toolTip.SetToolTip(radixBinButton, "Binary (F12)");
-            toolTip.SetToolTip(radixOctButton, "Octal (F8)");
+            toolTip.SetToolTip(radixAutoButton, "Automatic (F8)");
+            toolTip.SetToolTip(radixDecButton, "Decimal (F9)");
+            toolTip.SetToolTip(radixHexButton, "Hexadecimal (F10)");
+            toolTip.SetToolTip(radixBinButton, "Binary (F11)");
+            toolTip.SetToolTip(radixOctButton, "Octal (F12)");
 
             settingsButton.Click += (sender, e) => { new SettingsDialog().ShowDialog(); reloadSettings(); };
             topMostButton.Click += TopMostButton_Click;
@@ -242,19 +242,19 @@ namespace Shapoco.Calctus.UI {
 
         private void MainForm_KeyDown(object sender, KeyEventArgs e) {
             e.SuppressKeyPress = true;
-            if (e.KeyCode == Keys.F9) {
+            if (e.KeyCode == Keys.F8) {
                 this.RadixMode = RadixMode.Auto;
             }
-            else if (e.KeyCode == Keys.F10) {
+            else if (e.KeyCode == Keys.F9) {
                 this.RadixMode = RadixMode.Dec;
             }
-            else if (e.KeyCode == Keys.F11) {
+            else if (e.KeyCode == Keys.F10) {
                 this.RadixMode = RadixMode.Hex;
             }
-            else if (e.KeyCode == Keys.F12) {
+            else if (e.KeyCode == Keys.F11) {
                 this.RadixMode = RadixMode.Bin;
             }
-            else if (e.KeyCode == Keys.F8) {
+            else if (e.KeyCode == Keys.F12) {
                 this.RadixMode = RadixMode.Oct;
             }
             else {
