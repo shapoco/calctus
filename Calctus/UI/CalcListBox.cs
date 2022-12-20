@@ -130,6 +130,12 @@ namespace Shapoco.Calctus.UI {
             var selIndex = this.SelectedIndex;
             var selItem = this.SelectedItem;
             if (selIndex < 1 || selItem == null) return;
+
+            var otherItem = this._items[selIndex - 1];
+            var tabIndex = otherItem.TabIndex;
+            otherItem.TabIndex = selItem.TabIndex;
+            selItem.TabIndex = tabIndex;
+
             _items.RemoveAt(selIndex);
             _items.Insert(selIndex - 1, selItem);
             performSelectedIndexChanged(selIndex - 1);
@@ -141,6 +147,12 @@ namespace Shapoco.Calctus.UI {
             var selIndex = this.SelectedIndex;
             var selItem = this.SelectedItem;
             if (selIndex >= _items.Count - 1 || selItem == null) return;
+
+            var otherItem = this._items[selIndex + 1];
+            var tabIndex = otherItem.TabIndex;
+            otherItem.TabIndex = selItem.TabIndex;
+            selItem.TabIndex = tabIndex;
+
             _items.RemoveAt(selIndex);
             _items.Insert(selIndex + 1, selItem);
             performSelectedIndexChanged(selIndex + 1);
