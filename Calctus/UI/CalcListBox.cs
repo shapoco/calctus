@@ -141,11 +141,6 @@ namespace Shapoco.Calctus.UI {
             var selItem = this.SelectedItem;
             if (selIndex < 1 || selItem == null) return;
 
-            var otherItem = this._items[selIndex - 1];
-            var tabIndex = otherItem.TabIndex;
-            otherItem.TabIndex = selItem.TabIndex;
-            selItem.TabIndex = tabIndex;
-
             _items.RemoveAt(selIndex);
             _items.Insert(selIndex - 1, selItem);
             performSelectedIndexChanged(selIndex - 1);
@@ -157,11 +152,6 @@ namespace Shapoco.Calctus.UI {
             var selIndex = this.SelectedIndex;
             var selItem = this.SelectedItem;
             if (selIndex >= _items.Count - 1 || selItem == null) return;
-
-            var otherItem = this._items[selIndex + 1];
-            var tabIndex = otherItem.TabIndex;
-            otherItem.TabIndex = selItem.TabIndex;
-            selItem.TabIndex = tabIndex;
 
             _items.RemoveAt(selIndex);
             _items.Insert(selIndex + 1, selItem);
@@ -411,10 +401,12 @@ namespace Shapoco.Calctus.UI {
             int scrollBarWidth = _scrollBar.PreferredSize.Width;
             int itemWidth = client.Width - scrollBarWidth;
             int y = 0;
+            int tabIndex = 0;
             _scrollBar.SetBounds(client.Width - scrollBarWidth, 0, scrollBarWidth, client.Height);
             foreach (var item in _items) {
                 int itemHeight = item.GetPreferredSize(new Size(itemWidth, int.MaxValue)).Height;
                 item.SetBounds(0, y, itemWidth, itemHeight);
+                item.TabIndex = tabIndex++;
                 y += itemHeight;
             }
             _innerPanel.Size = new Size(itemWidth, y);
