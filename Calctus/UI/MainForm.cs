@@ -66,6 +66,12 @@ namespace Shapoco.Calctus.UI {
             radixOctButton.CheckedChanged += (sender, e) => { RadixCheckedChanged((RadioButton)sender, RadixMode.Oct); };
             radixAutoButton.Checked = true;
 
+            toolTip.SetToolTip(radixAutoButton, "Automatic (F9)");
+            toolTip.SetToolTip(radixDecButton, "Decimal (F10)");
+            toolTip.SetToolTip(radixHexButton, "Hexadecimal (F11)");
+            toolTip.SetToolTip(radixBinButton, "Binary (F12)");
+            toolTip.SetToolTip(radixOctButton, "Octal (F8)");
+
             settingsButton.Click += (sender, e) => { new SettingsDialog().ShowDialog(); reloadSettings(); };
             topMostButton.Click += TopMostButton_Click;
             helpButton.Click += (sender, e) => { System.Diagnostics.Process.Start(@"https://github.com/shapoco/calctus"); };

@@ -47,6 +47,7 @@ namespace Shapoco.Calctus.UI
             this.radixAutoButton = new Shapoco.Calctus.UI.FlatRadioButton();
             this.calcListBox = new Shapoco.Calctus.UI.CalcListBox();
             this.radixOctButton = new Shapoco.Calctus.UI.FlatRadioButton();
+            this.toolTip = new System.Windows.Forms.ToolTip(this.components);
             this.toolStrip.SuspendLayout();
             this.trayMenuStrip.SuspendLayout();
             this.panel2.SuspendLayout();
@@ -254,6 +255,7 @@ namespace Shapoco.Calctus.UI
         private CalcListBox calcListBox;
         private System.Windows.Forms.ToolStripButton topMostButton;
         private FlatRadioButton radixOctButton;
+        private System.Windows.Forms.ToolTip toolTip;
     }
 }
 
