@@ -107,10 +107,13 @@ a * b [Return]
 |`Shift` + `Delete` :new:|Delete current expression|
 |`Ctrl` + `Shift` + `C` :new:|Copy all expressions and answers|
 |`Ctrl` + `Shift` + `Del` :new:|Delete all expressions|
-|`F9` :new:|Radix Mode = Auto|
-|`F10` :new:|Radix Mode = Dec|
-|`F11` :new:|Radix Mode = Hex|
-|`F12` :new:|Radix Mode = Bin|
+|`Ctrl` + `Shift` + `Up` :new:|Item move up|
+|`Ctrl` + `Shift` + `Down` :new:|Item move down|
+|`F8` :new:|Radix Mode = Auto|
+|`F9` :new:|Radix Mode = Dec|
+|`F10` :new:|Radix Mode = Hex|
+|`F11` :new:|Radix Mode = Bin|
+|`F12` :new:|Radix Mode = Oct|
 
 ----
 
