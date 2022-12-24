@@ -332,13 +332,13 @@ namespace Shapoco.Calctus.UI {
             else if (e.KeyCode == Keys.PageUp && e.Modifiers == Keys.None) {
                 if (this.SelectedIndex > 0) {
                     e.Handled = true;
-                    this.SelectedIndex = Math.Max(this.SelectedIndex - 10, 0);
+                    pageUp();
                 }
             }
             else if (e.KeyCode == Keys.PageDown && e.Modifiers == Keys.None) {
                 if (this.SelectedIndex < _items.Count - 1) {
                     e.Handled = true;
-                    this.SelectedIndex = Math.Min(this.SelectedIndex + 10, _items.Count - 1);
+                    pageDown();
                 }
             }
             else if (e.KeyCode == Keys.C && e.Modifiers == (Keys.Control | Keys.Shift)) {
@@ -367,6 +367,33 @@ namespace Shapoco.Calctus.UI {
             if (e.Button == MouseButtons.Right) {
                 openContextMenu(item.PointToScreen(e.Location));
             }
+        }
+
+        private void pageUp() {
+            var selItem = this.SelectedItem;
+            if (selItem != null) {
+                int y = selItem.Bottom - this.ClientSize.Height;
+                this.SelectedIndex = indexFromClientY(y);
+            }
+        }
+
+        private void pageDown() {
+            var selItem = this.SelectedItem;
+            if (selItem != null) {
+                int y = selItem.Top + this.ClientSize.Height;
+                this.SelectedIndex = indexFromClientY(y);
+            }
+        }
+
+        private int indexFromClientY(int y) {
+            if (_items.Count == 0) return -1;
+            if (y < 0) return 0;
+            for(int i = 0; i < _items.Count; i++) {
+                if (y < _items[i].Bottom) {
+                    return i;
+                }
+            }
+            return _items.Count - 1;
         }
 
         private void openContextMenu(Point screenPos) {
