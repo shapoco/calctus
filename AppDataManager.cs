@@ -108,8 +108,13 @@ namespace Shapoco {
                     else if (p.PropertyType.Equals(typeof(Single))) { p.SetValue(targetObject, Single.Parse(valueStr)); }
                     else if (p.PropertyType.Equals(typeof(Decimal))) { p.SetValue(targetObject, Decimal.Parse(valueStr)); }
                     else if (p.PropertyType.IsEnum) { p.SetValue(targetObject, Enum.Parse(p.PropertyType, valueStr)); }
+                    else {
+                        throw new NotImplementedException($"Unsupported type {p.PropertyType}.");
+                    }
                 }
-                catch (Exception) { }
+                catch (Exception ex) {
+                    Console.Error.WriteLine(ex);
+                }
             }
 
         }
