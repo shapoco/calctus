@@ -1,6 +1,7 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Windows.Forms;
+using System.Globalization;
 using System.Linq;
 using System.IO;
 using System.Text;
@@ -41,7 +42,7 @@ namespace Shapoco {
                 }
                 else if (p.PropertyType.IsPrimitive || p.PropertyType.IsEnum || p.PropertyType.IsValueType) {
                     // プリミティブ型または列挙型
-                    sb.AppendLine(p.Name + "=" + p.GetValue(targetObject));
+                    sb.AppendLine(p.Name + "=" + FormattableString.Invariant($"{p.GetValue(targetObject)}"));
                 }
             }
 
@@ -95,18 +96,18 @@ namespace Shapoco {
                         p.SetValue(targetObject, valueStr);
                     }
                     else if (p.PropertyType.Equals(typeof(Boolean))) { p.SetValue(targetObject, Boolean.Parse(valueStr)); }
-                    else if (p.PropertyType.Equals(typeof(Byte))) { p.SetValue(targetObject, Byte.Parse(valueStr)); }
-                    else if (p.PropertyType.Equals(typeof(SByte))) { p.SetValue(targetObject, SByte.Parse(valueStr)); }
-                    else if (p.PropertyType.Equals(typeof(Int16))) { p.SetValue(targetObject, Int16.Parse(valueStr)); }
-                    else if (p.PropertyType.Equals(typeof(UInt16))) { p.SetValue(targetObject, UInt16.Parse(valueStr)); }
-                    else if (p.PropertyType.Equals(typeof(Int32))) { p.SetValue(targetObject, Int32.Parse(valueStr)); }
-                    else if (p.PropertyType.Equals(typeof(UInt32))) { p.SetValue(targetObject, UInt32.Parse(valueStr)); }
-                    else if (p.PropertyType.Equals(typeof(Int64))) { p.SetValue(targetObject, Int64.Parse(valueStr)); }
-                    else if (p.PropertyType.Equals(typeof(UInt64))) { p.SetValue(targetObject, UInt64.Parse(valueStr)); }
+                    else if (p.PropertyType.Equals(typeof(Byte))) { p.SetValue(targetObject, Byte.Parse(valueStr, CultureInfo.InvariantCulture)); }
+                    else if (p.PropertyType.Equals(typeof(SByte))) { p.SetValue(targetObject, SByte.Parse(valueStr, CultureInfo.InvariantCulture)); }
+                    else if (p.PropertyType.Equals(typeof(Int16))) { p.SetValue(targetObject, Int16.Parse(valueStr, CultureInfo.InvariantCulture)); }
+                    else if (p.PropertyType.Equals(typeof(UInt16))) { p.SetValue(targetObject, UInt16.Parse(valueStr, CultureInfo.InvariantCulture)); }
+                    else if (p.PropertyType.Equals(typeof(Int32))) { p.SetValue(targetObject, Int32.Parse(valueStr, CultureInfo.InvariantCulture)); }
+                    else if (p.PropertyType.Equals(typeof(UInt32))) { p.SetValue(targetObject, UInt32.Parse(valueStr, CultureInfo.InvariantCulture)); }
+                    else if (p.PropertyType.Equals(typeof(Int64))) { p.SetValue(targetObject, Int64.Parse(valueStr, CultureInfo.InvariantCulture)); }
+                    else if (p.PropertyType.Equals(typeof(UInt64))) { p.SetValue(targetObject, UInt64.Parse(valueStr, CultureInfo.InvariantCulture)); }
                     else if (p.PropertyType.Equals(typeof(Char))) { p.SetValue(targetObject, Char.Parse(valueStr)); }
-                    else if (p.PropertyType.Equals(typeof(Double))) { p.SetValue(targetObject, Double.Parse(valueStr)); }
-                    else if (p.PropertyType.Equals(typeof(Single))) { p.SetValue(targetObject, Single.Parse(valueStr)); }
-                    else if (p.PropertyType.Equals(typeof(Decimal))) { p.SetValue(targetObject, Decimal.Parse(valueStr)); }
+                    else if (p.PropertyType.Equals(typeof(Double))) { p.SetValue(targetObject, Double.Parse(valueStr, CultureInfo.InvariantCulture)); }
+                    else if (p.PropertyType.Equals(typeof(Single))) { p.SetValue(targetObject, Single.Parse(valueStr, CultureInfo.InvariantCulture)); }
+                    else if (p.PropertyType.Equals(typeof(Decimal))) { p.SetValue(targetObject, Decimal.Parse(valueStr, CultureInfo.InvariantCulture)); }
                     else if (p.PropertyType.IsEnum) { p.SetValue(targetObject, Enum.Parse(p.PropertyType, valueStr)); }
                     else {
                         throw new NotImplementedException($"Unsupported type {p.PropertyType}.");
