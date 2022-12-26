@@ -39,7 +39,7 @@ namespace Shapoco {
                     value = value.Replace("\t", @"\t");
                     sb.AppendLine(p.Name + "=\"" + value + "\"");
                 }
-                else if (p.PropertyType.IsPrimitive || p.PropertyType.IsEnum) {
+                else if (p.PropertyType.IsPrimitive || p.PropertyType.IsEnum || p.PropertyType.IsValueType) {
                     // プリミティブ型または列挙型
                     sb.AppendLine(p.Name + "=" + p.GetValue(targetObject));
                 }
