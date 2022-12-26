@@ -1,6 +1,7 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Windows.Forms;
+using System.Globalization;
 using System.Linq;
 using System.IO;
 using System.Text;
@@ -41,7 +42,7 @@ namespace Shapoco {
                 }
                 else if (p.PropertyType.IsPrimitive || p.PropertyType.IsEnum) {
                     // プリミティブ型または列挙型
-                    sb.AppendLine(p.Name + "=" + p.GetValue(targetObject));
+                    sb.AppendLine(p.Name + "=" + FormattableString.Invariant($"{p.GetValue(targetObject)}"));
                 }
             }
 
