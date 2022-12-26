@@ -85,7 +85,7 @@ namespace Shapoco {
                     if (p.PropertyType.Equals(typeof(String))) {
                         // 文字列型
                         // "～" の形式でないものは無視
-                        if (!valueStr.StartsWith("\"") || !valueStr.StartsWith("\"")) continue;
+                        if (!valueStr.StartsWith("\"") || !valueStr.EndsWith("\"")) continue;
                         valueStr = valueStr.Substring(1, valueStr.Length - 2); // "～"の中身を取り出す
                         valueStr = valueStr.Replace(@"\r", "\r");
                         valueStr = valueStr.Replace(@"\n", "\n");
