@@ -116,7 +116,7 @@ namespace Shapoco.Calctus.UI {
                 _radixMode = value;
                 if (this.SelectedIndex >= 0) {
                     _items[this.SelectedIndex].RadixMode = value;
-                    recalc();
+                    recalc(this.SelectedIndex);
                 }
                 RadixModeChanged?.Invoke(this, EventArgs.Empty);
             }
@@ -144,7 +144,7 @@ namespace Shapoco.Calctus.UI {
             _items.RemoveAt(selIndex);
             _items.Insert(selIndex - 1, selItem);
             performSelectedIndexChanged(selIndex - 1);
-            recalc();
+            recalc(selIndex, selIndex - 1);
             relayout();
         }
 
@@ -156,7 +156,7 @@ namespace Shapoco.Calctus.UI {
             _items.RemoveAt(selIndex);
             _items.Insert(selIndex + 1, selItem);
             performSelectedIndexChanged(selIndex + 1);
-            recalc();
+            recalc(selIndex, selIndex + 1);
             relayout();
         }
 
@@ -167,7 +167,7 @@ namespace Shapoco.Calctus.UI {
             }
             insert(insIndex, new CalcListItem(this));
             performSelectedIndexChanged(insIndex);
-            recalc();
+            recalc(insIndex);
             relayout();
         }
 
@@ -181,11 +181,12 @@ namespace Shapoco.Calctus.UI {
             }
             if (selIndex < _items.Count) {
                 performSelectedIndexChanged(selIndex);
+                recalc(selIndex);
             }
             else {
                 performSelectedIndexChanged(selIndex - 1);
+                recalc(selIndex - 1);
             }
-            recalc();
             relayout();
         }
 
@@ -278,7 +279,7 @@ namespace Shapoco.Calctus.UI {
 
         private void Item_ExpressionChanged(object sender, EventArgs e) {
             relayout();
-            recalc();
+            recalc(this.SelectedIndex);
         }
 
         private void Item_PreviewKeyDown(object sender, KeyEventArgs e) {
@@ -452,6 +453,18 @@ namespace Shapoco.Calctus.UI {
         }
 
         private void recalc() {
+            recalc(_items);
+        }
+
+        private void recalc(params int[] indices) {
+            var items = new CalcListItem[indices.Length];
+            for (var i = 0; i < indices.Length; ++i) {
+                items[i] = _items[indices[i]];
+            }
+            recalc(items);
+        }
+
+        private void recalc(IEnumerable<CalcListItem> items) {
             EvalContext ctx = new EvalContext();
 
             // 設定を評価コンテキストに反映する
@@ -462,8 +475,7 @@ namespace Shapoco.Calctus.UI {
             ctx.Settings.ENotationExpNegativeMax = s.NumberFormat_Exp_NegativeMax;
             ctx.Settings.ENotationAlignment = s.NumberFormat_Exp_Alignment;
 
-            for (int i = 0; i < _items.Count; i++) {
-                var item = _items[i];
+            foreach (var item in items) {
                 try {
                     var expr = Parser.Parser.Parse(item.Expression);
                     var val = expr.Eval(ctx);
