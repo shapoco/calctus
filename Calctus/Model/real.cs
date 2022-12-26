@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.Globalization;
 using System.Linq;
 using System.Text;
 using System.Text.RegularExpressions;
@@ -29,10 +30,10 @@ namespace Shapoco.Calctus.Model {
         public static real Parse(string str) {
             var m = NumberRegex.Match(str);
             if (m.Success) {
-                var frac = decimal.Parse(m.Groups[1].Value);
+                var frac = decimal.Parse(m.Groups[1].Value, CultureInfo.InvariantCulture);
                 var exp = 0;
                 if (m.Groups[3].Success) {
-                    exp = int.Parse(m.Groups[4].Value);
+                    exp = int.Parse(m.Groups[4].Value, CultureInfo.InvariantCulture);
                 }
                 if (exp >= 0) {
                     return frac * Math.Round((decimal)Math.Pow(10, exp));
