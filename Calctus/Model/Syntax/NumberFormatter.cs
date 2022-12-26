@@ -41,7 +41,7 @@ namespace Shapoco.Calctus.Model.Syntax {
         };
 
         public static string RealToString(real val, EvalContext e) {
-            if (val == 0.0m) return "0.0";
+            if (val == 0.0m) return 0.0m.ToString("n");
 
             var s = e.Settings;
 
@@ -67,6 +67,8 @@ namespace Shapoco.Calctus.Model.Syntax {
                 return frac.ToString(decFormat) + "e" + exp;
             }
             else {
+                decFormat = "n" + s.DecimalLengthToDisplay;
+
                 return val.ToString(decFormat);
             }
         }

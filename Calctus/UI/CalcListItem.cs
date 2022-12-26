@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.Globalization;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
@@ -56,9 +57,17 @@ namespace Shapoco.Calctus.UI {
 
         public CalcListItem(CalcListBox owner, CalcListItem prevItem) : this(owner) {
             this.RadixMode = prevItem.RadixMode;
-            _exprBox.Text = prevItem.Answer;
-            _ansBox.Text = prevItem.Answer;
             _isFreshAnswer = true;
+            if (prevItem.Tag is null) {
+                return;
+            }
+            else if (prevItem.Tag is real r) {
+                _exprBox.Text = r.ToString(CultureInfo.InvariantCulture);
+            }
+            else {
+                _exprBox.Text = Convert.ToString(prevItem.Tag, CultureInfo.InvariantCulture);
+            }
+            _ansBox.Text = prevItem.Answer;
         }
 
         public RadixMode RadixMode { get; set; } = RadixMode.Auto;
