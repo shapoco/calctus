@@ -46,7 +46,7 @@ namespace Shapoco.Calctus.Model.Syntax {
                 else if (Radix == 10) {
                     // 10進表現
                     var abs64val = ival >= 0 ? (decimal)ival : -(decimal)ival;
-                    var ret = abs64val.ToString("n0");
+                    var ret = Convert.ToString(abs64val);
                     ret = Prefix + ret;
                     if (ival < 0) ret = "-" + ret;
                     return ret;

@@ -50,8 +50,6 @@ namespace Shapoco.Calctus.Model {
         public override int GetHashCode() => decimal.GetBits(Raw)[0];
         public override string ToString() => Raw.ToString();
         public string ToString(string format) => Raw.ToString(format);
-        public string ToString(IFormatProvider formatProvider) => Raw.ToString(formatProvider);
-        public string ToString(string format, IFormatProvider formatProvider) => Raw.ToString(format, formatProvider);
 
         public static explicit operator double(real val) => (double)val.Raw;
         public static implicit operator decimal(real val) => val.Raw;
