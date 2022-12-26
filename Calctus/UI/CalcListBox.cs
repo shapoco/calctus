@@ -476,13 +476,11 @@ namespace Shapoco.Calctus.UI {
                     }
             
                     item.Answer = val.ToString(ctx);
-                    item.Tag = val.Raw;
                     item.Hint = "";
                     ctx.Ref("Ans", true).Value = val;
                 }
                 catch (Exception ex) {
                     item.Answer = "";
-                    item.Tag = null;
                     item.Hint = "? " + ex.Message;
                     ctx.Undef("Ans", true);
                 }
