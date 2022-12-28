@@ -31,6 +31,8 @@ namespace Shapoco.Calctus {
         public bool HotKey_Shift { get; set; } = false;
         public Keys HotKey_KeyCode { get; set; } = Keys.None;
 
+        public bool Input_AutoCloseBrackets { get; set; } = true;
+
         public int NumberFormat_Decimal_MaxLen { get; set; } = 9;
 
         public bool NumberFormat_Exp_Enabled { get; set; } = true;

@@ -38,6 +38,7 @@
             this.Startup_AutoStart = new System.Windows.Forms.CheckBox();
             this.Startup_TrayIcon = new System.Windows.Forms.CheckBox();
             this.Hotkey_KeyCode = new Shapoco.Calctus.UI.KeyCodeBox();
+            this.Window_RememberPosition = new System.Windows.Forms.CheckBox();
             this.Hotkey_Enabled = new System.Windows.Forms.CheckBox();
             this.tabPage2 = new System.Windows.Forms.TabPage();
             this.fontGroup = new System.Windows.Forms.GroupBox();
@@ -52,7 +53,9 @@
             this.groupBox2 = new System.Windows.Forms.GroupBox();
             this.NumberFormat_Decimal_MaxLen = new System.Windows.Forms.NumericUpDown();
             this.label6 = new System.Windows.Forms.Label();
-            this.Window_RememberPosition = new System.Windows.Forms.CheckBox();
+            this.tabPage4 = new System.Windows.Forms.TabPage();
+            this.groupBox3 = new System.Windows.Forms.GroupBox();
+            this.Input_AutoCloseBrackets = new System.Windows.Forms.CheckBox();
             this.eNoteGroup.SuspendLayout();
             ((System.ComponentModel.ISupportInitialize)(this.NumberFormat_Exp_NegativeMax)).BeginInit();
             ((System.ComponentModel.ISupportInitialize)(this.NumberFormat_Exp_PositiveMin)).BeginInit();
@@ -65,10 +68,13 @@
             this.tabPage1.SuspendLayout();
             this.groupBox2.SuspendLayout();
             ((System.ComponentModel.ISupportInitialize)(this.NumberFormat_Decimal_MaxLen)).BeginInit();
+            this.tabPage4.SuspendLayout();
+            this.groupBox3.SuspendLayout();
             this.SuspendLayout();
             // 
             // closeButton
             // 
+            this.closeButton.DialogResult = System.Windows.Forms.DialogResult.Cancel;
             this.closeButton.Location = new System.Drawing.Point(240, 234);
             this.closeButton.Name = "closeButton";
             this.closeButton.Size = new System.Drawing.Size(89, 25);
@@ -178,6 +184,7 @@
             // tabControl
             // 
             this.tabControl.Controls.Add(this.tabPage3);
+            this.tabControl.Controls.Add(this.tabPage4);
             this.tabControl.Controls.Add(this.tabPage2);
             this.tabControl.Controls.Add(this.tabPage1);
             this.tabControl.Location = new System.Drawing.Point(12, 12);
@@ -242,6 +249,16 @@
             this.Hotkey_KeyCode.Size = new System.Drawing.Size(249, 19);
             this.Hotkey_KeyCode.TabIndex = 3;
             this.Hotkey_KeyCode.Win = false;
+            // 
+            // Window_RememberPosition
+            // 
+            this.Window_RememberPosition.AutoSize = true;
+            this.Window_RememberPosition.Location = new System.Drawing.Point(10, 108);
+            this.Window_RememberPosition.Name = "Window_RememberPosition";
+            this.Window_RememberPosition.Size = new System.Drawing.Size(163, 16);
+            this.Window_RememberPosition.TabIndex = 4;
+            this.Window_RememberPosition.Text = "Remember window position";
+            this.Window_RememberPosition.UseVisualStyleBackColor = true;
             // 
             // Hotkey_Enabled
             // 
@@ -408,15 +425,36 @@
             this.label6.TabIndex = 0;
             this.label6.Text = "Max length of decimal place to display:";
             // 
-            // Window_RememberPosition
+            // tabPage4
             // 
-            this.Window_RememberPosition.AutoSize = true;
-            this.Window_RememberPosition.Location = new System.Drawing.Point(10, 108);
-            this.Window_RememberPosition.Name = "Window_RememberPosition";
-            this.Window_RememberPosition.Size = new System.Drawing.Size(163, 16);
-            this.Window_RememberPosition.TabIndex = 4;
-            this.Window_RememberPosition.Text = "Remember window position";
-            this.Window_RememberPosition.UseVisualStyleBackColor = true;
+            this.tabPage4.Controls.Add(this.groupBox3);
+            this.tabPage4.Location = new System.Drawing.Point(4, 22);
+            this.tabPage4.Name = "tabPage4";
+            this.tabPage4.Padding = new System.Windows.Forms.Padding(3);
+            this.tabPage4.Size = new System.Drawing.Size(309, 190);
+            this.tabPage4.TabIndex = 3;
+            this.tabPage4.Text = "Input";
+            this.tabPage4.UseVisualStyleBackColor = true;
+            // 
+            // groupBox3
+            // 
+            this.groupBox3.Controls.Add(this.Input_AutoCloseBrackets);
+            this.groupBox3.Location = new System.Drawing.Point(6, 6);
+            this.groupBox3.Name = "groupBox3";
+            this.groupBox3.Size = new System.Drawing.Size(297, 50);
+            this.groupBox3.TabIndex = 0;
+            this.groupBox3.TabStop = false;
+            this.groupBox3.Text = "Auto Input";
+            // 
+            // Input_AutoCloseBrackets
+            // 
+            this.Input_AutoCloseBrackets.AutoSize = true;
+            this.Input_AutoCloseBrackets.Location = new System.Drawing.Point(10, 20);
+            this.Input_AutoCloseBrackets.Name = "Input_AutoCloseBrackets";
+            this.Input_AutoCloseBrackets.Size = new System.Drawing.Size(127, 16);
+            this.Input_AutoCloseBrackets.TabIndex = 0;
+            this.Input_AutoCloseBrackets.Text = "Auto close brackets";
+            this.Input_AutoCloseBrackets.UseVisualStyleBackColor = true;
             // 
             // SettingsDialog
             // 
@@ -450,6 +488,9 @@
             this.groupBox2.ResumeLayout(false);
             this.groupBox2.PerformLayout();
             ((System.ComponentModel.ISupportInitialize)(this.NumberFormat_Decimal_MaxLen)).EndInit();
+            this.tabPage4.ResumeLayout(false);
+            this.groupBox3.ResumeLayout(false);
+            this.groupBox3.PerformLayout();
             this.ResumeLayout(false);
 
         }
@@ -485,5 +526,8 @@
         private System.Windows.Forms.NumericUpDown NumberFormat_Decimal_MaxLen;
         private System.Windows.Forms.Label label6;
         private System.Windows.Forms.CheckBox Window_RememberPosition;
+        private System.Windows.Forms.TabPage tabPage4;
+        private System.Windows.Forms.GroupBox groupBox3;
+        private System.Windows.Forms.CheckBox Input_AutoCloseBrackets;
     }
 }

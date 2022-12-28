@@ -561,7 +561,7 @@ namespace Shapoco.Calctus.UI {
                 text = text.Insert(selStart, e.KeyChar.ToString());
 
                 // 閉じ括弧の補完
-                if (e.KeyChar == '(') {
+                if (e.KeyChar == '(' && Settings.Instance.Input_AutoCloseBrackets) {
                     text = text.Insert(selStart + 1, ")");
                 }
 
