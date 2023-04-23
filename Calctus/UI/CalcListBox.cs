@@ -6,6 +6,7 @@ using System.Threading.Tasks;
 using System.Windows.Forms;
 using System.Drawing;
 using Shapoco.Calctus.Model;
+using Shapoco.Calctus.Parser;
 
 namespace Shapoco.Calctus.UI {
     class CalcListBox : ContainerControl {
@@ -286,10 +287,23 @@ namespace Shapoco.Calctus.UI {
             int index = _items.IndexOf(item);
             if (index < 0) return;
             if (e.KeyCode == Keys.Return) { // Return
+                var rpn = getRpnCommand();
+                if (rpn != null) {
+                    // RPNコマンドの実行
+                    if (rpn.Error != null) {
+                        return;
+                    }
+                    for (int i = rpn.StartIndex; i < rpn.EndIndex; i++) {
+                        delete(_items[rpn.StartIndex]);
+                    }
+                    _items[rpn.StartIndex].Expression = rpn.Expression;
+                    index = rpn.StartIndex;
+                }
+
                 if (e.Modifiers == Keys.None) {
                     e.Handled = true;
-                    if (this.SelectedIndex < _items.Count - 1) {
-                        this.SelectedIndex++;
+                    if (index < _items.Count - 1) {
+                        this.SelectedIndex = index + 1;
                     }
                     else {
                         var newItem = new CalcListItem(this, item);
@@ -302,7 +316,7 @@ namespace Shapoco.Calctus.UI {
                     e.Handled = true;
                     this.insert(index, new CalcListItem(this));
                     relayout();
-                    performSelectedIndexChanged(this.SelectedIndex);
+                    performSelectedIndexChanged(index);
                 }
             }
             else if (e.KeyCode == Keys.Up && e.Modifiers == Keys.None) {
@@ -462,28 +476,114 @@ namespace Shapoco.Calctus.UI {
             ctx.Settings.ENotationExpNegativeMax = s.NumberFormat_Exp_NegativeMax;
             ctx.Settings.ENotationAlignment = s.NumberFormat_Exp_Alignment;
 
+            var rpn = getRpnCommand();
+            int rpnStart = (rpn != null) ? rpn.StartIndex : -1;
+            int rpnEnd = (rpn != null) ? rpn.EndIndex : -1;
+
             for (int i = 0; i < _items.Count; i++) {
                 var item = _items[i];
                 try {
-                    var expr = Parser.Parser.Parse(item.Expression);
-                    var val = expr.Eval(ctx);
-            
-                    switch (item.RadixMode) {
-                        case RadixMode.Dec: val = val.FormatInt(); break;
-                        case RadixMode.Hex: val = val.FormatHex(); break;
-                        case RadixMode.Bin: val = val.FormatBin(); break;
-                        case RadixMode.Oct: val = val.FormatOct(); break;
+                    item.IsRpnOperand = (rpnStart <= i && i < rpnEnd);
+                    if (rpnStart <= i && i < rpnEnd) {
+                        item.Answer = "";
+                        item.Hint = "(RPN Operand)";
                     }
-            
-                    item.Answer = val.ToString(ctx);
-                    item.Hint = "";
-                    ctx.Ref("Ans", true).Value = val;
+                    else {
+                        Expr expr = null;
+                        if (rpnEnd == i && rpn != null) {
+                            if (rpn.Error != null) throw rpn.Error;
+                            expr = Parser.Parser.Parse(rpn.Expression);
+                        }
+                        else {
+                            expr = Parser.Parser.Parse(item.Expression);
+                        }
+                        var val = expr.Eval(ctx);
+
+                        switch (item.RadixMode) {
+                            case RadixMode.Dec: val = val.FormatInt(); break;
+                            case RadixMode.Hex: val = val.FormatHex(); break;
+                            case RadixMode.Bin: val = val.FormatBin(); break;
+                            case RadixMode.Oct: val = val.FormatOct(); break;
+                        }
+
+                        item.Answer = val.ToString(ctx);
+                        item.Hint = "";
+                        ctx.Ref("Ans", true).Value = val;
+                    }
                 }
                 catch (Exception ex) {
                     item.Answer = "";
                     item.Hint = "? " + ex.Message;
                     ctx.Undef("Ans", true);
                 }
+            }
+        }
+
+        /// <summary>RPNコマンドを解釈して RpnCommandオブジェクトを生成する</summary>
+        private RpnCommand getRpnCommand() {
+            int selIndex = this.SelectedIndex;
+            if (selIndex < 0 || _items.Count <= selIndex) return null;
+
+            if (_items[selIndex].IsRpnCommand(out Token[] symbols)) {
+                Exception err = null;
+                string expr = null;
+                if (selIndex <= symbols.Length) {
+                    err = new Calctus.Model.CalctusError("Invalid RPN Command");
+                }
+
+                int start = selIndex - symbols.Length - 1;
+                int end = selIndex;
+
+                try {
+                    string rightStr = _items[end - 1].Expression;
+                    Expr rightExpr = Parser.Parser.Parse(rightStr);
+                    if (err == null) {
+                        for (int i = 0; i < symbols.Length; i++) {
+                            var sym = symbols[i];
+                            var item = _items[end - 2 - i];
+                            string leftStr = _items[end - 2 - i].Expression;
+                            Expr leftExpr = Parser.Parser.Parse(leftStr);
+
+                            var op = new BinaryOp(sym, leftExpr, rightExpr);
+                            if (leftExpr is Op leftOp) {
+                                if (leftOp.Method.Priority <= op.Method.Priority) {
+                                    leftStr = "(" + leftStr + ")";
+                                }
+                            }
+                            if (rightExpr is Op rightOp) {
+                                if (op.Method.Priority >= rightOp.Method.Priority) {
+                                    rightStr = "(" + rightStr + ")";
+                                }
+                            }
+
+                            rightStr = leftStr + sym.Text + rightStr;
+                            rightExpr = op;
+                        }
+                    }
+                    expr = rightStr;
+                }
+                catch(Exception ex) {
+                    err = ex;
+                }
+
+                Console.WriteLine(start + ", " + end + ", " + expr + ", " + err);
+                return new RpnCommand(start, end, expr, err);
+            }
+            else {
+                return null;
+            }            
+        }
+
+        private class RpnCommand {
+            public readonly int StartIndex;
+            public readonly int EndIndex;
+            public readonly string Expression;
+            public readonly Exception Error;
+            public RpnCommand(int start, int end, string expr, Exception err) {
+                StartIndex = start;
+                EndIndex = end;
+                Expression = expr;
+                Error = err;
             }
         }
     }

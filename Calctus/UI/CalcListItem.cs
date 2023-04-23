@@ -6,6 +6,7 @@ using System.Threading.Tasks;
 using System.Windows.Forms;
 using System.Drawing;
 using Shapoco.Calctus.Model;
+using Shapoco.Calctus.Parser;
 
 namespace Shapoco.Calctus.UI {
     class CalcListItem : ContainerControl {
@@ -27,6 +28,7 @@ namespace Shapoco.Calctus.UI {
         private CalcListBox _owner;
         private bool _selected = false;
         private bool _isFreshAnswer = false;
+        private bool _isRpnOperand = false;
 
         public CalcListItem(CalcListBox owner) {
             _owner = owner;
@@ -66,20 +68,16 @@ namespace Shapoco.Calctus.UI {
         public void OnSelected() {
             if (_selected) return;
             _selected = true;
-            _exprBox.BackColor = Color.Black;
-            _ansBox.BackColor = Color.Black;
-            _equal.BackColor = Color.Black;
             if (!_exprBox.Focused && !_ansBox.Focused) {
                 _exprBox.Focus();
             }
+            updateBackColor();
         }
 
         public void OnDeselected() {
             if (!_selected) return;
             _selected = false;
-            _exprBox.BackColor = _owner.BackColor;
-            _ansBox.BackColor = _owner.BackColor;
-            _equal.BackColor = _owner.BackColor;
+            updateBackColor();
         }
 
         public bool IsTextCuttable =>
@@ -89,8 +87,21 @@ namespace Shapoco.Calctus.UI {
             (_exprBox.Focused && _exprBox.SelectionLength > 0) ||
             (_ansBox.Focused && _ansBox.SelectionLength > 0);
 
-        public bool IsTextPastable =>
+        public bool HasFocus =>
             _exprBox.Focused;
+
+        public bool IsTextPastable =>
+            HasFocus;
+
+        public bool IsRpnCommand(out Token[] symbols) {
+            if (Lexer.TryGetRpnSymbols(Expression, out symbols)) {
+                return true;
+            }
+            else {
+                symbols = null;
+                return false;
+            }
+        }
 
         public void OnCutText() {
             if (_exprBox.Focused) {
@@ -132,6 +143,16 @@ namespace Shapoco.Calctus.UI {
         public string Hint {
             get => _ansBox.PlaceHolder;
             set => _ansBox.PlaceHolder = value;
+        }
+
+        public bool IsRpnOperand {
+            get => _isRpnOperand;
+            set {
+                if (value != _isRpnOperand) {
+                    _isRpnOperand = value;
+                    updateBackColor();
+                }
+            }
         }
 
         public override Size GetPreferredSize(Size proposedSize) {
@@ -176,6 +197,19 @@ namespace Shapoco.Calctus.UI {
             this.Relayout();
         }
 
+        private void updateBackColor() {
+            Color backColor = _owner.BackColor;
+            if (_selected) {
+                backColor = Color.Black;
+            }
+            else if (_isRpnOperand) {
+                backColor = Color.FromArgb(0, 0, 64);
+            }
+            _exprBox.BackColor = backColor;
+            _ansBox.BackColor = backColor;
+            _equal.BackColor = backColor;
+        }
+
         private int getAnswerIndent(Size client) {
             return Math.Max(50, client.Width / 3);
         }
@@ -188,7 +222,8 @@ namespace Shapoco.Calctus.UI {
         private void exprBox_KeyPress(object sender, KeyPressEventArgs e) {
             var box = (ExpressionBox)sender;
             var allSelected = (box.SelectionStart == 0) && (box.SelectionLength == box.Text.Length);
-            if (allSelected && _isFreshAnswer && _selectionCancelChars.Contains(e.KeyChar)) {
+            var s = Settings.Instance;
+            if (s.Input_AutoInputAns && allSelected && _isFreshAnswer && _selectionCancelChars.Contains(e.KeyChar)) {
                 box.SelectedText = "Ans";
                 box.SelectionStart = box.Text.Length;
                 box.SelectionLength = 0;

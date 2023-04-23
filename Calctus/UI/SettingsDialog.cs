@@ -40,6 +40,7 @@ namespace Shapoco.Calctus.UI {
             };
 
             Input_AutoCloseBrackets.CheckedChanged += (sender, e) => { s.Input_AutoCloseBrackets = ((CheckBox)sender).Checked; };
+            Input_AutoInputAns.CheckedChanged += (sender, e) => { s.Input_AutoInputAns = ((CheckBox)sender).Checked; };
 
             NumberFormat_Decimal_MaxLen.ValueChanged += (sender, e) => { s.NumberFormat_Decimal_MaxLen = (int)((NumericUpDown)sender).Value; };
 
@@ -83,6 +84,7 @@ namespace Shapoco.Calctus.UI {
                 Hotkey_KeyCode.SetKeyCode(s.HotKey_Win, s.HotKey_Alt, s.HotKey_Ctrl, s.HotKey_Shift, s.HotKey_KeyCode);
 
                 Input_AutoCloseBrackets.Checked = s.Input_AutoCloseBrackets;
+                Input_AutoInputAns.Checked = s.Input_AutoInputAns;
 
                 NumberFormat_Decimal_MaxLen.Value = s.NumberFormat_Decimal_MaxLen;
 

@@ -37,9 +37,11 @@
             this.groupBox1 = new System.Windows.Forms.GroupBox();
             this.Startup_AutoStart = new System.Windows.Forms.CheckBox();
             this.Startup_TrayIcon = new System.Windows.Forms.CheckBox();
-            this.Hotkey_KeyCode = new Shapoco.Calctus.UI.KeyCodeBox();
             this.Window_RememberPosition = new System.Windows.Forms.CheckBox();
             this.Hotkey_Enabled = new System.Windows.Forms.CheckBox();
+            this.tabPage4 = new System.Windows.Forms.TabPage();
+            this.groupBox3 = new System.Windows.Forms.GroupBox();
+            this.Input_AutoCloseBrackets = new System.Windows.Forms.CheckBox();
             this.tabPage2 = new System.Windows.Forms.TabPage();
             this.fontGroup = new System.Windows.Forms.GroupBox();
             this.Appearance_Font_Size = new System.Windows.Forms.NumericUpDown();
@@ -53,23 +55,22 @@
             this.groupBox2 = new System.Windows.Forms.GroupBox();
             this.NumberFormat_Decimal_MaxLen = new System.Windows.Forms.NumericUpDown();
             this.label6 = new System.Windows.Forms.Label();
-            this.tabPage4 = new System.Windows.Forms.TabPage();
-            this.groupBox3 = new System.Windows.Forms.GroupBox();
-            this.Input_AutoCloseBrackets = new System.Windows.Forms.CheckBox();
+            this.Hotkey_KeyCode = new Shapoco.Calctus.UI.KeyCodeBox();
+            this.Input_AutoInputAns = new System.Windows.Forms.CheckBox();
             this.eNoteGroup.SuspendLayout();
             ((System.ComponentModel.ISupportInitialize)(this.NumberFormat_Exp_NegativeMax)).BeginInit();
             ((System.ComponentModel.ISupportInitialize)(this.NumberFormat_Exp_PositiveMin)).BeginInit();
             this.tabControl.SuspendLayout();
             this.tabPage3.SuspendLayout();
             this.groupBox1.SuspendLayout();
+            this.tabPage4.SuspendLayout();
+            this.groupBox3.SuspendLayout();
             this.tabPage2.SuspendLayout();
             this.fontGroup.SuspendLayout();
             ((System.ComponentModel.ISupportInitialize)(this.Appearance_Font_Size)).BeginInit();
             this.tabPage1.SuspendLayout();
             this.groupBox2.SuspendLayout();
             ((System.ComponentModel.ISupportInitialize)(this.NumberFormat_Decimal_MaxLen)).BeginInit();
-            this.tabPage4.SuspendLayout();
-            this.groupBox3.SuspendLayout();
             this.SuspendLayout();
             // 
             // closeButton
@@ -237,19 +238,6 @@
             this.Startup_TrayIcon.Text = "Reside in task tray";
             this.Startup_TrayIcon.UseVisualStyleBackColor = true;
             // 
-            // Hotkey_KeyCode
-            // 
-            this.Hotkey_KeyCode.Alt = false;
-            this.Hotkey_KeyCode.Ctrl = false;
-            this.Hotkey_KeyCode.Enabled = false;
-            this.Hotkey_KeyCode.KeyCode = System.Windows.Forms.Keys.None;
-            this.Hotkey_KeyCode.Location = new System.Drawing.Point(41, 83);
-            this.Hotkey_KeyCode.Name = "Hotkey_KeyCode";
-            this.Hotkey_KeyCode.Shift = false;
-            this.Hotkey_KeyCode.Size = new System.Drawing.Size(249, 19);
-            this.Hotkey_KeyCode.TabIndex = 3;
-            this.Hotkey_KeyCode.Win = false;
-            // 
             // Window_RememberPosition
             // 
             this.Window_RememberPosition.AutoSize = true;
@@ -269,6 +257,38 @@
             this.Hotkey_Enabled.TabIndex = 2;
             this.Hotkey_Enabled.Text = "Hotkey";
             this.Hotkey_Enabled.UseVisualStyleBackColor = true;
+            // 
+            // tabPage4
+            // 
+            this.tabPage4.Controls.Add(this.groupBox3);
+            this.tabPage4.Location = new System.Drawing.Point(4, 22);
+            this.tabPage4.Name = "tabPage4";
+            this.tabPage4.Padding = new System.Windows.Forms.Padding(3);
+            this.tabPage4.Size = new System.Drawing.Size(309, 190);
+            this.tabPage4.TabIndex = 3;
+            this.tabPage4.Text = "Input";
+            this.tabPage4.UseVisualStyleBackColor = true;
+            // 
+            // groupBox3
+            // 
+            this.groupBox3.Controls.Add(this.Input_AutoInputAns);
+            this.groupBox3.Controls.Add(this.Input_AutoCloseBrackets);
+            this.groupBox3.Location = new System.Drawing.Point(6, 6);
+            this.groupBox3.Name = "groupBox3";
+            this.groupBox3.Size = new System.Drawing.Size(297, 66);
+            this.groupBox3.TabIndex = 0;
+            this.groupBox3.TabStop = false;
+            this.groupBox3.Text = "Auto Input";
+            // 
+            // Input_AutoCloseBrackets
+            // 
+            this.Input_AutoCloseBrackets.AutoSize = true;
+            this.Input_AutoCloseBrackets.Location = new System.Drawing.Point(6, 18);
+            this.Input_AutoCloseBrackets.Name = "Input_AutoCloseBrackets";
+            this.Input_AutoCloseBrackets.Size = new System.Drawing.Size(127, 16);
+            this.Input_AutoCloseBrackets.TabIndex = 0;
+            this.Input_AutoCloseBrackets.Text = "Auto close brackets";
+            this.Input_AutoCloseBrackets.UseVisualStyleBackColor = true;
             // 
             // tabPage2
             // 
@@ -425,36 +445,28 @@
             this.label6.TabIndex = 0;
             this.label6.Text = "Max length of decimal place to display:";
             // 
-            // tabPage4
+            // Hotkey_KeyCode
             // 
-            this.tabPage4.Controls.Add(this.groupBox3);
-            this.tabPage4.Location = new System.Drawing.Point(4, 22);
-            this.tabPage4.Name = "tabPage4";
-            this.tabPage4.Padding = new System.Windows.Forms.Padding(3);
-            this.tabPage4.Size = new System.Drawing.Size(309, 190);
-            this.tabPage4.TabIndex = 3;
-            this.tabPage4.Text = "Input";
-            this.tabPage4.UseVisualStyleBackColor = true;
+            this.Hotkey_KeyCode.Alt = false;
+            this.Hotkey_KeyCode.Ctrl = false;
+            this.Hotkey_KeyCode.Enabled = false;
+            this.Hotkey_KeyCode.KeyCode = System.Windows.Forms.Keys.None;
+            this.Hotkey_KeyCode.Location = new System.Drawing.Point(41, 83);
+            this.Hotkey_KeyCode.Name = "Hotkey_KeyCode";
+            this.Hotkey_KeyCode.Shift = false;
+            this.Hotkey_KeyCode.Size = new System.Drawing.Size(249, 19);
+            this.Hotkey_KeyCode.TabIndex = 3;
+            this.Hotkey_KeyCode.Win = false;
             // 
-            // groupBox3
+            // Input_AutoInputAns
             // 
-            this.groupBox3.Controls.Add(this.Input_AutoCloseBrackets);
-            this.groupBox3.Location = new System.Drawing.Point(6, 6);
-            this.groupBox3.Name = "groupBox3";
-            this.groupBox3.Size = new System.Drawing.Size(297, 50);
-            this.groupBox3.TabIndex = 0;
-            this.groupBox3.TabStop = false;
-            this.groupBox3.Text = "Auto Input";
-            // 
-            // Input_AutoCloseBrackets
-            // 
-            this.Input_AutoCloseBrackets.AutoSize = true;
-            this.Input_AutoCloseBrackets.Location = new System.Drawing.Point(10, 20);
-            this.Input_AutoCloseBrackets.Name = "Input_AutoCloseBrackets";
-            this.Input_AutoCloseBrackets.Size = new System.Drawing.Size(127, 16);
-            this.Input_AutoCloseBrackets.TabIndex = 0;
-            this.Input_AutoCloseBrackets.Text = "Auto close brackets";
-            this.Input_AutoCloseBrackets.UseVisualStyleBackColor = true;
+            this.Input_AutoInputAns.AutoSize = true;
+            this.Input_AutoInputAns.Location = new System.Drawing.Point(6, 40);
+            this.Input_AutoInputAns.Name = "Input_AutoInputAns";
+            this.Input_AutoInputAns.Size = new System.Drawing.Size(113, 16);
+            this.Input_AutoInputAns.TabIndex = 1;
+            this.Input_AutoInputAns.Text = "Auto input \"Ans\"";
+            this.Input_AutoInputAns.UseVisualStyleBackColor = true;
             // 
             // SettingsDialog
             // 
@@ -480,6 +492,9 @@
             this.tabPage3.ResumeLayout(false);
             this.groupBox1.ResumeLayout(false);
             this.groupBox1.PerformLayout();
+            this.tabPage4.ResumeLayout(false);
+            this.groupBox3.ResumeLayout(false);
+            this.groupBox3.PerformLayout();
             this.tabPage2.ResumeLayout(false);
             this.fontGroup.ResumeLayout(false);
             this.fontGroup.PerformLayout();
@@ -488,9 +503,6 @@
             this.groupBox2.ResumeLayout(false);
             this.groupBox2.PerformLayout();
             ((System.ComponentModel.ISupportInitialize)(this.NumberFormat_Decimal_MaxLen)).EndInit();
-            this.tabPage4.ResumeLayout(false);
-            this.groupBox3.ResumeLayout(false);
-            this.groupBox3.PerformLayout();
             this.ResumeLayout(false);
 
         }
@@ -529,5 +541,6 @@
         private System.Windows.Forms.TabPage tabPage4;
         private System.Windows.Forms.GroupBox groupBox3;
         private System.Windows.Forms.CheckBox Input_AutoCloseBrackets;
+        private System.Windows.Forms.CheckBox Input_AutoInputAns;
     }
 }

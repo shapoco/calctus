@@ -32,6 +32,7 @@ namespace Shapoco.Calctus {
         public Keys HotKey_KeyCode { get; set; } = Keys.None;
 
         public bool Input_AutoCloseBrackets { get; set; } = true;
+        public bool Input_AutoInputAns { get; set; } = true;
 
         public int NumberFormat_Decimal_MaxLen { get; set; } = 9;
 
