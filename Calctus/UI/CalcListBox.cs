@@ -231,7 +231,9 @@ namespace Shapoco.Calctus.UI {
         }
 
         private void performSelectedIndexChanged(int newIndex) {
+            bool recalc = false;
             if (_selectedItem != null) {
+                recalc |= _selectedItem.IsRpnCommand(out _);
                 _selectedItem.OnDeselected();
             }
             _selectedIndex = newIndex;
@@ -240,10 +242,13 @@ namespace Shapoco.Calctus.UI {
                 _selectedItem.OnSelected();
                 showItem(_selectedIndex);
                 this.RadixMode = _selectedItem.RadixMode;
+                recalc |= _selectedItem.IsRpnCommand(out _);
             }
             else {
                 _selectedItem = null;
             }
+
+            if (recalc) Recalc();
         }
 
         private void insert(int index, CalcListItem item) {
