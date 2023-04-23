@@ -89,18 +89,24 @@ namespace Shapoco.Calctus.Parser {
         /// 文字列が演算子のみで構成されていればそれを返す
         /// </summary>
         public static bool TryGetRpnSymbols(string expr, out Token[] symbols) {
-            var lexer = new Lexer(expr);
-            var list = new List<Token>();
-            while (!lexer.Eos) {
-                var t = lexer.Pop();
-                if (t.Type != TokenType.Symbol) {
-                    symbols = null;
-                    return false;
+            try {
+                var lexer = new Lexer(expr);
+                var list = new List<Token>();
+                while (!lexer.Eos) {
+                    var t = lexer.Pop();
+                    if (t.Type != TokenType.Symbol) {
+                        symbols = null;
+                        return false;
+                    }
+                    list.Add(t);
                 }
-                list.Add(t);
+                symbols = list.ToArray();
+                return symbols.Length > 0;
             }
-            symbols = list.ToArray();
-            return symbols.Length > 0;
+            catch {
+                symbols = null;
+                return false;
+            }
         }
 
         public static void Test(string exprStr) {
