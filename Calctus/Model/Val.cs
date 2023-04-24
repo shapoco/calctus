@@ -31,6 +31,7 @@ namespace Shapoco.Calctus.Model {
         protected abstract RealVal OnAsRealVal();
 
         public abstract real AsReal { get; }
+        public abstract frac AsFrac { get; }
         public abstract double AsDouble { get; }
         public abstract long AsLong { get; }
         public abstract int AsInt { get; }

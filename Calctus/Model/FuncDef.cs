@@ -26,6 +26,11 @@ namespace Shapoco.Calctus.Model {
         public static readonly FuncDef oct = new FuncDef("oct", (e, a) => a[0].FormatOct());
         public static readonly FuncDef char_1 = new FuncDef("char", (e, a) => a[0].FormatChar());
         public static readonly FuncDef datetime = new FuncDef("datetime", (e, a) => a[0].FormatDateTime());
+        
+        public static readonly FuncDef real = new FuncDef("real", (e, a) => a[0].AsRealVal());
+        public static readonly FuncDef frac = new FuncDef("frac", (e, a) => new FracVal(RMath.FindFrac(a[0].AsReal, decimal.MaxValue, decimal.MaxValue)));
+        public static readonly FuncDef frac_2 = new FuncDef("frac", 2, (e, a) => new FracVal(RMath.FindFrac(a[0].AsReal, a[1].AsReal, a[1].AsReal), a[0].FormatHint));
+        public static readonly FuncDef frac_3 = new FuncDef("frac", 3, (e, a) => new FracVal(RMath.FindFrac(a[0].AsReal, a[1].AsReal, a[2].AsReal), a[0].FormatHint));
 
         public static readonly FuncDef pow = new FuncDef("pow", 2, (e, a) => new RealVal(RMath.Pow(a[0].AsReal, a[1].AsReal), a[0].FormatHint));
         public static readonly FuncDef sqrt = new FuncDef("sqrt", (e, a) => new RealVal(RMath.Sqrt(a[0].AsReal)));

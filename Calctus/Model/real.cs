@@ -19,8 +19,11 @@ namespace Shapoco.Calctus.Model {
         }
 
         public override bool Equals(object obj) {
-            if (obj is real obj1) {
-                return Raw == obj1.Raw;
+            if (obj is real realObj) {
+                return Raw == realObj.Raw;
+            }
+            else if (obj is frac fracObj) {
+                return Raw == (decimal)fracObj;
             }
             else {
                 return false;
@@ -60,6 +63,7 @@ namespace Shapoco.Calctus.Model {
         public static explicit operator real(double val) => new real((decimal)val);
         public static implicit operator real(long val) => new real(val);
         public static implicit operator real(int val) => new real(val);
+        public static implicit operator real(frac val) => new real((decimal)val);
 
         public static real operator -(real val) => new real(-val.Raw);
         public static real operator +(real a, real b) => new real(a.Raw + b.Raw);

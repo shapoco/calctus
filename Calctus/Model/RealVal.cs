@@ -21,6 +21,7 @@ namespace Shapoco.Calctus.Model {
 
         protected override Val OnUpConvert(EvalContext e, Val b) {
             if (b is RealVal) return this;
+            if (b is FracVal) return new FracVal(new frac(_raw.Raw, 1));
             throw new InvalidCastException(this.ValTypeName + " cannot be converted to " + b.ValTypeName);
         }
 
@@ -53,6 +54,7 @@ namespace Shapoco.Calctus.Model {
 
         protected override RealVal OnAsRealVal() => new RealVal((real)Raw, FormatHint);
         public override real AsReal => _raw;
+        public override frac AsFrac => (frac)_raw;
         public override double AsDouble => (double)_raw;
         public override long AsLong => (long)_raw; // todo: 丸め/切り捨ての明示は不要？
         public override int AsInt => (int)_raw; // todo: 丸め/切り捨ての明示は不要？

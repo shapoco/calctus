@@ -63,6 +63,11 @@ namespace Shapoco.Calctus.Model {
                     throw new EvalError(e, A.Token, "left hand of " + Token + " must be variant");
                 }
             }
+            if (Method == OpDef.Frac) {
+                var a = A.Eval(e);
+                var b = B.Eval(e);
+                return FracVal.Normalize(new frac(a.AsReal, b.AsReal), a.FormatHint);
+            }
             if (Method == OpDef.Pow) return FuncDef.pow.Call(e, new Val[] { A.Eval(e), B.Eval(e) });
             if (Method == OpDef.Mul) return A.Eval(e).Mul(e, B.Eval(e));
             if (Method == OpDef.Div) return A.Eval(e).Div(e, B.Eval(e));

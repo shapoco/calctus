@@ -29,6 +29,8 @@ namespace Shapoco.Calctus.Model {
         //public static OpDef LogicInvert = new OpDef(OpType.Unary, 90, "!");
         public static OpDef BitNot = new OpDef(OpType.Unary, 90, "~");
 
+        public static OpDef Frac = new OpDef(OpType.Binary, 70, ":");
+
         public static OpDef Pow = new OpDef(OpType.Binary, 62, "^");
         public static OpDef Mul = new OpDef(OpType.Binary, 61, "*");
         public static OpDef Div = new OpDef(OpType.Binary, 61, "/");

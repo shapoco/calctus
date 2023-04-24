@@ -52,6 +52,78 @@ namespace Shapoco.Calctus.Model {
             return pow;
         }
 
+        /// <summary>a と b の最大公約数</summary>
+        public static decimal Gcd(decimal a, decimal b) {
+            while (b != 0) {
+                var tmp = a;
+                a = b;
+                b = tmp % b;
+            }
+            return a;
+        }
+
+        /// <summary>a と b の最小公倍数。a * b が非常に大きくなる場合、この関数は例外を投げる。</summary>
+        public static decimal Lcm(decimal a, decimal b) {
+            return a * b / Gcd(a, b);
+        }
+
+        /// <summary>通分</summary>
+        public static bool Reduce(frac a, frac b, out decimal aNume, out decimal bNume, out decimal deno) {
+            try {
+                var d = RMath.Gcd(a.Deno, b.Deno);
+                deno = a.Deno * b.Deno / d;
+                aNume = a.Nume * deno / a.Deno;
+                bNume = b.Nume * deno / b.Deno;
+                return true;
+            }
+            catch {
+                aNume = 0;
+                bNume = 0;
+                deno = 1;
+                return false;
+            }
+        }
+        
+        /// <summary>
+        /// 分母・分子が max以下の分数で x に最も近いものを返す
+        /// </summary>
+        public static frac FindFrac(decimal x, decimal maxNume, decimal maxDeno) {
+            int sign = Sign(x);
+            x = Abs(x);
+
+            if (maxNume < 1) throw new ArgumentOutOfRangeException();
+            if (maxDeno < 1) throw new ArgumentOutOfRangeException();
+
+            // Stern–Brocot tree
+            decimal a = 0, b = 1;
+            decimal c = 1, d = 0;
+            decimal bestDiff = decimal.MaxValue;
+            decimal bestNume = 1, bestDeno = 1;
+            while (true) {
+                var nume = a + c;
+                var deno = b + d;
+                if (nume > maxNume || deno > maxDeno) break;
+                var q = nume / deno;
+                var diff = Abs(x - q);
+                if (diff < bestDiff) {
+                    bestDiff = diff;
+                    bestNume = nume;
+                    bestDeno = deno;
+                }
+                if (diff == 0) break;
+                if (x < q) {
+                    c = nume;
+                    d = deno;
+                }
+                else {
+                    a = nume;
+                    b = deno;
+                }
+            }
+
+            return new frac(sign * bestNume, bestDeno);
+        }
+
         // 三角関数
         // 暫定的に System.Math の関数を使用する
         public static real Sin(real a) => (real)Math.Sin((double)a.Raw);

@@ -13,7 +13,7 @@ namespace Shapoco.Calctus.UI {
     class ExpressionBox : Control {
         public const int TextMargin = 0;
 
-        public static readonly Regex SymbolRegex = new Regex(@"[+\-*/%^|&=<>]");
+        public static readonly Regex SymbolRegex = new Regex(@"[+\-*/%:^|&=<>]");
         public static readonly Regex IdRegex = new Regex(@"\b[a-zA-Z_][a-zA-Z0-9_]*\b");
         public static readonly Regex ColorRegex = new Regex(@"#([0-9a-fA-F]{6}|[0-9a-fA-F]{3})\b");
         public static readonly Regex CharRegex = new Regex("'([^'\\\\]|\\\\[abfnrtv\\\\\'0]|\\\\o[0-7]{3}|\\\\x[0-9a-fA-F]{2}|\\\\u[0-9a-fA-F]{4})'");

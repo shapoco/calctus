@@ -54,6 +54,8 @@
     <Compile Include="AppDataManager.cs" />
     <Compile Include="Calctus\Assert.cs" />
     <Compile Include="Calctus\Model\EvalSettings.cs" />
+    <Compile Include="Calctus\Model\frac.cs" />
+    <Compile Include="Calctus\Model\FracVal.cs" />
     <Compile Include="Calctus\Model\RMath.cs" />
     <Compile Include="Calctus\Model\Errors.cs" />
     <Compile Include="Calctus\Model\EvalContext.cs" />
