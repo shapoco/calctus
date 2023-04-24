@@ -54,6 +54,8 @@ namespace Shapoco.Calctus.Model {
 
         /// <summary>a と b の最大公約数</summary>
         public static decimal Gcd(decimal a, decimal b) {
+            if (a != Floor(a) || a <= 0) throw new ArgumentException("Argument must be an natural number");
+            if (b != Floor(b) || b <= 0) throw new ArgumentException("Argument must be an natural number");
             while (b != 0) {
                 var tmp = a;
                 a = b;

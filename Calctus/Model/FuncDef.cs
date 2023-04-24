@@ -59,6 +59,9 @@ namespace Shapoco.Calctus.Model {
         public static readonly FuncDef abs = new FuncDef("abs", (e, a) => new RealVal(RMath.Abs(a[0].AsReal), a[0].FormatHint));
         public static readonly FuncDef sign = new FuncDef("sign", (e, a) => new RealVal(RMath.Sign(a[0].AsReal)).FormatInt());
 
+        public static readonly FuncDef gcd = new FuncDef("gcd", 2, (e, a) => new RealVal(RMath.Gcd(a[0].AsReal, a[1].AsReal), a[0].FormatHint));
+        public static readonly FuncDef lcm = new FuncDef("lcm", 2, (e, a) => new RealVal(RMath.Lcm(a[0].AsReal, a[1].AsReal), a[0].FormatHint));
+
         public static readonly FuncDef max = new FuncDef("max", 2, (e, a) => new RealVal(RMath.Max(a[0].AsReal, a[1].AsReal), a[0].FormatHint));
         public static readonly FuncDef min = new FuncDef("min", 2, (e, a) => new RealVal(RMath.Min(a[0].AsReal, a[1].AsReal), a[0].FormatHint));
 
