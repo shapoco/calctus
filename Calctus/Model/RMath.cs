@@ -103,6 +103,7 @@ namespace Shapoco.Calctus.Model {
             int sign = Sign(x);
             x = Abs(x);
 
+            if (x == 0) throw new ArgumentOutOfRangeException();
             if (maxNume < 1) throw new ArgumentOutOfRangeException();
             if (maxDeno < 1) throw new ArgumentOutOfRangeException();
 
