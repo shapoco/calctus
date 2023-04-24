@@ -9,22 +9,27 @@ namespace Shapoco.Calctus.Model {
         public readonly decimal Nume;
         public readonly decimal Deno;
 
-        public frac(decimal val) : this(val, 1) { }
+        public frac(decimal val) {
+            RMath.FindFrac(val, out Nume, out Deno);
+        }
 
         public frac(decimal n, decimal d) {
-            var sign = RMath.Sign(n) * RMath.Sign(d);
-            n = RMath.Abs(n);
-            d = RMath.Abs(d);
+            if (n == RMath.Floor(n) && d == RMath.Floor(d)) {
+                var sign = RMath.Sign(n) * RMath.Sign(d);
+                n = RMath.Abs(n);
+                d = RMath.Abs(d);
 
-            // 整数比を求める
-            while (n != RMath.Floor(n)) { n *= 10; d *= 10; }
-            while (d != RMath.Floor(d)) { n *= 10; d *= 10; }
-            var g = RMath.Gcd(n, d);
-            n /= g;
-            d /= g;
+                // 約分
+                var gcd = RMath.Gcd(n, d);
+                n /= gcd;
+                d /= gcd;
 
-            Nume = sign * n;
-            Deno = d;
+                Nume = sign * n;
+                Deno = d;
+            }
+            else {
+                RMath.FindFrac(n / d, out Nume, out Deno);
+            }
         }
 
         public override bool Equals(object obj) {

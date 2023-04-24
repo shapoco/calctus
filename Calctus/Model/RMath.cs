@@ -85,11 +85,19 @@ namespace Shapoco.Calctus.Model {
                 return false;
             }
         }
-        
+
         /// <summary>
         /// 分母・分子が max以下の分数で x に最も近いものを返す
         /// </summary>
-        public static frac FindFrac(decimal x, decimal maxNume, decimal maxDeno) {
+        public static frac FindFrac(decimal x, decimal maxNume = decimal.MaxValue, decimal maxDeno = decimal.MaxValue) {
+            FindFrac(x, out decimal nume, out decimal deno, maxNume, maxDeno);
+            return new frac(nume, deno);
+        }
+
+        /// <summary>
+        /// 分母・分子が max以下の分数で x に最も近いものを返す
+        /// </summary>
+        public static void FindFrac(decimal x, out decimal nume, out decimal deno, decimal maxNume = decimal.MaxValue, decimal maxDeno = decimal.MaxValue) {
             int sign = Sign(x);
             x = Abs(x);
 
@@ -100,30 +108,31 @@ namespace Shapoco.Calctus.Model {
             decimal a = 0, b = 1;
             decimal c = 1, d = 0;
             decimal bestDiff = decimal.MaxValue;
-            decimal bestNume = 1, bestDeno = 1;
+            nume = 1;
+            deno = 1;
             while (true) {
-                var nume = a + c;
-                var deno = b + d;
-                if (nume > maxNume || deno > maxDeno) break;
-                var q = nume / deno;
+                var ac = a + c;
+                var bd = b + d;
+                if (ac > maxNume || bd > maxDeno) break;
+                var q = ac / bd;
                 var diff = Abs(x - q);
                 if (diff < bestDiff) {
                     bestDiff = diff;
-                    bestNume = nume;
-                    bestDeno = deno;
+                    nume = ac;
+                    deno = bd;
                 }
                 if (diff == 0) break;
                 if (x < q) {
-                    c = nume;
-                    d = deno;
+                    c = ac;
+                    d = bd;
                 }
                 else {
-                    a = nume;
-                    b = deno;
+                    a = ac;
+                    b = bd;
                 }
             }
 
-            return new frac(sign * bestNume, bestDeno);
+            nume *= sign;
         }
 
         // 三角関数
