@@ -32,9 +32,10 @@ A calculator for Windows.
 |Hexadecimal|`0x7b`, `0x7B`|
 |Octadecimal|`0173`|
 |Binary|`0b1111011`|
-|Character:new:|`'A'`|
-|Date Time:new:|`#2022/34/56 12:34:56#`|
-|Web Color:new:|`#123`, `#112233`|
+|Fraction|`2:3`|
+|Character|`'A'`|
+|Date Time|`#2022/34/56 12:34:56#`|
+|Web Color|`#123`, `#112233`|
 
 ### Operators
 
@@ -57,14 +58,15 @@ A calculator for Windows.
 |Category|Functions|Precision|
 |:--|:--|:--|
 |Exponential|`sqrt(x)`, `log(x)`, `log2(x)`, `log10(x)`, `clog2(x)`, `clog10(x)`|`Double`|
-|Trigonometric|`sin(x)`, `cos(x)`, `tan(x)`,`asin(x)`, `acos(x)`, `atan(x)`, `atan2(y, x)`,`sinh(x)`:new:, `cosh(x)`:new:, `tanh(x)`:new:|`Double`|
+|Trigonometric|`sin(x)`, `cos(x)`, `tan(x)`,`asin(x)`, `acos(x)`, `atan(x)`, `atan2(y, x)`,`sinh(x)`, `cosh(x)`, `tanh(x)`|`Double`|
 |Round|`floor(x)`, `ceil(x)`, `trunc(x)`, `round(x)`|`Decimal`|
-|Absolute/Sign|`abs(x)`:new:, `sign(x)`|`Decimal`|
-|Max/Min|`max(a, b)`:new:, `min(a, b)`:new:|`Decimal`|
-|Representation:new:|`dec(x)`, `hex(x)`, `bin(x)`, `oct(x)`, `char(x)`, `datetime(x)`|`Decimal`|
-|Date Time:new:|`now()`, `fromyears(x)`, `fromdays(x)`, `fromhours(x)`, `fromminutes(x)`, `fromseconds(x)`, `toyears(x)`, `todays(x)`, `tohours(x)`, `tominutes(x)`, `toseconds(x)`|`Double`|
-|Color:new:|`rgb(r,g,b)`, `rgb(rgb)`, `hsv2rgb(h,s,v)`, `hsv2rgb_r(h,s,v)`, `hsv2rgb_g(h,s,v)`, `hsv2rgb_b(h,s,v)`, `rgb2hsv_h(rgb)`, `rgb2hsv_s(rgb)`, `rgb2hsv_v(rgb)`, `hsl2rgb(h,s,l)`, `hsl2rgb_r(h,s,l)`, `hsl2rgb_g(h,s,l)`, `hsl2rgb_b(h,s,l)`, `rgb2hsl_h(rgb)`, `rgb2hsl_s(rgb)`, `rgb2hsl_l(rgb)`, `yuv2rgb(y,u,v)`, `yuv2rgb(yuv)`, `yuv2rgb_r(yuv)`, `yuv2rgb_g(yuv)`, `yuv2rgb_b(yuv)`, `rgb2yuv(r,g,b)`, `rgb2yuv(rgb)`, `rgb2yuv_y(rgb)`, `rgb2yuv_u(rgb)`, `rgb2yuv_v(rgb)`|`Decimal`|
-|E-series:new:|Rounding to the E-series value: `eXfloor(x)`, `eXceil(x)`, `eXround(x)`<br>Calculation of voltage divider resistance: `eXratiol(x)`, `eXratioh(x)`<br> (`X`=`3`, `6`, `12`, `24`, `48`, `96`, `192`)|`Decimal`|
+|Absolute/Sign|`abs(x)`, `sign(x)`|`Decimal`|
+|Max/Min|`max(a, b)`, `min(a, b)`|`Decimal`|
+|Representation|`dec(x)`, `hex(x)`, `bin(x)`, `oct(x)`, `char(x)`, `datetime(x)`|`Decimal`|
+|Fractions|`frac(x)`, `frac(x,a)`, `frac(x,a,b)`|
+|Date Time|`now()`, `fromyears(x)`, `fromdays(x)`, `fromhours(x)`, `fromminutes(x)`, `fromseconds(x)`, `toyears(x)`, `todays(x)`, `tohours(x)`, `tominutes(x)`, `toseconds(x)`|`Double`|
+|Color|`rgb(r,g,b)`, `rgb(rgb)`, `hsv2rgb(h,s,v)`, `hsv2rgb_r(h,s,v)`, `hsv2rgb_g(h,s,v)`, `hsv2rgb_b(h,s,v)`, `rgb2hsv_h(rgb)`, `rgb2hsv_s(rgb)`, `rgb2hsv_v(rgb)`, `hsl2rgb(h,s,l)`, `hsl2rgb_r(h,s,l)`, `hsl2rgb_g(h,s,l)`, `hsl2rgb_b(h,s,l)`, `rgb2hsl_h(rgb)`, `rgb2hsl_s(rgb)`, `rgb2hsl_l(rgb)`, `yuv2rgb(y,u,v)`, `yuv2rgb(yuv)`, `yuv2rgb_r(yuv)`, `yuv2rgb_g(yuv)`, `yuv2rgb_b(yuv)`, `rgb2yuv(r,g,b)`, `rgb2yuv(rgb)`, `rgb2yuv_y(rgb)`, `rgb2yuv_u(rgb)`, `rgb2yuv_v(rgb)`|`Decimal`|
+|E-series|Rounding to the E-series value: `eXfloor(x)`, `eXceil(x)`, `eXround(x)`<br>Calculation of voltage divider resistance: `eXratiol(x)`, `eXratioh(x)`<br> (`X`=`3`, `6`, `12`, `24`, `48`, `96`, `192`)|`Decimal`|
 
 
 ### Constants
@@ -77,16 +79,12 @@ A calculator for Windows.
 |`INT_MAX`|`2,147,483,647`|
 |`UINT_MIN`|`0`|
 |`UINT_MAX`|`4,294,967,295`|
-|`LONG_MIN`:new:|`-9,223,372,036,854,775,808`|
-|`LONG_MAX`:new:|`9,223,372,036,854,775,807`|
-|`ULONG_MIN`:new:|`0`|
-|`ULONG_MAX`:new:|`18,446,744,073,709,551,615`|
-|~~`FLOAT_MIN`~~|~~`-3.40282347E+38f`~~|
-|~~`FLOAT_MAX`~~|~~`3.40282347E+38f`~~|
-|~~`DOUBLE_MIN`~~|~~`-1.7976931348623157E+308`~~|
-|~~`DOUBLE_MAX`~~|~~`1.7976931348623157E+308`~~|
-|`DECIMAL_MIN`:new:|`-79,228,162,514,264,337,593,543,950,335`|
-|`DECIMAL_MAX`:new:|`79,228,162,514,264,337,593,543,950,335`|
+|`LONG_MIN`|`-9,223,372,036,854,775,808`|
+|`LONG_MAX`|`9,223,372,036,854,775,807`|
+|`ULONG_MIN`|`0`|
+|`ULONG_MAX`|`18,446,744,073,709,551,615`|
+|`DECIMAL_MIN`|`-79,228,162,514,264,337,593,543,950,335`|
+|`DECIMAL_MAX`|`79,228,162,514,264,337,593,543,950,335`|
 
 ### Variables
 
@@ -104,16 +102,16 @@ a * b [Return]
 |Key|Function|
 |:--|:--|
 |`Shift` + `Return`|Insert|
-|`Shift` + `Delete` :new:|Delete current expression|
-|`Ctrl` + `Shift` + `C` :new:|Copy all expressions and answers|
-|`Ctrl` + `Shift` + `Del` :new:|Delete all expressions|
-|`Ctrl` + `Shift` + `Up` :new:|Item move up|
-|`Ctrl` + `Shift` + `Down` :new:|Item move down|
-|`F8` :new:|Radix Mode = Auto|
-|`F9` :new:|Radix Mode = Dec|
-|`F10` :new:|Radix Mode = Hex|
-|`F11` :new:|Radix Mode = Bin|
-|`F12` :new:|Radix Mode = Oct|
+|`Shift` + `Delete`|Delete current expression|
+|`Ctrl` + `Shift` + `C`|Copy all expressions and answers|
+|`Ctrl` + `Shift` + `Del`|Delete all expressions|
+|`Ctrl` + `Shift` + `Up`|Item move up|
+|`Ctrl` + `Shift` + `Down`|Item move down|
+|`F8`|Radix Mode = Auto|
+|`F9`|Radix Mode = Dec|
+|`F10`|Radix Mode = Hex|
+|`F11`|Radix Mode = Bin|
+|`F12`|Radix Mode = Oct|
 
 ----
 
