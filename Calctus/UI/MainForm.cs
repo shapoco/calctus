@@ -31,7 +31,7 @@ namespace Shapoco.Calctus.UI {
             public override Color ToolStripBorder { get { return Color.FromArgb(64, 64, 64); } }
         }
 
-        private string dbg_log_path = System.IO.Path.Combine(AppDataManager.RoamingUserDataPath, "wndmsg_" + DateTime.Now.ToString("yyyy_MM_dd_hh_mm_ss") + ".log");
+        private string dbg_log_path = System.IO.Path.Combine(AppDataManager.RoamingUserDataPath, "wndmsg_" + DateTime.Now.ToString("yyyy_MM_dd_HH_mm_ss") + ".log");
         private System.IO.StreamWriter dbg_log_writer;
 
         public MainForm() {
@@ -315,6 +315,7 @@ namespace Shapoco.Calctus.UI {
         protected override void WndProc(ref Message m) {
             if (dbg_log_writer != null) {
                 dbg_log_writer.WriteLine(
+                    DateTime.Now.ToString("yyyy/MM/dd HH:mm:ss") + " " +
                     "0x" + Convert.ToString((long)m.HWnd, 16) + "," +
                     "0x" + Convert.ToString(m.Msg, 16) + "," +
                     "0x" + Convert.ToString((long)m.WParam, 16) + "," +
