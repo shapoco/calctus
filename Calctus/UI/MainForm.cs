@@ -46,6 +46,7 @@ namespace Shapoco.Calctus.UI {
 
             try {
                 dbg_log_writer = new System.IO.StreamWriter(dbg_log_path);
+                dbg_log_writer.WriteLine("Version = " + System.Reflection.Assembly.GetExecutingAssembly().GetName().Version);
             }
             catch { }
 
@@ -312,7 +313,6 @@ namespace Shapoco.Calctus.UI {
         }
 
         protected override void WndProc(ref Message m) {
-            Console.WriteLine("WndProc");
             if (dbg_log_writer != null) {
                 dbg_log_writer.WriteLine(
                     "0x" + Convert.ToString((long)m.HWnd, 16) + "," +
