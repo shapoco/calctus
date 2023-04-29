@@ -31,6 +31,9 @@ namespace Shapoco.Calctus.UI {
             public override Color ToolStripBorder { get { return Color.FromArgb(64, 64, 64); } }
         }
 
+        private string dbg_log_path = System.IO.Path.Combine(AppDataManager.RoamingUserDataPath, "wndmsg_" + DateTime.Now.ToString("yyyy_MM_dd_hh_mm_ss") + ".log");
+        private System.IO.StreamWriter dbg_log_writer;
+
         public MainForm() {
             // フォントの設定が反映されたときにウィンドウサイズも変わってしまうので
             // 起動時のウィンドウサイズ設定値は先に保持しておいて最後に反映する
@@ -40,6 +43,11 @@ namespace Shapoco.Calctus.UI {
 
             InitializeComponent();
             if (this.DesignMode) return;
+
+            try {
+                dbg_log_writer = new System.IO.StreamWriter(dbg_log_path);
+            }
+            catch { }
 
             ToolStripManager.Renderer = new ToolStripProfessionalRenderer(new CustomProfessionalColors());
 
@@ -134,6 +142,13 @@ namespace Shapoco.Calctus.UI {
         private void MainForm_FormClosed(object sender, FormClosedEventArgs e) {
             notifyIcon.Visible = false;
             disableHotkey();
+
+            if (dbg_log_writer != null) {
+                dbg_log_writer.Close();
+                dbg_log_writer.Dispose();
+                dbg_log_writer = null;
+                System.IO.File.Delete(dbg_log_path);
+            }
         }
 
         private void MainForm_Resize(object sender, EventArgs e) {
@@ -294,6 +309,19 @@ namespace Shapoco.Calctus.UI {
             if (btn.Checked) {
                 this.RadixMode = mode;
             }
+        }
+
+        protected override void WndProc(ref Message m) {
+            Console.WriteLine("WndProc");
+            if (dbg_log_writer != null) {
+                dbg_log_writer.WriteLine(
+                    "0x" + Convert.ToString((long)m.HWnd, 16) + "," +
+                    "0x" + Convert.ToString(m.Msg, 16) + "," +
+                    "0x" + Convert.ToString((long)m.WParam, 16) + "," +
+                    "0x" + Convert.ToString((long)m.LParam, 16));
+                dbg_log_writer.Flush();
+            }
+            base.WndProc(ref m);
         }
     }
 }
