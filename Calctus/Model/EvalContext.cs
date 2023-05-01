@@ -64,5 +64,7 @@ namespace Shapoco.Calctus.Model {
         public void Warning(object place, string msg) {
             Console.WriteLine("*WARNING: " + msg);
         }
+
+        public IEnumerable<Var> EnumVars() => _vars.Values;
     }
 }

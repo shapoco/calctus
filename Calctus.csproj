@@ -89,6 +89,10 @@
     <Compile Include="Calctus\UI\CalcListItem.cs">
       <SubType>Component</SubType>
     </Compile>
+    <Compile Include="Calctus\UI\Candidate.cs" />
+    <Compile Include="Calctus\UI\CandidateForm.cs">
+      <SubType>Form</SubType>
+    </Compile>
     <Compile Include="Calctus\UI\ColorUtils.cs" />
     <Compile Include="Calctus\UI\CalcListBox.cs">
       <SubType>Component</SubType>
@@ -100,6 +104,7 @@
       <SubType>Component</SubType>
     </Compile>
     <Compile Include="Calctus\UI\Hotkey.cs" />
+    <Compile Include="Calctus\UI\ICandidateProvider.cs" />
     <Compile Include="Calctus\UI\KeyCodeBox.cs">
       <SubType>Component</SubType>
     </Compile>

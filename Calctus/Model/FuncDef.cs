@@ -20,6 +20,18 @@ namespace Shapoco.Calctus.Model {
 
         public FuncDef(string name, Func<EvalContext, Val[], Val> method) : this(name, 1, method) { }
 
+        public override string ToString() {
+            var sb = new StringBuilder();
+            sb.Append(Name);
+            sb.Append('(');
+            for (int i = 0; i < ArgCount; i++) {
+                if (i > 0) sb.Append(", ");
+                sb.Append((char)('a' + i));
+            }
+            sb.Append(')');
+            return sb.ToString();
+        }
+
         public static readonly FuncDef dec = new FuncDef("dec", (e, a) => a[0].FormatInt());
         public static readonly FuncDef hex = new FuncDef("hex", (e, a) => a[0].FormatHex());
         public static readonly FuncDef bin = new FuncDef("bin", (e, a) => a[0].FormatBin());

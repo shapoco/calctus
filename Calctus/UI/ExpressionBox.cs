@@ -223,6 +223,10 @@ namespace Shapoco.Calctus.UI {
         private MouseButtons _pressedMouseButtons = MouseButtons.None;
         private Keys _pressedModifiers = Keys.None;
 
+        private ICandidateProvider _candProvider = null;
+        private CandidateForm _candForm = null;
+        private int _candStart = 0, _candEnd = 0;
+
         public ExpressionBox() {
             this.Cursor = Cursors.IBeam;
             if (this.DesignMode) return;
@@ -241,6 +245,11 @@ namespace Shapoco.Calctus.UI {
         }
 
         public bool ReadOnly { get; set; } = false;
+
+        public ICandidateProvider CandidateProvider {
+            get => _candProvider;
+            set => _candProvider = value;
+        }
 
         public int SelectionStart {
             get => (_selEnd < _selStart) ? _selEnd : _selStart;
@@ -407,12 +416,13 @@ namespace Shapoco.Calctus.UI {
                 case Keys.Shift | Keys.Up:
                 case Keys.Shift | Keys.Down:
                     return true;
+                case Keys.Tab:
+                    return _candForm != null;
             }
             return base.IsInputKey(keyData);
         }
 
         protected override void OnKeyDown(KeyEventArgs e) {
-            base.OnKeyDown(e);
             _pressedModifiers = e.Modifiers;
             if (_pressedMouseButtons != MouseButtons.None) return;
 
@@ -430,8 +440,7 @@ namespace Shapoco.Calctus.UI {
                         selEnd = 0;
                     }
                 }
-                else
-                if (!e.Shift && selStart != selEnd) {
+                else if (!e.Shift && selStart != selEnd) {
                     selEnd = this.SelectionStart;
                 }
                 else {
@@ -441,6 +450,10 @@ namespace Shapoco.Calctus.UI {
                     selStart = selEnd;
                 }
                 setSelection(selStart, selEnd);
+                
+                if (_candForm != null && (SelectionStart < _candStart || SelectionLength > 0)) {
+                    hideCandidates();
+                }
             }
             else if (e.KeyCode == Keys.Right) {
                 // カーソルを右へ移動
@@ -456,8 +469,7 @@ namespace Shapoco.Calctus.UI {
                         selEnd = this.Text.Length;
                     }
                 }
-                else
-                if (!e.Shift && selEnd != selStart) {
+                else if (!e.Shift && selEnd != selStart) {
                     selEnd = this.SelectionStart + this.SelectionLength;
                 }
                 else {
@@ -467,6 +479,34 @@ namespace Shapoco.Calctus.UI {
                     selStart = selEnd;
                 }
                 setSelection(selStart, selEnd);
+
+                if (_candForm != null && (SelectionStart > _candEnd || SelectionLength > 0)) {
+                    hideCandidates();
+                }
+            }
+            else if (e.Modifiers == Keys.None && e.KeyCode == Keys.Up) {
+                if (_candForm != null) {
+                    e.Handled = true;
+                    _candForm.SelectUp();
+                }
+            }
+            else if (e.Modifiers == Keys.None && e.KeyCode == Keys.Down) {
+                if (_candForm != null) {
+                    e.Handled = true;
+                    _candForm.SelectDown();
+                }
+            }
+            else if (e.Modifiers == Keys.None && (e.KeyCode == Keys.Tab || e.KeyCode == Keys.Return)) {
+                if (_candForm != null) {
+                    e.Handled = true;
+                    var id = _candForm.SelectedId;
+                    if (!string.IsNullOrEmpty(id)) {
+                        setSelection(_candStart, _candEnd);
+                        SelectedText = id;
+                        SelectionStart = _candStart + id.Length;
+                        hideCandidates();
+                    }
+                }
             }
             else if (e.KeyCode == Keys.Home) {
                 // カーソルを先頭へ移動
@@ -477,6 +517,7 @@ namespace Shapoco.Calctus.UI {
                 else {
                     setSelection(0);
                 }
+                hideCandidates();
             }
             else if (e.KeyCode == Keys.End) {
                 // カーソルを末尾へ移動
@@ -487,8 +528,9 @@ namespace Shapoco.Calctus.UI {
                 else {
                     setSelection(this.Text.Length);
                 }
+                hideCandidates();
             }
-            else if (!this.ReadOnly && e.KeyCode == Keys.Back) {
+            else if (!this.ReadOnly && e.Modifiers == Keys.None && e.KeyCode == Keys.Back) {
                 // カーソルの前の文字を削除 or 選択範囲を削除
                 e.Handled = true;
                 int selStart = this.SelectionStart;
@@ -500,8 +542,9 @@ namespace Shapoco.Calctus.UI {
                     this.Text = this.Text.Remove(selStart - 1, 1);
                     setSelection(selStart - 1);
                 }
+                updateCandidates();
             }
-            else if (!this.ReadOnly && e.KeyCode == Keys.Delete) {
+            else if (!this.ReadOnly && e.Modifiers == Keys.None && e.KeyCode == Keys.Delete) {
                 // カーソルの後ろの文字を削除 or 選択範囲を削除
                 e.Handled = true;
                 int selStart = this.SelectionStart;
@@ -512,31 +555,48 @@ namespace Shapoco.Calctus.UI {
                 else if (selStart < this.Text.Length) {
                     this.Text = this.Text.Remove(selStart, 1);
                 }
+                updateCandidates();
+            }
+            else if (e.Modifiers == Keys.None && e.KeyCode == Keys.Escape) {
+                e.Handled = true;
+                hideCandidates();
             }
             else if (e.Modifiers == Keys.Control) {
+                e.SuppressKeyPress = true;
                 if (e.KeyCode == Keys.C) {
                     e.Handled = true;
+                    hideCandidates();
                     Copy();
                 }
                 else if (e.KeyCode == Keys.X) {
                     e.Handled = true;
+                    hideCandidates();
                     Cut();
                 }
                 else if (e.KeyCode == Keys.V) {
                     e.Handled = true;
+                    hideCandidates();
                     Paste();
                 }
                 else if (e.KeyCode == Keys.A) {
                     e.Handled = true;
+                    hideCandidates();
                     SelectAll();
                 }
                 else if (e.KeyCode == Keys.Z) {
                     e.Handled = true;
+                    hideCandidates();
                     Undo();
+                }
+                else if (e.KeyCode == Keys.Space) {
+                    e.Handled = true;
+                    showCandidates();
                 }
             }
             
             restartCursorBlink();
+
+            if (!e.Handled) base.OnKeyDown(e);
         }
 
         protected override void OnKeyUp(KeyEventArgs e) {
@@ -560,13 +620,30 @@ namespace Shapoco.Calctus.UI {
                 }
                 text = text.Insert(selStart, e.KeyChar.ToString());
 
-                // 閉じ括弧の補完
-                if (e.KeyChar == '(' && Settings.Instance.Input_AutoCloseBrackets) {
-                    text = text.Insert(selStart + 1, ")");
+                if (e.KeyChar == '(') {
+                    if (Settings.Instance.Input_AutoCloseBrackets) {
+                        // 閉じ括弧の補完
+                        text = text.Insert(selStart + 1, ")");
+                    }
                 }
 
                 this.Text = text;
                 setSelection(selStart + 1);
+
+                selStart = this.SelectionStart;
+                var prevChar = selStart >= 2 ? text[selStart - 2] : '\0';
+                if (!isIdChar(prevChar) && isFirstIdChar(e.KeyChar)) {
+                    // 識別子の先頭文字が入力されたら補完候補を表示する
+                    showCandidates();
+                }
+                else if (isIdChar(e.KeyChar)) {
+                    // 識別子の2文字目以降が表示されたら補完候補を更新する
+                    updateCandidates();
+                }
+                else {
+                    // 識別子の文字以外が表示されたら補間をキャンセルする
+                    hideCandidates();
+                }
             }
 
             restartCursorBlink();
@@ -684,11 +761,13 @@ namespace Shapoco.Calctus.UI {
         }
 
         protected override void OnLostFocus(EventArgs e) {
-            base.OnLostFocus(e);
+            // 補完候補キャンセル
+            hideCandidates();
             // カーソル点滅停止
             _cursorVisible = false;
             _timer.Tick -= _timer_Tick;
             this.Invalidate();
+            base.OnLostFocus(e);
         }
 
         // C#でIMEの入力を受けるユーザーコントロールの作成 - Qiita
@@ -793,6 +872,61 @@ namespace Shapoco.Calctus.UI {
         private void _timer_Tick(object sender, EventArgs e) {
             _cursorVisible = !_cursorVisible;
             this.Invalidate();
+        }
+
+        private bool isFirstIdChar(char c) => ('a' <= c && c <= 'z') || ('A' <= c && c <= 'Z') || c == '_';
+        private bool isIdChar(char c) => isFirstIdChar(c) || ('0' <= c && c <= '9');
+
+        private void showCandidates() {
+            if (_candProvider == null) return;
+            if (_candForm == null) {
+                _candForm = new CandidateForm(_candProvider);
+                _candForm.Visible = true;
+                _candForm.Font = new Font(Settings.Instance.Appearance_Font_Button_Name, Settings.Instance.Appearance_Font_Size, FontStyle.Regular);
+                _candForm.BackColor = Color.FromArgb(32, 32, 32);
+                _candForm.ForeColor = this.ForeColor;
+                selectCandKey();
+                var x = _candStart < _chars.Length ? (int)_chars[_candStart].X : 0;
+                _candForm.Location = this.PointToScreen(new Point(x, this.Height));
+                updateCandList();
+            }
+            else {
+                selectCandKey();
+                updateCandList();
+            }
+        }
+
+        private void updateCandidates() {
+            if (_candForm == null) return;
+            selectCandKey();
+            updateCandList();
+        }
+
+        private void hideCandidates() {
+            if (_candForm != null) {
+                _candForm.Dispose();
+                _candForm = null;
+            }
+        }
+
+        private void selectCandKey() {
+            var text = this.Text;
+            var selStart = this.SelectionStart;
+            var candStart = selStart;
+            var candEnd = selStart;
+            while (candStart > 0 && isIdChar(text[candStart - 1])) {
+                candStart--;
+            }
+            while (candEnd < text.Length && isIdChar(text[candEnd])) {
+                candEnd++;
+            }
+            _candStart = candStart;
+            _candEnd = candEnd;
+        }
+
+        private void updateCandList() {
+            if (_candForm == null) return;
+            _candForm.SetKey(this.Text.Substring(_candStart, _candEnd - _candStart));
         }
 
         private void relayoutChars() {

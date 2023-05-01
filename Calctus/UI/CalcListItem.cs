@@ -35,14 +35,15 @@ namespace Shapoco.Calctus.UI {
             this.RadixMode = owner.RadixMode;
             _ansBox.PlaceHolder = "?";
             _ansBox.ReadOnly = true;
-            _exprBox.KeyDown += box_PreviewKeyDown;
+            _exprBox.KeyDown += box_KeyDown;
             _exprBox.KeyUp += box_KeyUp;
             _exprBox.KeyPress += exprBox_KeyPress;
             _exprBox.TextChanged += exprBox_TextChanged;
             _exprBox.GotFocus += box_GotFocus;
             _exprBox.LostFocus += box_LostFocus;
             _exprBox.MouseUp += ctrl_MouseUp;
-            _ansBox.KeyDown += box_PreviewKeyDown;
+            _exprBox.CandidateProvider = owner;
+            _ansBox.KeyDown += box_KeyDown;
             _ansBox.GotFocus += box_GotFocus;
             _ansBox.LostFocus += box_LostFocus;
             _ansBox.MouseUp += ctrl_MouseUp;
@@ -231,7 +232,7 @@ namespace Shapoco.Calctus.UI {
             }
         }
 
-        private void box_PreviewKeyDown(object sender, KeyEventArgs e) {
+        private void box_KeyDown(object sender, KeyEventArgs e) {
             ItemKeyDown?.Invoke(this, e);
         }
 

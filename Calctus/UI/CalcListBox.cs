@@ -9,7 +9,7 @@ using Shapoco.Calctus.Model;
 using Shapoco.Calctus.Parser;
 
 namespace Shapoco.Calctus.UI {
-    class CalcListBox : ContainerControl {
+    class CalcListBox : ContainerControl, ICandidateProvider {
         public event EventHandler RadixModeChanged;
 
         private List<CalcListItem> _items = new List<CalcListItem>();
@@ -18,6 +18,8 @@ namespace Shapoco.Calctus.UI {
         private Panel _innerPanel = new Panel();
         private VScrollBar _scrollBar = new VScrollBar();
         private RadixMode _radixMode = RadixMode.Auto;
+
+        private Candidate[] _candidates = new Candidate[0];
 
         private ContextMenuStrip _ctxMenu = new ContextMenuStrip();
         private ToolStripMenuItem _cmenuTextCut = new ToolStripMenuItem("Cut Text");
@@ -255,7 +257,7 @@ namespace Shapoco.Calctus.UI {
             _items.Insert(index, item);
             _innerPanel.Controls.Add(item);
             item.ExpressionChanged += Item_ExpressionChanged;
-            item.ItemKeyDown += Item_PreviewKeyDown;
+            item.ItemKeyDown += Item_KeyDown;
             item.ItemKeyUp += Item_KeyUp;
             item.ItemGotFocus += Item_GotFocus;
             item.ItemMouseUp += Item_MouseUp;
@@ -263,7 +265,7 @@ namespace Shapoco.Calctus.UI {
 
         private void delete(CalcListItem item) {
             item.ExpressionChanged -= Item_ExpressionChanged;
-            item.ItemKeyDown -= Item_PreviewKeyDown;
+            item.ItemKeyDown -= Item_KeyDown;
             item.ItemKeyUp -= Item_KeyUp;
             item.ItemGotFocus -= Item_GotFocus;
             item.ItemMouseUp -= Item_MouseUp;
@@ -287,7 +289,7 @@ namespace Shapoco.Calctus.UI {
             recalc();
         }
 
-        private void Item_PreviewKeyDown(object sender, KeyEventArgs e) {
+        private void Item_KeyDown(object sender, KeyEventArgs e) {
             var item = (CalcListItem)sender;
             int index = _items.IndexOf(item);
             if (index < 0) return;
@@ -522,6 +524,20 @@ namespace Shapoco.Calctus.UI {
                     ctx.Undef("Ans", true);
                 }
             }
+
+            var list = new List<Candidate>();
+            foreach (var f in FuncDef.NativeFunctions) {
+                list.Add(new Candidate(f.Name, f.ToString(), "Embedded Function", Color.FromArgb(0, 255, 0)));
+            }
+            foreach (var v in ctx.EnumVars()) {
+                if (v.IsReadonly) {
+                    list.Add(new Candidate(v.Name.Text, v.Name.Text, "Constant", Color.FromArgb(255, 255, 0)));
+                }
+                else {
+                    list.Add(new Candidate(v.Name.Text, v.Name.Text, "User Defined Variable", Color.FromArgb(255, 255, 0)));
+                }
+            }
+            _candidates = list.OrderBy(p => p.Id).ToArray();
         }
 
         /// <summary>RPNコマンドを解釈して RpnCommandオブジェクトを生成する</summary>
@@ -576,7 +592,7 @@ namespace Shapoco.Calctus.UI {
             }
             else {
                 return null;
-            }            
+            }
         }
 
         private class RpnCommand {
@@ -591,6 +607,8 @@ namespace Shapoco.Calctus.UI {
                 Error = err;
             }
         }
+
+        public Candidate[] GetCandidates() => _candidates;
     }
 
 }
