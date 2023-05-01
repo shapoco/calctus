@@ -12,8 +12,35 @@ namespace Shapoco.Calctus.Model {
         public static real Pow(real a, real b) => (real)Math.Pow((double)a.Raw, (double)b.Raw);
         public static real Sqrt(real a) => (real)Math.Sqrt((double)a.Raw);
         public static real Log(real a) => (real)Math.Log((double)a.Raw);
-        public static real Log10(real a) => (real)Math.Log10((double)a.Raw);
-        
+
+        public static real Log10(real a) {
+            if (a <= 0) throw new ArgumentOutOfRangeException();
+            real ret = 0;
+            while (a >= 10) {
+                a /= 10;
+                ret++;
+            }
+            while (a < 1) {
+                a *= 10;
+                ret--;
+            }
+            return ret + (real)Math.Log10((double)a);
+        }
+
+        public static real Log2(real a) {
+            if (a <= 0) throw new ArgumentOutOfRangeException();
+            real ret = 0;
+            while (a >= 2) {
+                a /= 2;
+                ret++;
+            }
+            while (a < 1) {
+                a *= 2;
+                ret--;
+            }
+            return ret + (real)(Log(a) / Log(2));
+        }
+
         /// <summary>
         /// a が 0 の場合は 0 を返し、それ以外の場合は floor(log10(abs(a))) を返す。
         /// </summary>

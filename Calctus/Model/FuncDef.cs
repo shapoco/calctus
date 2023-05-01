@@ -49,9 +49,9 @@ namespace Shapoco.Calctus.Model {
         public static readonly FuncDef pow = new FuncDef("pow", 2, (e, a) => new RealVal(RMath.Pow(a[0].AsReal, a[1].AsReal), a[0].FormatHint), "power");
         public static readonly FuncDef sqrt = new FuncDef("sqrt", (e, a) => new RealVal(RMath.Sqrt(a[0].AsReal)), "square root");
         public static readonly FuncDef log = new FuncDef("log", (e, a) => new RealVal(RMath.Log(a[0].AsReal)), "logarithm");
-        public static readonly FuncDef log2 = new FuncDef("log2", (e, a) => new RealVal(RMath.Log(a[0].AsReal) / RMath.Log(2.0m)), "binary logarithm");
+        public static readonly FuncDef log2 = new FuncDef("log2", (e, a) => new RealVal(RMath.Log2(a[0].AsReal)), "binary logarithm");
         public static readonly FuncDef log10 = new FuncDef("log10", (e, a) => new RealVal(RMath.Log10(a[0].AsReal)), "common logarithm");
-        public static readonly FuncDef clog2 = new FuncDef("clog2", (e, a) => new RealVal(RMath.Ceiling(RMath.Log(a[0].AsReal) / RMath.Log(2.0m))).FormatInt(), "ceiling of binary logarithm");
+        public static readonly FuncDef clog2 = new FuncDef("clog2", (e, a) => new RealVal(RMath.Ceiling(RMath.Log2(a[0].AsReal))).FormatInt(), "ceiling of binary logarithm");
         public static readonly FuncDef clog10 = new FuncDef("clog10", (e, a) => new RealVal(RMath.Ceiling(RMath.Log10(a[0].AsReal))).FormatInt(), "ceiling of common logarithm");
 
         public static readonly FuncDef sin = new FuncDef("sin", (e, a) => new RealVal(RMath.Sin(a[0].AsReal)), "sine");
