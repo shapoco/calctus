@@ -7,6 +7,7 @@ using System.Threading.Tasks;
 namespace Shapoco.Calctus.Model {
     class Var {
         public readonly Token Name;
+        public readonly string Description;
         public readonly bool IsReadonly;
 
         private Val _value;
@@ -20,16 +21,18 @@ namespace Shapoco.Calctus.Model {
             }
         }
 
-        public Var(Token name, Val value, bool isReadonly) {
+        public Var(Token name, Val value, bool isReadonly, string desc) {
             this.Name = name;
             this.Value = value;
             this.IsReadonly = isReadonly;
+            this.Description = desc;
         }
 
-        public Var(Token name) {
+        public Var(Token name, string desc) {
             this.Name = name;
             this.Value = new RealVal(0);
             this.IsReadonly = false;
+            this.Description = desc;
         }
     }
 }

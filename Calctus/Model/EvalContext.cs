@@ -11,27 +11,27 @@ namespace Shapoco.Calctus.Model {
         private Dictionary<string, Var> _vars = new Dictionary<string, Var>();
         public readonly EvalSettings Settings = new EvalSettings();
 
-        private void AddConstantReal(string name, real value) {
-            _vars.Add(name, new Var(new Token(TokenType.Symbol, TextPosition.Empty, name), new RealVal(value), true));
+        private void AddConstantReal(string name, real value, string desc) {
+            _vars.Add(name, new Var(new Token(TokenType.Symbol, TextPosition.Empty, name), new RealVal(value), true, desc));
         }
 
-        private void AddConstantHex(string name, decimal value) {
-            _vars.Add(name, new Var(new Token(TokenType.Symbol, TextPosition.Empty, name), new RealVal((real)value).FormatHex(), true));
+        private void AddConstantHex(string name, decimal value, string desc) {
+            _vars.Add(name, new Var(new Token(TokenType.Symbol, TextPosition.Empty, name), new RealVal((real)value).FormatHex(), true, desc));
         }
 
         public EvalContext() {
-            this.AddConstantReal("PI", (real)Math.PI);
-            this.AddConstantReal("E", (real)Math.E);
-            this.AddConstantHex("INT_MIN", Int32.MinValue);
-            this.AddConstantHex("INT_MAX", Int32.MaxValue);
-            this.AddConstantHex("UINT_MIN", UInt32.MinValue);
-            this.AddConstantHex("UINT_MAX", UInt32.MaxValue);
-            this.AddConstantHex("LONG_MIN", Int64.MinValue);
-            this.AddConstantHex("LONG_MAX", Int64.MaxValue);
-            this.AddConstantHex("ULONG_MIN", UInt64.MinValue);
-            this.AddConstantHex("ULONG_MAX", UInt64.MaxValue);
-            this.AddConstantReal("DECIMAL_MIN", real.MinValue);
-            this.AddConstantReal("DECIMAL_MAX", real.MaxValue);
+            this.AddConstantReal("PI", (real)Math.PI, "circle ratio");
+            this.AddConstantReal("E", (real)Math.E, "base of natural logarithm");
+            this.AddConstantHex("INT_MIN", Int32.MinValue, "minimum value of 32 bit signed integer");
+            this.AddConstantHex("INT_MAX", Int32.MaxValue, "maximum value of 32 bit signed integer");
+            this.AddConstantHex("UINT_MIN", UInt32.MinValue, "minimum value of 32 bit unsigned integer");
+            this.AddConstantHex("UINT_MAX", UInt32.MaxValue, "maximum value of 32 bit unsigned integer");
+            this.AddConstantHex("LONG_MIN", Int64.MinValue, "minimum value of 64 bit signed integer");
+            this.AddConstantHex("LONG_MAX", Int64.MaxValue, "maximum value of 64 bit signed integer");
+            this.AddConstantHex("ULONG_MIN", UInt64.MinValue, "minimum value of 64 bit unsigned integer");
+            this.AddConstantHex("ULONG_MAX", UInt64.MaxValue, "maximum value of 64 bit unsigned integer");
+            this.AddConstantReal("DECIMAL_MIN", real.MinValue, "minimum value of Decimal");
+            this.AddConstantReal("DECIMAL_MAX", real.MaxValue, "maximum value of Decimal");
         }
 
         public Var Ref(Token name, bool allowCreate) {
@@ -39,7 +39,7 @@ namespace Shapoco.Calctus.Model {
                 return v;
             }
             else if (allowCreate) {
-                var newVar = new Var(name);
+                var newVar = new Var(name, "user-defined variable");
                 _vars.Add(name.Text, newVar);
                 return newVar;
             }

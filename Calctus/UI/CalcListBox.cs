@@ -527,15 +527,10 @@ namespace Shapoco.Calctus.UI {
 
             var list = new List<Candidate>();
             foreach (var f in FuncDef.NativeFunctions) {
-                list.Add(new Candidate(f.Name, f.ToString(), "Embedded Function", Color.FromArgb(0, 255, 0)));
+                list.Add(new Candidate(f.Name, f.ToString(), f.Description));
             }
             foreach (var v in ctx.EnumVars()) {
-                if (v.IsReadonly) {
-                    list.Add(new Candidate(v.Name.Text, v.Name.Text, "Constant", Color.FromArgb(255, 255, 0)));
-                }
-                else {
-                    list.Add(new Candidate(v.Name.Text, v.Name.Text, "User Defined Variable", Color.FromArgb(255, 255, 0)));
-                }
+                list.Add(new Candidate(v.Name.Text, v.Name.Text, v.Description));
             }
             _candidates = list.OrderBy(p => p.Id).ToArray();
         }

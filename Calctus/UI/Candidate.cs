@@ -10,13 +10,11 @@ namespace Shapoco.Calctus.UI {
         public readonly string Id;
         public readonly string Label;
         public readonly string Description;
-        public readonly Color Color;
 
-        public Candidate(string id, string label, string desc, Color color) {
+        public Candidate(string id, string label, string desc) {
             Id = id;
             Label = label;
             Description = desc;
-            Color = color;
         }
 
         public override string ToString() => Label;
