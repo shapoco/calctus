@@ -130,6 +130,7 @@ namespace Shapoco.Calctus.UI {
         }
 
         private void ConstAddButton_Click(object sender, EventArgs e) {
+            constList.SelectedIndices.Clear();
             addConst(new UserConstant("ID", "1", "user-defined constant")).Selected = true;
             constEditButton.PerformClick();
         }
