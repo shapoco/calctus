@@ -8,6 +8,8 @@ using Shapoco.Calctus.Model.Standard;
 
 namespace Shapoco.Calctus.Model {
     class FuncDef {
+        public const int Variadic = -1;
+
         public readonly string Name;
         public readonly int ArgCount;
         public readonly Func<EvalContext, Val[], Val> Call;
@@ -26,14 +28,14 @@ namespace Shapoco.Calctus.Model {
             var sb = new StringBuilder();
             sb.Append(Name);
             sb.Append('(');
-            if (ArgCount >= 0) {
+            if (ArgCount == Variadic) {
+                sb.Append("...");
+            }
+            else {
                 for (int i = 0; i < ArgCount; i++) {
                     if (i > 0) sb.Append(", ");
                     sb.Append((char)('a' + i));
                 }
-            }
-            else {
-                sb.Append("...");
             }
             sb.Append(')');
             return sb.ToString();
@@ -83,14 +85,14 @@ namespace Shapoco.Calctus.Model {
         public static readonly FuncDef gcd = new FuncDef("gcd", 2, (e, a) => new RealVal(RMath.Gcd(a[0].AsReal, a[1].AsReal), a[0].FormatHint), "greatest common divisor");
         public static readonly FuncDef lcm = new FuncDef("lcm", 2, (e, a) => new RealVal(RMath.Lcm(a[0].AsReal, a[1].AsReal), a[0].FormatHint), "least common multiple");
 
-        public static readonly FuncDef max = new FuncDef("max", -1, (e, a) => new RealVal(a.Max(p => p.AsReal), a[0].FormatHint), "maximum");
-        public static readonly FuncDef min = new FuncDef("min", -1, (e, a) => new RealVal(a.Min(p => p.AsReal), a[0].FormatHint), "minimum");
+        public static readonly FuncDef max = new FuncDef("max", Variadic, (e, a) => new RealVal(a.Max(p => p.AsReal), a[0].FormatHint), "maximum");
+        public static readonly FuncDef min = new FuncDef("min", Variadic, (e, a) => new RealVal(a.Min(p => p.AsReal), a[0].FormatHint), "minimum");
 
-        public static readonly FuncDef sum = new FuncDef("sum", -1, (e, a) => new RealVal(a.Sum(p => p.AsReal), a[0].FormatHint), "sum of arguments");
-        public static readonly FuncDef ave = new FuncDef("ave", -1, (e, a) => new RealVal(a.Average(p => p.AsReal), a[0].FormatHint), "arithmetic mean");
-        public static readonly FuncDef invsum = new FuncDef("invsum", -1, (e, a) => new RealVal(1m / a.Sum(p =>1m / p.AsReal), a[0].FormatHint), "inverse of the sum of the inverses");
-        public static readonly FuncDef harmean = new FuncDef("harmean", -1, (e, a) => new RealVal((real)a.Length / a.Sum(p => 1m / p.AsReal), a[0].FormatHint), "harmonic mean");
-        public static readonly FuncDef geomean = new FuncDef("geomean", -1, (e, a) => {
+        public static readonly FuncDef sum = new FuncDef("sum", Variadic, (e, a) => new RealVal(a.Sum(p => p.AsReal), a[0].FormatHint), "sum of arguments");
+        public static readonly FuncDef ave = new FuncDef("ave", Variadic, (e, a) => new RealVal(a.Average(p => p.AsReal), a[0].FormatHint), "arithmetic mean");
+        public static readonly FuncDef invsum = new FuncDef("invsum", Variadic, (e, a) => new RealVal(1m / a.Sum(p =>1m / p.AsReal), a[0].FormatHint), "inverse of the sum of the inverses");
+        public static readonly FuncDef harmean = new FuncDef("harmean", Variadic, (e, a) => new RealVal((real)a.Length / a.Sum(p => 1m / p.AsReal), a[0].FormatHint), "harmonic mean");
+        public static readonly FuncDef geomean = new FuncDef("geomean", Variadic, (e, a) => {
             var prod = (real)1;
             foreach (var p in a) prod *= p.AsReal;
             return new RealVal(RMath.Pow(prod, 1m / a.Length), a[0].FormatHint);
@@ -197,7 +199,7 @@ namespace Shapoco.Calctus.Model {
 
         /// <summary>指定された条件にマッチするネイティブ関数を返す</summary>
         public static FuncDef Match(Token tok, int numArgs) {
-            var f = NativeFunctions.FirstOrDefault(p => p.Name == tok.Text && (p.ArgCount == numArgs || p.ArgCount == -1));
+            var f = NativeFunctions.FirstOrDefault(p => p.Name == tok.Text && (p.ArgCount == numArgs || p.ArgCount == Variadic));
             if (f == null) {
                 throw new Shapoco.Calctus.Parser.SyntaxError(tok.Position, "function " + tok + "(" + numArgs + ") was not found.");
             }
