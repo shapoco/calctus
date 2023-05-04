@@ -7,7 +7,7 @@ using System.Threading.Tasks;
 
 namespace Shapoco.Calctus.Model.Syntax {
     class RealFormatter : NumberFormatter {
-        public RealFormatter(Regex regex, int groupIndex) : base(regex, groupIndex) { }
+        public RealFormatter() : base(new Regex(@"([1-9][0-9]*|0)\.[0-9]+([eE][+-]?[0-9]+)?"), 0) { }
 
         public override Val Parse(Match m) {
             System.Diagnostics.Debug.Assert(m.Groups[CaptureGroupIndex].Length > 0);
