@@ -295,9 +295,9 @@
             this.Input_AutoInputAns.AutoSize = true;
             this.Input_AutoInputAns.Location = new System.Drawing.Point(6, 40);
             this.Input_AutoInputAns.Name = "Input_AutoInputAns";
-            this.Input_AutoInputAns.Size = new System.Drawing.Size(113, 16);
+            this.Input_AutoInputAns.Size = new System.Drawing.Size(111, 16);
             this.Input_AutoInputAns.TabIndex = 1;
-            this.Input_AutoInputAns.Text = "Auto input \"Ans\"";
+            this.Input_AutoInputAns.Text = "Auto input \"ans\"";
             this.Input_AutoInputAns.UseVisualStyleBackColor = true;
             // 
             // Input_AutoCloseBrackets
