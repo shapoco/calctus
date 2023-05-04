@@ -225,7 +225,7 @@ namespace Shapoco.Calctus.UI {
             var allSelected = (box.SelectionStart == 0) && (box.SelectionLength == box.Text.Length);
             var s = Settings.Instance;
             if (s.Input_AutoInputAns && allSelected && _isFreshAnswer && _selectionCancelChars.Contains(e.KeyChar)) {
-                box.SelectedText = "Ans";
+                box.SelectedText = CalcListBox.LastAnsId;
                 box.SelectionStart = box.Text.Length;
                 box.SelectionLength = 0;
                 e.Handled = true;

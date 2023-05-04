@@ -10,6 +10,8 @@ using Shapoco.Calctus.Parser;
 
 namespace Shapoco.Calctus.UI {
     class CalcListBox : ContainerControl, ICandidateProvider {
+        public const string LastAnsId = "ans";
+
         public event EventHandler RadixModeChanged;
 
         private List<CalcListItem> _items = new List<CalcListItem>();
@@ -515,15 +517,17 @@ namespace Shapoco.Calctus.UI {
 
                         item.Answer = val.ToString(ctx);
                         item.Hint = "";
-                        ctx.Ref("Ans", true).Value = val;
+                        ctx.Ref(LastAnsId, true).Value = val;
                     }
                 }
                 catch (Exception ex) {
                     item.Answer = "";
                     item.Hint = "? " + ex.Message;
-                    ctx.Undef("Ans", true);
+                    ctx.Undef(LastAnsId, true);
                 }
             }
+
+            ctx.Undef(LastAnsId, true);
 
             var list = new List<Candidate>();
             foreach (var f in FuncDef.NativeFunctions) {
@@ -532,6 +536,7 @@ namespace Shapoco.Calctus.UI {
             foreach (var v in ctx.EnumVars()) {
                 list.Add(new Candidate(v.Name.Text, v.Name.Text, v.Description, false));
             }
+            list.Add(new Candidate(LastAnsId, LastAnsId, "last answer", false));
             _candidates = list.OrderBy(p => p.Id).ToArray();
         }
 
