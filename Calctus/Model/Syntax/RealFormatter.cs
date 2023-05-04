@@ -7,11 +7,7 @@ using System.Threading.Tasks;
 
 namespace Shapoco.Calctus.Model.Syntax {
     class RealFormatter : NumberFormatter {
-        public string Prefix;
-
-        public RealFormatter(string prefix, Regex regex, int groupIndex) : base(regex, groupIndex) {
-            this.Prefix = prefix;
-        }
+        public RealFormatter(Regex regex, int groupIndex) : base(regex, groupIndex) { }
 
         public override Val Parse(Match m) {
             System.Diagnostics.Debug.Assert(m.Groups[CaptureGroupIndex].Length > 0);
@@ -21,7 +17,7 @@ namespace Shapoco.Calctus.Model.Syntax {
 
         protected override string OnFormat(Val val, EvalContext e) {
             if (val is RealVal) {
-                return RealToString(val.AsReal, e);
+                return RealToString(val.AsReal, e, true);
             }
             else {
                 return base.OnFormat(val, e);

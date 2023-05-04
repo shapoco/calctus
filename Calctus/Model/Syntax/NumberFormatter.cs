@@ -18,10 +18,10 @@ namespace Shapoco.Calctus.Model.Syntax {
         public abstract Val Parse(Match m);
 
         public virtual string Format(Val val, EvalContext e) => OnFormat(val, e);
-        protected virtual string OnFormat(Val val, EvalContext e) => RealToString(val.AsReal, e);
+        protected virtual string OnFormat(Val val, EvalContext e) => RealToString(val.AsReal, e, true);
 
         public static readonly IntFormatter CStyleInt = new IntFormatter(10, "", new Regex(@"([1-9][0-9]*|0)([eE][+-]?[0-9]+)?"), 0 );
-        public static readonly RealFormatter CStyleReal = new RealFormatter("", new Regex(@"([1-9][0-9]*|0)\.[0-9]+([eE][+-]?[0-9]+)?"), 0);
+        public static readonly RealFormatter CStyleReal = new RealFormatter(new Regex(@"([1-9][0-9]*|0)\.[0-9]+([eE][+-]?[0-9]+)?"), 0);
         public static readonly IntFormatter CStyleHex = new IntFormatter(16, "0x", new Regex(@"0[xX]([0-9a-fA-F]+)"), 1);
         public static readonly IntFormatter CStyleOct = new IntFormatter(8, "0", new Regex(@"0([0-7]+)"), 1);
         public static readonly IntFormatter CStyleBin = new IntFormatter(2, "0b", new Regex(@"0[bB]([01]+)"), 1);
@@ -40,7 +40,7 @@ namespace Shapoco.Calctus.Model.Syntax {
             WebColor,
         };
 
-        public static string RealToString(real val, EvalContext e) {
+        public static string RealToString(real val, EvalContext e, bool allowENotation) {
             if (val == 0.0m) return "0.0";
 
             var s = e.Settings;
@@ -52,14 +52,14 @@ namespace Shapoco.Calctus.Model.Syntax {
             var decFormat = sbDecFormat.ToString();
 
             int exp = RMath.FLog10(val);
-            if (s.ENotationEnabled && exp >= s.ENotationExpPositiveMin) {
+            if (allowENotation && s.ENotationEnabled && exp >= s.ENotationExpPositiveMin) {
                 if (s.ENotationAlignment) {
                     exp = (int)Math.Floor((double)exp / 3) * 3;
                 }
                 var frac = val / RMath.Pow10(exp);
                 return frac.ToString(decFormat) + "e+" + exp;
             }
-            else if (s.ENotationEnabled && exp <= s.ENotationExpNegativeMax) {
+            else if (allowENotation && s.ENotationEnabled && exp <= s.ENotationExpNegativeMax) {
                 if (s.ENotationAlignment) {
                     exp = (int)Math.Floor((double)exp / 3) * 3;
                 }
