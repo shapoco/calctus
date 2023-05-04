@@ -89,7 +89,12 @@ namespace Shapoco.Calctus.Model {
         public static readonly FuncDef sum = new FuncDef("sum", -1, (e, a) => new RealVal(a.Sum(p => p.AsReal), a[0].FormatHint), "sum of arguments");
         public static readonly FuncDef ave = new FuncDef("ave", -1, (e, a) => new RealVal(a.Average(p => p.AsReal), a[0].FormatHint), "arithmetic mean");
         public static readonly FuncDef invsum = new FuncDef("invsum", -1, (e, a) => new RealVal(1m / a.Sum(p =>1m / p.AsReal), a[0].FormatHint), "inverse of the sum of the inverses");
-        public static readonly FuncDef harmsum = new FuncDef("harmean", -1, (e, a) => new RealVal((real)a.Length / a.Sum(p => 1m / p.AsReal), a[0].FormatHint), "harmonic mean");
+        public static readonly FuncDef harmean = new FuncDef("harmean", -1, (e, a) => new RealVal((real)a.Length / a.Sum(p => 1m / p.AsReal), a[0].FormatHint), "harmonic mean");
+        public static readonly FuncDef geomean = new FuncDef("geomean", -1, (e, a) => {
+            var prod = (real)1;
+            foreach (var p in a) prod *= p.AsReal;
+            return new RealVal(RMath.Pow(prod, 1m / a.Length), a[0].FormatHint);
+        }, "geometric mean");
 
         public static readonly FuncDef now = new FuncDef("now", 0, (e, a) => new RealVal(UnixTime.FromLocalTime(DateTime.Now)).FormatDateTime(), "now");
 
