@@ -108,6 +108,8 @@ namespace Shapoco.Calctus.UI {
                 foreach(var c in s.GetUserConstants()) {
                     addConst(c);
                 }
+                constDelButton.Enabled = false;
+                constEditButton.Enabled = false;
             }
             catch { }
         }
