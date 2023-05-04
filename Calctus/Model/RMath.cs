@@ -27,19 +27,7 @@ namespace Shapoco.Calctus.Model {
             return ret + (real)Math.Log10((double)a);
         }
 
-        public static real Log2(real a) {
-            if (a <= 0) throw new ArgumentOutOfRangeException();
-            real ret = 0;
-            while (a >= 2) {
-                a /= 2;
-                ret++;
-            }
-            while (a < 1) {
-                a *= 2;
-                ret--;
-            }
-            return ret + (real)(Log(a) / Log(2));
-        }
+        public static real Log2(real a) => (decimal)QMath.Log2((quad)(decimal)a);
 
         /// <summary>
         /// a が 0 の場合は 0 を返し、それ以外の場合は floor(log10(abs(a))) を返す。

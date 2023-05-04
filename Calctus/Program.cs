@@ -18,6 +18,9 @@ namespace Shapoco.Calctus
 #if DEBUG
             Model.Syntax.NumberFormatter.Test();
             Model.Standard.PreferredNumbers.Test();
+            Model.ufixed113.Test();
+            Model.quad.Test();
+            Model.QMath.Test();
 #endif
             Application.EnableVisualStyles();
             Application.SetCompatibleTextRenderingDefault(false);
