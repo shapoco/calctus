@@ -450,7 +450,7 @@ namespace Shapoco.Calctus.UI {
                     selStart = selEnd;
                 }
                 setSelection(selStart, selEnd);
-                
+
                 if (_candForm != null && (SelectionStart < _candStart || SelectionLength > 0)) {
                     hideCandidates();
                 }
@@ -499,11 +499,18 @@ namespace Shapoco.Calctus.UI {
             else if (e.Modifiers == Keys.None && (e.KeyCode == Keys.Tab || e.KeyCode == Keys.Return)) {
                 if (_candForm != null) {
                     e.Handled = true;
-                    var id = _candForm.SelectedId;
-                    if (!string.IsNullOrEmpty(id)) {
+                    var item = _candForm.SelectedItem;
+                    if (item != null) {
+                        var id = item.Id;
                         setSelection(_candStart, _candEnd);
-                        SelectedText = id;
-                        SelectionStart = _candStart + id.Length;
+                        if (item.IsFunction) {
+                            SelectedText = id + "()";
+                            SelectionStart = _candStart + id.Length + 1;
+                        }
+                        else {
+                            SelectedText = id;
+                            SelectionStart = _candStart + id.Length;
+                        }
                         hideCandidates();
                     }
                 }

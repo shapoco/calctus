@@ -527,10 +527,10 @@ namespace Shapoco.Calctus.UI {
 
             var list = new List<Candidate>();
             foreach (var f in FuncDef.NativeFunctions) {
-                list.Add(new Candidate(f.Name, f.ToString(), f.Description));
+                list.Add(new Candidate(f.Name, f.ToString(), f.Description, true));
             }
             foreach (var v in ctx.EnumVars()) {
-                list.Add(new Candidate(v.Name.Text, v.Name.Text, v.Description));
+                list.Add(new Candidate(v.Name.Text, v.Name.Text, v.Description, false));
             }
             _candidates = list.OrderBy(p => p.Id).ToArray();
         }

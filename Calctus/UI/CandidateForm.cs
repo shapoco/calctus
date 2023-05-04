@@ -71,13 +71,13 @@ namespace Shapoco.Calctus.UI {
             }
         }
 
-        public string SelectedId {
+        public Candidate SelectedItem {
             get {
-                if (_list.SelectedIndex >= 0) {
-                    return ((Candidate)_list.Items[_list.SelectedIndex]).Id;
+                if(_list.SelectedIndex >= 0) {
+                    return (Candidate)_list.Items[_list.SelectedIndex];
                 }
                 else {
-                    return "";
+                    return null;
                 }
             }
         }
@@ -100,6 +100,13 @@ namespace Shapoco.Calctus.UI {
             else {
                 _list.SelectedIndex = 0;
             }
+        }
+
+        protected override void OnFontChanged(EventArgs e) {
+            base.OnFontChanged(e);
+            int fontSize = (int)Font.Size;
+            Size = new Size(fontSize * 15, fontSize * 20);
+            _desc.Height = fontSize * 5;
         }
 
         protected override void OnBackColorChanged(EventArgs e) {
