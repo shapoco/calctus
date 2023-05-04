@@ -479,6 +479,14 @@ namespace Shapoco.Calctus.UI {
 
             // 設定を評価コンテキストに反映する
             var s = Settings.Instance;
+
+            foreach (var c in s.GetUserConstants()) {
+                try {
+                    var expr = Parser.Parser.Parse(c.ValueString);
+                    ctx.DefConst(c.Id, expr.Eval(ctx), c.Description);
+                }
+                catch { }
+            }
             ctx.Settings.DecimalLengthToDisplay = s.NumberFormat_Decimal_MaxLen;
             ctx.Settings.ENotationEnabled = s.NumberFormat_Exp_Enabled;
             ctx.Settings.ENotationExpPositiveMin = s.NumberFormat_Exp_PositiveMin;

@@ -4,6 +4,7 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 using System.Windows.Forms;
+using Shapoco.Calctus.Model;
 
 namespace Shapoco.Calctus {
     internal class Settings {
@@ -46,10 +47,43 @@ namespace Shapoco.Calctus {
         public int Appearance_Font_Size { get; set; } = 9;
         public bool Appearance_Font_Bold { get; set; } = false;
 
+        public string UserConstants { get; set; } = "";
+        public UserConstant[] GetUserConstants() {
+            var tsv = UserConstants;
+            var rows = tsv.Split('\n');
+            var list = new List<UserConstant>();
+            foreach (var row in rows) {
+                var cols = row.Split('\t');
+                if (cols.Length == 3) {
+                    for (int i = 0; i < cols.Length; i++) {
+                        cols[i] = cols[i].Replace(@"\t", "\t");
+                        cols[i] = cols[i].Replace(@"\n", "\n");
+                        cols[i] = cols[i].Replace(@"\b", @"\");
+                    }
+                    list.Add(new UserConstant(cols[0], cols[1], cols[2]));
+                }
+            }
+            return list.ToArray();
+        }
+        public void SetUserConstants(IEnumerable<UserConstant> consts) {
+            var sb = new StringBuilder();
+            foreach(var c in consts) {
+                var cols = new string[] { c.Id, c.ValueString, c.Description};
+                for (int i = 0; i < cols.Length; i++) {
+                    cols[i] = cols[i].Replace(@"\", @"\b");
+                    cols[i] = cols[i].Replace("\n", @"\n");
+                    cols[i] = cols[i].Replace("\t", @"\t");
+                }
+                sb.Append(string.Join("\t", cols) + '\n');
+            }
+            UserConstants = sb.ToString();
+        }
+
         public bool Window_RememberPosition { get; set; } = true;
         public int Window_X { get; set; } = 100;
         public int Window_Y { get; set; } = 100;
         public int Window_Width { get; set; } = 640;
         public int Window_Height { get; set; } = 480;
+
     }
 }

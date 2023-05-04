@@ -33,7 +33,7 @@ namespace Shapoco {
                 if (p.PropertyType.Equals(typeof(String))) {
                     // 文字列
                     var value = (string)p.GetValue(targetObject);
-                    value = value.Replace(@"\", @"\\");
+                    value = value.Replace(@"\", @"\b");
                     value = value.Replace("\r", @"\r");
                     value = value.Replace("\n", @"\n");
                     value = value.Replace("\0", @"\0");
@@ -92,7 +92,7 @@ namespace Shapoco {
                         valueStr = valueStr.Replace(@"\n", "\n");
                         valueStr = valueStr.Replace(@"\0", "\0");
                         valueStr = valueStr.Replace(@"\t", "\t");
-                        valueStr = valueStr.Replace(@"\\", @"\");
+                        valueStr = valueStr.Replace(@"\b", @"\");
                         p.SetValue(targetObject, valueStr);
                     }
                     else if (p.PropertyType.Equals(typeof(Boolean))) { p.SetValue(targetObject, Boolean.Parse(valueStr)); }

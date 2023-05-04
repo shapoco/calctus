@@ -41,6 +41,7 @@
             this.Hotkey_Enabled = new System.Windows.Forms.CheckBox();
             this.tabPage4 = new System.Windows.Forms.TabPage();
             this.groupBox3 = new System.Windows.Forms.GroupBox();
+            this.Input_AutoInputAns = new System.Windows.Forms.CheckBox();
             this.Input_AutoCloseBrackets = new System.Windows.Forms.CheckBox();
             this.tabPage2 = new System.Windows.Forms.TabPage();
             this.fontGroup = new System.Windows.Forms.GroupBox();
@@ -55,8 +56,15 @@
             this.groupBox2 = new System.Windows.Forms.GroupBox();
             this.NumberFormat_Decimal_MaxLen = new System.Windows.Forms.NumericUpDown();
             this.label6 = new System.Windows.Forms.Label();
+            this.tabPage5 = new System.Windows.Forms.TabPage();
+            this.constList = new System.Windows.Forms.ListView();
+            this.constAddButton = new System.Windows.Forms.Button();
+            this.constDelButton = new System.Windows.Forms.Button();
+            this.columnHeader2 = ((System.Windows.Forms.ColumnHeader)(new System.Windows.Forms.ColumnHeader()));
+            this.columnHeader3 = ((System.Windows.Forms.ColumnHeader)(new System.Windows.Forms.ColumnHeader()));
+            this.columnHeader4 = ((System.Windows.Forms.ColumnHeader)(new System.Windows.Forms.ColumnHeader()));
+            this.constEditButton = new System.Windows.Forms.Button();
             this.Hotkey_KeyCode = new Shapoco.Calctus.UI.KeyCodeBox();
-            this.Input_AutoInputAns = new System.Windows.Forms.CheckBox();
             this.eNoteGroup.SuspendLayout();
             ((System.ComponentModel.ISupportInitialize)(this.NumberFormat_Exp_NegativeMax)).BeginInit();
             ((System.ComponentModel.ISupportInitialize)(this.NumberFormat_Exp_PositiveMin)).BeginInit();
@@ -71,6 +79,7 @@
             this.tabPage1.SuspendLayout();
             this.groupBox2.SuspendLayout();
             ((System.ComponentModel.ISupportInitialize)(this.NumberFormat_Decimal_MaxLen)).BeginInit();
+            this.tabPage5.SuspendLayout();
             this.SuspendLayout();
             // 
             // closeButton
@@ -187,6 +196,7 @@
             this.tabControl.Controls.Add(this.tabPage3);
             this.tabControl.Controls.Add(this.tabPage4);
             this.tabControl.Controls.Add(this.tabPage2);
+            this.tabControl.Controls.Add(this.tabPage5);
             this.tabControl.Controls.Add(this.tabPage1);
             this.tabControl.Location = new System.Drawing.Point(12, 12);
             this.tabControl.Name = "tabControl";
@@ -279,6 +289,16 @@
             this.groupBox3.TabIndex = 0;
             this.groupBox3.TabStop = false;
             this.groupBox3.Text = "Auto Input";
+            // 
+            // Input_AutoInputAns
+            // 
+            this.Input_AutoInputAns.AutoSize = true;
+            this.Input_AutoInputAns.Location = new System.Drawing.Point(6, 40);
+            this.Input_AutoInputAns.Name = "Input_AutoInputAns";
+            this.Input_AutoInputAns.Size = new System.Drawing.Size(113, 16);
+            this.Input_AutoInputAns.TabIndex = 1;
+            this.Input_AutoInputAns.Text = "Auto input \"Ans\"";
+            this.Input_AutoInputAns.UseVisualStyleBackColor = true;
             // 
             // Input_AutoCloseBrackets
             // 
@@ -445,6 +465,77 @@
             this.label6.TabIndex = 0;
             this.label6.Text = "Max length of decimal place to display:";
             // 
+            // tabPage5
+            // 
+            this.tabPage5.Controls.Add(this.constEditButton);
+            this.tabPage5.Controls.Add(this.constDelButton);
+            this.tabPage5.Controls.Add(this.constAddButton);
+            this.tabPage5.Controls.Add(this.constList);
+            this.tabPage5.Location = new System.Drawing.Point(4, 22);
+            this.tabPage5.Name = "tabPage5";
+            this.tabPage5.Padding = new System.Windows.Forms.Padding(3);
+            this.tabPage5.Size = new System.Drawing.Size(309, 190);
+            this.tabPage5.TabIndex = 4;
+            this.tabPage5.Text = "Constants";
+            this.tabPage5.UseVisualStyleBackColor = true;
+            // 
+            // constList
+            // 
+            this.constList.Columns.AddRange(new System.Windows.Forms.ColumnHeader[] {
+            this.columnHeader2,
+            this.columnHeader3,
+            this.columnHeader4});
+            this.constList.FullRowSelect = true;
+            this.constList.HideSelection = false;
+            this.constList.Location = new System.Drawing.Point(6, 6);
+            this.constList.Name = "constList";
+            this.constList.Size = new System.Drawing.Size(297, 149);
+            this.constList.TabIndex = 0;
+            this.constList.UseCompatibleStateImageBehavior = false;
+            this.constList.View = System.Windows.Forms.View.Details;
+            // 
+            // constAddButton
+            // 
+            this.constAddButton.Location = new System.Drawing.Point(96, 161);
+            this.constAddButton.Name = "constAddButton";
+            this.constAddButton.Size = new System.Drawing.Size(65, 23);
+            this.constAddButton.TabIndex = 1;
+            this.constAddButton.Text = "Add";
+            this.constAddButton.UseVisualStyleBackColor = true;
+            // 
+            // constDelButton
+            // 
+            this.constDelButton.Location = new System.Drawing.Point(167, 161);
+            this.constDelButton.Name = "constDelButton";
+            this.constDelButton.Size = new System.Drawing.Size(65, 23);
+            this.constDelButton.TabIndex = 1;
+            this.constDelButton.Text = "Remove";
+            this.constDelButton.UseVisualStyleBackColor = true;
+            // 
+            // columnHeader2
+            // 
+            this.columnHeader2.Text = "ID";
+            this.columnHeader2.Width = 49;
+            // 
+            // columnHeader3
+            // 
+            this.columnHeader3.Text = "Value";
+            this.columnHeader3.Width = 63;
+            // 
+            // columnHeader4
+            // 
+            this.columnHeader4.Text = "Description";
+            this.columnHeader4.Width = 136;
+            // 
+            // constEditButton
+            // 
+            this.constEditButton.Location = new System.Drawing.Point(238, 161);
+            this.constEditButton.Name = "constEditButton";
+            this.constEditButton.Size = new System.Drawing.Size(65, 23);
+            this.constEditButton.TabIndex = 1;
+            this.constEditButton.Text = "Edit";
+            this.constEditButton.UseVisualStyleBackColor = true;
+            // 
             // Hotkey_KeyCode
             // 
             this.Hotkey_KeyCode.Alt = false;
@@ -457,16 +548,6 @@
             this.Hotkey_KeyCode.Size = new System.Drawing.Size(249, 19);
             this.Hotkey_KeyCode.TabIndex = 3;
             this.Hotkey_KeyCode.Win = false;
-            // 
-            // Input_AutoInputAns
-            // 
-            this.Input_AutoInputAns.AutoSize = true;
-            this.Input_AutoInputAns.Location = new System.Drawing.Point(6, 40);
-            this.Input_AutoInputAns.Name = "Input_AutoInputAns";
-            this.Input_AutoInputAns.Size = new System.Drawing.Size(113, 16);
-            this.Input_AutoInputAns.TabIndex = 1;
-            this.Input_AutoInputAns.Text = "Auto input \"Ans\"";
-            this.Input_AutoInputAns.UseVisualStyleBackColor = true;
             // 
             // SettingsDialog
             // 
@@ -503,6 +584,7 @@
             this.groupBox2.ResumeLayout(false);
             this.groupBox2.PerformLayout();
             ((System.ComponentModel.ISupportInitialize)(this.NumberFormat_Decimal_MaxLen)).EndInit();
+            this.tabPage5.ResumeLayout(false);
             this.ResumeLayout(false);
 
         }
@@ -542,5 +624,13 @@
         private System.Windows.Forms.GroupBox groupBox3;
         private System.Windows.Forms.CheckBox Input_AutoCloseBrackets;
         private System.Windows.Forms.CheckBox Input_AutoInputAns;
+        private System.Windows.Forms.TabPage tabPage5;
+        private System.Windows.Forms.Button constDelButton;
+        private System.Windows.Forms.Button constAddButton;
+        private System.Windows.Forms.ListView constList;
+        private System.Windows.Forms.ColumnHeader columnHeader2;
+        private System.Windows.Forms.ColumnHeader columnHeader3;
+        private System.Windows.Forms.ColumnHeader columnHeader4;
+        private System.Windows.Forms.Button constEditButton;
     }
 }

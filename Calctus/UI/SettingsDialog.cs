@@ -7,6 +7,7 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 using System.Windows.Forms;
+using Shapoco.Calctus.Model;
 
 namespace Shapoco.Calctus.UI {
     public partial class SettingsDialog : Form {
@@ -67,6 +68,12 @@ namespace Shapoco.Calctus.UI {
             Appearance_Font_Size.ValueChanged += (sender, e) => { s.Appearance_Font_Size = (int)((NumericUpDown)sender).Value; };
             Appearance_Font_Bold.CheckedChanged += (sender, e) => { s.Appearance_Font_Bold = ((CheckBox)sender).Checked; };
 
+            constList.SelectedIndexChanged += ConstList_SelectedIndexChanged;
+            constList.DoubleClick += ConstList_DoubleClick;
+            constAddButton.Click += ConstAddButton_Click;
+            constDelButton.Click += ConstDelButton_Click;
+            constEditButton.Click += ConstEditButton_Click;
+
             closeButton.Click += delegate { this.Close(); };
             this.FormClosed += SettingsDialog_FormClosed;
             this.Load += SettingsDialog_Load;
@@ -97,6 +104,10 @@ namespace Shapoco.Calctus.UI {
                 Appearance_Font_Expr_Name.Text = s.Appearance_Font_Expr_Name;
                 Appearance_Font_Size.Value = s.Appearance_Font_Size;
                 Appearance_Font_Bold.Checked = s.Appearance_Font_Bold;
+
+                foreach(var c in s.GetUserConstants()) {
+                    addConst(c);
+                }
             }
             catch { }
         }
@@ -105,7 +116,52 @@ namespace Shapoco.Calctus.UI {
             Shapoco.Windows.StartupShortcut.SetStartupRegistration(((CheckBox)sender).Checked);
         }
 
+        private void ConstList_SelectedIndexChanged(object sender, EventArgs e) {
+            var selected = (constList.SelectedItems.Count == 1);
+            constDelButton.Enabled = selected;
+            constEditButton.Enabled = selected;
+        }
+
+        private void ConstList_DoubleClick(object sender, EventArgs e) {
+            if (constList.SelectedItems.Count <= 0) return;
+            constEditButton.PerformClick();
+        }
+
+        private void ConstAddButton_Click(object sender, EventArgs e) {
+            addConst(new UserConstant("ID", "1", "user-defined constant")).Selected = true;
+            constEditButton.PerformClick();
+        }
+
+        private void ConstDelButton_Click(object sender, EventArgs e) {
+            if (constList.SelectedItems.Count <= 0) return;
+            constList.Items.Remove(constList.SelectedItems[0]);
+        }
+
+        private void ConstEditButton_Click(object sender, EventArgs e) {
+            if (constList.SelectedItems.Count <= 0) return;
+            var lvi = constList.SelectedItems[0];
+            var c = (UserConstant)lvi.Tag;
+            var dlg = new ConstEditForm();
+            dlg.Target = c;
+            dlg.ShowDialog();
+            lvi.Text = c.Id;
+            lvi.SubItems[1].Text = c.ValueString;
+            lvi.SubItems[2].Text = c.Description;
+        }
+
+        private ListViewItem addConst(UserConstant c) {
+            var lvi = new ListViewItem(new string[] { c.Id, c.ValueString, c.Description });
+            lvi.Tag = c;
+            constList.Items.Add(lvi);
+            return lvi;
+        }
+
         private void SettingsDialog_FormClosed(object sender, FormClosedEventArgs e) {
+            var list = new List<UserConstant>();
+            foreach(var item in constList.Items) {
+                list.Add((UserConstant)((ListViewItem)item).Tag);
+            }
+            Settings.Instance.SetUserConstants(list);
             Settings.Instance.Save();
         }
     }

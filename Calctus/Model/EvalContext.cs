@@ -11,12 +11,16 @@ namespace Shapoco.Calctus.Model {
         private Dictionary<string, Var> _vars = new Dictionary<string, Var>();
         public readonly EvalSettings Settings = new EvalSettings();
 
+        public void DefConst(string name, Val val, string desc) {
+            _vars.Add(name, new Var(new Token(TokenType.Symbol, TextPosition.Empty, name), val, true, desc));
+        }
+
         private void AddConstantReal(string name, real value, string desc) {
-            _vars.Add(name, new Var(new Token(TokenType.Symbol, TextPosition.Empty, name), new RealVal(value), true, desc));
+            DefConst(name, new RealVal(value), desc);
         }
 
         private void AddConstantHex(string name, decimal value, string desc) {
-            _vars.Add(name, new Var(new Token(TokenType.Symbol, TextPosition.Empty, name), new RealVal((real)value).FormatHex(), true, desc));
+            DefConst(name, new RealVal((real)value).FormatHex(), desc);
         }
 
         public EvalContext() {
