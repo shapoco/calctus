@@ -38,7 +38,8 @@ namespace Shapoco.Calctus.Model {
         public static readonly FuncDef hex = new FuncDef("hex", (e, a) => a[0].FormatHex(), "convert the value to hexdecimal representation");
         public static readonly FuncDef bin = new FuncDef("bin", (e, a) => a[0].FormatBin(), "convert the value to binary representation");
         public static readonly FuncDef oct = new FuncDef("oct", (e, a) => a[0].FormatOct(), "convert the value to octal representation");
-        public static readonly FuncDef si = new FuncDef("si", (e, a) => a[0].FormatSiPrefix(), "convert the value to Si prefix representation");
+        public static readonly FuncDef si = new FuncDef("si", (e, a) => a[0].FormatSiPrefix(), "convert the value to SI prefix representation");
+        public static readonly FuncDef bi = new FuncDef("bi", (e, a) => a[0].FormatBinaryPrefix(), "convert the value to binary prefix representation");
         public static readonly FuncDef char_1 = new FuncDef("char", (e, a) => a[0].FormatChar(), "convert the value to character representation");
         public static readonly FuncDef datetime = new FuncDef("datetime", (e, a) => a[0].FormatDateTime(), "convert the value to datetime representation");
         

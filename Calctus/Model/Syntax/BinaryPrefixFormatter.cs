@@ -7,25 +7,24 @@ using System.Threading.Tasks;
 using System.Text.RegularExpressions;
 
 namespace Shapoco.Calctus.Model.Syntax {
-    class SiPrefixFormatter : NumberFormatter {
-        private static readonly string Prefixes = "ryzafpnum_kMGTPEZYR";
-        private const int PrefixOffset = 9;
+    class BinaryPrefixFormatter : NumberFormatter {
+        private static readonly string Prefixes = "_kMGTPEZYR";
 
-        public SiPrefixFormatter() : base(new Regex(@"(([1-9][0-9]*|0)(\.[0-9]+)?)([" + Prefixes + "])"), 0) { }
+        public BinaryPrefixFormatter() : base(new Regex(@"(([1-9][0-9]*|0)(\.[0-9]+)?)([" + Prefixes + "])i"), 0) { }
 
         public override Val Parse(Match m) {
             var frac = decimal.Parse(m.Groups[1].Value, CultureInfo.InvariantCulture);
             var prefixIndex = Prefixes.IndexOf(m.Groups[4].Value);
-            var exp = (prefixIndex - PrefixOffset) * 3;
-            return new RealVal(frac * RMath.Pow10(exp) , new ValFormatHint(this));
+            var exp = prefixIndex * 10;
+            return new RealVal(frac * Math.Truncate((decimal)Math.Pow(2, exp)), new ValFormatHint(this));
         }
 
         protected override string OnFormat(Val val, EvalContext e) {
             if (val is RealVal) {
                 var r = val.AsReal;
-                int prefixIndex = PrefixOffset;
+                int prefixIndex = 0;
                 if (r != 0) {
-                    prefixIndex = (int)RMath.Floor(RMath.Log10(RMath.Abs(r)) / 3) + PrefixOffset;
+                    prefixIndex = (int)RMath.Floor(RMath.Log2(RMath.Abs(r)) / 10);
                 }
                 if (prefixIndex < 0) {
                     prefixIndex = 0;
@@ -33,13 +32,13 @@ namespace Shapoco.Calctus.Model.Syntax {
                 else if (prefixIndex >= Prefixes.Length) {
                     prefixIndex = Prefixes.Length - 1;
                 }
-                var exp = (prefixIndex - PrefixOffset) * 3;
-                var frac = r / RMath.Pow10(exp);
-                if (prefixIndex == PrefixOffset) {
+                var exp = prefixIndex * 10;
+                var frac = r / Math.Truncate((decimal)Math.Pow(2, exp));
+                if (prefixIndex == 0) {
                     return RealToString(frac, e, false);
                 }
                 else {
-                    return RealToString(frac, e, false) + Prefixes[prefixIndex];
+                    return RealToString(frac, e, false) + Prefixes[prefixIndex] + "i";
                 }
             }
             else {

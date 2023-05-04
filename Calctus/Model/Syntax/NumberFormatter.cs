@@ -26,7 +26,8 @@ namespace Shapoco.Calctus.Model.Syntax {
         public static readonly IntFormatter CStyleOct = new IntFormatter(8, "0", new Regex(@"0([0-7]+)"), 1);
         public static readonly IntFormatter CStyleBin = new IntFormatter(2, "0b", new Regex(@"0[bB]([01]+)"), 1);
         public static readonly CharFormatter CStyleChar = new CharFormatter();
-        public static readonly SiPrefixFormatter SiStyleReal = new SiPrefixFormatter();
+        public static readonly SiPrefixFormatter SiPrefixed = new SiPrefixFormatter();
+        public static readonly BinaryPrefixFormatter BinaryPrefixed = new BinaryPrefixFormatter();
         public static readonly DateTimeFormatter DateTime = new DateTimeFormatter();
         public static readonly WebColorFormatter WebColor = new WebColorFormatter();
 
@@ -37,7 +38,8 @@ namespace Shapoco.Calctus.Model.Syntax {
             CStyleOct, 
             CStyleBin,
             CStyleChar,
-            SiStyleReal,
+            SiPrefixed,
+            BinaryPrefixed,
             DateTime,
             WebColor,
         };
