@@ -9,15 +9,17 @@ namespace Shapoco.Calctus.Model.Syntax {
     class IntFormatter : NumberFormatter {
         public readonly int Radix;
         public string Prefix;
+        private int _captureGroupIndex;
 
-        public IntFormatter(int radix, string prefix, Regex regex, int groupIndex) : base(regex, groupIndex) {
+        public IntFormatter(int radix, string prefix, Regex regex, int groupIndex) : base(regex) {
             this.Radix = radix;
             this.Prefix = prefix;
+            this._captureGroupIndex = groupIndex;
         }
 
         public override Val Parse(Match m) {
-            System.Diagnostics.Debug.Assert(m.Groups[CaptureGroupIndex].Length > 0);
-            var tok = m.Groups[CaptureGroupIndex].Value;
+            System.Diagnostics.Debug.Assert(m.Groups[_captureGroupIndex].Length > 0);
+            var tok = m.Groups[_captureGroupIndex].Value;
             if (Radix == 10) {
                 return new RealVal(real.Parse(tok), new ValFormatHint(this));
             }

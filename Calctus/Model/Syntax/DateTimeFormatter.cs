@@ -8,11 +8,10 @@ using Shapoco.Calctus.Model.Standard;
 
 namespace Shapoco.Calctus.Model.Syntax {
     class DateTimeFormatter : NumberFormatter {
-        public DateTimeFormatter() : base(new Regex(@"#(\d+/\d+/\d+|\d+:\d+:\d+(\.\d+)?|\d+/\d+/\d+ \d+:\d+:\d+(\.\d+)?)#"), 1) { }
+        public DateTimeFormatter() : base(new Regex(@"#(\d+/\d+/\d+|\d+:\d+:\d+(\.\d+)?|\d+/\d+/\d+ \d+:\d+:\d+(\.\d+)?)#")) { }
 
         public override Val Parse(Match m) {
-            System.Diagnostics.Debug.Assert(m.Groups[CaptureGroupIndex].Length > 0);
-            var tok = m.Groups[CaptureGroupIndex].Value;
+            var tok = m.Groups[1].Value;
             var unixTime = UnixTime.FromString(tok);
             return new RealVal(unixTime, new ValFormatHint(this));
         }

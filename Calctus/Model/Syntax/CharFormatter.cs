@@ -7,11 +7,10 @@ using System.Threading.Tasks;
 
 namespace Shapoco.Calctus.Model.Syntax {
     class CharFormatter : NumberFormatter {
-        public CharFormatter() : base(new Regex("'([^'\\\\]|\\\\[abfnrtv\\\\\'0]|\\\\o[0-7]{3}|\\\\x[0-9a-fA-F]{2}|\\\\u[0-9a-fA-F]{4})'"), 1) { }
+        public CharFormatter() : base(new Regex("'([^'\\\\]|\\\\[abfnrtv\\\\\'0]|\\\\o[0-7]{3}|\\\\x[0-9a-fA-F]{2}|\\\\u[0-9a-fA-F]{4})'")) { }
 
         public override Val Parse(Match m) {
-            System.Diagnostics.Debug.Assert(m.Groups[CaptureGroupIndex].Length > 0);
-            var tok = m.Groups[CaptureGroupIndex].Value;
+            var tok = m.Groups[1].Value;
             char c;
             switch (tok) {
                 case "\\a": c = '\a'; break;

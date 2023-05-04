@@ -8,11 +8,10 @@ using Shapoco.Calctus.Model.Standard;
 
 namespace Shapoco.Calctus.Model.Syntax {
     class WebColorFormatter : NumberFormatter {
-        public WebColorFormatter() : base(new Regex(@"#([0-9a-fA-F]+)"), 1) { }
+        public WebColorFormatter() : base(new Regex(@"#([0-9a-fA-F]+)")) { }
 
         public override Val Parse(Match m) {
-            System.Diagnostics.Debug.Assert(m.Groups[CaptureGroupIndex].Length > 0);
-            var tok = m.Groups[CaptureGroupIndex].Value;
+            var tok = m.Groups[1].Value;
             if (tok.Length == 3) {
                 var rgb = ColorSpace.Rgb444ToRgb888(Convert.ToInt32(tok, 16));
                 return new RealVal(rgb, new ValFormatHint(this));

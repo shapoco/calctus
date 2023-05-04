@@ -8,11 +8,9 @@ using System.Threading.Tasks;
 namespace Shapoco.Calctus.Model.Syntax {
     abstract class NumberFormatter {
         public readonly Regex Pattern;
-        public readonly int CaptureGroupIndex;
 
-        public NumberFormatter(Regex ptn, int capIndex) {
+        public NumberFormatter(Regex ptn) {
             this.Pattern = ptn;
-            this.CaptureGroupIndex = capIndex;
         }
 
         public abstract Val Parse(Match m);

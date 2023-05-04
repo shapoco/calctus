@@ -70,7 +70,7 @@ namespace Shapoco.Calctus.Parser {
                 // リテラル
                 var f = _numberFormatters[capIndex];
                 var val = f.Parse(m);
-                tok = m.Groups[f.CaptureGroupIndex].Value;
+                tok = m.Value;
                 return new Token(TokenType.NumericLiteral, pos, tok, new NumberTokenHint(val));
             } else if (_tr.Pop(_wordRegexes, out tok)) {
                 // ワード
