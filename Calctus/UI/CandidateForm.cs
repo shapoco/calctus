@@ -28,16 +28,19 @@ namespace Shapoco.Calctus.UI {
             FormBorderStyle = FormBorderStyle.None;
             TopMost = true;
             Size = new Size(200, 200);
+            Padding = new Padding(1, 1, 1, 1);
+            DoubleBuffered = true;
 
             _list.Dock = DockStyle.Fill;
             _list.BorderStyle = BorderStyle.None;
             _list.IntegralHeight = false;
             _list.SelectedIndexChanged += _list_SelectedIndexChanged;
             Controls.Add(_list);
-
+            
             _desc.Dock = DockStyle.Bottom;
             _desc.AutoSize = false;
             _desc.Height = 50;
+            _desc.BackColor = Color.FromArgb(48, 48, 48);
             Controls.Add(_desc);
         }
 
@@ -107,6 +110,13 @@ namespace Shapoco.Calctus.UI {
         protected override void OnForeColorChanged(EventArgs e) {
             base.OnForeColorChanged(e);
             _list.ForeColor = this.ForeColor;
+        }
+
+        protected override void OnPaint(PaintEventArgs e) {
+            base.OnPaint(e);
+            var g = e.Graphics;
+            g.DrawRectangle(Pens.Gray, new Rectangle(0, 0, ClientSize.Width - 1, ClientSize.Height - 1));
+            g.DrawLine(Pens.Gray, 0, _list.Bottom + 10, ClientSize.Width, _list.Bottom - 10);
         }
 
         private void _list_SelectedIndexChanged(object sender, EventArgs e) {
