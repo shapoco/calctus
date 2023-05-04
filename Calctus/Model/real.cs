@@ -7,7 +7,7 @@ using System.Text.RegularExpressions;
 using System.Threading.Tasks;
 
 namespace Shapoco.Calctus.Model {
-    struct real {
+    struct real : IComparable<real> {
         public static readonly Regex NumberRegex = new Regex(@"^(-?\d+(\.\d+)?)([eE]([+\-]?\d+))?$");
         public static readonly real MaxValue = (real)decimal.MaxValue;
         public static readonly real MinValue = (real)decimal.MinValue;
@@ -53,6 +53,8 @@ namespace Shapoco.Calctus.Model {
         public override int GetHashCode() => decimal.GetBits(Raw)[0];
         public override string ToString() => Raw.ToString();
         public string ToString(string format) => Raw.ToString(format);
+
+        public int CompareTo(real other) => Raw.CompareTo(other.Raw);
 
         public static explicit operator double(real val) => (double)val.Raw;
         public static implicit operator decimal(real val) => val.Raw;

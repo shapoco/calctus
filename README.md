@@ -32,6 +32,8 @@ A calculator for Windows.
 |Hexadecimal|`0x7b`, `0x7B`|
 |Octadecimal|`0173`|
 |Binary|`0b1111011`|
+|SI Prefixed:new:|`123k`, `456u`|
+|Binary Prefixed:new:|`123ki`, `456Mi`|
 |Fraction:new:|`2:3`|
 |Character|`'A'`|
 |Date Time|`#2022/34/56 12:34:56#`|
@@ -61,10 +63,11 @@ A calculator for Windows.
 |Trigonometric|`sin(x)`, `cos(x)`, `tan(x)`,`asin(x)`, `acos(x)`, `atan(x)`, `atan2(y, x)`,`sinh(x)`, `cosh(x)`, `tanh(x)`|`Double`|
 |Round|`floor(x)`, `ceil(x)`, `trunc(x)`, `round(x)`|`Decimal`|
 |Absolute/Sign|`abs(x)`, `sign(x)`|`Decimal`|
-|Max/Min|`max(a, b)`, `min(a, b)`|`Decimal`|
+|Max/Min|`max(...)`, `min(...)`|`Decimal`|
+|Sum/Average:new:|`sum(...)`, `ave(...)`, `harmean(...)`, `invsum(...)`|`Decimal`|
 |GCD, LCM:new:|`gcd(a, b)`, `lcm(a, b)`|`Decimal`|
 |Fractions:new:|`frac(x)`, `frac(x,a)`, `frac(x,a,b)`, `real(x)`|`Decimal`|
-|Representation|`dec(x)`, `hex(x)`, `bin(x)`, `oct(x)`, `char(x)`, `datetime(x)`|`Decimal`|
+|Representation|`dec(x)`, `hex(x)`, `bin(x)`, `oct(x)`, `char(x)`, `si(x)`, `bi(x)`, `datetime(x)`|`Decimal`|
 |Date Time|`now()`, `fromyears(x)`, `fromdays(x)`, `fromhours(x)`, `fromminutes(x)`, `fromseconds(x)`, `toyears(x)`, `todays(x)`, `tohours(x)`, `tominutes(x)`, `toseconds(x)`|`Double`|
 |Color|`rgb(r,g,b)`, `rgb(rgb)`, `hsv2rgb(h,s,v)`, `hsv2rgb_r(h,s,v)`, `hsv2rgb_g(h,s,v)`, `hsv2rgb_b(h,s,v)`, `rgb2hsv_h(rgb)`, `rgb2hsv_s(rgb)`, `rgb2hsv_v(rgb)`, `hsl2rgb(h,s,l)`, `hsl2rgb_r(h,s,l)`, `hsl2rgb_g(h,s,l)`, `hsl2rgb_b(h,s,l)`, `rgb2hsl_h(rgb)`, `rgb2hsl_s(rgb)`, `rgb2hsl_l(rgb)`, `yuv2rgb(y,u,v)`, `yuv2rgb(yuv)`, `yuv2rgb_r(yuv)`, `yuv2rgb_g(yuv)`, `yuv2rgb_b(yuv)`, `rgb2yuv(r,g,b)`, `rgb2yuv(rgb)`, `rgb2yuv_y(rgb)`, `rgb2yuv_u(rgb)`, `rgb2yuv_v(rgb)`|`Decimal`|
 |E-series|Rounding to the E-series value: `eXfloor(x)`, `eXceil(x)`, `eXround(x)`<br>Calculation of voltage divider resistance: `eXratiol(x)`, `eXratioh(x)`<br> (`X`=`3`, `6`, `12`, `24`, `48`, `96`, `192`)|`Decimal`|
