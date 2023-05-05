@@ -197,7 +197,9 @@ namespace Shapoco.Calctus.UI {
         private void SettingsButton_Click(object sender, EventArgs e) {
             bool topMost = this.TopMost;
             this.TopMost = false;
-            new SettingsDialog().ShowDialog();
+            var dlg = new SettingsDialog();
+            dlg.ShowDialog();
+            dlg.Dispose();
             reloadSettings();
             this.TopMost = topMost;
         }

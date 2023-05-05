@@ -370,7 +370,7 @@ namespace Shapoco.Calctus.UI {
             }
         }
 
-        public void Paste(PasteOption opt = PasteOption.Default) {
+        public void Paste() {
             try {
                 if (this.ReadOnly || !Clipboard.ContainsText()) {
                     throw new InvalidOperationException();
@@ -380,9 +380,6 @@ namespace Shapoco.Calctus.UI {
                 clipText = clipText.Replace("\t", " ");
                 clipText = clipText.Replace("\r", "");
                 clipText = clipText.Replace("\n", " ");
-                if (opt.HasFlag(PasteOption.WithoutCommas)) {
-                    clipText = clipText.Replace(",", "");
-                }
                 this.SelectedText = clipText;
                 setSelection(selStart + clipText.Length);
             }

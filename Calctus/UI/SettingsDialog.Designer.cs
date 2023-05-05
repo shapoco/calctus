@@ -64,8 +64,8 @@
             this.columnHeader3 = ((System.Windows.Forms.ColumnHeader)(new System.Windows.Forms.ColumnHeader()));
             this.columnHeader4 = ((System.Windows.Forms.ColumnHeader)(new System.Windows.Forms.ColumnHeader()));
             this.constEditButton = new System.Windows.Forms.Button();
-            this.Hotkey_KeyCode = new Shapoco.Calctus.UI.KeyCodeBox();
             this.Input_IdAutoCompletion = new System.Windows.Forms.CheckBox();
+            this.Hotkey_KeyCode = new Shapoco.Calctus.UI.KeyCodeBox();
             this.eNoteGroup.SuspendLayout();
             ((System.ComponentModel.ISupportInitialize)(this.NumberFormat_Exp_NegativeMax)).BeginInit();
             ((System.ComponentModel.ISupportInitialize)(this.NumberFormat_Exp_PositiveMin)).BeginInit();
@@ -538,6 +538,16 @@
             this.constEditButton.Text = "Edit";
             this.constEditButton.UseVisualStyleBackColor = true;
             // 
+            // Input_IdAutoCompletion
+            // 
+            this.Input_IdAutoCompletion.AutoSize = true;
+            this.Input_IdAutoCompletion.Location = new System.Drawing.Point(6, 19);
+            this.Input_IdAutoCompletion.Name = "Input_IdAutoCompletion";
+            this.Input_IdAutoCompletion.Size = new System.Drawing.Size(154, 16);
+            this.Input_IdAutoCompletion.TabIndex = 0;
+            this.Input_IdAutoCompletion.Text = "Identifier auto completion";
+            this.Input_IdAutoCompletion.UseVisualStyleBackColor = true;
+            // 
             // Hotkey_KeyCode
             // 
             this.Hotkey_KeyCode.Alt = false;
@@ -550,16 +560,6 @@
             this.Hotkey_KeyCode.Size = new System.Drawing.Size(249, 19);
             this.Hotkey_KeyCode.TabIndex = 3;
             this.Hotkey_KeyCode.Win = false;
-            // 
-            // Input_IdAutoCompletion
-            // 
-            this.Input_IdAutoCompletion.AutoSize = true;
-            this.Input_IdAutoCompletion.Location = new System.Drawing.Point(6, 19);
-            this.Input_IdAutoCompletion.Name = "Input_IdAutoCompletion";
-            this.Input_IdAutoCompletion.Size = new System.Drawing.Size(154, 16);
-            this.Input_IdAutoCompletion.TabIndex = 0;
-            this.Input_IdAutoCompletion.Text = "Identifier auto completion";
-            this.Input_IdAutoCompletion.UseVisualStyleBackColor = true;
             // 
             // SettingsDialog
             // 
@@ -575,6 +575,7 @@
             this.MaximizeBox = false;
             this.MinimizeBox = false;
             this.Name = "SettingsDialog";
+            this.ShowInTaskbar = false;
             this.StartPosition = System.Windows.Forms.FormStartPosition.CenterScreen;
             this.Text = "Settings";
             this.eNoteGroup.ResumeLayout(false);

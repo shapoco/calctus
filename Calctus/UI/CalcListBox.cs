@@ -27,7 +27,7 @@ namespace Shapoco.Calctus.UI {
         private ToolStripMenuItem _cmenuTextCut = new ToolStripMenuItem("Cut Text");
         private ToolStripMenuItem _cmenuTextCopy = new ToolStripMenuItem("Copy Text");
         private ToolStripMenuItem _cmenuTextPaste = new ToolStripMenuItem("Paste Text");
-        private ToolStripMenuItem _cmenuTextPasteWithoutComma = new ToolStripMenuItem("Paste Text without Commas");
+        private ToolStripMenuItem _cmenuTextPasteWithOptions = new ToolStripMenuItem("Paste Text with Options...");
         private ToolStripMenuItem _cmenuTextDelete = new ToolStripMenuItem("Delete Text");
         private ToolStripSeparator _cmenuSep0 = new ToolStripSeparator();
         private ToolStripMenuItem _cmenuCopyAll = new ToolStripMenuItem("Copy All");
@@ -59,6 +59,7 @@ namespace Shapoco.Calctus.UI {
             _cmenuTextCut.ShortcutKeyDisplayString = "Ctrl+X";
             _cmenuTextCopy.ShortcutKeyDisplayString = "Ctrl+C";
             _cmenuTextPaste.ShortcutKeyDisplayString = "Ctrl+V";
+            _cmenuTextPasteWithOptions.ShortcutKeyDisplayString = "Ctrl+Shift+V";
             _cmenuCopyAll.ShortcutKeyDisplayString = "Ctrl+Shift+C";
             _cmenuMoveUp.ShortcutKeyDisplayString = "Ctrl+Shift+Up";
             _cmenuMoveDown.ShortcutKeyDisplayString = "Ctrl+Shift+Down";
@@ -69,7 +70,7 @@ namespace Shapoco.Calctus.UI {
             _cmenuTextCut.Click += (sender, e) => { this.SelectedItem?.OnCutText(); };
             _cmenuTextCopy.Click += (sender, e) => { this.SelectedItem?.OnCopyText(); };
             _cmenuTextPaste.Click += (sender, e) => { this.SelectedItem?.OnPasteText(); };
-            _cmenuTextPasteWithoutComma.Click += (sender, e) => { this.SelectedItem?.OnPasteText(PasteOption.WithoutCommas); };
+            _cmenuTextPasteWithOptions.Click += (sender, e) => { this.PasteWithOptions(); };
             _cmenuTextDelete.Click += (sender, e) => { this.SelectedItem?.OnDeleteText(); };
             _cmenuCopyAll.Click += (sender, e) => { this.CopyAll(); };
             _cmenuMoveUp.Click += (sender, e) => { this.ItemMoveUp(); };
@@ -82,7 +83,7 @@ namespace Shapoco.Calctus.UI {
                 _cmenuTextCut,
                 _cmenuTextCopy,
                 _cmenuTextPaste,
-                _cmenuTextPasteWithoutComma,
+                _cmenuTextPasteWithOptions,
                 _cmenuTextDelete,
                 _cmenuSep0,
                 _cmenuCopyAll,
@@ -128,6 +129,33 @@ namespace Shapoco.Calctus.UI {
                 }
                 RadixModeChanged?.Invoke(this, EventArgs.Empty);
             }
+        }
+
+        public void PasteWithOptions() {
+            int insertPos = SelectedIndex;
+            if (insertPos < 0) insertPos = _items.Count;
+
+            var dlg = new PasteOptionForm();
+            if (dlg.ShowDialog() == DialogResult.OK) {
+                var lines = dlg.TextWillBePasted.Split('\n');
+                for (int i = 0; i < lines.Length; i++) { 
+                    var line = lines[i].Replace("\r", "");
+                    var item = new CalcListItem(this);
+                    item.Expression = line;
+                    if (i == 0 && insertPos < _items.Count && string.IsNullOrEmpty(_items[insertPos].Expression)) {
+                        // 先頭行については挿入先の行が空行の場合はそこを置き換える
+                        _items[insertPos++].Expression = line;
+                    }
+                    else {
+                        insert(insertPos++, item);
+                    }
+                }
+                insert(insertPos, new CalcListItem(this));
+                performSelectedIndexChanged(insertPos);
+                recalc();
+                relayout();
+            }
+            dlg.Dispose();
         }
 
         public void CopyAll() {
@@ -243,6 +271,7 @@ namespace Shapoco.Calctus.UI {
                 recalc |= _selectedItem.IsRpnCommand(out _);
                 _selectedItem.OnDeselected();
             }
+            newIndex = Math.Min(_items.Count - 1, newIndex);
             _selectedIndex = newIndex;
             if (newIndex >= 0) {
                 _selectedItem = _items[_selectedIndex];
@@ -371,6 +400,10 @@ namespace Shapoco.Calctus.UI {
             else if (e.KeyCode == Keys.C && e.Modifiers == (Keys.Control | Keys.Shift)) {
                 e.Handled = true;
                 CopyAll();
+            }
+            else if (e.KeyCode == Keys.V && e.Modifiers == (Keys.Control | Keys.Shift)) {
+                e.Handled = true;
+                PasteWithOptions();
             }
             else if (e.KeyCode == Keys.Delete && e.Modifiers == Keys.Shift) {
                 e.Handled = true;

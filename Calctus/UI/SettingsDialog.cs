@@ -149,6 +149,7 @@ namespace Shapoco.Calctus.UI {
             var dlg = new ConstEditForm();
             dlg.Target = c;
             dlg.ShowDialog();
+            dlg.Dispose();
             lvi.Text = c.Id;
             lvi.SubItems[1].Text = c.ValueString;
             lvi.SubItems[2].Text = c.Description;

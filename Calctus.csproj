@@ -127,6 +127,12 @@
       <DependentUpon>MainForm.cs</DependentUpon>
     </Compile>
     <Compile Include="Calctus\Program.cs" />
+    <Compile Include="Calctus\UI\PasteOptionForm.cs">
+      <SubType>Form</SubType>
+    </Compile>
+    <Compile Include="Calctus\UI\PasteOptionForm.Designer.cs">
+      <DependentUpon>PasteOptionForm.cs</DependentUpon>
+    </Compile>
     <Compile Include="Calctus\UI\SettingsDialog.cs">
       <SubType>Form</SubType>
     </Compile>
@@ -144,6 +150,9 @@
     </EmbeddedResource>
     <EmbeddedResource Include="Calctus\UI\MainForm.resx">
       <DependentUpon>MainForm.cs</DependentUpon>
+    </EmbeddedResource>
+    <EmbeddedResource Include="Calctus\UI\PasteOptionForm.resx">
+      <DependentUpon>PasteOptionForm.cs</DependentUpon>
     </EmbeddedResource>
     <EmbeddedResource Include="Calctus\UI\SettingsDialog.resx">
       <DependentUpon>SettingsDialog.cs</DependentUpon>
