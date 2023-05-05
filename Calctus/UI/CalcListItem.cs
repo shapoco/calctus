@@ -57,6 +57,16 @@ namespace Shapoco.Calctus.UI {
             this.Controls.Add(_equal);
         }
 
+        protected override void Dispose(bool disposing) {
+            base.Dispose(disposing);
+            if (disposing) {
+                Controls.Clear();
+                _exprBox.Dispose();
+                _ansBox.Dispose();
+                _equal.Dispose();
+            }
+        }
+
         public CalcListItem(CalcListBox owner, CalcListItem prevItem) : this(owner) {
             this.RadixMode = prevItem.RadixMode;
             _exprBox.Text = prevItem.Answer;

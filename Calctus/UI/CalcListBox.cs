@@ -273,6 +273,7 @@ namespace Shapoco.Calctus.UI {
             item.ItemMouseUp -= Item_MouseUp;
             _innerPanel.Controls.Remove(item);
             _items.Remove(item);
+            item.Dispose();
         }
 
         private void Item_GotFocus(object sender, EventArgs e) {

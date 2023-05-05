@@ -126,6 +126,14 @@ namespace Shapoco.Calctus.UI {
             g.DrawLine(Pens.Gray, 0, _list.Bottom + 10, ClientSize.Width, _list.Bottom - 10);
         }
 
+        protected override void Dispose(bool disposing) {
+            base.Dispose(disposing);
+            if (disposing) {
+                _list.Dispose();
+                _desc.Dispose();
+            }
+        }
+
         private void _list_SelectedIndexChanged(object sender, EventArgs e) {
             if (_list.SelectedIndex >= 0) {
                 var c = (Candidate)_list.Items[_list.SelectedIndex];

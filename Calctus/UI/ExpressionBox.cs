@@ -511,8 +511,8 @@ namespace Shapoco.Calctus.UI {
                             SelectedText = id;
                             SelectionStart = _candStart + id.Length;
                         }
-                        hideCandidates();
                     }
+                    hideCandidates();
                 }
             }
             else if (e.KeyCode == Keys.Home) {
