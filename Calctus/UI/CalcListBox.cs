@@ -27,6 +27,7 @@ namespace Shapoco.Calctus.UI {
         private ToolStripMenuItem _cmenuTextCut = new ToolStripMenuItem("Cut Text");
         private ToolStripMenuItem _cmenuTextCopy = new ToolStripMenuItem("Copy Text");
         private ToolStripMenuItem _cmenuTextPaste = new ToolStripMenuItem("Paste Text");
+        private ToolStripMenuItem _cmenuTextPasteWithoutComma = new ToolStripMenuItem("Paste Text without Commas");
         private ToolStripMenuItem _cmenuTextDelete = new ToolStripMenuItem("Delete Text");
         private ToolStripSeparator _cmenuSep0 = new ToolStripSeparator();
         private ToolStripMenuItem _cmenuCopyAll = new ToolStripMenuItem("Copy All");
@@ -68,6 +69,7 @@ namespace Shapoco.Calctus.UI {
             _cmenuTextCut.Click += (sender, e) => { this.SelectedItem?.OnCutText(); };
             _cmenuTextCopy.Click += (sender, e) => { this.SelectedItem?.OnCopyText(); };
             _cmenuTextPaste.Click += (sender, e) => { this.SelectedItem?.OnPasteText(); };
+            _cmenuTextPasteWithoutComma.Click += (sender, e) => { this.SelectedItem?.OnPasteText(PasteOption.WithoutCommas); };
             _cmenuTextDelete.Click += (sender, e) => { this.SelectedItem?.OnDeleteText(); };
             _cmenuCopyAll.Click += (sender, e) => { this.CopyAll(); };
             _cmenuMoveUp.Click += (sender, e) => { this.ItemMoveUp(); };
@@ -80,6 +82,7 @@ namespace Shapoco.Calctus.UI {
                 _cmenuTextCut,
                 _cmenuTextCopy,
                 _cmenuTextPaste,
+                _cmenuTextPasteWithoutComma,
                 _cmenuTextDelete,
                 _cmenuSep0,
                 _cmenuCopyAll,

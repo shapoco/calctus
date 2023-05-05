@@ -128,9 +128,9 @@ namespace Shapoco.Calctus.UI {
             }
         }
 
-        public void OnPasteText() {
+        public void OnPasteText(PasteOption opt = PasteOption.Default) {
             if (_exprBox.Focused) {
-                _exprBox.Paste();
+                _exprBox.Paste(opt);
             }
         }
 

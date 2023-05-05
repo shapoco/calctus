@@ -40,6 +40,7 @@ namespace Shapoco.Calctus.UI {
                 s.HotKey_KeyCode = kcb.KeyCode;
             };
 
+            Input_IdAutoCompletion.CheckedChanged += (sender, e) => { s.Input_IdAutoCompletion = ((CheckBox)sender).Checked; };
             Input_AutoCloseBrackets.CheckedChanged += (sender, e) => { s.Input_AutoCloseBrackets = ((CheckBox)sender).Checked; };
             Input_AutoInputAns.CheckedChanged += (sender, e) => { s.Input_AutoInputAns = ((CheckBox)sender).Checked; };
 
@@ -90,6 +91,7 @@ namespace Shapoco.Calctus.UI {
                 Hotkey_Enabled.Checked = s.Hotkey_Enabled;
                 Hotkey_KeyCode.SetKeyCode(s.HotKey_Win, s.HotKey_Alt, s.HotKey_Ctrl, s.HotKey_Shift, s.HotKey_KeyCode);
 
+                Input_IdAutoCompletion.Checked = s.Input_IdAutoCompletion;
                 Input_AutoCloseBrackets.Checked = s.Input_AutoCloseBrackets;
                 Input_AutoInputAns.Checked = s.Input_AutoInputAns;
 

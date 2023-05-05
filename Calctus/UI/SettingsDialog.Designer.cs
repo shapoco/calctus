@@ -65,6 +65,7 @@
             this.columnHeader4 = ((System.Windows.Forms.ColumnHeader)(new System.Windows.Forms.ColumnHeader()));
             this.constEditButton = new System.Windows.Forms.Button();
             this.Hotkey_KeyCode = new Shapoco.Calctus.UI.KeyCodeBox();
+            this.Input_IdAutoCompletion = new System.Windows.Forms.CheckBox();
             this.eNoteGroup.SuspendLayout();
             ((System.ComponentModel.ISupportInitialize)(this.NumberFormat_Exp_NegativeMax)).BeginInit();
             ((System.ComponentModel.ISupportInitialize)(this.NumberFormat_Exp_PositiveMin)).BeginInit();
@@ -282,10 +283,11 @@
             // groupBox3
             // 
             this.groupBox3.Controls.Add(this.Input_AutoInputAns);
+            this.groupBox3.Controls.Add(this.Input_IdAutoCompletion);
             this.groupBox3.Controls.Add(this.Input_AutoCloseBrackets);
             this.groupBox3.Location = new System.Drawing.Point(6, 6);
             this.groupBox3.Name = "groupBox3";
-            this.groupBox3.Size = new System.Drawing.Size(297, 66);
+            this.groupBox3.Size = new System.Drawing.Size(297, 89);
             this.groupBox3.TabIndex = 0;
             this.groupBox3.TabStop = false;
             this.groupBox3.Text = "Auto Input";
@@ -293,7 +295,7 @@
             // Input_AutoInputAns
             // 
             this.Input_AutoInputAns.AutoSize = true;
-            this.Input_AutoInputAns.Location = new System.Drawing.Point(6, 40);
+            this.Input_AutoInputAns.Location = new System.Drawing.Point(6, 63);
             this.Input_AutoInputAns.Name = "Input_AutoInputAns";
             this.Input_AutoInputAns.Size = new System.Drawing.Size(111, 16);
             this.Input_AutoInputAns.TabIndex = 1;
@@ -303,7 +305,7 @@
             // Input_AutoCloseBrackets
             // 
             this.Input_AutoCloseBrackets.AutoSize = true;
-            this.Input_AutoCloseBrackets.Location = new System.Drawing.Point(6, 18);
+            this.Input_AutoCloseBrackets.Location = new System.Drawing.Point(6, 41);
             this.Input_AutoCloseBrackets.Name = "Input_AutoCloseBrackets";
             this.Input_AutoCloseBrackets.Size = new System.Drawing.Size(127, 16);
             this.Input_AutoCloseBrackets.TabIndex = 0;
@@ -549,6 +551,16 @@
             this.Hotkey_KeyCode.TabIndex = 3;
             this.Hotkey_KeyCode.Win = false;
             // 
+            // Input_IdAutoCompletion
+            // 
+            this.Input_IdAutoCompletion.AutoSize = true;
+            this.Input_IdAutoCompletion.Location = new System.Drawing.Point(6, 19);
+            this.Input_IdAutoCompletion.Name = "Input_IdAutoCompletion";
+            this.Input_IdAutoCompletion.Size = new System.Drawing.Size(154, 16);
+            this.Input_IdAutoCompletion.TabIndex = 0;
+            this.Input_IdAutoCompletion.Text = "Identifier auto completion";
+            this.Input_IdAutoCompletion.UseVisualStyleBackColor = true;
+            // 
             // SettingsDialog
             // 
             this.AcceptButton = this.closeButton;
@@ -632,5 +644,6 @@
         private System.Windows.Forms.ColumnHeader columnHeader3;
         private System.Windows.Forms.ColumnHeader columnHeader4;
         private System.Windows.Forms.Button constEditButton;
+        private System.Windows.Forms.CheckBox Input_IdAutoCompletion;
     }
 }

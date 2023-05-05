@@ -370,7 +370,7 @@ namespace Shapoco.Calctus.UI {
             }
         }
 
-        public void Paste() {
+        public void Paste(PasteOption opt = PasteOption.Default) {
             try {
                 if (this.ReadOnly || !Clipboard.ContainsText()) {
                     throw new InvalidOperationException();
@@ -380,6 +380,9 @@ namespace Shapoco.Calctus.UI {
                 clipText = clipText.Replace("\t", " ");
                 clipText = clipText.Replace("\r", "");
                 clipText = clipText.Replace("\n", " ");
+                if (opt.HasFlag(PasteOption.WithoutCommas)) {
+                    clipText = clipText.Replace(",", "");
+                }
                 this.SelectedText = clipText;
                 setSelection(selStart + clipText.Length);
             }
@@ -596,8 +599,10 @@ namespace Shapoco.Calctus.UI {
                     Undo();
                 }
                 else if (e.KeyCode == Keys.Space) {
-                    e.Handled = true;
-                    showCandidates();
+                    if (Settings.Instance.Input_IdAutoCompletion) {
+                        e.Handled = true;
+                        showCandidates();
+                    }
                 }
             }
             
@@ -640,8 +645,10 @@ namespace Shapoco.Calctus.UI {
                 selStart = this.SelectionStart;
                 var prevChar = selStart >= 2 ? text[selStart - 2] : '\0';
                 if (!isIdChar(prevChar) && isFirstIdChar(e.KeyChar)) {
-                    // 識別子の先頭文字が入力されたら補完候補を表示する
-                    showCandidates();
+                    if (Settings.Instance.Input_IdAutoCompletion) {
+                        // 識別子の先頭文字が入力されたら補完候補を表示する
+                        showCandidates();
+                    }
                 }
                 else if (isIdChar(e.KeyChar)) {
                     // 識別子の2文字目以降が表示されたら補完候補を更新する
