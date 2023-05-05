@@ -47,7 +47,7 @@
             this.sourceText.Name = "sourceText";
             this.sourceText.ScrollBars = System.Windows.Forms.ScrollBars.Both;
             this.sourceText.Size = new System.Drawing.Size(280, 291);
-            this.sourceText.TabIndex = 0;
+            this.sourceText.TabIndex = 13;
             // 
             // textWillBePasted
             // 
@@ -57,7 +57,7 @@
             this.textWillBePasted.Name = "textWillBePasted";
             this.textWillBePasted.ScrollBars = System.Windows.Forms.ScrollBars.Both;
             this.textWillBePasted.Size = new System.Drawing.Size(280, 291);
-            this.textWillBePasted.TabIndex = 0;
+            this.textWillBePasted.TabIndex = 1;
             // 
             // label1
             // 
@@ -65,7 +65,7 @@
             this.label1.Location = new System.Drawing.Point(10, 9);
             this.label1.Name = "label1";
             this.label1.Size = new System.Drawing.Size(82, 12);
-            this.label1.TabIndex = 1;
+            this.label1.TabIndex = 12;
             this.label1.Text = "Clipboard Text:";
             // 
             // label2
@@ -74,7 +74,7 @@
             this.label2.Location = new System.Drawing.Point(302, 9);
             this.label2.Name = "label2";
             this.label2.Size = new System.Drawing.Size(105, 12);
-            this.label2.TabIndex = 1;
+            this.label2.TabIndex = 0;
             this.label2.Text = "Text will be pasted:";
             // 
             // cancelButton
@@ -83,7 +83,7 @@
             this.cancelButton.Location = new System.Drawing.Point(504, 379);
             this.cancelButton.Name = "cancelButton";
             this.cancelButton.Size = new System.Drawing.Size(80, 25);
-            this.cancelButton.TabIndex = 3;
+            this.cancelButton.TabIndex = 11;
             this.cancelButton.Text = "Cancel";
             this.cancelButton.UseVisualStyleBackColor = true;
             // 
@@ -93,7 +93,7 @@
             this.okButton.Location = new System.Drawing.Point(418, 379);
             this.okButton.Name = "okButton";
             this.okButton.Size = new System.Drawing.Size(80, 25);
-            this.okButton.TabIndex = 3;
+            this.okButton.TabIndex = 10;
             this.okButton.Text = "OK";
             this.okButton.UseVisualStyleBackColor = true;
             // 
@@ -102,7 +102,7 @@
             this.removeCommaButton.Location = new System.Drawing.Point(304, 322);
             this.removeCommaButton.Name = "removeCommaButton";
             this.removeCommaButton.Size = new System.Drawing.Size(125, 23);
-            this.removeCommaButton.TabIndex = 3;
+            this.removeCommaButton.TabIndex = 8;
             this.removeCommaButton.Text = "Remove Commas";
             this.removeCommaButton.UseVisualStyleBackColor = true;
             // 
@@ -111,7 +111,7 @@
             this.removeRightHandsButton.Location = new System.Drawing.Point(435, 322);
             this.removeRightHandsButton.Name = "removeRightHandsButton";
             this.removeRightHandsButton.Size = new System.Drawing.Size(149, 23);
-            this.removeRightHandsButton.TabIndex = 3;
+            this.removeRightHandsButton.TabIndex = 9;
             this.removeRightHandsButton.Text = "Remove Right-hands";
             this.removeRightHandsButton.UseVisualStyleBackColor = true;
             // 
@@ -120,7 +120,7 @@
             this.columnNumberText.Location = new System.Drawing.Point(115, 349);
             this.columnNumberText.Name = "columnNumberText";
             this.columnNumberText.Size = new System.Drawing.Size(33, 19);
-            this.columnNumberText.TabIndex = 4;
+            this.columnNumberText.TabIndex = 5;
             this.columnNumberText.Text = "1";
             // 
             // selectColumnButton
@@ -128,7 +128,7 @@
             this.selectColumnButton.Location = new System.Drawing.Point(186, 347);
             this.selectColumnButton.Name = "selectColumnButton";
             this.selectColumnButton.Size = new System.Drawing.Size(106, 23);
-            this.selectColumnButton.TabIndex = 3;
+            this.selectColumnButton.TabIndex = 7;
             this.selectColumnButton.Text = "Select Column";
             this.selectColumnButton.UseVisualStyleBackColor = true;
             // 
@@ -138,7 +138,7 @@
             this.numColumnsLabel.Location = new System.Drawing.Point(154, 352);
             this.numColumnsLabel.Name = "numColumnsLabel";
             this.numColumnsLabel.Size = new System.Drawing.Size(21, 12);
-            this.numColumnsLabel.TabIndex = 5;
+            this.numColumnsLabel.TabIndex = 6;
             this.numColumnsLabel.Text = "/ n";
             // 
             // label3
@@ -147,7 +147,7 @@
             this.label3.Location = new System.Drawing.Point(12, 327);
             this.label3.Name = "label3";
             this.label3.Size = new System.Drawing.Size(95, 12);
-            this.label3.TabIndex = 5;
+            this.label3.TabIndex = 2;
             this.label3.Text = "Column Delimiter:";
             // 
             // columnDelimiterText
@@ -155,7 +155,7 @@
             this.columnDelimiterText.Location = new System.Drawing.Point(115, 324);
             this.columnDelimiterText.Name = "columnDelimiterText";
             this.columnDelimiterText.Size = new System.Drawing.Size(33, 19);
-            this.columnDelimiterText.TabIndex = 4;
+            this.columnDelimiterText.TabIndex = 3;
             // 
             // label4
             // 
@@ -163,7 +163,7 @@
             this.label4.Location = new System.Drawing.Point(12, 352);
             this.label4.Name = "label4";
             this.label4.Size = new System.Drawing.Size(76, 12);
-            this.label4.TabIndex = 5;
+            this.label4.TabIndex = 4;
             this.label4.Text = "Column Index:";
             // 
             // PasteOptionForm
