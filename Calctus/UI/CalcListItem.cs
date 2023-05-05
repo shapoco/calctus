@@ -60,7 +60,6 @@ namespace Shapoco.Calctus.UI {
         protected override void Dispose(bool disposing) {
             base.Dispose(disposing);
             if (disposing) {
-                Controls.Clear();
                 _exprBox.Dispose();
                 _ansBox.Dispose();
                 _equal.Dispose();
