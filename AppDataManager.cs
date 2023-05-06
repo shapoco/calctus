@@ -32,12 +32,7 @@ namespace Shapoco {
             foreach (var p in targetObject.GetType().GetProperties()) {
                 if (p.PropertyType.Equals(typeof(String))) {
                     // 文字列
-                    var value = (string)p.GetValue(targetObject);
-                    value = value.Replace(@"\", @"\b");
-                    value = value.Replace("\r", @"\r");
-                    value = value.Replace("\n", @"\n");
-                    value = value.Replace("\0", @"\0");
-                    value = value.Replace("\t", @"\t");
+                    var value = EscapeValue((string)p.GetValue(targetObject));
                     sb.AppendLine(p.Name + "=\"" + value + "\"");
                 }
                 else if (p.PropertyType.IsPrimitive || p.PropertyType.IsEnum || p.PropertyType.IsValueType) {
@@ -87,12 +82,7 @@ namespace Shapoco {
                         // 文字列型
                         // "～" の形式でないものは無視
                         if (!valueStr.StartsWith("\"") || !valueStr.EndsWith("\"")) continue;
-                        valueStr = valueStr.Substring(1, valueStr.Length - 2); // "～"の中身を取り出す
-                        valueStr = valueStr.Replace(@"\r", "\r");
-                        valueStr = valueStr.Replace(@"\n", "\n");
-                        valueStr = valueStr.Replace(@"\0", "\0");
-                        valueStr = valueStr.Replace(@"\t", "\t");
-                        valueStr = valueStr.Replace(@"\b", @"\");
+                        valueStr = UnescapeValue(valueStr.Substring(1, valueStr.Length - 2)); // "～"の中身を取り出す
                         p.SetValue(targetObject, valueStr);
                     }
                     else if (p.PropertyType.Equals(typeof(Boolean))) { p.SetValue(targetObject, Boolean.Parse(valueStr)); }
@@ -118,6 +108,52 @@ namespace Shapoco {
                 }
             }
 
+        }
+
+        public static string EscapeValue(string src) {
+            var sb = new StringBuilder();
+            int n = src.Length;
+            for (int i = 0; i < n; i++) {
+                char c = src[i];
+                switch (c) {
+                    case '\r': sb.Append(@"\r"); break;
+                    case '\n': sb.Append(@"\n"); break;
+                    case '\0': sb.Append(@"\0"); break;
+                    case '\t': sb.Append(@"\t"); break;
+                    case '\\': sb.Append(@"\\"); break;
+                    case '"': sb.Append("\\\""); break;
+                    default: sb.Append(c); break;
+                }
+            }
+            return sb.ToString();
+        }
+
+        public static string UnescapeValue(string src) {
+            var sb = new StringBuilder();
+            int n = src.Length;
+            bool escaped = false;
+            for (int i = 0; i < n; i++) {
+                char c = src[i];
+                if (escaped) {
+                    switch (c) {
+                        case 'r': sb.Append('\r'); break;
+                        case 'n': sb.Append('\n'); break;
+                        case '0': sb.Append('\0'); break;
+                        case 't': sb.Append('\t'); break;
+                        case '\\': sb.Append('\\'); break;
+                        case '"': sb.Append('"'); break;
+                        default: sb.Append('\\').Append(c); break;
+                    }
+                    escaped = false;
+                }
+                else if (c == '\\') {
+                    escaped = true;
+                }
+                else {
+                    sb.Append(c);
+                }
+            }
+            return sb.ToString();
         }
 
     }

@@ -57,9 +57,7 @@ namespace Shapoco.Calctus {
                 var cols = row.Split('\t');
                 if (cols.Length == 3) {
                     for (int i = 0; i < cols.Length; i++) {
-                        cols[i] = cols[i].Replace(@"\t", "\t");
-                        cols[i] = cols[i].Replace(@"\n", "\n");
-                        cols[i] = cols[i].Replace(@"\b", @"\");
+                        cols[i] = AppDataManager.UnescapeValue(cols[i]);
                     }
                     list.Add(new UserConstant(cols[0], cols[1], cols[2]));
                 }
@@ -68,12 +66,10 @@ namespace Shapoco.Calctus {
         }
         public void SetUserConstants(IEnumerable<UserConstant> consts) {
             var sb = new StringBuilder();
-            foreach(var c in consts) {
-                var cols = new string[] { c.Id, c.ValueString, c.Description};
+            foreach (var c in consts) {
+                var cols = new string[] { c.Id, c.ValueString, c.Description };
                 for (int i = 0; i < cols.Length; i++) {
-                    cols[i] = cols[i].Replace(@"\", @"\b");
-                    cols[i] = cols[i].Replace("\n", @"\n");
-                    cols[i] = cols[i].Replace("\t", @"\t");
+                    cols[i] = AppDataManager.EscapeValue(cols[i]);
                 }
                 sb.Append(string.Join("\t", cols) + '\n');
             }
