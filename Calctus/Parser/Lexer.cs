@@ -72,9 +72,16 @@ namespace Shapoco.Calctus.Parser {
                 var val = f.Parse(m);
                 tok = m.Value;
                 return new Token(TokenType.NumericLiteral, pos, tok, new NumberTokenHint(val));
-            } else if (_tr.Pop(_wordRegexes, out tok)) {
-                // ワード
-                return new Token(TokenType.Word, pos, tok);
+            }
+            else if (_tr.Pop(_wordRegexes, out tok)) {
+                if (tok == BoolVal.TrueKeyword || tok == BoolVal.FalseKeyword) {
+                    // 真偽値
+                    return new Token(TokenType.BoolLiteral, pos, tok);
+                }
+                else {
+                    // ワード
+                    return new Token(TokenType.Word, pos, tok);
+                }
             }
             else if (_tr.Pop(SymbolRule, out tok)) {
                 // 記号

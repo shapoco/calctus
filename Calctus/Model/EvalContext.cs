@@ -10,6 +10,19 @@ namespace Shapoco.Calctus.Model {
     class EvalContext {
         private Dictionary<string, Var> _vars = new Dictionary<string, Var>();
         public readonly EvalSettings Settings = new EvalSettings();
+        private bool _recalcRequested = false;
+        private bool _highlightRequested = false;
+        private bool _beepRequested = false;
+
+        public bool RecalcRequested => _recalcRequested;
+        public void RequestRecalc() { _recalcRequested = true; }
+
+        public bool HighlightRequested => _highlightRequested;
+        public void RequestHighlight() {  _highlightRequested = true; }
+        public void ResetHighlight() { _highlightRequested = false; }
+
+        public bool BeepRequested => _beepRequested;
+        public void RequestBeep() { _beepRequested = true; }
 
         public void DefConst(string name, Val val, string desc) {
             _vars.Add(name, new Var(new Token(TokenType.Symbol, TextPosition.Empty, name), val, true, desc));

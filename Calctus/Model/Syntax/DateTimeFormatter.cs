@@ -12,7 +12,7 @@ namespace Shapoco.Calctus.Model.Syntax {
 
         public override Val Parse(Match m) {
             var tok = m.Groups[1].Value;
-            var unixTime = UnixTime.FromString(tok);
+            var unixTime = UnixTime.FromLocalTime(System.DateTime.Parse(tok));
             return new RealVal(unixTime, new ValFormatHint(this));
         }
 
@@ -28,8 +28,10 @@ namespace Shapoco.Calctus.Model.Syntax {
             }
             else {
                 // Unix Time からローカル時刻に変換
-                return "#" + UnixTime.ToString(fval) + "#";
+                return ToString(UnixTime.ToLocalTime(fval));
             }
         }
+
+        public static string ToString(DateTime t) => "#" + t.ToString("yyyy/MM/dd HH:mm:ss") + "#";
     }
 }

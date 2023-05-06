@@ -192,6 +192,7 @@
             this.MinimizeBox = false;
             this.Name = "PasteOptionForm";
             this.ShowInTaskbar = false;
+            this.StartPosition = System.Windows.Forms.FormStartPosition.CenterScreen;
             this.Text = "Paste Options";
             this.ResumeLayout(false);
             this.PerformLayout();

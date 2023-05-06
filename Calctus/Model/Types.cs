@@ -7,6 +7,7 @@ using System.Threading.Tasks;
 namespace Shapoco.Calctus.Model {
     enum TokenType {
         NumericLiteral,
+        BoolLiteral,
         Symbol,
         Word,
         Eos

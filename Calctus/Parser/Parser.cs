@@ -67,6 +67,9 @@ namespace Shapoco.Calctus.Parser {
             else if (ReadIf(TokenType.NumericLiteral, out tok)) {
                 return new Number(tok);
             }
+            else if (ReadIf(TokenType.BoolLiteral, out tok)) {
+                return new BoolLiteral(tok);
+            }
             else if (ReadIf(TokenType.Symbol, out tok)) {
                 return new UnaryOp(Operand(), tok);
             }

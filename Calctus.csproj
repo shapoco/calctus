@@ -53,6 +53,7 @@
   <ItemGroup>
     <Compile Include="AppDataManager.cs" />
     <Compile Include="Calctus\Assert.cs" />
+    <Compile Include="Calctus\Model\BoolVal.cs" />
     <Compile Include="Calctus\Model\EvalSettings.cs" />
     <Compile Include="Calctus\Model\QMath.cs" />
     <Compile Include="Calctus\Model\quad.cs" />
@@ -109,6 +110,12 @@
     <Compile Include="Calctus\UI\ConstEditForm.Designer.cs">
       <DependentUpon>ConstEditForm.cs</DependentUpon>
     </Compile>
+    <Compile Include="Calctus\UI\CreateTimerForm.cs">
+      <SubType>Form</SubType>
+    </Compile>
+    <Compile Include="Calctus\UI\CreateTimerForm.Designer.cs">
+      <DependentUpon>CreateTimerForm.cs</DependentUpon>
+    </Compile>
     <Compile Include="Calctus\UI\FlatButton.cs">
       <SubType>Component</SubType>
     </Compile>
@@ -148,6 +155,9 @@
     <EmbeddedResource Include="Calctus\UI\ConstEditForm.resx">
       <DependentUpon>ConstEditForm.cs</DependentUpon>
     </EmbeddedResource>
+    <EmbeddedResource Include="Calctus\UI\CreateTimerForm.resx">
+      <DependentUpon>CreateTimerForm.cs</DependentUpon>
+    </EmbeddedResource>
     <EmbeddedResource Include="Calctus\UI\MainForm.resx">
       <DependentUpon>MainForm.cs</DependentUpon>
     </EmbeddedResource>
@@ -182,6 +192,13 @@
   </ItemGroup>
   <ItemGroup>
     <Content Include="icon.ico" />
+    <None Include="Resources\ToolIcon_Timer.png" />
+    <None Include="Resources\ToolIcon_Paste.png" />
+    <None Include="Resources\ToolIcon_MoveUp.png" />
+    <None Include="Resources\ToolIcon_MoveDown.png" />
+    <None Include="Resources\ToolIcon_Insert.png" />
+    <None Include="Resources\ToolIcon_Delete.png" />
+    <None Include="Resources\ToolIcon_Copy.png" />
     <None Include="Resources\ToolIcon_TopMostOn.png" />
     <None Include="Resources\ToolIcon_TopMostOff.png" />
     <None Include="Resources\ToolIcon_TopMost.png" />

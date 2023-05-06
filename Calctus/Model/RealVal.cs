@@ -36,6 +36,9 @@ namespace Shapoco.Calctus.Model {
         protected override Val OnIDiv(EvalContext e, Val b) => new RealVal(RMath.Truncate(_raw / b.AsReal), FormatHint);
         protected override Val OnMod(EvalContext e, Val b) => new RealVal(_raw % b.AsReal, FormatHint);
 
+        protected override Val OnGrater(EvalContext ctx, Val b) => new BoolVal(AsReal > b.AsReal);
+        protected override Val OnEqual(EvalContext ctx, Val b) => new BoolVal(AsReal == b.AsReal);
+
         protected override Val OnLogicShiftL(EvalContext e, Val b) => new RealVal(this.AsLong << b.AsInt, FormatHint);
         protected override Val OnLogicShiftR(EvalContext e, Val b) => new RealVal((UInt64)this.AsLong >> b.AsInt, FormatHint);
         protected override Val OnArithShiftL(EvalContext e, Val b) {
@@ -50,6 +53,10 @@ namespace Shapoco.Calctus.Model {
         protected override Val OnBitXor(EvalContext e, Val b) => new RealVal(this.AsLong ^ b.AsLong, FormatHint);
         protected override Val OnBitOr(EvalContext e, Val b) => new RealVal(this.AsLong | b.AsLong, FormatHint);
 
+        protected override Val OnLogicNot(EvalContext ctx) => throw new InvalidOperationException();
+        protected override Val OnLogicAnd(EvalContext ctx, Val b) => throw new InvalidOperationException();
+        protected override Val OnLogicOr(EvalContext ctx, Val b) => throw new InvalidOperationException();
+
         protected override Val OnFormat(ValFormatHint fmt) => new RealVal(_raw, fmt);
 
         protected override RealVal OnAsRealVal() => new RealVal((real)Raw, FormatHint);
@@ -58,6 +65,7 @@ namespace Shapoco.Calctus.Model {
         public override double AsDouble => (double)_raw;
         public override long AsLong => (long)_raw; // todo: 丸め/切り捨ての明示は不要？
         public override int AsInt => (int)_raw; // todo: 丸め/切り捨ての明示は不要？
+        public override bool AsBool => throw new InvalidCastException();
 
         public override string ToString(EvalContext e) => FormatHint.Formatter.Format(this, e);
         //public static implicit operator double(RealVal val) => val.AsDouble();

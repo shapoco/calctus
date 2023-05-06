@@ -35,6 +35,7 @@ namespace Shapoco.Calctus.Model {
         public abstract double AsDouble { get; }
         public abstract long AsLong { get; }
         public abstract int AsInt { get; }
+        public abstract bool AsBool { get; }
 
         //public static implicit operator Val(double val) => new RealVal(val);
         //public static implicit operator double(Val val) => val.AsDouble();
@@ -71,12 +72,11 @@ namespace Shapoco.Calctus.Model {
         public Val UnaryPlus(EvalContext ctx) => OnUnaryPlus(ctx).Format(FormatHint);
         public Val ArithInv(EvalContext ctx) => OnAtirhInv(ctx).Format(FormatHint);
         public Val BitNot(EvalContext ctx) => OnBitNot(ctx).Format(FormatHint);
+        public Val LogicNot(EvalContext ctx) => OnLogicNot(ctx).Format(FormatHint);
         protected abstract Val OnUnaryPlus(EvalContext ctx);
         protected abstract Val OnAtirhInv(EvalContext ctx);
         protected abstract Val OnBitNot(EvalContext ctx);
-        //public static Val operator +(Val a) => a.UnaryPlus();
-        //public static Val operator -(Val a) => a.ArithInv();
-        //public static Val operator ~(Val a) => a.BitNot();
+        protected abstract Val OnLogicNot(EvalContext ctx);
 
         // 算術演算
         // 右項に精度を合わせるため UpConvert する
@@ -92,11 +92,6 @@ namespace Shapoco.Calctus.Model {
         protected abstract Val OnDiv(EvalContext ctx, Val b);
         protected abstract Val OnIDiv(EvalContext ctx, Val b);
         protected abstract Val OnMod(EvalContext ctx, Val b);
-        //public static Val operator +(Val a, Val b) => a.Add(b);
-        //public static Val operator -(Val a, Val b) => a.Sub(b);
-        //public static Val operator *(Val a, Val b) => a.Mul(b);
-        //public static Val operator /(Val a, Val b) => a.Div(b);
-        //public static Val operator %(Val a, Val b) => a.Mod(b);
 
         // シフト演算
         // 右項と型を合わせる必要無いので UpConvert しない
@@ -108,9 +103,22 @@ namespace Shapoco.Calctus.Model {
         protected abstract Val OnLogicShiftR(EvalContext ctx, Val b);
         protected abstract Val OnArithShiftL(EvalContext ctx, Val b);
         protected abstract Val OnArithShiftR(EvalContext ctx, Val b);
-        // 論理シフトと算術シフトが紛らわしいので演算子オーバーロードはしない
-        //public static Val operator <<(Val a, int b) => a.LogicShiftL(b);
-        //public static Val operator >>(Val a, int b) => a.ArithShiftR(b);
+
+        // 比較演算
+        public Val Grater(EvalContext ctx, Val b) => UpConvert(ctx, b).OnGrater(ctx, b).Format(FormatHint);
+        public Val Less(EvalContext ctx, Val b) => b.UpConvert(ctx, this).OnGrater(ctx, this).Format(FormatHint);
+        public Val Equal(EvalContext ctx, Val b) => UpConvert(ctx, b).OnEqual(ctx, b).Format(FormatHint);
+        public Val GraterEqual(EvalContext ctx, Val b) {
+            var a = UpConvert(ctx, b);
+            return a.OnGrater(ctx, b).OnLogicOr(ctx, a.OnEqual(ctx, b)).Format(FormatHint);
+        }
+        public Val LessEqual(EvalContext ctx, Val b) {
+            b = b.UpConvert(ctx, this);
+            return b.OnGrater(ctx, this).OnLogicOr(ctx, b.OnEqual(ctx, this)).Format(FormatHint);
+        }
+        public Val NotEqual(EvalContext ctx, Val b) => UpConvert(ctx, b).OnEqual(ctx, b).OnLogicNot(ctx).Format(FormatHint);
+        protected abstract Val OnGrater(EvalContext ctx, Val b);
+        protected abstract Val OnEqual(EvalContext ctx, Val b);
 
         // ビット演算
         public Val BitAnd(EvalContext ctx, Val b) => this.UpConvert(ctx, b).OnBitAnd(ctx, b).Format(FormatHint);
@@ -119,15 +127,12 @@ namespace Shapoco.Calctus.Model {
         protected abstract Val OnBitAnd(EvalContext ctx, Val b);
         protected abstract Val OnBitXor(EvalContext ctx, Val b);
         protected abstract Val OnBitOr(EvalContext ctx, Val b);
-        //public static Val operator &(Val a, Val b) => a.BitAnd(b);
-        //public static Val operator ^(Val a, Val b) => a.BitXor(b);
-        //public static Val operator |(Val a, Val b) => a.BitOr(b);
 
         // 論理演算
-        //public Val LogicAnd(Val b) => this.UpConvert(b)._add(b).Format(FormatHint);
-        //public Val LogicOr(Val b) => this.UpConvert(b)._add(b).Format(FormatHint);
-        //protected abstract Val _logicand(Val b);
-        //protected abstract Val _logicor(Val b);
+        public Val LogicAnd(EvalContext ctx, Val b) => this.UpConvert(ctx, b).OnLogicAnd(ctx, b).Format(FormatHint);
+        public Val LogicOr(EvalContext ctx, Val b) => this.UpConvert(ctx, b).OnLogicOr(ctx, b).Format(FormatHint);
+        protected abstract Val OnLogicAnd(EvalContext ctx, Val b);
+        protected abstract Val OnLogicOr(EvalContext ctx, Val b);
 
         public override string ToString() => this.ToString(new EvalContext());
         public abstract string ToString(EvalContext e);

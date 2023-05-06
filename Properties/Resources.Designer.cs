@@ -63,6 +63,26 @@ namespace Shapoco.Properties {
         /// <summary>
         ///   型 System.Drawing.Bitmap のローカライズされたリソースを検索します。
         /// </summary>
+        internal static System.Drawing.Bitmap ToolIcon_Copy {
+            get {
+                object obj = ResourceManager.GetObject("ToolIcon_Copy", resourceCulture);
+                return ((System.Drawing.Bitmap)(obj));
+            }
+        }
+        
+        /// <summary>
+        ///   型 System.Drawing.Bitmap のローカライズされたリソースを検索します。
+        /// </summary>
+        internal static System.Drawing.Bitmap ToolIcon_Delete {
+            get {
+                object obj = ResourceManager.GetObject("ToolIcon_Delete", resourceCulture);
+                return ((System.Drawing.Bitmap)(obj));
+            }
+        }
+        
+        /// <summary>
+        ///   型 System.Drawing.Bitmap のローカライズされたリソースを検索します。
+        /// </summary>
         internal static System.Drawing.Bitmap ToolIcon_Help {
             get {
                 object obj = ResourceManager.GetObject("ToolIcon_Help", resourceCulture);
@@ -73,9 +93,59 @@ namespace Shapoco.Properties {
         /// <summary>
         ///   型 System.Drawing.Bitmap のローカライズされたリソースを検索します。
         /// </summary>
+        internal static System.Drawing.Bitmap ToolIcon_Insert {
+            get {
+                object obj = ResourceManager.GetObject("ToolIcon_Insert", resourceCulture);
+                return ((System.Drawing.Bitmap)(obj));
+            }
+        }
+        
+        /// <summary>
+        ///   型 System.Drawing.Bitmap のローカライズされたリソースを検索します。
+        /// </summary>
+        internal static System.Drawing.Bitmap ToolIcon_MoveDown {
+            get {
+                object obj = ResourceManager.GetObject("ToolIcon_MoveDown", resourceCulture);
+                return ((System.Drawing.Bitmap)(obj));
+            }
+        }
+        
+        /// <summary>
+        ///   型 System.Drawing.Bitmap のローカライズされたリソースを検索します。
+        /// </summary>
+        internal static System.Drawing.Bitmap ToolIcon_MoveUp {
+            get {
+                object obj = ResourceManager.GetObject("ToolIcon_MoveUp", resourceCulture);
+                return ((System.Drawing.Bitmap)(obj));
+            }
+        }
+        
+        /// <summary>
+        ///   型 System.Drawing.Bitmap のローカライズされたリソースを検索します。
+        /// </summary>
+        internal static System.Drawing.Bitmap ToolIcon_Paste {
+            get {
+                object obj = ResourceManager.GetObject("ToolIcon_Paste", resourceCulture);
+                return ((System.Drawing.Bitmap)(obj));
+            }
+        }
+        
+        /// <summary>
+        ///   型 System.Drawing.Bitmap のローカライズされたリソースを検索します。
+        /// </summary>
         internal static System.Drawing.Bitmap ToolIcon_Settings {
             get {
                 object obj = ResourceManager.GetObject("ToolIcon_Settings", resourceCulture);
+                return ((System.Drawing.Bitmap)(obj));
+            }
+        }
+        
+        /// <summary>
+        ///   型 System.Drawing.Bitmap のローカライズされたリソースを検索します。
+        /// </summary>
+        internal static System.Drawing.Bitmap ToolIcon_Timer {
+            get {
+                object obj = ResourceManager.GetObject("ToolIcon_Timer", resourceCulture);
                 return ((System.Drawing.Bitmap)(obj));
             }
         }

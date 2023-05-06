@@ -187,6 +187,19 @@ namespace Shapoco.Calctus.Model {
         public static readonly FuncDef rgb2yuv_u = new FuncDef("rgb2yuv_u", (e, a) => new RealVal(ColorSpace.RgbToYuv_U(a[0].AsReal)), "convert the 24 bit RGB to U");
         public static readonly FuncDef rgb2yuv_v = new FuncDef("rgb2yuv_v", (e, a) => new RealVal(ColorSpace.RgbToYuv_V(a[0].AsReal)), "convert the 24 bit RGB to V");
 
+        public static readonly FuncDef assert = new FuncDef("assert", (e, a) => { if (!a[0].AsBool) { e.RequestHighlight(); } return a[0]; }, "Highlight the expression if the argument is false.");
+
+        public static readonly FuncDef poll = new FuncDef("poll", (e, a) => { e.RequestRecalc(); return a[0]; }, "Requests recalculation after 1 second.");
+        public static readonly FuncDef alarm = new FuncDef("alarm", (e, a) => {
+            var t = RMath.Floor(a[0].AsReal - UnixTime.FromLocalTime(DateTime.Now));
+            e.RequestRecalc();
+            if (t <= 0) {
+                e.RequestHighlight();
+                e.RequestBeep();
+            }
+            return new RealVal(t).FormatInt();
+        }, "Alarms at a specified time.");
+
         /// <summary>ネイティブ関数の一覧</summary>
         public static FuncDef[] NativeFunctions = EnumFunctions().ToArray();
         private static IEnumerable<FuncDef> EnumFunctions() {

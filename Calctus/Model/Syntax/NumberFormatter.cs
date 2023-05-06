@@ -16,7 +16,14 @@ namespace Shapoco.Calctus.Model.Syntax {
         public abstract Val Parse(Match m);
 
         public virtual string Format(Val val, EvalContext e) => OnFormat(val, e);
-        protected virtual string OnFormat(Val val, EvalContext e) => RealToString(val.AsReal, e, true);
+        protected virtual string OnFormat(Val val, EvalContext e) {
+            if (val is BoolVal) {
+                return val.AsBool ? BoolVal.TrueKeyword : BoolVal.FalseKeyword;
+            }
+            else {
+                return RealToString(val.AsReal, e, true);
+            }
+        }
 
         public static readonly IntFormatter CStyleInt = new IntFormatter(10, "", new Regex(@"([1-9][0-9]*|0)([eE][+-]?[0-9]+)?"), 0 );
         public static readonly RealFormatter CStyleReal = new RealFormatter();

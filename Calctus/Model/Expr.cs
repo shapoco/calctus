@@ -36,6 +36,7 @@ namespace Shapoco.Calctus.Model {
             if (Method == OpDef.Plus) return A.Eval(e);
             if (Method == OpDef.ArithInv) return A.Eval(e).ArithInv(e);
             if (Method == OpDef.BitNot) return A.Eval(e).BitNot(e);
+            if (Method == OpDef.LogicNot) return A.Eval(e).LogicNot(e);
             throw new NotImplementedException();
         }
 
@@ -79,9 +80,17 @@ namespace Shapoco.Calctus.Model {
             if (Method == OpDef.LogicShiftR) return A.Eval(e).LogicShiftR(e, B.Eval(e));
             if (Method == OpDef.ArithShiftL) return A.Eval(e).ArithShiftL(e, B.Eval(e));
             if (Method == OpDef.ArithShiftR) return A.Eval(e).ArithShiftR(e, B.Eval(e));
+            if (Method == OpDef.Grater) return A.Eval(e).Grater(e, B.Eval(e));
+            if (Method == OpDef.GraterEqual) return A.Eval(e).GraterEqual(e, B.Eval(e));
+            if (Method == OpDef.Less) return A.Eval(e).Less(e, B.Eval(e));
+            if (Method == OpDef.LessEqual) return A.Eval(e).LessEqual(e, B.Eval(e));
+            if (Method == OpDef.Equal) return A.Eval(e).Equal(e, B.Eval(e));
+            if (Method == OpDef.NotEqual) return A.Eval(e).NotEqual(e, B.Eval(e));
             if (Method == OpDef.BitAnd) return A.Eval(e).BitAnd(e, B.Eval(e));
             if (Method == OpDef.BitXor) return A.Eval(e).BitXor(e, B.Eval(e));
             if (Method == OpDef.BitOr) return A.Eval(e).BitOr(e, B.Eval(e));
+            if (Method == OpDef.LogicAnd) return A.Eval(e).LogicAnd(e, B.Eval(e));
+            if (Method == OpDef.LogicOr) return A.Eval(e).LogicOr(e, B.Eval(e));
             throw new NotImplementedException();
         }
 
@@ -101,6 +110,14 @@ namespace Shapoco.Calctus.Model {
     /// <summary>数値リテラル</summary>
     class Number : Literal {
         public Number(Token t) : base(((NumberTokenHint)t.Hint).Value, t) { }
+
+        public override Val Eval(EvalContext ctx) => Value;
+        public override string ToString() => Value.ToString();
+    }
+
+    /// <summary>真偽値リテラル</summary>
+    class BoolLiteral : Literal {
+        public BoolLiteral(Token t) : base(new BoolVal(bool.Parse(t.Text)), t) { }
 
         public override Val Eval(EvalContext ctx) => Value;
         public override string ToString() => Value.ToString();

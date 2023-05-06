@@ -23,6 +23,7 @@ namespace Shapoco.Calctus.UI {
         private Timer _focusTimer = new Timer();
         private Point _startupWindowPos;
         private Size _startupWindowSize;
+        private bool _topMost = false;
 
         class CustomProfessionalColors : ProfessionalColorTable {
             public override Color ToolStripGradientBegin { get { return Color.FromArgb(64, 64, 64); } }
@@ -62,7 +63,9 @@ namespace Shapoco.Calctus.UI {
             notifyIcon.MouseClick += NotifyIcon_MouseClick;
 
             calcListBox.RadixModeChanged += (sender, e) => { this.RadixMode = ((CalcListBox)sender).RadixMode; };
-            
+            calcListBox.DialogOpening += (sender, e) => { TopMost = false; };
+            calcListBox.DialogClosed += (sender, e) => { TopMost = _topMost; };
+
             radixAutoButton.CheckedChanged += (sender, e) => { RadixCheckedChanged((RadioButton)sender, RadixMode.Auto); };
             radixDecButton.CheckedChanged += (sender, e) => { RadixCheckedChanged((RadioButton)sender, RadixMode.Dec); };
             radixHexButton.CheckedChanged += (sender, e) => { RadixCheckedChanged((RadioButton)sender, RadixMode.Hex); };
@@ -76,6 +79,14 @@ namespace Shapoco.Calctus.UI {
             toolTip.SetToolTip(radixBinButton, "Binary (F11)");
             toolTip.SetToolTip(radixOctButton, "Octal (F12)");
 
+            copyButton.Click += (sender, e) => { calcListBox.Copy(); };
+            pasteButton.Click += (sender, e) => { calcListBox.Paste(); };
+            insertButton.Click += (sender, e) => { calcListBox.ItemInsert(); };
+            deleteButton.Click += (sender, e) => { calcListBox.ItemDelete(); };
+            moveUpButton.Click += (sender, e) => { calcListBox.ItemMoveUp(); };
+            moveDownButton.Click += (sender, e) => { calcListBox.ItemMoveDown(); };
+
+            timerButton.Click += (sender, e) => { calcListBox.CreateAlarm(); };
             settingsButton.Click += SettingsButton_Click;
             topMostButton.Click += TopMostButton_Click;
             helpButton.Click += (sender, e) => { System.Diagnostics.Process.Start(@"https://github.com/shapoco/calctus"); };
@@ -195,19 +206,19 @@ namespace Shapoco.Calctus.UI {
         }
 
         private void SettingsButton_Click(object sender, EventArgs e) {
-            bool topMost = this.TopMost;
             this.TopMost = false;
             var dlg = new SettingsDialog();
             dlg.ShowDialog();
             dlg.Dispose();
             reloadSettings();
-            this.TopMost = topMost;
+            this.TopMost = _topMost;
         }
 
         private void TopMostButton_Click(object sender, EventArgs e) {
             var btn = (ToolStripButton)sender;
-            this.TopMost = !this.TopMost;
-            if (this.TopMost) {
+            _topMost = !_topMost;
+            this.TopMost = _topMost;
+            if (_topMost) {
                 btn.Image = Properties.Resources.ToolIcon_TopMostOn;
             }
             else {

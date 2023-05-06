@@ -26,7 +26,7 @@ namespace Shapoco.Calctus.Model {
         // ネイティブ演算子の定義
         public static OpDef Plus = new OpDef(OpType.Unary, 90, "+");
         public static OpDef ArithInv = new OpDef(OpType.Unary, 90, "-");
-        //public static OpDef LogicInvert = new OpDef(OpType.Unary, 90, "!");
+        public static OpDef LogicNot = new OpDef(OpType.Unary, 90, "!");
         public static OpDef BitNot = new OpDef(OpType.Unary, 90, "~");
 
         public static OpDef Frac = new OpDef(OpType.Binary, 70, ":");
@@ -44,12 +44,19 @@ namespace Shapoco.Calctus.Model {
         public static OpDef ArithShiftL = new OpDef(OpType.Binary, 50, "<<<");
         public static OpDef ArithShiftR = new OpDef(OpType.Binary, 50, ">>>");
 
+        public static OpDef Grater = new OpDef(OpType.Binary, 41, ">");
+        public static OpDef GraterEqual = new OpDef(OpType.Binary, 41, ">=");
+        public static OpDef Less = new OpDef(OpType.Binary, 41, "<");
+        public static OpDef LessEqual = new OpDef(OpType.Binary, 41, "<=");
+        public static OpDef Equal = new OpDef(OpType.Binary, 40, "==");
+        public static OpDef NotEqual = new OpDef(OpType.Binary, 40, "!=");
+
         public static OpDef BitAnd = new OpDef(OpType.Binary, 34, "&");
         public static OpDef BitXor = new OpDef(OpType.Binary, 33, "+|");
         public static OpDef BitOr = new OpDef(OpType.Binary, 32, "|");
 
-        //public static OpDef LogicAnd = new OpDef(OpType.Binary, 31, "&&");
-        //public static OpDef LogicOr = new OpDef(OpType.Binary, 30, "||");
+        public static OpDef LogicAnd = new OpDef(OpType.Binary, 31, "&&");
+        public static OpDef LogicOr = new OpDef(OpType.Binary, 30, "||");
         // ここに 3項演算子
         public static OpDef Assign = new OpDef(OpType.Binary, OpPriorityDir.Right, 0, "=");
 

@@ -29,6 +29,7 @@ namespace Shapoco.Calctus.UI {
         private bool _selected = false;
         private bool _isFreshAnswer = false;
         private bool _isRpnOperand = false;
+        private bool _isHighlighted = false;
 
         public CalcListItem(CalcListBox owner) {
             _owner = owner;
@@ -140,6 +141,12 @@ namespace Shapoco.Calctus.UI {
             }
         }
 
+        public void OnInsertTime() {
+            if (_exprBox.Focused) {
+                _exprBox.InsertCurrentTime();
+            }
+        }
+
         public string Expression {
             get => _exprBox.Text;
             set => _exprBox.Text = value;
@@ -160,6 +167,16 @@ namespace Shapoco.Calctus.UI {
             set {
                 if (value != _isRpnOperand) {
                     _isRpnOperand = value;
+                    updateBackColor();
+                }
+            }
+        }
+
+        public bool IsHighlited {
+            get => _isHighlighted;
+            set {
+                if (value != _isHighlighted) {
+                    _isHighlighted = value;
                     updateBackColor();
                 }
             }
@@ -209,7 +226,10 @@ namespace Shapoco.Calctus.UI {
 
         private void updateBackColor() {
             Color backColor = _owner.BackColor;
-            if (_selected) {
+            if (_isHighlighted) {
+                backColor = Color.FromArgb(128, 0, 0);
+            }
+            else if (_selected) {
                 backColor = Color.Black;
             }
             else if (_isRpnOperand) {

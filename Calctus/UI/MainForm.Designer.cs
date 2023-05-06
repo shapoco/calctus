@@ -35,19 +35,26 @@ namespace Shapoco.Calctus.UI
             this.helpButton = new System.Windows.Forms.ToolStripButton();
             this.topMostButton = new System.Windows.Forms.ToolStripButton();
             this.settingsButton = new System.Windows.Forms.ToolStripButton();
+            this.copyButton = new System.Windows.Forms.ToolStripButton();
+            this.pasteButton = new System.Windows.Forms.ToolStripButton();
+            this.insertButton = new System.Windows.Forms.ToolStripButton();
+            this.deleteButton = new System.Windows.Forms.ToolStripButton();
+            this.moveUpButton = new System.Windows.Forms.ToolStripButton();
+            this.moveDownButton = new System.Windows.Forms.ToolStripButton();
+            this.timerButton = new System.Windows.Forms.ToolStripButton();
             this.notifyIcon = new System.Windows.Forms.NotifyIcon(this.components);
             this.trayMenuStrip = new System.Windows.Forms.ContextMenuStrip(this.components);
             this.contextOpen = new System.Windows.Forms.ToolStripMenuItem();
             this.toolStripMenuItem1 = new System.Windows.Forms.ToolStripSeparator();
             this.contextExit = new System.Windows.Forms.ToolStripMenuItem();
             this.panel2 = new System.Windows.Forms.Panel();
+            this.radixOctButton = new Shapoco.Calctus.UI.FlatRadioButton();
             this.radixBinButton = new Shapoco.Calctus.UI.FlatRadioButton();
             this.radixHexButton = new Shapoco.Calctus.UI.FlatRadioButton();
             this.radixDecButton = new Shapoco.Calctus.UI.FlatRadioButton();
             this.radixAutoButton = new Shapoco.Calctus.UI.FlatRadioButton();
-            this.calcListBox = new Shapoco.Calctus.UI.CalcListBox();
-            this.radixOctButton = new Shapoco.Calctus.UI.FlatRadioButton();
             this.toolTip = new System.Windows.Forms.ToolTip(this.components);
+            this.calcListBox = new Shapoco.Calctus.UI.CalcListBox();
             this.toolStrip.SuspendLayout();
             this.trayMenuStrip.SuspendLayout();
             this.panel2.SuspendLayout();
@@ -58,7 +65,14 @@ namespace Shapoco.Calctus.UI
             this.toolStrip.Items.AddRange(new System.Windows.Forms.ToolStripItem[] {
             this.helpButton,
             this.topMostButton,
-            this.settingsButton});
+            this.settingsButton,
+            this.copyButton,
+            this.pasteButton,
+            this.insertButton,
+            this.deleteButton,
+            this.moveUpButton,
+            this.moveDownButton,
+            this.timerButton});
             this.toolStrip.Location = new System.Drawing.Point(0, 0);
             this.toolStrip.Name = "toolStrip";
             this.toolStrip.Size = new System.Drawing.Size(402, 25);
@@ -94,6 +108,77 @@ namespace Shapoco.Calctus.UI
             this.settingsButton.Name = "settingsButton";
             this.settingsButton.Size = new System.Drawing.Size(23, 22);
             this.settingsButton.Text = "Settings";
+            // 
+            // copyButton
+            // 
+            this.copyButton.DisplayStyle = System.Windows.Forms.ToolStripItemDisplayStyle.Image;
+            this.copyButton.Image = global::Shapoco.Properties.Resources.ToolIcon_Copy;
+            this.copyButton.ImageTransparentColor = System.Drawing.Color.Magenta;
+            this.copyButton.Name = "copyButton";
+            this.copyButton.Size = new System.Drawing.Size(23, 22);
+            this.copyButton.Text = "toolStripButton1";
+            this.copyButton.ToolTipText = "Copy";
+            // 
+            // pasteButton
+            // 
+            this.pasteButton.DisplayStyle = System.Windows.Forms.ToolStripItemDisplayStyle.Image;
+            this.pasteButton.Image = global::Shapoco.Properties.Resources.ToolIcon_Paste;
+            this.pasteButton.ImageTransparentColor = System.Drawing.Color.Magenta;
+            this.pasteButton.Name = "pasteButton";
+            this.pasteButton.Size = new System.Drawing.Size(23, 22);
+            this.pasteButton.Text = "toolStripButton2";
+            this.pasteButton.ToolTipText = "Paste";
+            // 
+            // insertButton
+            // 
+            this.insertButton.DisplayStyle = System.Windows.Forms.ToolStripItemDisplayStyle.Image;
+            this.insertButton.Image = global::Shapoco.Properties.Resources.ToolIcon_Insert;
+            this.insertButton.ImageTransparentColor = System.Drawing.Color.Magenta;
+            this.insertButton.Name = "insertButton";
+            this.insertButton.Size = new System.Drawing.Size(23, 22);
+            this.insertButton.Text = "Insert";
+            this.insertButton.ToolTipText = "Insert";
+            // 
+            // deleteButton
+            // 
+            this.deleteButton.DisplayStyle = System.Windows.Forms.ToolStripItemDisplayStyle.Image;
+            this.deleteButton.Image = global::Shapoco.Properties.Resources.ToolIcon_Delete;
+            this.deleteButton.ImageTransparentColor = System.Drawing.Color.Magenta;
+            this.deleteButton.Name = "deleteButton";
+            this.deleteButton.Size = new System.Drawing.Size(23, 22);
+            this.deleteButton.Text = "toolStripButton4";
+            this.deleteButton.ToolTipText = "Delete";
+            // 
+            // moveUpButton
+            // 
+            this.moveUpButton.DisplayStyle = System.Windows.Forms.ToolStripItemDisplayStyle.Image;
+            this.moveUpButton.Image = global::Shapoco.Properties.Resources.ToolIcon_MoveUp;
+            this.moveUpButton.ImageTransparentColor = System.Drawing.Color.Magenta;
+            this.moveUpButton.Name = "moveUpButton";
+            this.moveUpButton.Size = new System.Drawing.Size(23, 22);
+            this.moveUpButton.Text = "toolStripButton5";
+            this.moveUpButton.ToolTipText = "Move Up";
+            // 
+            // moveDownButton
+            // 
+            this.moveDownButton.DisplayStyle = System.Windows.Forms.ToolStripItemDisplayStyle.Image;
+            this.moveDownButton.Image = global::Shapoco.Properties.Resources.ToolIcon_MoveDown;
+            this.moveDownButton.ImageTransparentColor = System.Drawing.Color.Magenta;
+            this.moveDownButton.Name = "moveDownButton";
+            this.moveDownButton.Size = new System.Drawing.Size(23, 22);
+            this.moveDownButton.Text = "toolStripButton6";
+            this.moveDownButton.ToolTipText = "Move Down";
+            // 
+            // timerButton
+            // 
+            this.timerButton.Alignment = System.Windows.Forms.ToolStripItemAlignment.Right;
+            this.timerButton.DisplayStyle = System.Windows.Forms.ToolStripItemDisplayStyle.Image;
+            this.timerButton.Image = global::Shapoco.Properties.Resources.ToolIcon_Timer;
+            this.timerButton.ImageTransparentColor = System.Drawing.Color.Magenta;
+            this.timerButton.Name = "timerButton";
+            this.timerButton.Size = new System.Drawing.Size(23, 22);
+            this.timerButton.Text = "toolStripButton1";
+            this.timerButton.ToolTipText = "Create Timer";
             // 
             // notifyIcon
             // 
@@ -140,6 +225,19 @@ namespace Shapoco.Calctus.UI
             this.panel2.Size = new System.Drawing.Size(402, 15);
             this.panel2.TabIndex = 5;
             // 
+            // radixOctButton
+            // 
+            this.radixOctButton.BackColor = System.Drawing.Color.FromArgb(((int)(((byte)(76)))), ((int)(((byte)(88)))), ((int)(((byte)(72)))));
+            this.radixOctButton.Dock = System.Windows.Forms.DockStyle.Left;
+            this.radixOctButton.ForeColor = System.Drawing.Color.White;
+            this.radixOctButton.Location = new System.Drawing.Point(120, 0);
+            this.radixOctButton.Name = "radixOctButton";
+            this.radixOctButton.Size = new System.Drawing.Size(30, 15);
+            this.radixOctButton.TabIndex = 7;
+            this.radixOctButton.TabStop = true;
+            this.radixOctButton.Text = "Oct";
+            this.radixOctButton.UseVisualStyleBackColor = false;
+            // 
             // radixBinButton
             // 
             this.radixBinButton.BackColor = System.Drawing.Color.FromArgb(((int)(((byte)(76)))), ((int)(((byte)(88)))), ((int)(((byte)(72)))));
@@ -182,6 +280,7 @@ namespace Shapoco.Calctus.UI
             // radixAutoButton
             // 
             this.radixAutoButton.BackColor = System.Drawing.Color.FromArgb(((int)(((byte)(76)))), ((int)(((byte)(88)))), ((int)(((byte)(72)))));
+            this.radixAutoButton.Checked = true;
             this.radixAutoButton.Dock = System.Windows.Forms.DockStyle.Left;
             this.radixAutoButton.ForeColor = System.Drawing.Color.White;
             this.radixAutoButton.Location = new System.Drawing.Point(0, 0);
@@ -202,19 +301,6 @@ namespace Shapoco.Calctus.UI
             this.calcListBox.Size = new System.Drawing.Size(402, 206);
             this.calcListBox.TabIndex = 7;
             this.calcListBox.Text = "calcListBox1";
-            // 
-            // radixOctButton
-            // 
-            this.radixOctButton.BackColor = System.Drawing.Color.FromArgb(((int)(((byte)(76)))), ((int)(((byte)(88)))), ((int)(((byte)(72)))));
-            this.radixOctButton.Dock = System.Windows.Forms.DockStyle.Left;
-            this.radixOctButton.ForeColor = System.Drawing.Color.White;
-            this.radixOctButton.Location = new System.Drawing.Point(120, 0);
-            this.radixOctButton.Name = "radixOctButton";
-            this.radixOctButton.Size = new System.Drawing.Size(30, 15);
-            this.radixOctButton.TabIndex = 7;
-            this.radixOctButton.TabStop = true;
-            this.radixOctButton.Text = "Oct";
-            this.radixOctButton.UseVisualStyleBackColor = false;
             // 
             // MainForm
             // 
@@ -256,6 +342,13 @@ namespace Shapoco.Calctus.UI
         private System.Windows.Forms.ToolStripButton topMostButton;
         private FlatRadioButton radixOctButton;
         private System.Windows.Forms.ToolTip toolTip;
+        private System.Windows.Forms.ToolStripButton copyButton;
+        private System.Windows.Forms.ToolStripButton pasteButton;
+        private System.Windows.Forms.ToolStripButton insertButton;
+        private System.Windows.Forms.ToolStripButton deleteButton;
+        private System.Windows.Forms.ToolStripButton moveUpButton;
+        private System.Windows.Forms.ToolStripButton moveDownButton;
+        private System.Windows.Forms.ToolStripButton timerButton;
     }
 }
 

@@ -23,6 +23,7 @@ namespace Shapoco.Calctus.Model {
         public override double AsDouble => (double)_raw;
         public override long AsLong => (long)_raw;
         public override int AsInt => (int)_raw;
+        public override bool AsBool => throw new InvalidCastException();
 
         public override string ToString(EvalContext e) => _raw.ToString();
 
@@ -48,6 +49,9 @@ namespace Shapoco.Calctus.Model {
         protected override Val OnUnaryPlus(EvalContext ctx) => this;
         protected override Val OnAtirhInv(EvalContext ctx) => Normalize(-_raw, FormatHint);
 
+        protected override Val OnGrater(EvalContext ctx, Val b) => new BoolVal(AsReal > b.AsReal);
+        protected override Val OnEqual(EvalContext ctx, Val b) => new BoolVal(AsReal == b.AsReal);
+
         protected override Val OnBitNot(EvalContext ctx) => new RealVal(~this.AsLong, FormatHint);
         protected override Val OnBitAnd(EvalContext ctx, Val b) => new RealVal(this.AsLong & b.AsLong, FormatHint);
         protected override Val OnBitXor(EvalContext e, Val b) => new RealVal(this.AsLong ^ b.AsLong, FormatHint);
@@ -61,6 +65,10 @@ namespace Shapoco.Calctus.Model {
             return new RealVal(sign | lshift, FormatHint);
         }
         protected override Val OnArithShiftR(EvalContext e, Val b) => new RealVal(this.AsLong >> b.AsInt, FormatHint);
+
+        protected override Val OnLogicNot(EvalContext ctx) => throw new InvalidOperationException();
+        protected override Val OnLogicAnd(EvalContext ctx, Val b) => throw new InvalidOperationException();
+        protected override Val OnLogicOr(EvalContext ctx, Val b) => throw new InvalidOperationException();
 
         protected override Val OnFormat(ValFormatHint fmt) => new FracVal(_raw, fmt);
 

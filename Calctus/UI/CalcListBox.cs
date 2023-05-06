@@ -7,12 +7,34 @@ using System.Windows.Forms;
 using System.Drawing;
 using Shapoco.Calctus.Model;
 using Shapoco.Calctus.Parser;
+using System.Runtime.InteropServices;
 
 namespace Shapoco.Calctus.UI {
     class CalcListBox : ContainerControl, ICandidateProvider {
+        [DllImport("user32.dll")]
+        private static extern Int32 FlashWindowEx(ref FLASHWINFO pwfi);
+
+        [StructLayout(LayoutKind.Sequential)]
+        private struct FLASHWINFO {
+            public UInt32 cbSize;    // FLASHWINFO構造体のサイズ
+            public IntPtr hwnd;      // 点滅対象のウィンドウ・ハンドル
+            public UInt32 dwFlags;   // 以下の「FLASHW_XXX」のいずれか
+            public UInt32 uCount;    // 点滅する回数
+            public UInt32 dwTimeout; // 点滅する間隔（ミリ秒単位）
+        }
+
+        private const UInt32 FLASHW_STOP = 0; // 点滅を止める
+        private const UInt32 FLASHW_CAPTION = 1; // タイトルバーを点滅させる
+        private const UInt32 FLASHW_TRAY = 2; // タスクバー・ボタンを点滅させる
+        private const UInt32 FLASHW_ALL = 3; // タスクバー・ボタンとタイトルバーを点滅させる
+        private const UInt32 FLASHW_TIMER = 4; // FLASHW_STOPが指定されるまでずっと点滅させる
+        private const UInt32 FLASHW_TIMERNOFG = 12; // ウィンドウが最前面に来るまでずっと点滅させる
+
         public const string LastAnsId = "ans";
 
         public event EventHandler RadixModeChanged;
+        public event EventHandler DialogOpening;
+        public event EventHandler DialogClosed;
 
         private List<CalcListItem> _items = new List<CalcListItem>();
         private int _selectedIndex = -1;
@@ -32,13 +54,21 @@ namespace Shapoco.Calctus.UI {
         private ToolStripSeparator _cmenuSep0 = new ToolStripSeparator();
         private ToolStripMenuItem _cmenuCopyAll = new ToolStripMenuItem("Copy All");
         private ToolStripSeparator _cmenuSep1 = new ToolStripSeparator();
+        private ToolStripMenuItem _cmenuInsertTime = new ToolStripMenuItem("Insert Current Time");
+        private ToolStripMenuItem _cmenuCreateAlarm = new ToolStripMenuItem("Create Alarm");
+        private ToolStripSeparator _cmenuSep2 = new ToolStripSeparator();
         private ToolStripMenuItem _cmenuMoveUp = new ToolStripMenuItem("Move Up");
         private ToolStripMenuItem _cmenuMoveDown = new ToolStripMenuItem("Move Down");
-        private ToolStripSeparator _cmenuSep2 = new ToolStripSeparator();
+        private ToolStripSeparator _cmenuSep3 = new ToolStripSeparator();
         private ToolStripMenuItem _cmenuItemInsert = new ToolStripMenuItem("Insert Item");
         private ToolStripMenuItem _cmenuItemDelete = new ToolStripMenuItem("Delete Item");
         private ToolStripSeparator _cmenuTextSep2 = new ToolStripSeparator();
         private ToolStripMenuItem _cmenuClear = new ToolStripMenuItem("Clear");
+
+        private Timer _recalcTimer = new Timer();
+        private bool _recalcRequested = false;
+        private bool _beepingNow = false;
+        private bool _beepRequested = false;
 
         public CalcListBox() {
             if (this.DesignMode) return;
@@ -54,13 +84,13 @@ namespace Shapoco.Calctus.UI {
                     openContextMenu(this.PointToScreen(e.Location));
                 }
             };
-            //this.Click += (sender, e) => { this.SelectedIndex = -1; };
 
             _cmenuTextCut.ShortcutKeyDisplayString = "Ctrl+X";
             _cmenuTextCopy.ShortcutKeyDisplayString = "Ctrl+C";
             _cmenuTextPaste.ShortcutKeyDisplayString = "Ctrl+V";
             _cmenuTextPasteWithOptions.ShortcutKeyDisplayString = "Ctrl+Shift+V";
             _cmenuCopyAll.ShortcutKeyDisplayString = "Ctrl+Shift+C";
+            _cmenuInsertTime.ShortcutKeyDisplayString = "Ctrl+Shift+N";
             _cmenuMoveUp.ShortcutKeyDisplayString = "Ctrl+Shift+Up";
             _cmenuMoveDown.ShortcutKeyDisplayString = "Ctrl+Shift+Down";
             _cmenuItemInsert.ShortcutKeyDisplayString = "Shift+Enter";
@@ -73,6 +103,8 @@ namespace Shapoco.Calctus.UI {
             _cmenuTextPasteWithOptions.Click += (sender, e) => { this.PasteWithOptions(); };
             _cmenuTextDelete.Click += (sender, e) => { this.SelectedItem?.OnDeleteText(); };
             _cmenuCopyAll.Click += (sender, e) => { this.CopyAll(); };
+            _cmenuInsertTime.Click += (sender, e) => { this.SelectedItem?.OnInsertTime(); };
+            _cmenuCreateAlarm.Click += (sender, e) => { this.CreateAlarm(); };
             _cmenuMoveUp.Click += (sender, e) => { this.ItemMoveUp(); };
             _cmenuMoveDown.Click += (sender, e) => { this.ItemMoveDown(); };
             _cmenuItemInsert.Click += (sender, e) => { this.ItemInsert(); };
@@ -88,14 +120,19 @@ namespace Shapoco.Calctus.UI {
                 _cmenuSep0,
                 _cmenuCopyAll,
                 _cmenuSep1,
+                _cmenuInsertTime,
+                _cmenuCreateAlarm,
+                _cmenuSep2,
                 _cmenuMoveUp,
                 _cmenuMoveDown,
-                _cmenuSep2,
+                _cmenuSep3,
                 _cmenuItemInsert,
                 _cmenuItemDelete,
                 _cmenuTextSep2,
                 _cmenuClear
             });
+
+            _recalcTimer.Tick += _recalcTimer_Tick;
         }
 
         public Panel InnerPanel => _innerPanel;
@@ -131,31 +168,10 @@ namespace Shapoco.Calctus.UI {
             }
         }
 
-        public void PasteWithOptions() {
-            int insertPos = SelectedIndex;
-            if (insertPos < 0) insertPos = _items.Count;
-
-            var dlg = new PasteOptionForm();
-            if (dlg.ShowDialog() == DialogResult.OK) {
-                var lines = dlg.TextWillBePasted.Split('\n');
-                for (int i = 0; i < lines.Length; i++) { 
-                    var line = lines[i].Replace("\r", "");
-                    var item = new CalcListItem(this);
-                    item.Expression = line;
-                    if (i == 0 && insertPos < _items.Count && string.IsNullOrEmpty(_items[insertPos].Expression)) {
-                        // 先頭行については挿入先の行が空行の場合はそこを置き換える
-                        _items[insertPos++].Expression = line;
-                    }
-                    else {
-                        insert(insertPos++, item);
-                    }
-                }
-                insert(insertPos, new CalcListItem(this));
-                performSelectedIndexChanged(insertPos);
-                recalc();
-                relayout();
-            }
-            dlg.Dispose();
+        public void Copy() {
+            var item = SelectedItem;
+            if (item == null) return;
+            item.OnCopyText();
         }
 
         public void CopyAll() {
@@ -170,6 +186,79 @@ namespace Shapoco.Calctus.UI {
             catch {
                 System.Media.SystemSounds.Beep.Play();
             }
+        }
+
+        public void Paste() {
+            var item = SelectedItem;
+            if (item == null) return;
+            try {
+                var text = Clipboard.GetText();
+                if (text.IndexOf("\n") > 0) {
+                    PasteWithOptions();
+                }
+                else {
+                    item.OnPasteText();
+                }
+            }
+            catch { }
+        }
+
+        public void PasteWithOptions() {
+            int insertPos = SelectedIndex;
+            if (insertPos < 0) insertPos = _items.Count;
+
+            var dlg = new PasteOptionForm();
+            DialogOpening?.Invoke(this, EventArgs.Empty);
+            if (dlg.ShowDialog() == DialogResult.OK) {
+                var lines = dlg.TextWillBePasted.Split('\n');
+                for (int i = 0; i < lines.Length; i++) {
+                    var line = lines[i].Replace("\r", "");
+                    if (i == 0 && insertPos < _items.Count && string.IsNullOrEmpty(_items[insertPos].Expression)) {
+                        // 先頭行については挿入先の行が空行の場合はそこを置き換える
+                        _items[insertPos++].Expression = line;
+                    }
+                    else {
+                        var item = new CalcListItem(this);
+                        item.Expression = line;
+                        insert(insertPos++, item);
+                    }
+                }
+                insert(insertPos, new CalcListItem(this));
+                performSelectedIndexChanged(insertPos);
+                recalc();
+                relayout();
+            }
+            dlg.Dispose();
+            DialogClosed?.Invoke(this, EventArgs.Empty);
+        }
+
+        public void CreateAlarm() {
+            var dlg = new CreateTimerForm();
+            DialogOpening?.Invoke(this, EventArgs.Empty);
+            if (dlg.ShowDialog() == DialogResult.OK) {
+                var time = dlg.TimeoutTime;
+                var expr = "alarm(#" + time.ToString("yyyy/MM/dd HH:mm:ss") + "#)";
+                InsertExpr(expr);
+            }
+            dlg.Dispose();
+            DialogClosed?.Invoke(this, EventArgs.Empty);
+        }
+
+        public void InsertExpr(string expr) {
+            var insertPos = SelectedIndex;
+            if (insertPos < 0) insertPos = _items.Count;
+            if (insertPos < _items.Count && string.IsNullOrEmpty(_items[insertPos].Expression)) {
+                _items[insertPos].Expression = expr;
+            }
+            else {
+                var item = new CalcListItem(this);
+                item.Expression = expr;
+                insert(insertPos, item);
+            }
+            insert(insertPos + 1, new CalcListItem(this));
+            performSelectedIndexChanged(insertPos + 1);
+            recalc();
+            relayout();
         }
 
         public void ItemMoveUp() {
@@ -413,6 +502,10 @@ namespace Shapoco.Calctus.UI {
                 e.Handled = true;
                 Clear();
             }
+            else if (e.KeyCode == Keys.N && e.Modifiers == (Keys.Control | Keys.Shift)) {
+                e.Handled = true;
+                _cmenuInsertTime.PerformClick();
+            }
         }
 
         private void Item_KeyUp(object sender, KeyEventArgs e) {
@@ -563,17 +656,26 @@ namespace Shapoco.Calctus.UI {
                         item.Answer = val.ToString(ctx);
                         item.Hint = "";
                         ctx.Ref(LastAnsId, true).Value = val;
+
+                        item.IsHighlited = ctx.HighlightRequested;
+                        ctx.ResetHighlight();
                     }
                 }
                 catch (Exception ex) {
                     item.Answer = "";
                     item.Hint = "? " + ex.Message;
+                    item.IsHighlited = false;
+                    ctx.ResetHighlight();
                     ctx.Undef(LastAnsId, true);
                 }
             }
 
-            ctx.Undef(LastAnsId, true);
+            // 再計算要求とビープ要求の対応
+            if (ctx.RecalcRequested) requestRecalc1SecAfter();
+            if (ctx.BeepRequested) requestBeep();
 
+            // 計算結果をもとに入力補完候補を生成する
+            ctx.Undef(LastAnsId, true);
             var list = new List<Candidate>();
             foreach (var f in FuncDef.NativeFunctions) {
                 list.Add(new Candidate(f.Name, f.ToString(), f.Description, true));
@@ -582,6 +684,8 @@ namespace Shapoco.Calctus.UI {
                 list.Add(new Candidate(v.Name.Text, v.Name.Text, v.Description, false));
             }
             list.Add(new Candidate(LastAnsId, LastAnsId, "last answer", false));
+            list.Add(new Candidate(BoolVal.TrueKeyword, BoolVal.TrueKeyword, "true value", false));
+            list.Add(new Candidate(BoolVal.FalseKeyword, BoolVal.FalseKeyword, "false value", false));
             _candidates = list.OrderBy(p => p.Id).ToArray();
         }
 
@@ -654,6 +758,58 @@ namespace Shapoco.Calctus.UI {
         }
 
         public Candidate[] GetCandidates() => _candidates;
+
+        private void requestRecalc1SecAfter() {
+            if (!_recalcRequested) {
+                _recalcRequested = true;
+                _recalcTimer.Interval = 1000;
+                _recalcTimer.Enabled = true;
+            }
+        }
+
+        private void requestBeep() {
+            if (_beepingNow) {
+                if (!_beepRequested) {
+                    _beepRequested = true;
+                    _recalcTimer.Interval = 1000;
+                    _recalcTimer.Enabled = true;
+                }
+            }
+            else {
+                beep();
+            }
+        }
+        
+        private void beep() {
+            System.Media.SystemSounds.Beep.Play();
+            _beepingNow = true;
+            _recalcTimer.Interval = 1000;
+            _recalcTimer.Enabled = true;
+
+            // ウィンドウを点滅させる
+            FLASHWINFO fInfo = new FLASHWINFO();
+            fInfo.cbSize = Convert.ToUInt32(Marshal.SizeOf(fInfo));
+            fInfo.hwnd = this.ParentForm.Handle;
+            fInfo.dwFlags = FLASHW_ALL;
+            fInfo.uCount = 1;
+            fInfo.dwTimeout = 0;
+            FlashWindowEx(ref fInfo);
+        }
+
+        private void _recalcTimer_Tick(object sender, EventArgs e) {
+            if (!_recalcRequested && !_beepRequested) {
+                _recalcTimer.Enabled = false;
+            }
+            _beepingNow = false;
+            if (_recalcRequested) {
+                _recalcRequested = false;
+                recalc();
+            }
+            if (_beepRequested) {
+                _beepRequested = false;
+                beep();
+            }
+        }
     }
 
 }
