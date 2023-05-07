@@ -10,6 +10,9 @@ namespace Shapoco.Calctus.Model {
     class FuncDef {
         public const int Variadic = -1;
 
+        private static readonly Random rng = new Random((int)DateTime.Now.Ticks);
+        private static long longRandom() => (((long)rng.Next()) << 32) | ((long)rng.Next());
+
         public readonly string Name;
         public readonly int ArgCount;
         public readonly Func<EvalContext, Val[], Val> Call;
@@ -119,7 +122,7 @@ namespace Shapoco.Calctus.Model {
         public static readonly FuncDef tohours = new FuncDef("tohours", (e, a) => a[0].Div(e, new RealVal(60 * 60)).FormatReal(), "convert from epoch time to hours");
         public static readonly FuncDef tominutes = new FuncDef("tominutes", (e, a) => a[0].Div(e, new RealVal(60)).FormatReal(), "convert from epoch time to minutes");
         public static readonly FuncDef toseconds = new FuncDef("toseconds", (e, a) => a[0].FormatReal(), "convert from epoch time to seconds");
-        
+
         public static readonly FuncDef fromyears = new FuncDef("fromyears", (e, a) => a[0].Mul(e, new RealVal(365.2425m * 24 * 60 * 60)).FormatDateTime(), "convert from years to epoch time");
         public static readonly FuncDef fromdays = new FuncDef("fromdays", (e, a) => a[0].Mul(e, new RealVal(24 * 60 * 60)).FormatDateTime(), "convert from days to epoch time");
         public static readonly FuncDef fromhours = new FuncDef("fromhours", (e, a) => a[0].Mul(e, new RealVal(60 * 60)).FormatDateTime(), "convert from hours to epoch time");
@@ -200,6 +203,20 @@ namespace Shapoco.Calctus.Model {
         public static readonly FuncDef rgb2yuv_y = new FuncDef("rgb2yuv_y", (e, a) => new RealVal(ColorSpace.RgbToYuv_Y(a[0].AsReal)), "convert the 24 bit RGB to Y");
         public static readonly FuncDef rgb2yuv_u = new FuncDef("rgb2yuv_u", (e, a) => new RealVal(ColorSpace.RgbToYuv_U(a[0].AsReal)), "convert the 24 bit RGB to U");
         public static readonly FuncDef rgb2yuv_v = new FuncDef("rgb2yuv_v", (e, a) => new RealVal(ColorSpace.RgbToYuv_V(a[0].AsReal)), "convert the 24 bit RGB to V");
+
+        public static readonly FuncDef rand = new FuncDef("rand", 0, (e, a) => new RealVal((real)rng.NextDouble()), "Generate random value from 0.0 to 1.0.");
+        public static readonly FuncDef rand_2 = new FuncDef("rand", 2, (e, a) => {
+            var min = a[0].AsReal;
+            var max = a[1].AsReal;
+            return new RealVal(min + (real)rng.NextDouble() * (max - min));
+        }, "Generate random value from min to max.");
+
+        public static readonly FuncDef randi64 = new FuncDef("randi64", 0, (e, a) => new RealVal(longRandom()), "Generate 64bit random integer.");
+        public static readonly FuncDef randi64_2 = new FuncDef("randi64", 2, (e, a) => {
+            var min = a[0].AsLong;
+            var max = a[1].AsLong;
+            return new RealVal(min + RMath.Floor((real)rng.NextDouble() * (max - min)));
+        }, "Generate 64bit random from min to max.");
 
         public static readonly FuncDef assert = new FuncDef("assert", (e, a) => { if (!a[0].AsBool) { e.RequestHighlight(); } return a[0]; }, "Highlight the expression if the argument is false.");
 
