@@ -653,7 +653,7 @@ namespace Shapoco.Calctus.UI {
                         showCandidates();
                     }
                 }
-                else if (isIdChar(e.KeyChar)) {
+                else if (_candStart + 1 < selStart && isIdChar(e.KeyChar)) {
                     // 識別子の2文字目以降が表示されたら補完候補を更新する
                     updateCandidates();
                 }
@@ -934,9 +934,9 @@ namespace Shapoco.Calctus.UI {
             while (candStart > 0 && isIdChar(text[candStart - 1])) {
                 candStart--;
             }
-            while (candEnd < text.Length && isIdChar(text[candEnd])) {
-                candEnd++;
-            }
+            //while (candEnd < text.Length && isIdChar(text[candEnd])) {
+            //    candEnd++;
+            //}
             _candStart = candStart;
             _candEnd = candEnd;
         }
