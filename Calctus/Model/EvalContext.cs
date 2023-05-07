@@ -37,8 +37,8 @@ namespace Shapoco.Calctus.Model {
         }
 
         public EvalContext() {
-            this.AddConstantReal("PI", (real)Math.PI, "circle ratio");
-            this.AddConstantReal("E", (real)Math.E, "base of natural logarithm");
+            this.AddConstantReal("PI", 3.1415926535897932384626433833m, "circle ratio");
+            this.AddConstantReal("E", 2.7182818284590452353602874714m, "base of natural logarithm");
             this.AddConstantHex("INT_MIN", Int32.MinValue, "minimum value of 32 bit signed integer");
             this.AddConstantHex("INT_MAX", Int32.MaxValue, "maximum value of 32 bit signed integer");
             this.AddConstantHex("UINT_MIN", UInt32.MinValue, "minimum value of 32 bit unsigned integer");
