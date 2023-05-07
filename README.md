@@ -56,9 +56,9 @@ A calculator for Windows.
 |Logical Shift|`<<`, `>>`|`Int64`|
 |Arithmetic Shift|`<<<`, `>>>`|`Int64`|
 |Compare:new:|`>`, `>=`, `<`, `<=`, `==`, `!=`|`Decimal`|
-|Bit NOT:new:|`!`|`Boolean`|
-|Bit AND:new:|`&&`|`Boolean`|
-|Bit OR:new:|`\|\|`|`Boolean`|
+|Logical NOT:new:|`!`|`Boolean`|
+|Logical AND:new:|`&&`|`Boolean`|
+|Logical OR:new:|`\|\|`|`Boolean`|
 
 ### Embedded Functions
 
