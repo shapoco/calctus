@@ -71,6 +71,7 @@ A calculator for Windows.
 |Max/Min|`max(...)`, `min(...)`|`Decimal`|
 |Sum/Average:new:|`sum(...)`, `ave(...)`, `harmean(...)`, `invsum(...)`, `geomean(...)`|`Decimal`|
 |GCD, LCM:new:|`gcd(a, b)`, `lcm(a, b)`|`Decimal`|
+|Gray-code:new:|`togray(x)`, `fromgray(x)`|`Int64`|
 |Fractions:new:|`frac(x)`, `frac(x,a)`, `frac(x,a,b)`, `real(x)`|`Decimal`|
 |Representation|`dec(x)`, `hex(x)`, `bin(x)`, `oct(x)`, `char(x)`, `si(x)`:new:, `bi(x)`:new:, `datetime(x)`|`Decimal`|
 |Date Time|`now()`, `fromyears(x)`, `fromdays(x)`, `fromhours(x)`, `fromminutes(x)`, `fromseconds(x)`, `toyears(x)`, `todays(x)`, `tohours(x)`, `tominutes(x)`, `toseconds(x)`|`Double`|

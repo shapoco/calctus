@@ -54,8 +54,19 @@ namespace Shapoco.Calctus.UI {
 
             _list.Items.Clear();
             int selIndex = 0;
+
+            // 先頭一致を探す
             foreach (var c in _provider.GetCandidates()) {
                 if (c.Id.ToLower().StartsWith(value)) {
+                    _list.Items.Add(c);
+                    if (c.Id.ToLower() == value || c.Label == lastLabel) {
+                        selIndex = _list.Items.Count - 1;
+                    }
+                }
+            }
+            // 先頭以外に一致するものを探す
+            foreach (var c in _provider.GetCandidates()) {
+                if (c.Id.IndexOf(value) > 0 && _list.Items.IndexOf(c) == -1) {
                     _list.Items.Add(c);
                     if (c.Id.ToLower() == value || c.Label == lastLabel) {
                         selIndex = _list.Items.Count - 1;

@@ -49,7 +49,7 @@ namespace Shapoco.Calctus.Model {
         public static readonly FuncDef bi = new FuncDef("bi", (e, a) => a[0].FormatBinaryPrefix(), "convert the value to binary prefix representation");
         public static readonly FuncDef char_1 = new FuncDef("char", (e, a) => a[0].FormatChar(), "convert the value to character representation");
         public static readonly FuncDef datetime = new FuncDef("datetime", (e, a) => a[0].FormatDateTime(), "convert the value to datetime representation");
-        
+
         public static readonly FuncDef real = new FuncDef("real", (e, a) => a[0].AsRealVal().FormatReal(), "convert the value to a real number");
         public static readonly FuncDef frac = new FuncDef("frac", (e, a) => new FracVal(RMath.FindFrac(a[0].AsReal, decimal.MaxValue, decimal.MaxValue)), "convert value to a fraction");
         public static readonly FuncDef frac_2 = new FuncDef("frac", 2, (e, a) => new FracVal(RMath.FindFrac(a[0].AsReal, a[1].AsReal, a[1].AsReal), a[0].FormatHint), "convert value to a fraction");
@@ -90,13 +90,27 @@ namespace Shapoco.Calctus.Model {
 
         public static readonly FuncDef sum = new FuncDef("sum", Variadic, (e, a) => new RealVal(a.Sum(p => p.AsReal), a[0].FormatHint), "sum of arguments");
         public static readonly FuncDef ave = new FuncDef("ave", Variadic, (e, a) => new RealVal(a.Average(p => p.AsReal), a[0].FormatHint), "arithmetic mean");
-        public static readonly FuncDef invsum = new FuncDef("invsum", Variadic, (e, a) => new RealVal(1m / a.Sum(p =>1m / p.AsReal), a[0].FormatHint), "inverse of the sum of the inverses");
+        public static readonly FuncDef invsum = new FuncDef("invsum", Variadic, (e, a) => new RealVal(1m / a.Sum(p => 1m / p.AsReal), a[0].FormatHint), "inverse of the sum of the inverses");
         public static readonly FuncDef harmean = new FuncDef("harmean", Variadic, (e, a) => new RealVal((real)a.Length / a.Sum(p => 1m / p.AsReal), a[0].FormatHint), "harmonic mean");
         public static readonly FuncDef geomean = new FuncDef("geomean", Variadic, (e, a) => {
             var prod = (real)1;
             foreach (var p in a) prod *= p.AsReal;
             return new RealVal(RMath.Pow(prod, 1m / a.Length), a[0].FormatHint);
         }, "geometric mean");
+
+        public static readonly FuncDef togray = new FuncDef("togray", (e, a) => {
+            var bin = a[0].AsLong;
+            return new RealVal(bin ^ ((bin >> 1) & 0x7fffffffffffffff), a[0].FormatHint);
+        }, "Convert the value from binary to gray-code.");
+
+        public static readonly FuncDef fromgray = new FuncDef("fromgray", (e, a) => {
+            var gray = a[0].AsLong;
+            var bin = gray;
+            for (int i = 1; i < 64; i++) {
+                bin = bin ^ ((gray >> i) & 0x7fffffffffffffff);
+            }
+            return new RealVal(bin, a[0].FormatHint);
+        }, "Convert the value from gray-code to binary.");
 
         public static readonly FuncDef now = new FuncDef("now", 0, (e, a) => new RealVal(UnixTime.FromLocalTime(DateTime.Now)).FormatDateTime(), "now");
 
