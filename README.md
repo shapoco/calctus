@@ -156,6 +156,8 @@ If you use RPN operation, it is recommended to turn off the automatic input of "
 |`Ctrl` + `Shift` + `Del`|Delete all expressions|
 |`Ctrl` + `Shift` + `Up`|Item move up|
 |`Ctrl` + `Shift` + `Down`|Item move down|
+|`F1`:new:|Help|
+|`F5`:new:|Recalculation|
 |`F8`|Radix Mode = Auto|
 |`F9`|Radix Mode = Dec|
 |`F10`|Radix Mode = Hex|

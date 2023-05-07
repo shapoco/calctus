@@ -267,7 +267,13 @@ namespace Shapoco.Calctus.UI {
 
         private void MainForm_KeyDown(object sender, KeyEventArgs e) {
             e.SuppressKeyPress = true;
-            if (e.KeyCode == Keys.F8) {
+            if (e.KeyCode == Keys.F1) {
+                helpButton.PerformClick();
+            }
+            else if (e.KeyCode == Keys.F5) {
+                calcListBox.Recalc();
+            }
+            else if (e.KeyCode == Keys.F8) {
                 this.RadixMode = RadixMode.Auto;
             }
             else if (e.KeyCode == Keys.F9) {
