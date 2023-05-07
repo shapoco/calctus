@@ -119,7 +119,7 @@ namespace Shapoco.Calctus.UI {
         protected override void OnFontChanged(EventArgs e) {
             base.OnFontChanged(e);
             int fontSize = (int)Font.Size;
-            Size = new Size(fontSize * 15, fontSize * 20);
+            Size = new Size(fontSize * 20, fontSize * 20);
             _desc.Height = fontSize * 5;
         }
 
