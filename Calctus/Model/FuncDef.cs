@@ -209,7 +209,7 @@ namespace Shapoco.Calctus.Model {
             var max = a[1].AsReal;
             return new RealVal(min + (real)rng.NextDouble() * (max - min));
         }, "Generate random value from min to max.");
-        public static readonly FuncDef rand32 = new FuncDef("rand64", 0, (e, a) => new RealVal(rng.Next()), "Generate 32bit random integer.");
+        public static readonly FuncDef rand32 = new FuncDef("rand32", 0, (e, a) => new RealVal(rng.Next()), "Generate 32bit random integer.");
         public static readonly FuncDef rand64 = new FuncDef("rand64", 0, (e, a) => new RealVal((((long)rng.Next()) << 32) | ((long)rng.Next())), "Generate 64bit random integer.");
 
         public static readonly FuncDef assert = new FuncDef("assert", (e, a) => { if (!a[0].AsBool) { e.RequestHighlight(); } return a[0]; }, "Highlight the expression if the argument is false.");
