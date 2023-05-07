@@ -45,8 +45,6 @@ namespace Shapoco.Calctus.UI {
         }
 
         public void SetKey(string value) {
-            value = value.ToLower();
-
             string lastLabel = null;
             if (_list.SelectedIndex >= 0) {
                 lastLabel = _list.Items[_list.SelectedIndex].ToString();
@@ -57,20 +55,25 @@ namespace Shapoco.Calctus.UI {
 
             // 先頭一致を探す
             foreach (var c in _provider.GetCandidates()) {
-                if (c.Id.ToLower().StartsWith(value)) {
+                if (c.Id.StartsWith(value, StringComparison.OrdinalIgnoreCase)) {
                     _list.Items.Add(c);
-                    if (c.Id.ToLower() == value || c.Label == lastLabel) {
+                    if (c.Id.Equals(value, StringComparison.OrdinalIgnoreCase) || c.Label == lastLabel) {
                         selIndex = _list.Items.Count - 1;
                     }
                 }
             }
+
             // 先頭以外に一致するものを探す
             foreach (var c in _provider.GetCandidates()) {
-                if (c.Id.IndexOf(value) > 0 && _list.Items.IndexOf(c) == -1) {
+                if (c.Id.IndexOf(value, StringComparison.OrdinalIgnoreCase) >= 0 && _list.Items.IndexOf(c) == -1) {
                     _list.Items.Add(c);
-                    if (c.Id.ToLower() == value || c.Label == lastLabel) {
-                        selIndex = _list.Items.Count - 1;
-                    }
+                }
+            }
+
+            // 説明文に一致するものを探す
+            foreach (var c in _provider.GetCandidates()) {
+                if (c.Description.IndexOf(value, StringComparison.OrdinalIgnoreCase) >=- 0 && _list.Items.IndexOf(c) == -1) {
+                    _list.Items.Add(c);
                 }
             }
 
