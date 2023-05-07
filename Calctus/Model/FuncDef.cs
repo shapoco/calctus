@@ -11,7 +11,6 @@ namespace Shapoco.Calctus.Model {
         public const int Variadic = -1;
 
         private static readonly Random rng = new Random((int)DateTime.Now.Ticks);
-        private static long longRandom() => (((long)rng.Next()) << 32) | ((long)rng.Next());
 
         public readonly string Name;
         public readonly int ArgCount;
@@ -210,13 +209,8 @@ namespace Shapoco.Calctus.Model {
             var max = a[1].AsReal;
             return new RealVal(min + (real)rng.NextDouble() * (max - min));
         }, "Generate random value from min to max.");
-
-        public static readonly FuncDef randi64 = new FuncDef("randi64", 0, (e, a) => new RealVal(longRandom()), "Generate 64bit random integer.");
-        public static readonly FuncDef randi64_2 = new FuncDef("randi64", 2, (e, a) => {
-            var min = a[0].AsLong;
-            var max = a[1].AsLong;
-            return new RealVal(min + RMath.Floor((real)rng.NextDouble() * (max - min)));
-        }, "Generate 64bit random from min to max.");
+        public static readonly FuncDef rand32 = new FuncDef("rand64", 0, (e, a) => new RealVal(rng.Next()), "Generate 32bit random integer.");
+        public static readonly FuncDef rand64 = new FuncDef("rand64", 0, (e, a) => new RealVal((((long)rng.Next()) << 32) | ((long)rng.Next())), "Generate 64bit random integer.");
 
         public static readonly FuncDef assert = new FuncDef("assert", (e, a) => { if (!a[0].AsBool) { e.RequestHighlight(); } return a[0]; }, "Highlight the expression if the argument is false.");
 
