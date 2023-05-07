@@ -77,6 +77,7 @@ A calculator for Windows.
 |Date Time|`now()`, `fromyears(x)`, `fromdays(x)`, `fromhours(x)`, `fromminutes(x)`, `fromseconds(x)`, `toyears(x)`, `todays(x)`, `tohours(x)`, `tominutes(x)`, `toseconds(x)`|`Double`|
 |Color|`rgb(r,g,b)`, `rgb(rgb)`, `hsv2rgb(h,s,v)`, `hsv2rgb_r(h,s,v)`, `hsv2rgb_g(h,s,v)`, `hsv2rgb_b(h,s,v)`, `rgb2hsv_h(rgb)`, `rgb2hsv_s(rgb)`, `rgb2hsv_v(rgb)`, `hsl2rgb(h,s,l)`, `hsl2rgb_r(h,s,l)`, `hsl2rgb_g(h,s,l)`, `hsl2rgb_b(h,s,l)`, `rgb2hsl_h(rgb)`, `rgb2hsl_s(rgb)`, `rgb2hsl_l(rgb)`, `yuv2rgb(y,u,v)`, `yuv2rgb(yuv)`, `yuv2rgb_r(yuv)`, `yuv2rgb_g(yuv)`, `yuv2rgb_b(yuv)`, `rgb2yuv(r,g,b)`, `rgb2yuv(rgb)`, `rgb2yuv_y(rgb)`, `rgb2yuv_u(rgb)`, `rgb2yuv_v(rgb)`|`Decimal`|
 |E-series|Rounding to the E-series value: `eXfloor(x)`, `eXceil(x)`, `eXround(x)`<br>Calculation of voltage divider resistance: `eXratiol(x)`, `eXratioh(x)`<br> (`X`=`3`, `6`, `12`, `24`, `48`, `96`, `192`)|`Decimal`|
+|Prime Number:new:|`isprime(x)`, `prime(n)`|`Int64`|
 |Random:new:|`rand()`, `rand(min, max)`, `rand32()`, `rand64()`|`Decimal`, `Int64`|
 |Assertion:new:|`assert(expr)`|`Boolean`|
 |Special:new:|`poll(x)`, `alarm(x)`|any|
@@ -85,8 +86,8 @@ A calculator for Windows.
 
 |Symbol|Value|
 |:--|--:|
-|`PI`|`3.1415926535897931`|
-|`E`|`2.7182818284590451`|
+|`PI`|`3.1415926535897932384626433833`|
+|`E`|`2.7182818284590452353602874714`|
 |`INT_MIN`|`-2,147,483,648`|
 |`INT_MAX`|`2,147,483,647`|
 |`UINT_MIN`|`0`|

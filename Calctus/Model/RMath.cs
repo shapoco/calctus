@@ -179,5 +179,37 @@ namespace Shapoco.Calctus.Model {
         // 最大最小
         public static real Max(real a, real b) => a > b ? a : b;
         public static real Min(real a, real b) => a < b ? a : b;
+
+        /// <summary>素数判定</summary>
+        public static bool IsPrime(real a) {
+            if (a >= (1L << 52)) throw new ArgumentOutOfRangeException();
+            return IsPrime((long)a);
+        }
+
+        /// <summary>素数判定</summary>
+        public static bool IsPrime(long a) {
+            if (a < 2) return false;
+            if (a == 2) return true;
+            if (a % 2 == 0) return false;
+            if (a >= (1L << 52)) throw new ArgumentOutOfRangeException();
+
+            long n = (long)Math.Sqrt(a);
+            for (long i = 3; i <= n; i += 2) {
+                if (a % i == 0) return false;
+            }
+            return true;
+        }
+
+        /// <summary>n番目の素数</summary>
+        public static real Prime(int n) {
+            if (n < 0 || n > 100000) throw new ArgumentOutOfRangeException();
+            int a = 2;
+            for (int i = 0; i < n; i++) {
+                a++;
+                while (!IsPrime(a)) a++;
+            }
+            return a;
+        }
+
     }
 }
