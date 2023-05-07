@@ -151,7 +151,7 @@ If you use RPN operation, it is recommended to turn off the automatic input of "
 |`Ctrl` + `C`|Copy|
 |`Ctrl` + `Shift` + `C`|Copy all expressions and answers|
 |`Ctrl` + `V`|Copy|
-|`Ctrl` + `Shift` + `V`:new:|Paste with options|
+|`Ctrl` + `Shift` + `V`:new:|Multiline Paste|
 |`Ctrl` + `Shift` + `N`:new:|Insert current time|
 |`Ctrl` + `Shift` + `Del`|Delete all expressions|
 |`Ctrl` + `Shift` + `Up`|Item move up|

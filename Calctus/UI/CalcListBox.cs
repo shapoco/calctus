@@ -49,7 +49,7 @@ namespace Shapoco.Calctus.UI {
         private ToolStripMenuItem _cmenuTextCut = new ToolStripMenuItem("Cut Text");
         private ToolStripMenuItem _cmenuTextCopy = new ToolStripMenuItem("Copy Text");
         private ToolStripMenuItem _cmenuTextPaste = new ToolStripMenuItem("Paste Text");
-        private ToolStripMenuItem _cmenuTextPasteWithOptions = new ToolStripMenuItem("Paste Text with Options...");
+        private ToolStripMenuItem _cmenuTextMultilinePaste = new ToolStripMenuItem("Paste Multiline Text");
         private ToolStripMenuItem _cmenuTextDelete = new ToolStripMenuItem("Delete Text");
         private ToolStripSeparator _cmenuSep0 = new ToolStripSeparator();
         private ToolStripMenuItem _cmenuCopyAll = new ToolStripMenuItem("Copy All");
@@ -88,7 +88,7 @@ namespace Shapoco.Calctus.UI {
             _cmenuTextCut.ShortcutKeyDisplayString = "Ctrl+X";
             _cmenuTextCopy.ShortcutKeyDisplayString = "Ctrl+C";
             _cmenuTextPaste.ShortcutKeyDisplayString = "Ctrl+V";
-            _cmenuTextPasteWithOptions.ShortcutKeyDisplayString = "Ctrl+Shift+V";
+            _cmenuTextMultilinePaste.ShortcutKeyDisplayString = "Ctrl+Shift+V";
             _cmenuCopyAll.ShortcutKeyDisplayString = "Ctrl+Shift+C";
             _cmenuInsertTime.ShortcutKeyDisplayString = "Ctrl+Shift+N";
             _cmenuMoveUp.ShortcutKeyDisplayString = "Ctrl+Shift+Up";
@@ -100,7 +100,7 @@ namespace Shapoco.Calctus.UI {
             _cmenuTextCut.Click += (sender, e) => { this.SelectedItem?.OnCutText(); };
             _cmenuTextCopy.Click += (sender, e) => { this.SelectedItem?.OnCopyText(); };
             _cmenuTextPaste.Click += (sender, e) => { this.SelectedItem?.OnPasteText(); };
-            _cmenuTextPasteWithOptions.Click += (sender, e) => { this.PasteWithOptions(); };
+            _cmenuTextMultilinePaste.Click += (sender, e) => { this.MultilinePaste(); };
             _cmenuTextDelete.Click += (sender, e) => { this.SelectedItem?.OnDeleteText(); };
             _cmenuCopyAll.Click += (sender, e) => { this.CopyAll(); };
             _cmenuInsertTime.Click += (sender, e) => { this.SelectedItem?.OnInsertTime(); };
@@ -115,7 +115,7 @@ namespace Shapoco.Calctus.UI {
                 _cmenuTextCut,
                 _cmenuTextCopy,
                 _cmenuTextPaste,
-                _cmenuTextPasteWithOptions,
+                _cmenuTextMultilinePaste,
                 _cmenuTextDelete,
                 _cmenuSep0,
                 _cmenuCopyAll,
@@ -194,7 +194,7 @@ namespace Shapoco.Calctus.UI {
             try {
                 var text = Clipboard.GetText();
                 if (text.IndexOf("\n") > 0) {
-                    PasteWithOptions();
+                    MultilinePaste();
                 }
                 else {
                     item.OnPasteText();
@@ -203,7 +203,7 @@ namespace Shapoco.Calctus.UI {
             catch { }
         }
 
-        public void PasteWithOptions() {
+        public void MultilinePaste() {
             int insertPos = SelectedIndex;
             if (insertPos < 0) insertPos = _items.Count;
 
@@ -492,7 +492,7 @@ namespace Shapoco.Calctus.UI {
             }
             else if (e.KeyCode == Keys.V && e.Modifiers == (Keys.Control | Keys.Shift)) {
                 e.Handled = true;
-                PasteWithOptions();
+                MultilinePaste();
             }
             else if (e.KeyCode == Keys.Delete && e.Modifiers == Keys.Shift) {
                 e.Handled = true;
