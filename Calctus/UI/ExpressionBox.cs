@@ -903,7 +903,7 @@ namespace Shapoco.Calctus.UI {
                 _candForm.BackColor = Color.FromArgb(32, 32, 32);
                 _candForm.ForeColor = this.ForeColor;
                 selectCandKey();
-                var x = _candStart < _chars.Length ? (int)_chars[_candStart].X : 0;
+                var x = (_candStart < _chars.Length ? (int)_chars[_candStart].X : 0) - _scrollX;
                 _candForm.Location = this.PointToScreen(new Point(x, this.Height));
                 updateCandList();
             }
