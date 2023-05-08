@@ -7,6 +7,7 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 using System.Windows.Forms;
+using System.Globalization;
 
 namespace Shapoco.Calctus.UI {
     public partial class CreateTimerForm : Form {
@@ -31,7 +32,7 @@ namespace Shapoco.Calctus.UI {
             _timer.Tick += delegate { updateTimeoutTime(); };
 
             setMode(true);
-            dateTimeText.Text = DateTime.Now.ToString("yyyy/MM/dd HH:mm:ss");
+            dateTimeText.Text = DateTime.Now.ToString("yyyy/MM/dd HH:mm:ss", CultureInfo.InvariantCulture);
         }
 
         public DateTime TimeoutTime {
@@ -71,7 +72,7 @@ namespace Shapoco.Calctus.UI {
 
         private void updateTimeoutTime() {
             if (_timerMode) {
-                timeoutTimeLabel.Text = "Timeout time: " + TimeoutTime.ToString("yyyy/MM/dd HH:mm:ss");
+                timeoutTimeLabel.Text = "Timeout time: " + TimeoutTime.ToString("yyyy/MM/dd HH:mm:ss", CultureInfo.InvariantCulture);
             }
             else {
                 timeoutTimeLabel.Text = "";

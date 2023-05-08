@@ -5,6 +5,7 @@ using System.Text;
 using System.Text.RegularExpressions;
 using System.Threading.Tasks;
 using Shapoco.Calctus.Model.Standard;
+using System.Globalization;
 
 namespace Shapoco.Calctus.Model.Syntax {
     class DateTimeFormatter : NumberFormatter {
@@ -32,6 +33,6 @@ namespace Shapoco.Calctus.Model.Syntax {
             }
         }
 
-        public static string ToString(DateTime t) => "#" + t.ToString("yyyy/MM/dd HH:mm:ss") + "#";
+        public static string ToString(DateTime t) => "#" + t.ToString("yyyy/MM/dd HH:mm:ss", CultureInfo.InvariantCulture) + "#";
     }
 }

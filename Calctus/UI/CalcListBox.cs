@@ -8,6 +8,7 @@ using System.Drawing;
 using Shapoco.Calctus.Model;
 using Shapoco.Calctus.Parser;
 using System.Runtime.InteropServices;
+using System.Globalization;
 
 namespace Shapoco.Calctus.UI {
     class CalcListBox : ContainerControl, ICandidateProvider {
@@ -237,7 +238,7 @@ namespace Shapoco.Calctus.UI {
             DialogOpening?.Invoke(this, EventArgs.Empty);
             if (dlg.ShowDialog() == DialogResult.OK) {
                 var time = dlg.TimeoutTime;
-                var expr = "alarm(#" + time.ToString("yyyy/MM/dd HH:mm:ss") + "#)";
+                var expr = "alarm(#" + time.ToString("yyyy/MM/dd HH:mm:ss", CultureInfo.InvariantCulture) + "#)";
                 InsertExpr(expr);
             }
             dlg.Dispose();
