@@ -237,7 +237,12 @@ namespace Shapoco.Calctus.UI {
 
         private void _hotkey_HotKeyPush(object sender, EventArgs e) {
             if (GetForegroundWindow() == this.Handle) {
-                this.WindowState = FormWindowState.Minimized;
+                if (notifyIcon.Visible) {
+                    this.Visible = false;
+                }
+                else {
+                    this.WindowState = FormWindowState.Minimized;
+                }
             }
             else {
                 showForeground();
