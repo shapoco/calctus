@@ -38,6 +38,7 @@ namespace Shapoco.Calctus.UI {
             _ansBox.ReadOnly = true;
             _exprBox.KeyDown += box_KeyDown;
             _exprBox.KeyUp += box_KeyUp;
+            _exprBox.KeyDown += _exprBox_KeyDown;
             _exprBox.KeyPress += exprBox_KeyPress;
             _exprBox.TextChanged += exprBox_TextChanged;
             _exprBox.GotFocus += box_GotFocus;
@@ -247,6 +248,20 @@ namespace Shapoco.Calctus.UI {
         private void exprBox_TextChanged(object sender, EventArgs e) {
             ExpressionChanged?.Invoke(this, EventArgs.Empty);
             _isFreshAnswer = false;
+        }
+
+        private void _exprBox_KeyDown(object sender, KeyEventArgs e) {
+            if (e.Modifiers == Keys.None && e.KeyCode == Keys.Home) {
+                var s = Settings.Instance;
+                var box = (ExpressionBox)sender;
+                var allSelected = (box.SelectionStart == 0) && (box.SelectionLength == box.Text.Length);
+                if (s.Input_AutoInputAns && allSelected && _isFreshAnswer) {
+                    box.SelectedText = CalcListBox.LastAnsId;
+                    box.SelectionStart = 0;
+                    box.SelectionLength = 0;
+                    e.Handled = true;
+                }
+            }
         }
 
         private void exprBox_KeyPress(object sender, KeyPressEventArgs e) {

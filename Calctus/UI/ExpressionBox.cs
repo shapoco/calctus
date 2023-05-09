@@ -432,6 +432,12 @@ namespace Shapoco.Calctus.UI {
             _pressedModifiers = e.Modifiers;
             if (_pressedMouseButtons != MouseButtons.None) return;
 
+            base.OnKeyDown(e);
+            if (e.Handled) {
+                restartCursorBlink();
+                return;
+            }
+
             if (e.KeyCode == Keys.Left) {
                 // カーソルを左へ移動
                 e.Handled = true;
@@ -610,8 +616,6 @@ namespace Shapoco.Calctus.UI {
             }
             
             restartCursorBlink();
-
-            if (!e.Handled) base.OnKeyDown(e);
         }
 
         protected override void OnKeyUp(KeyEventArgs e) {
