@@ -432,6 +432,39 @@ namespace Shapoco.Calctus.UI {
             _pressedModifiers = e.Modifiers;
             if (_pressedMouseButtons != MouseButtons.None) return;
 
+            if (_candForm != null) {
+                if (e.Modifiers == Keys.None && e.KeyCode == Keys.Up) {
+                    e.Handled = true;
+                    _candForm.SelectUp();
+                }
+                else if (e.Modifiers == Keys.None && e.KeyCode == Keys.Down) {
+                    e.Handled = true;
+                    _candForm.SelectDown();
+                }
+                else if (e.Modifiers == Keys.None && (e.KeyCode == Keys.Tab || e.KeyCode == Keys.Return)) {
+                    e.Handled = true;
+                    var item = _candForm.SelectedItem;
+                    if (item != null) {
+                        var id = item.Id;
+                        setSelection(_candStart, _candEnd);
+                        if (item.IsFunction) {
+                            SelectedText = id + "()";
+                            SelectionStart = _candStart + id.Length + 1;
+                        }
+                        else {
+                            SelectedText = id;
+                            SelectionStart = _candStart + id.Length;
+                        }
+                    }
+                    hideCandidates();
+                }
+            }
+
+            if (e.Handled) {
+                restartCursorBlink();
+                return;
+            }
+            
             base.OnKeyDown(e);
             if (e.Handled) {
                 restartCursorBlink();
@@ -493,37 +526,6 @@ namespace Shapoco.Calctus.UI {
                 setSelection(selStart, selEnd);
 
                 if (_candForm != null && (SelectionStart > _candEnd || SelectionLength > 0)) {
-                    hideCandidates();
-                }
-            }
-            else if (e.Modifiers == Keys.None && e.KeyCode == Keys.Up) {
-                if (_candForm != null) {
-                    e.Handled = true;
-                    _candForm.SelectUp();
-                }
-            }
-            else if (e.Modifiers == Keys.None && e.KeyCode == Keys.Down) {
-                if (_candForm != null) {
-                    e.Handled = true;
-                    _candForm.SelectDown();
-                }
-            }
-            else if (e.Modifiers == Keys.None && (e.KeyCode == Keys.Tab || e.KeyCode == Keys.Return)) {
-                if (_candForm != null) {
-                    e.Handled = true;
-                    var item = _candForm.SelectedItem;
-                    if (item != null) {
-                        var id = item.Id;
-                        setSelection(_candStart, _candEnd);
-                        if (item.IsFunction) {
-                            SelectedText = id + "()";
-                            SelectionStart = _candStart + id.Length + 1;
-                        }
-                        else {
-                            SelectedText = id;
-                            SelectionStart = _candStart + id.Length;
-                        }
-                    }
                     hideCandidates();
                 }
             }
