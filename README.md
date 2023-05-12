@@ -82,6 +82,27 @@ A calculator for Windows.
 |Assertion:new:|`assert(expr)`|`Boolean`|
 |Special:new:|`poll(x)`, `alarm(x)`|any|
 
+### External Script Call as Functions
+
+Calctus can call scripts such as Python as functions.
+
+Function arguments are passed to the script as command line arguments, and the standard output of the script is returned to Calctus.
+
+1. Open the `Scripts` tab in the Calctus Settings dialog.
+2. Check `Enable External Script Functions`.
+3. If you want to specify the folder where you want to place the scripts, click the `Change` button to specify the folder.
+4. Click the `Open` button. If asked if you want to create the folder, click `Yes`.
+5. Place a python script `add.py` like the following in the folder.
+    ```python
+    import sys
+    a = float(sys.argv[1])
+    b = float(sys.argv[2])
+    print(a + b)
+    ```
+6. After closing the settings dialog, the `add` function is now available.
+
+If you wish to use a scripting language other than Python, please register the extension and interpreter in the `Scripts` tab of the Settings dialog.
+
 ### Constants
 
 |Symbol|Value|
