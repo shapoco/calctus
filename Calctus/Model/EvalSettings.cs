@@ -11,5 +11,6 @@ namespace Shapoco.Calctus.Model {
         public int ENotationExpPositiveMin { get; set; } = 15;
         public int ENotationExpNegativeMax { get; set; } = -5;
         public bool ENotationAlignment { get; set; } = false;
+        public bool AllowExternalFunctions { get; set; } = false;
     }
 }

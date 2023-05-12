@@ -138,7 +138,7 @@ namespace Shapoco.Calctus.Model {
         }
 
         public override Val Eval(EvalContext ctx) {
-            var f = FuncDef.Match(Name, Args.Length);
+            var f = FuncDef.Match(Name, Args.Length, ctx.Settings.AllowExternalFunctions);
             var args = Args.Select(p => p.Eval(ctx)).ToArray();
             return f.Call(ctx, args);
         }

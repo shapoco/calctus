@@ -246,8 +246,9 @@ namespace Shapoco.Calctus.Model {
         }
 
         /// <summary>指定された条件にマッチするネイティブ関数を返す</summary>
-        public static FuncDef Match(Token tok, int numArgs) {
-            var f = EnumAllFunctions().FirstOrDefault(p => p.Name == tok.Text && (p.ArgCount == numArgs || p.ArgCount == Variadic));
+        public static FuncDef Match(Token tok, int numArgs, bool allowExtermals) {
+            var funcs = allowExtermals ? EnumAllFunctions() : NativeFunctions;
+            var f = funcs.FirstOrDefault(p => p.Name == tok.Text && (p.ArgCount == numArgs || p.ArgCount == Variadic));
             if (f == null) {
                 throw new Shapoco.Calctus.Parser.SyntaxError(tok.Position, "function " + tok + "(" + numArgs + ") was not found.");
             }

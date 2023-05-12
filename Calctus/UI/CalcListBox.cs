@@ -623,6 +623,7 @@ namespace Shapoco.Calctus.UI {
             ctx.Settings.ENotationExpPositiveMin = s.NumberFormat_Exp_PositiveMin;
             ctx.Settings.ENotationExpNegativeMax = s.NumberFormat_Exp_NegativeMax;
             ctx.Settings.ENotationAlignment = s.NumberFormat_Exp_Alignment;
+            ctx.Settings.AllowExternalFunctions = true;
 
             var rpn = getRpnCommand();
             int rpnStart = (rpn != null) ? rpn.StartIndex : -1;
