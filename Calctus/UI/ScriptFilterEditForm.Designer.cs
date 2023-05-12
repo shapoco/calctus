@@ -24,7 +24,7 @@
         /// </summary>
         private void InitializeComponent() {
             this.closeButton = new System.Windows.Forms.Button();
-            this.executable = new System.Windows.Forms.TextBox();
+            this.command = new System.Windows.Forms.TextBox();
             this.filter = new System.Windows.Forms.TextBox();
             this.label2 = new System.Windows.Forms.Label();
             this.label1 = new System.Windows.Forms.Label();
@@ -46,12 +46,12 @@
             this.closeButton.Text = "Close";
             this.closeButton.UseVisualStyleBackColor = true;
             // 
-            // executable
+            // command
             // 
-            this.executable.Location = new System.Drawing.Point(81, 37);
-            this.executable.Name = "executable";
-            this.executable.Size = new System.Drawing.Size(310, 19);
-            this.executable.TabIndex = 3;
+            this.command.Location = new System.Drawing.Point(81, 37);
+            this.command.Name = "command";
+            this.command.Size = new System.Drawing.Size(310, 19);
+            this.command.TabIndex = 3;
             // 
             // filter
             // 
@@ -65,9 +65,9 @@
             this.label2.AutoSize = true;
             this.label2.Location = new System.Drawing.Point(12, 40);
             this.label2.Name = "label2";
-            this.label2.Size = new System.Drawing.Size(61, 12);
+            this.label2.Size = new System.Drawing.Size(55, 12);
             this.label2.TabIndex = 2;
-            this.label2.Text = "Executable";
+            this.label2.Text = "Command";
             // 
             // label1
             // 
@@ -142,7 +142,7 @@
             this.Controls.Add(this.exeBrowseButton);
             this.Controls.Add(this.closeButton);
             this.Controls.Add(this.parameter);
-            this.Controls.Add(this.executable);
+            this.Controls.Add(this.command);
             this.Controls.Add(this.filter);
             this.Controls.Add(this.label3);
             this.Controls.Add(this.label2);
@@ -153,7 +153,7 @@
             this.Name = "ScriptFilterEditForm";
             this.ShowInTaskbar = false;
             this.StartPosition = System.Windows.Forms.FormStartPosition.CenterParent;
-            this.Text = "InterpreterEditForm";
+            this.Text = "Script Filter";
             this.ResumeLayout(false);
             this.PerformLayout();
 
@@ -162,7 +162,7 @@
         #endregion
 
         private System.Windows.Forms.Button closeButton;
-        private System.Windows.Forms.TextBox executable;
+        private System.Windows.Forms.TextBox command;
         private System.Windows.Forms.TextBox filter;
         private System.Windows.Forms.Label label2;
         private System.Windows.Forms.Label label1;

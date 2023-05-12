@@ -663,7 +663,7 @@
             // 
             // columnHeader5
             // 
-            this.columnHeader5.Text = "Executable";
+            this.columnHeader5.Text = "Command";
             this.columnHeader5.Width = 128;
             // 
             // tabPage1

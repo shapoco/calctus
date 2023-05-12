@@ -25,7 +25,7 @@ namespace Shapoco.Calctus.UI {
             _fileDialog.Filter = "Executables (*.exe)|*.exe|All Files (*.*)|*.*";
 
             filter.TextChanged += TextBox_TextChanged;
-            executable.TextChanged += TextBox_TextChanged;
+            command.TextChanged += TextBox_TextChanged;
             parameter.TextChanged += TextBox_TextChanged;
             exeBrowseButton.Click += ExeBrowseButton_Click;
             closeButton.Click += CloseButton_Click;
@@ -38,21 +38,21 @@ namespace Shapoco.Calctus.UI {
                 _target = value;
                 if (_target != null) {
                     filter.Text = _target.Filter;
-                    executable.Text = _target.Command;
+                    command.Text = _target.Command;
                     parameter.Text = _target.Parameter;
                 }
             }
         }
 
         private void TextBox_TextChanged(object sender, EventArgs e) {
-            executable.Enabled = exeBrowseButton.Enabled = (filter.Text != ScriptFilter.ExeFilter);
+            command.Enabled = exeBrowseButton.Enabled = (filter.Text != ScriptFilter.ExeFilter);
             closeButton.Enabled = !string.IsNullOrEmpty(filter.Text.Trim());
         }
 
         private void ExeBrowseButton_Click(object sender, EventArgs e) {
-            _fileDialog.FileName = executable.Text;
+            _fileDialog.FileName = command.Text;
             if (_fileDialog.ShowDialog() == DialogResult.OK) {
-                executable.Text = _fileDialog.FileName;
+                command.Text = _fileDialog.FileName;
             }
         }
 
@@ -60,7 +60,7 @@ namespace Shapoco.Calctus.UI {
             if (!closeButton.Enabled) return;
             if (_target == null) return;
             _target.Filter = filter.Text.Trim();
-            _target.Command = executable.Text.Trim();
+            _target.Command = command.Text.Trim();
             _target.Parameter = parameter.Text.Trim();
         }
     }
