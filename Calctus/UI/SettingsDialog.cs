@@ -11,6 +11,8 @@ using Shapoco.Calctus.Model;
 
 namespace Shapoco.Calctus.UI {
     public partial class SettingsDialog : Form {
+        private FolderBrowserDialog _folderBrowserDialog = new FolderBrowserDialog();
+
         public SettingsDialog() {
             InitializeComponent();
 
@@ -75,6 +77,18 @@ namespace Shapoco.Calctus.UI {
             constDelButton.Click += ConstDelButton_Click;
             constEditButton.Click += ConstEditButton_Click;
 
+            Script_Enable.CheckedChanged += (sender, e) => { s.Script_Enable = ((CheckBox)sender).Checked; scriptGroup.Enabled = ((CheckBox)sender).Checked; };
+            Script_FolderPath.TextChanged += (sender, e) => { s.Script_FolderPath = ((TextBox)sender).Text; };
+            scriptFilterList.SelectedIndexChanged += ScriptFilterList_SelectedIndexChanged;
+            scriptFilterList.DoubleClick += ScriptFilterList_DoubleClick;
+            scriptFolderChangeButton.Click += ScriptFolderChangeButton_Click;
+            scriptFolderOpenButton.Click += ScriptFolderOpenButton_Click;
+            scriptFilterAddButton.Click += ScriptFilterAddButton_Click;
+            scriptFilterDelButton.Click += ScriptFilterDelButton_Click;
+            scriptFilterEditButton.Click += ScriptFilterEditButton_Click;
+            scriptFilterMoveUp.Click += ScriptFilterMoveUp_Click;
+            scriptFilterMoveDown.Click += ScriptFilterMoveDown_Click;
+
             closeButton.Click += delegate { this.Close(); };
             this.FormClosed += SettingsDialog_FormClosed;
             this.Load += SettingsDialog_Load;
@@ -112,6 +126,17 @@ namespace Shapoco.Calctus.UI {
                 }
                 constDelButton.Enabled = false;
                 constEditButton.Enabled = false;
+
+                foreach(var sf in s.GetScriptFilters()) {
+                    addScriptFilter(sf);
+                }
+                scriptFilterDelButton.Enabled = false;
+                scriptFilterEditButton.Enabled = false;
+                scriptFilterMoveUp.Enabled = false;
+                scriptFilterMoveDown.Enabled = false;
+
+                Script_Enable.Checked = scriptGroup.Enabled = s.Script_Enable;
+                Script_FolderPath.Text = s.Script_FolderPath;
             }
             catch { }
         }
@@ -162,12 +187,117 @@ namespace Shapoco.Calctus.UI {
             return lvi;
         }
 
-        private void SettingsDialog_FormClosed(object sender, FormClosedEventArgs e) {
-            var list = new List<UserConstant>();
-            foreach(var item in constList.Items) {
-                list.Add((UserConstant)((ListViewItem)item).Tag);
+        private void ScriptFolderChangeButton_Click(object sender, EventArgs e) {
+            _folderBrowserDialog.Description = "Specify the folder where the script files will be located.";
+            _folderBrowserDialog.SelectedPath = Script_FolderPath.Text;
+            if (_folderBrowserDialog.ShowDialog() == DialogResult.OK) {
+                Script_FolderPath.Text = _folderBrowserDialog.SelectedPath;
             }
-            Settings.Instance.SetUserConstants(list);
+        }
+
+        private void ScriptFolderOpenButton_Click(object sender, EventArgs e) {
+            try {
+                if (!System.IO.Directory.Exists(Script_FolderPath.Text)) {
+                    if (DialogResult.Yes == MessageBox.Show(
+                            "The folder does not exist. Do you want to create it?", 
+                            Application.ProductName, MessageBoxButtons.YesNo, MessageBoxIcon.Question) ) {
+                        System.IO.Directory.CreateDirectory(Script_FolderPath.Text);
+                    }
+                    else {
+                        return;
+                    }
+                }
+                System.Diagnostics.Process.Start(Script_FolderPath.Text);
+            }
+            catch(Exception ex) {
+                MessageBox.Show(ex.Message, Application.ProductName, MessageBoxButtons.OK, MessageBoxIcon.Error);
+            }
+        }
+
+        private void ScriptFilterList_SelectedIndexChanged(object sender, EventArgs e) {
+            var selected = (scriptFilterList.SelectedItems.Count == 1);
+            scriptFilterDelButton.Enabled = selected;
+            scriptFilterEditButton.Enabled = selected;
+            scriptFilterMoveUp.Enabled = selected && scriptFilterList.SelectedIndices[0] > 0;
+            scriptFilterMoveDown.Enabled = selected && scriptFilterList.SelectedIndices[0] < scriptFilterList.Items.Count - 1;
+        }
+
+        private void ScriptFilterList_DoubleClick(object sender, EventArgs e) {
+            if (scriptFilterList.SelectedItems.Count <= 0) return;
+            scriptFilterEditButton.PerformClick();
+        }
+
+        private void ScriptFilterAddButton_Click(object sender, EventArgs e) {
+            scriptFilterList.SelectedIndices.Clear();
+            addScriptFilter(new ScriptFilter("*.*", "", ScriptFilter.DefaultParameter)).Selected = true;
+            scriptFilterEditButton.PerformClick();
+        }
+
+        private void ScriptFilterDelButton_Click(object sender, EventArgs e) {
+            if (scriptFilterList.SelectedItems.Count <= 0) return;
+            scriptFilterList.Items.Remove(scriptFilterList.SelectedItems[0]);
+        }
+
+        private void ScriptFilterEditButton_Click(object sender, EventArgs e) {
+            if (scriptFilterList.SelectedItems.Count <= 0) return;
+            var lvi = scriptFilterList.SelectedItems[0];
+            var sf = (ScriptFilter)lvi.Tag;
+            var dlg = new ScriptFilterEditForm();
+            dlg.Target = sf;
+            dlg.ShowDialog();
+            dlg.Dispose();
+            setScriptFilterListItem(lvi, sf);
+        }
+
+        private void ScriptFilterMoveUp_Click(object sender, EventArgs e) {
+            if (scriptFilterList.SelectedItems.Count <= 0) return;
+            var index = scriptFilterList.SelectedIndices[0];
+            if (index > 0) {
+                var lvi = scriptFilterList.SelectedItems[0];
+                scriptFilterList.Items.Remove(lvi);
+                scriptFilterList.Items.Insert(index - 1, lvi);
+            }
+        }
+
+        private void ScriptFilterMoveDown_Click(object sender, EventArgs e) {
+            if (scriptFilterList.SelectedItems.Count <= 0) return;
+            var index = scriptFilterList.SelectedIndices[0];
+            if (index < scriptFilterList.Items.Count - 1) {
+                var lvi = scriptFilterList.SelectedItems[0];
+                scriptFilterList.Items.Remove(lvi);
+                scriptFilterList.Items.Insert(index + 1, lvi);
+            }
+        }
+
+        private ListViewItem addScriptFilter(ScriptFilter sf) {
+            var lvi = new ListViewItem();
+            lvi.SubItems.Add("");
+            lvi.SubItems.Add("");
+            setScriptFilterListItem(lvi, sf);
+            scriptFilterList.Items.Add(lvi);
+            return lvi;
+        }
+
+        private void setScriptFilterListItem(ListViewItem lvi, ScriptFilter sf) {
+            lvi.Tag = sf;
+            lvi.Text = sf.Filter;
+            lvi.SubItems[1].Text = sf.CommandLabel;
+            lvi.SubItems[2].Text = sf.ParameterLabel ;
+        }
+
+        private void SettingsDialog_FormClosed(object sender, FormClosedEventArgs e) {
+            var consts = new List<UserConstant>();
+            foreach(var item in constList.Items) {
+                consts.Add((UserConstant)((ListViewItem)item).Tag);
+            }
+            Settings.Instance.SetUserConstants(consts);
+
+            var filters = new List<ScriptFilter>();
+            foreach (var item in scriptFilterList.Items) {
+                filters.Add((ScriptFilter)((ListViewItem)item).Tag);
+            }
+            Settings.Instance.SetScriptFilters(filters);
+
             Settings.Instance.Save();
         }
     }

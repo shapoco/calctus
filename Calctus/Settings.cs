@@ -82,5 +82,45 @@ namespace Shapoco.Calctus {
         public int Window_Width { get; set; } = 640;
         public int Window_Height { get; set; } = 480;
 
+        public bool Script_Enable { get; set; } = false;
+        public string Script_FolderPath { get; set; } = 
+            System.IO.Path.Combine(System.IO.Path.Combine(Environment.GetFolderPath(Environment.SpecialFolder.Personal), Application.ProductName), "Scripts");
+        public string Script_Filter { get; set; } = "*.ps1\tpowershell\t-File \\\"%s\\\" %p\n*.py\tpython\t";
+        public ScriptFilter[] GetScriptFilters() {
+            var tsv = Script_Filter;
+            var rows = tsv.Split('\n');
+            var list = new List<ScriptFilter>();
+            foreach (var row in rows) {
+                var cols = row.Split('\t');
+                if (cols.Length == 3) {
+                    for (int i = 0; i < cols.Length; i++) {
+                        cols[i] = AppDataManager.UnescapeValue(cols[i]);
+                    }
+                    list.Add(new ScriptFilter(cols[0], cols[1], cols[2]));
+                }
+            }
+            return list.ToArray();
+        }
+        public void SetScriptFilters(IEnumerable<ScriptFilter> filters) {
+            var sb = new StringBuilder();
+            foreach (var sf in filters) {
+                var cols = new string[] { sf.Filter, sf.Command, sf.Parameter };
+                for (int i = 0; i < cols.Length; i++) {
+                    cols[i] = AppDataManager.EscapeValue(cols[i]);
+                }
+                sb.Append(string.Join("\t", cols) + '\n');
+            }
+            Script_Filter = sb.ToString();
+        }
+        public ScriptFilter GetScriptFilterFromPath(string path) {
+            var filters = GetScriptFilters();
+            foreach(var sf in filters) {
+                if (ScriptFilter.IsWildcardMatch(sf.Filter, System.IO.Path.GetFileName( path))) {
+                    return sf;
+                }
+            }
+            return null;
+        }
+
     }
 }

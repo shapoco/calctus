@@ -48,6 +48,7 @@ namespace Shapoco.Calctus.UI {
             this.KeyPreview = true; 
             this.KeyDown += MainForm_KeyDown;
             this.Load += MainForm_Load;
+            this.Activated += MainForm_Activated;
             this.Shown += MainForm_Shown;
             this.VisibleChanged += MainForm_VisibleChanged;
             this.FormClosing += MainForm_FormClosing;
@@ -114,6 +115,10 @@ namespace Shapoco.Calctus.UI {
                 this.Size = _startupWindowSize; 
             }
             catch { }
+        }
+
+        private void MainForm_Activated(object sender, EventArgs e) {
+            ExtFuncDef.ScanScripts();
         }
 
         private void MainForm_Shown(object sender, EventArgs e) {
@@ -276,6 +281,7 @@ namespace Shapoco.Calctus.UI {
                 helpButton.PerformClick();
             }
             else if (e.KeyCode == Keys.F5) {
+                ExtFuncDef.ScanScripts();
                 calcListBox.Recalc();
             }
             else if (e.KeyCode == Keys.F8) {

@@ -678,7 +678,7 @@ namespace Shapoco.Calctus.UI {
             // 計算結果をもとに入力補完候補を生成する
             ctx.Undef(LastAnsId, true);
             var list = new List<Candidate>();
-            foreach (var f in FuncDef.NativeFunctions) {
+            foreach (var f in FuncDef.EnumAllFunctions()) {
                 list.Add(new Candidate(f.Name, f.ToString(), f.Description, true));
             }
             foreach (var v in ctx.EnumVars()) {

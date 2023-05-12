@@ -14,7 +14,7 @@ namespace Shapoco.Calctus.Model {
 
         public readonly string Name;
         public readonly int ArgCount;
-        public readonly Func<EvalContext, Val[], Val> Call;
+        public Func<EvalContext, Val[], Val> Call { get; protected set; }
         public readonly string Description;
 
         public FuncDef(string name, int nargs, Func<EvalContext, Val[], Val> method, string desc) {
@@ -227,8 +227,8 @@ namespace Shapoco.Calctus.Model {
         }, "Alarms at a specified time.");
 
         /// <summary>ネイティブ関数の一覧</summary>
-        public static FuncDef[] NativeFunctions = EnumFunctions().ToArray();
-        private static IEnumerable<FuncDef> EnumFunctions() {
+        public static FuncDef[] NativeFunctions = EnumNativeFunctions().ToArray();
+        private static IEnumerable<FuncDef> EnumNativeFunctions() {
             return
                 typeof(FuncDef)
                 .GetFields()
@@ -236,13 +236,23 @@ namespace Shapoco.Calctus.Model {
                 .Select(p => (FuncDef)p.GetValue(null));
         }
 
+        public static IEnumerable<FuncDef> EnumAllFunctions() {
+            if (Settings.Instance.Script_Enable) {
+                return ExtFuncDef.ExternalFunctions.Concat(NativeFunctions);
+            }
+            else {
+                return NativeFunctions;
+            }
+        }
+
         /// <summary>指定された条件にマッチするネイティブ関数を返す</summary>
         public static FuncDef Match(Token tok, int numArgs) {
-            var f = NativeFunctions.FirstOrDefault(p => p.Name == tok.Text && (p.ArgCount == numArgs || p.ArgCount == Variadic));
+            var f = EnumAllFunctions().FirstOrDefault(p => p.Name == tok.Text && (p.ArgCount == numArgs || p.ArgCount == Variadic));
             if (f == null) {
                 throw new Shapoco.Calctus.Parser.SyntaxError(tok.Position, "function " + tok + "(" + numArgs + ") was not found.");
             }
             return f;
         }
+
     }
 }

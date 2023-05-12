@@ -55,8 +55,10 @@
     <Compile Include="Calctus\Assert.cs" />
     <Compile Include="Calctus\Model\BoolVal.cs" />
     <Compile Include="Calctus\Model\EvalSettings.cs" />
+    <Compile Include="Calctus\Model\ExtFuncDef.cs" />
     <Compile Include="Calctus\Model\QMath.cs" />
     <Compile Include="Calctus\Model\quad.cs" />
+    <Compile Include="Calctus\Model\ScriptFilter.cs" />
     <Compile Include="Calctus\Model\Syntax\BinaryPrefixFormatter.cs" />
     <Compile Include="Calctus\Model\Syntax\SiPrefixFormatter.cs" />
     <Compile Include="Calctus\Model\ufixed113.cs" />
@@ -124,6 +126,12 @@
     </Compile>
     <Compile Include="Calctus\UI\Hotkey.cs" />
     <Compile Include="Calctus\UI\ICandidateProvider.cs" />
+    <Compile Include="Calctus\UI\ScriptFilterEditForm.cs">
+      <SubType>Form</SubType>
+    </Compile>
+    <Compile Include="Calctus\UI\ScriptFilterEditForm.Designer.cs">
+      <DependentUpon>ScriptFilterEditForm.cs</DependentUpon>
+    </Compile>
     <Compile Include="Calctus\UI\KeyCodeBox.cs">
       <SubType>Component</SubType>
     </Compile>
@@ -157,6 +165,9 @@
     </EmbeddedResource>
     <EmbeddedResource Include="Calctus\UI\CreateTimerForm.resx">
       <DependentUpon>CreateTimerForm.cs</DependentUpon>
+    </EmbeddedResource>
+    <EmbeddedResource Include="Calctus\UI\ScriptFilterEditForm.resx">
+      <DependentUpon>ScriptFilterEditForm.cs</DependentUpon>
     </EmbeddedResource>
     <EmbeddedResource Include="Calctus\UI\MainForm.resx">
       <DependentUpon>MainForm.cs</DependentUpon>
