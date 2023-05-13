@@ -74,7 +74,6 @@ namespace Shapoco.Calctus.Model {
             foreach(var p in Directory.GetFiles(s.Script_FolderPath)) {
                 yield return new ExtFuncDef(p);
             }
-            Console.WriteLine("SCAN");
         }
 
         public static void ScanScripts() {

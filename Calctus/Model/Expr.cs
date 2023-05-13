@@ -67,7 +67,12 @@ namespace Shapoco.Calctus.Model {
             if (Method == OpDef.Frac) {
                 var a = A.Eval(e);
                 var b = B.Eval(e);
-                return FracVal.Normalize(new frac(a.AsReal, b.AsReal), a.FormatHint);
+                if (b is FracVal) {
+                    return a.AsRealVal().Div(e, b);
+                }
+                else {
+                    return FracVal.Normalize(new frac(a.AsReal, b.AsReal), a.FormatHint);
+                }
             }
             if (Method == OpDef.Pow) return FuncDef.pow.Call(e, new Val[] { A.Eval(e), B.Eval(e) });
             if (Method == OpDef.Mul) return A.Eval(e).Mul(e, B.Eval(e));
