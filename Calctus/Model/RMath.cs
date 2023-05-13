@@ -117,8 +117,10 @@ namespace Shapoco.Calctus.Model {
         /// 分母・分子が max以下の分数で x に最も近いものを返す
         /// </summary>
         public static void FindFrac(decimal x, out decimal nume, out decimal deno, decimal maxNume = FindFracMaxDeno, decimal maxDeno = FindFracMaxDeno) {
-            int sign = Sign(x);
-            x = Abs(x);
+            if (maxNume < 1) throw new ArgumentOutOfRangeException();
+            if (maxDeno < 1) throw new ArgumentOutOfRangeException();
+            if (maxNume > 1000000000000m) throw new ArgumentOutOfRangeException();
+            if (maxDeno > 1000000000000m) throw new ArgumentOutOfRangeException();
 
             if (x == 0) {
                 nume = 0;
@@ -127,15 +129,13 @@ namespace Shapoco.Calctus.Model {
             }
             
             if (x == Math.Floor(x)) {
-                nume = x * sign;
+                nume = x;
                 deno = 1;
                 return;
             }
 
-            if (maxNume < 1) throw new ArgumentOutOfRangeException();
-            if (maxDeno < 1) throw new ArgumentOutOfRangeException();
-            if (maxNume > 1000000000000m) throw new ArgumentOutOfRangeException();
-            if (maxDeno > 1000000000000m) throw new ArgumentOutOfRangeException();
+            int sign = Sign(x);
+            x = Abs(x);
 
             var xis = new List<decimal>();
 
