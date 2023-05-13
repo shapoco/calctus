@@ -125,6 +125,13 @@ namespace Shapoco.Calctus.Model {
                 deno = 1;
                 return;
             }
+            
+            if (x == Math.Floor(x)) {
+                nume = x * sign;
+                deno = 1;
+                return;
+            }
+
             if (maxNume < 1) throw new ArgumentOutOfRangeException();
             if (maxDeno < 1) throw new ArgumentOutOfRangeException();
             if (maxNume > 1000000000000m) throw new ArgumentOutOfRangeException();
