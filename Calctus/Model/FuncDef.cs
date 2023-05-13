@@ -53,7 +53,7 @@ namespace Shapoco.Calctus.Model {
         public static readonly FuncDef datetime = new FuncDef("datetime", (e, a) => a[0].FormatDateTime(), "Converts the value to datetime representation.");
 
         public static readonly FuncDef real = new FuncDef("real", (e, a) => a[0].AsRealVal().FormatReal(), "Converts the value to a real number.");
-        public static readonly FuncDef frac = new FuncDef("frac", (e, a) => new FracVal(RMath.FindFrac(a[0].AsReal, decimal.MaxValue, decimal.MaxValue)), "Converts value to a fraction.");
+        public static readonly FuncDef frac = new FuncDef("frac", (e, a) => new FracVal(RMath.FindFrac(a[0].AsReal)), "Converts value to a fraction.");
         public static readonly FuncDef frac_2 = new FuncDef("frac", 2, (e, a) => new FracVal(RMath.FindFrac(a[0].AsReal, a[1].AsReal, a[1].AsReal), a[0].FormatHint), "Converts value to a fraction.");
         public static readonly FuncDef frac_3 = new FuncDef("frac", 3, (e, a) => new FracVal(RMath.FindFrac(a[0].AsReal, a[1].AsReal, a[2].AsReal), a[0].FormatHint), "Converts value to a fraction.");
 

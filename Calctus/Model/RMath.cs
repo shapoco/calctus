@@ -7,6 +7,8 @@ using System.Threading.Tasks;
 namespace Shapoco.Calctus.Model {
     /// <summary>real に対する数学関数の定義</summary>
     static class RMath {
+        public const decimal FindFracMaxDeno = 1000000000000m;
+
         // 指数関数
         // 暫定的に System.Math の関数を使用する
         public static real Pow(real a, real b) => (real)Math.Pow((double)a.Raw, (double)b.Raw);
@@ -106,7 +108,7 @@ namespace Shapoco.Calctus.Model {
         /// <summary>
         /// 分母・分子が max以下の分数で x に最も近いものを返す
         /// </summary>
-        public static frac FindFrac(decimal x, decimal maxNume = decimal.MaxValue, decimal maxDeno = decimal.MaxValue) {
+        public static frac FindFrac(decimal x, decimal maxNume = FindFracMaxDeno, decimal maxDeno = FindFracMaxDeno) {
             FindFrac(x, out decimal nume, out decimal deno, maxNume, maxDeno);
             return new frac(nume, deno);
         }
@@ -114,40 +116,52 @@ namespace Shapoco.Calctus.Model {
         /// <summary>
         /// 分母・分子が max以下の分数で x に最も近いものを返す
         /// </summary>
-        public static void FindFrac(decimal x, out decimal nume, out decimal deno, decimal maxNume = decimal.MaxValue, decimal maxDeno = decimal.MaxValue) {
+        public static void FindFrac(decimal x, out decimal nume, out decimal deno, decimal maxNume = FindFracMaxDeno, decimal maxDeno = FindFracMaxDeno) {
             int sign = Sign(x);
             x = Abs(x);
 
-            if (x == 0) throw new ArgumentOutOfRangeException();
+            if (x == 0) {
+                nume = 0;
+                deno = 1;
+                return;
+            }
             if (maxNume < 1) throw new ArgumentOutOfRangeException();
             if (maxDeno < 1) throw new ArgumentOutOfRangeException();
+            if (maxNume > 1000000000000m) throw new ArgumentOutOfRangeException();
+            if (maxDeno > 1000000000000m) throw new ArgumentOutOfRangeException();
 
-            // Stern–Brocot tree
-            decimal a = 0, b = 1;
-            decimal c = 1, d = 0;
-            decimal bestDiff = decimal.MaxValue;
+            var xis = new List<decimal>();
+
+            // 連分数展開
             nume = 1;
             deno = 1;
             while (true) {
-                var ac = a + c;
-                var bd = b + d;
-                if (ac > maxNume || bd > maxDeno) break;
-                var q = ac / bd;
-                var diff = Abs(x - q);
-                if (diff < bestDiff) {
-                    bestDiff = diff;
-                    nume = ac;
-                    deno = bd;
+                var xi = Math.Floor(x);
+                xis.Add(xi);
+
+                try {
+                    var n = xi;
+                    var d = 1m;
+                    for (int i = xis.Count - 2; i >= 0; i--) {
+                        var tmp = n;
+                        n = n * xis[i] + d;
+                        d = tmp;
+                        var gcd = Gcd(d, n);
+                        d /= gcd;
+                        n /= gcd;
+                    }
+                    if (n > maxNume || d > maxDeno) break;
+                    nume = n;
+                    deno = d;
                 }
-                if (diff == 0) break;
-                if (x < q) {
-                    c = ac;
-                    d = bd;
+                catch {
+                    break;
                 }
-                else {
-                    a = ac;
-                    b = bd;
-                }
+
+                if (Math.Abs(nume / deno - x) < 1e-20m) break;
+                if (Math.Abs(x - xi) < 1e-20m) break;
+
+                x = 1m / (x - xi);
             }
 
             nume *= sign;
