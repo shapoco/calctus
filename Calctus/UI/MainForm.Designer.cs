@@ -293,6 +293,7 @@ namespace Shapoco.Calctus.UI
             // 
             // calcListBox
             // 
+            this.calcListBox.BackColor = System.Drawing.Color.FromArgb(((int)(((byte)(32)))), ((int)(((byte)(32)))), ((int)(((byte)(32)))));
             this.calcListBox.Dock = System.Windows.Forms.DockStyle.Fill;
             this.calcListBox.Location = new System.Drawing.Point(0, 25);
             this.calcListBox.Name = "calcListBox";
