@@ -7,7 +7,7 @@ using System.Threading.Tasks;
 
 namespace Shapoco.Calctus.Model.Syntax {
     class CharFormatter : NumberFormatter {
-        public CharFormatter() : base(new Regex("'([^'\\\\]|\\\\[abfnrtv\\\\\'0]|\\\\o[0-7]{3}|\\\\x[0-9a-fA-F]{2}|\\\\u[0-9a-fA-F]{4})'")) { }
+        public CharFormatter() : base(new Regex("'([^'\\\\]|\\\\[abfnrtv\\\\\'0]|\\\\o[0-7]{3}|\\\\x[0-9a-fA-F]{2}|\\\\u[0-9a-fA-F]{4})'"), FormatPriority.LeftPriority) { }
 
         public override Val Parse(Match m) {
             var tok = m.Groups[1].Value;

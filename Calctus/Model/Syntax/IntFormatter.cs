@@ -11,7 +11,7 @@ namespace Shapoco.Calctus.Model.Syntax {
         public string Prefix;
         private int _captureGroupIndex;
 
-        public IntFormatter(int radix, string prefix, Regex regex, int groupIndex) : base(regex) {
+        public IntFormatter(int radix, string prefix, Regex regex, int groupIndex, FormatPriority priority) : base(regex, priority) {
             this.Radix = radix;
             this.Prefix = prefix;
             this._captureGroupIndex = groupIndex;

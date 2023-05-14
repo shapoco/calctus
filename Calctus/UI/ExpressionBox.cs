@@ -450,7 +450,12 @@ namespace Shapoco.Calctus.UI {
                         var id = item.Id;
                         setSelection(_candStart, _candEnd);
                         if (item.IsFunction) {
-                            SelectedText = id + "()";
+                            if (Settings.Instance.Input_AutoCloseBrackets) {
+                                SelectedText = id + "()";
+                            }
+                            else {
+                                SelectedText = id + "(";
+                            }
                             SelectionStart = _candStart + id.Length + 1;
                         }
                         else {
@@ -643,10 +648,14 @@ namespace Shapoco.Calctus.UI {
                 }
                 text = text.Insert(selStart, e.KeyChar.ToString());
 
-                if (e.KeyChar == '(') {
-                    if (Settings.Instance.Input_AutoCloseBrackets) {
-                        // 閉じ括弧の補完
-                        text = text.Insert(selStart + 1, ")");
+                if (Settings.Instance.Input_AutoCloseBrackets) {
+                    // 閉じ括弧の補完
+                    switch (e.KeyChar) {
+                        case '(': text = text.Insert(selStart + 1, ")"); break;
+                        case '[': text = text.Insert(selStart + 1, "]"); break;
+                        case '{': text = text.Insert(selStart + 1, "}"); break;
+                        case '\'': text = text.Insert(selStart + 1, "'"); break;
+                        case '\"': text = text.Insert(selStart + 1, "\""); break;
                     }
                 }
 
@@ -655,7 +664,7 @@ namespace Shapoco.Calctus.UI {
 
                 selStart = this.SelectionStart;
                 var prevChar = selStart >= 2 ? text[selStart - 2] : '\0';
-                if (!isIdChar(prevChar) && isFirstIdChar(e.KeyChar)) {
+                if (!isIdChar(prevChar) && prevChar != '\'' && prevChar != '\"' && prevChar != '#' && prevChar != '\\' && isFirstIdChar(e.KeyChar)) {
                     if (Settings.Instance.Input_IdAutoCompletion) {
                         // 識別子の先頭文字が入力されたら補完候補を表示する
                         showCandidates();

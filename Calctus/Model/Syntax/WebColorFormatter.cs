@@ -8,7 +8,7 @@ using Shapoco.Calctus.Model.Standard;
 
 namespace Shapoco.Calctus.Model.Syntax {
     class WebColorFormatter : NumberFormatter {
-        public WebColorFormatter() : base(new Regex(@"#([0-9a-fA-F]+)")) { }
+        public WebColorFormatter() : base(new Regex(@"#([0-9a-fA-F]+)"), FormatPriority.LeftPriority) { }
 
         public override Val Parse(Match m) {
             var tok = m.Groups[1].Value;

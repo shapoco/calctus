@@ -80,12 +80,12 @@ namespace Shapoco.Calctus.Model {
 
         // 算術演算
         // 右項に精度を合わせるため UpConvert する
-        public Val Add(EvalContext ctx, Val b) => this.UpConvert(ctx, b).OnAdd(ctx, b).Format(FormatHint);
-        public Val Sub(EvalContext ctx, Val b) => this.UpConvert(ctx, b).OnSub(ctx, b).Format(FormatHint);
-        public Val Mul(EvalContext ctx, Val b) => this.UpConvert(ctx, b).OnMul(ctx, b).Format(FormatHint);
-        public Val Div(EvalContext ctx, Val b) => this.UpConvert(ctx, b).OnDiv(ctx, b).Format(FormatHint);
-        public Val IDiv(EvalContext ctx, Val b) => this.UpConvert(ctx, b).OnIDiv(ctx, b).Format(FormatHint);
-        public Val Mod(EvalContext ctx, Val b) => this.UpConvert(ctx, b).OnMod(ctx, b).Format(FormatHint);
+        public Val Add(EvalContext ctx, Val b) => this.UpConvert(ctx, b).OnAdd(ctx, b).Format(FormatHint.Select(b.FormatHint));
+        public Val Sub(EvalContext ctx, Val b) => this.UpConvert(ctx, b).OnSub(ctx, b).Format(FormatHint.Select(b.FormatHint));
+        public Val Mul(EvalContext ctx, Val b) => this.UpConvert(ctx, b).OnMul(ctx, b).Format(FormatHint.Select(b.FormatHint));
+        public Val Div(EvalContext ctx, Val b) => this.UpConvert(ctx, b).OnDiv(ctx, b).Format(FormatHint.Select(b.FormatHint));
+        public Val IDiv(EvalContext ctx, Val b) => this.UpConvert(ctx, b).OnIDiv(ctx, b).Format(FormatHint.Select(b.FormatHint));
+        public Val Mod(EvalContext ctx, Val b) => this.UpConvert(ctx, b).OnMod(ctx, b).Format(FormatHint.Select(b.FormatHint));
         protected abstract Val OnAdd(EvalContext ctx, Val b);
         protected abstract Val OnSub(EvalContext ctx, Val b);
         protected abstract Val OnMul(EvalContext ctx, Val b);
@@ -105,25 +105,25 @@ namespace Shapoco.Calctus.Model {
         protected abstract Val OnArithShiftR(EvalContext ctx, Val b);
 
         // 比較演算
-        public Val Grater(EvalContext ctx, Val b) => UpConvert(ctx, b).OnGrater(ctx, b).Format(FormatHint);
-        public Val Less(EvalContext ctx, Val b) => b.UpConvert(ctx, this).OnGrater(ctx, this).Format(FormatHint);
-        public Val Equal(EvalContext ctx, Val b) => UpConvert(ctx, b).OnEqual(ctx, b).Format(FormatHint);
+        public Val Grater(EvalContext ctx, Val b) => UpConvert(ctx, b).OnGrater(ctx, b);
+        public Val Less(EvalContext ctx, Val b) => b.UpConvert(ctx, this).OnGrater(ctx, this);
+        public Val Equal(EvalContext ctx, Val b) => UpConvert(ctx, b).OnEqual(ctx, b);
         public Val GraterEqual(EvalContext ctx, Val b) {
             var a = UpConvert(ctx, b);
-            return a.OnGrater(ctx, b).OnLogicOr(ctx, a.OnEqual(ctx, b)).Format(FormatHint);
+            return a.OnGrater(ctx, b).OnLogicOr(ctx, a.OnEqual(ctx, b));
         }
         public Val LessEqual(EvalContext ctx, Val b) {
             b = b.UpConvert(ctx, this);
-            return b.OnGrater(ctx, this).OnLogicOr(ctx, b.OnEqual(ctx, this)).Format(FormatHint);
+            return b.OnGrater(ctx, this).OnLogicOr(ctx, b.OnEqual(ctx, this));
         }
-        public Val NotEqual(EvalContext ctx, Val b) => UpConvert(ctx, b).OnEqual(ctx, b).OnLogicNot(ctx).Format(FormatHint);
+        public Val NotEqual(EvalContext ctx, Val b) => UpConvert(ctx, b).OnEqual(ctx, b).OnLogicNot(ctx);
         protected abstract Val OnGrater(EvalContext ctx, Val b);
         protected abstract Val OnEqual(EvalContext ctx, Val b);
 
         // ビット演算
-        public Val BitAnd(EvalContext ctx, Val b) => this.UpConvert(ctx, b).OnBitAnd(ctx, b).Format(FormatHint);
-        public Val BitXor(EvalContext ctx, Val b) => this.UpConvert(ctx, b).OnBitXor(ctx, b).Format(FormatHint);
-        public Val BitOr(EvalContext ctx, Val b) => this.UpConvert(ctx, b).OnBitOr(ctx, b).Format(FormatHint);
+        public Val BitAnd(EvalContext ctx, Val b) => this.UpConvert(ctx, b).OnBitAnd(ctx, b).Format(FormatHint.Select(b.FormatHint));
+        public Val BitXor(EvalContext ctx, Val b) => this.UpConvert(ctx, b).OnBitXor(ctx, b).Format(FormatHint.Select(b.FormatHint));
+        public Val BitOr(EvalContext ctx, Val b) => this.UpConvert(ctx, b).OnBitOr(ctx, b).Format(FormatHint.Select(b.FormatHint));
         protected abstract Val OnBitAnd(EvalContext ctx, Val b);
         protected abstract Val OnBitXor(EvalContext ctx, Val b);
         protected abstract Val OnBitOr(EvalContext ctx, Val b);

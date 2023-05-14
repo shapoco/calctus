@@ -9,7 +9,7 @@ using System.Globalization;
 
 namespace Shapoco.Calctus.Model.Syntax {
     class DateTimeFormatter : NumberFormatter {
-        public DateTimeFormatter() : base(new Regex(@"#(\d+/\d+/\d+|\d+:\d+:\d+(\.\d+)?|\d+/\d+/\d+ \d+:\d+:\d+(\.\d+)?)#")) { }
+        public DateTimeFormatter() : base(new Regex(@"#(\d+/\d+/\d+|\d+:\d+:\d+(\.\d+)?|\d+/\d+/\d+ \d+:\d+:\d+(\.\d+)?)#"), FormatPriority.LeftPriority) { }
 
         public override Val Parse(Match m) {
             var tok = m.Groups[1].Value;

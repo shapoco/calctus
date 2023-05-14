@@ -8,9 +8,11 @@ using System.Threading.Tasks;
 namespace Shapoco.Calctus.Model.Syntax {
     abstract class NumberFormatter {
         public readonly Regex Pattern;
+        public readonly FormatPriority Priority;
 
-        public NumberFormatter(Regex ptn) {
-            this.Pattern = ptn;
+        public NumberFormatter(Regex ptn, FormatPriority priority) {
+            Pattern = ptn;
+            Priority = priority;
         }
 
         public abstract Val Parse(Match m);
@@ -25,11 +27,11 @@ namespace Shapoco.Calctus.Model.Syntax {
             }
         }
 
-        public static readonly IntFormatter CStyleInt = new IntFormatter(10, "", new Regex(@"([1-9][0-9]*|0)([eE][+-]?[0-9]+)?"), 0 );
+        public static readonly IntFormatter CStyleInt = new IntFormatter(10, "", new Regex(@"([1-9][0-9]*|0)([eE][+-]?[0-9]+)?"), 0, FormatPriority.Neutral);
         public static readonly RealFormatter CStyleReal = new RealFormatter();
-        public static readonly IntFormatter CStyleHex = new IntFormatter(16, "0x", new Regex(@"0[xX]([0-9a-fA-F]+)"), 1);
-        public static readonly IntFormatter CStyleOct = new IntFormatter(8, "0", new Regex(@"0([0-7]+)"), 1);
-        public static readonly IntFormatter CStyleBin = new IntFormatter(2, "0b", new Regex(@"0[bB]([01]+)"), 1);
+        public static readonly IntFormatter CStyleHex = new IntFormatter(16, "0x", new Regex(@"0[xX]([0-9a-fA-F]+)"), 1, FormatPriority.LeftPriority);
+        public static readonly IntFormatter CStyleOct = new IntFormatter(8, "0", new Regex(@"0([0-7]+)"), 1, FormatPriority.LeftPriority);
+        public static readonly IntFormatter CStyleBin = new IntFormatter(2, "0b", new Regex(@"0[bB]([01]+)"), 1, FormatPriority.LeftPriority);
         public static readonly CharFormatter CStyleChar = new CharFormatter();
         public static readonly SiPrefixFormatter SiPrefixed = new SiPrefixFormatter();
         public static readonly BinaryPrefixFormatter BinaryPrefixed = new BinaryPrefixFormatter();

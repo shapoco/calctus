@@ -61,6 +61,7 @@
     <Compile Include="Calctus\Model\ScriptFilter.cs" />
     <Compile Include="Calctus\Model\Syntax\BinaryPrefixFormatter.cs" />
     <Compile Include="Calctus\Model\Syntax\SiPrefixFormatter.cs" />
+    <Compile Include="Calctus\Model\Syntax\Type.cs" />
     <Compile Include="Calctus\Model\ufixed113.cs" />
     <Compile Include="Calctus\Model\frac.cs" />
     <Compile Include="Calctus\Model\FracVal.cs" />
