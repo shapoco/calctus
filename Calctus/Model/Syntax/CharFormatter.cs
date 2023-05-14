@@ -71,7 +71,7 @@ namespace Shapoco.Calctus.Model.Syntax {
                 case '\'': return "'\\''";
                 case '\0': return "'\\0'";
                 default:
-                    if (char.IsLetterOrDigit(cval) || char.IsPunctuation(cval) || char.IsSeparator(cval) || char.IsSymbol(cval) || cval == ' ') {
+                    if (char.IsLetterOrDigit(cval) || char.IsPunctuation(cval) || char.IsSeparator(cval) || char.IsSymbol(cval)) {
                         return "'" + cval + "'";
                     }
                     else {
