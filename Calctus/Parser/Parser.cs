@@ -10,13 +10,15 @@ using Shapoco.Calctus.Model;
 namespace Shapoco.Calctus.Parser {
     class Parser {
         private Token _buff = null;
-        private Lexer _lex;
-        public Lexer Lexer => _lex;
+        private Token _lastToken = null;
+        private TokenQueue _queue;
+        public TokenQueue Queue => _queue;
 
-        public static Expr Parse(string s) => new Parser(s).Pop(last: true);
+        public static Expr Parse(string s) => Parse(new Lexer(s).PopToEnd());
+        public static Expr Parse(TokenQueue q) => new Parser(q).Pop(last: true);
 
-        public Parser(string exprStr) {
-            _lex = new Lexer(exprStr);
+        public Parser(TokenQueue queue) {
+            _queue = queue;
         }
 
         public Expr Pop(bool last = true) {
@@ -47,12 +49,12 @@ namespace Shapoco.Calctus.Parser {
             }
 
             if (vals.Count != 1) {
-                throw new SyntaxError(_lex.Position, "Internal Error: stack broken");
+                throw new CalctusError("Internal Error: stack broken");
             }
 
             var expr = vals.Pop();
             if (last && !Eos) {
-                throw new SyntaxError(_lex.Position, "Operator missing");
+                throw new ParserError(expr.Token, "Operator missing");
             }
             return expr;
         }
@@ -90,28 +92,29 @@ namespace Shapoco.Calctus.Parser {
                 }
             }
             else if (EndOfExpr) {
-                throw new SyntaxError(_lex.Position, "Operand missing");
+                throw new ParserError(_lastToken, "Operand missing");
             }
             else {
-                throw new SyntaxError(_lex.Position, "Invalid operand: '" + Peek() + "'");
+                var nextToken = Peek();
+                throw new ParserError(nextToken, "Invalid operand: '" + nextToken + "'");
             }
         }
 
         public Token Peek() {
             if (_buff == null) {
-                _buff = _lex.Pop();
+                _buff = _queue.Dequeue();
             }
             return _buff;
         }
 
         public Token Read() {
             if (_buff != null) {
-                var ret = _buff;
+                _lastToken = _buff;
                 _buff = null;
-                return ret;
+                return _lastToken;
             }
             else {
-                return Peek();
+                return _lastToken = Peek();
             }
         }
 
@@ -147,13 +150,13 @@ namespace Shapoco.Calctus.Parser {
 
         public void Expect(string s) {
             if (!ReadIf(s)) {
-                throw new SyntaxError(_lex.Position, "Missing: '" + s + "'");
+                throw new ParserError(Peek(), "Missing: '" + s + "'");
             }
         }
 
         public void Expect(TokenType typ, out Token tok) {
             if (!ReadIf(typ, out tok)) {
-                throw new SyntaxError(_lex.Position, "Missing: '" + typ + "'");
+                throw new ParserError(Peek(), "Missing: '" + typ + "'");
             }
         }
     }

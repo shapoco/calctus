@@ -7,7 +7,7 @@ using System.Threading.Tasks;
 using Shapoco.Calctus.Parser;
 
 namespace Shapoco.Calctus.Model {
-    class EvalError : Exception {
+    class EvalError : CalctusError {
         public readonly EvalContext Context;
         public readonly Token Token;
         public EvalError(EvalContext ctx, Token tok, string msg) : base(msg) {

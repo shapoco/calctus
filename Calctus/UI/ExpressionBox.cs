@@ -7,7 +7,9 @@ using System.Threading.Tasks;
 using System.Windows.Forms;
 using System.Drawing;
 using System.Runtime.InteropServices;
+using Shapoco.Calctus.Model;
 using Shapoco.Calctus.Model.Syntax;
+using Shapoco.Calctus.Parser;
 
 namespace Shapoco.Calctus.UI {
     class ExpressionBox : Control {
@@ -32,6 +34,7 @@ namespace Shapoco.Calctus.UI {
             Color.FromArgb(255, 192, 64),
         };
         public static readonly Color SelectionColor = Color.FromArgb(128, 0, 128, 255);
+        public static readonly Color ErrorColor = Color.FromArgb(192, 255, 128, 128);
 
         // C#でIMEの入力を受けるユーザーコントロールの作成 - Qiita
         // https://qiita.com/takao_mofumofu/items/24c060a1d4f6b3df5c73
@@ -210,6 +213,10 @@ namespace Shapoco.Calctus.UI {
 
         private static Timer _timer = new Timer();
 
+        private TokenQueue _tokens = new TokenQueue();
+        private Expr _expr = null;
+        private Exception _error = null;
+
         private CharInfo[] _chars = new CharInfo[0];
         private TextSegment[] _segments = new TextSegment[0];
         private int _selEnd = 0;
@@ -288,6 +295,17 @@ namespace Shapoco.Calctus.UI {
             set {
                 if (value == _placeHolder) return;
                 _placeHolder = value;
+                this.Invalidate();
+            }
+        }
+
+        public Expr Expr => _expr;
+
+        public Exception Error {
+            get => _error;
+            set {
+                if (value == _error) return;
+                _error = value;
                 this.Invalidate();
             }
         }
@@ -735,6 +753,33 @@ namespace Shapoco.Calctus.UI {
                 }
             }
 
+            if (Text.Length > 0 && _error != null) {
+                // 文法エラーの強調表示
+                int errorStart = 0;
+                int errorEnd = Text.Length;
+                if (_error is LexerError syntaxError) {
+                    errorStart = syntaxError.Position.Index;
+                    errorEnd = errorStart + 1;
+                }
+                else if (_error is ParserError parserError) {
+                    if (parserError.Token != null && parserError.Token.Text != null) {
+                        errorStart = parserError.Token.Position.Index;
+                        errorEnd = errorStart + parserError.Token.Text.Length;
+                    }
+                }
+                else if (_error is EvalError evalError) {
+                    if (evalError.Token != null && evalError.Token.Text != null) {
+                        errorStart = evalError.Token.Position.Index;
+                        errorEnd = errorStart + evalError.Token.Text.Length;
+                    }
+                }
+                int x0 = CursorPosToX(errorStart);
+                int x1 = CursorPosToX(errorEnd);
+                using (var brush = new SolidBrush(ErrorColor)) {
+                    g.FillRectangle(brush, new Rectangle(x0, _offset.Y + _charHeight - 3, x1 - x0, 3));
+                }
+            }
+
             if (this.Focused && _cursorVisible) {
                 // カーソルの描画
                 using (var brush = new SolidBrush(this.ForeColor)) {
@@ -965,8 +1010,36 @@ namespace Shapoco.Calctus.UI {
 
         private void relayoutChars() {
             var text = this.Text;
+
             _chars = new CharInfo[text.Length];
 
+            try {
+                // 字句解析
+                _tokens = new Lexer(text).PopToEnd();
+                int n = _tokens.Count;
+                for (int i = 0; i < n - 1; i++) {
+                    _chars[_tokens[i].Position.Index].FirstOfToken = true;
+                }
+
+                try {
+                    // 構文解析
+                    _expr = Parser.Parser.Parse(_tokens);
+                    _error = null;
+                }
+                catch (Exception ex) {
+                    // 構文解析エラー
+                    _expr = null;
+                    _error = ex;
+                }
+            }
+            catch (Exception ex) {
+                // 字句解析エラー
+                _tokens = new TokenQueue();
+                _expr = null;
+                _error = ex;
+            }
+
+            int xShift = 0;
             using (var g = this.CreateGraphics()) {
                 // 欧文フォントで日本語の文字の位置を知るのに AntiAlias に設定する必要がある
                 g.TextRenderingHint = System.Drawing.Text.TextRenderingHint.AntiAlias;
@@ -983,7 +1056,7 @@ namespace Shapoco.Calctus.UI {
                         sf.SetMeasurableCharacterRanges(new CharacterRange[] { new CharacterRange(i, 1) });
                         var range = g.MeasureCharacterRanges(text, this.Font, new RectangleF(0, 0, int.MaxValue, int.MaxValue), sf);
                         var charSize = range[0].GetBounds(g);
-                        _chars[i].X = charSize.X;
+                        _chars[i].X = xShift + charSize.X;
                         _chars[i].Width = charSize.Width;
                         _chars[i].Style.ForeColor = Color.Transparent;
                         _chars[i].Style.BackColor = Color.Transparent;
@@ -1104,16 +1177,7 @@ namespace Shapoco.Calctus.UI {
                             _chars[start].Style.ForeColor = color;
                             _chars[i].Style.ForeColor = color;
                         }
-                        else {
-                            _chars[i].Style.ForeColor = Color.White;
-                            _chars[i].Style.BackColor = Color.Red;
-                        }
                     }
-                }
-                while (stack.Count > 0) {
-                    int start = stack.Pop();
-                    _chars[start].Style.ForeColor = Color.White;
-                    _chars[start].Style.BackColor = Color.Red;
                 }
             }
 
@@ -1167,6 +1231,7 @@ namespace Shapoco.Calctus.UI {
         }
 
         struct CharInfo {
+            public bool FirstOfToken;
             public float X;
             public float Width;
             public Style Style;

@@ -178,7 +178,7 @@ namespace Shapoco.Calctus.UI {
         public void CopyAll() {
             var sb = new StringBuilder();
             foreach(var item in _items) {
-                sb.Append(item.Expression).Append(" = ").AppendLine(item.Answer);
+                sb.Append(item.ExprText).Append(" = ").AppendLine(item.Answer);
             }
             try {
                 Clipboard.Clear();
@@ -214,13 +214,13 @@ namespace Shapoco.Calctus.UI {
                 var lines = dlg.TextWillBePasted.Split('\n');
                 for (int i = 0; i < lines.Length; i++) {
                     var line = lines[i].Replace("\r", "");
-                    if (i == 0 && insertPos < _items.Count && string.IsNullOrEmpty(_items[insertPos].Expression)) {
+                    if (i == 0 && insertPos < _items.Count && string.IsNullOrEmpty(_items[insertPos].ExprText)) {
                         // 先頭行については挿入先の行が空行の場合はそこを置き換える
-                        _items[insertPos++].Expression = line;
+                        _items[insertPos++].ExprText = line;
                     }
                     else {
                         var item = new CalcListItem(this);
-                        item.Expression = line;
+                        item.ExprText = line;
                         insert(insertPos++, item);
                     }
                 }
@@ -248,12 +248,12 @@ namespace Shapoco.Calctus.UI {
         public void InsertExpr(string expr) {
             var insertPos = SelectedIndex;
             if (insertPos < 0) insertPos = _items.Count;
-            if (insertPos < _items.Count && string.IsNullOrEmpty(_items[insertPos].Expression)) {
-                _items[insertPos].Expression = expr;
+            if (insertPos < _items.Count && string.IsNullOrEmpty(_items[insertPos].ExprText)) {
+                _items[insertPos].ExprText = expr;
             }
             else {
                 var item = new CalcListItem(this);
-                item.Expression = expr;
+                item.ExprText = expr;
                 insert(insertPos, item);
             }
             insert(insertPos + 1, new CalcListItem(this));
@@ -428,7 +428,7 @@ namespace Shapoco.Calctus.UI {
                     for (int i = rpn.StartIndex; i < rpn.EndIndex; i++) {
                         delete(_items[rpn.StartIndex]);
                     }
-                    _items[rpn.StartIndex].Expression = rpn.Expression;
+                    _items[rpn.StartIndex].ExprText = rpn.Expression;
                     index = rpn.StartIndex;
                 }
 
@@ -644,7 +644,8 @@ namespace Shapoco.Calctus.UI {
                             expr = Parser.Parser.Parse(rpn.Expression);
                         }
                         else {
-                            expr = Parser.Parser.Parse(item.Expression);
+                            if (item.ExprError != null) throw item.ExprError;
+                            expr = item.ExprObj;
                         }
                         var val = expr.Eval(ctx);
 
@@ -657,6 +658,7 @@ namespace Shapoco.Calctus.UI {
 
                         item.Answer = val.ToString(ctx);
                         item.Hint = "";
+                        item.ExprError = null;
                         ctx.Ref(LastAnsId, true).Value = val;
 
                         item.IsHighlited = ctx.HighlightRequested;
@@ -667,6 +669,7 @@ namespace Shapoco.Calctus.UI {
                     item.Answer = "";
                     item.Hint = "? " + ex.Message;
                     item.IsHighlited = false;
+                    item.ExprError = ex;
                     ctx.ResetHighlight();
                     ctx.Undef(LastAnsId, true);
                 }
@@ -707,13 +710,13 @@ namespace Shapoco.Calctus.UI {
                 int end = selIndex;
 
                 try {
-                    string rightStr = _items[end - 1].Expression;
+                    string rightStr = _items[end - 1].ExprText;
                     Expr rightExpr = Parser.Parser.Parse(rightStr);
                     if (err == null) {
                         for (int i = 0; i < symbols.Length; i++) {
                             var sym = symbols[i];
                             var item = _items[end - 2 - i];
-                            string leftStr = _items[end - 2 - i].Expression;
+                            string leftStr = _items[end - 2 - i].ExprText;
                             Expr leftExpr = Parser.Parser.Parse(leftStr);
 
                             var op = new BinaryOp(sym, leftExpr, rightExpr);
@@ -738,7 +741,6 @@ namespace Shapoco.Calctus.UI {
                     err = ex;
                 }
 
-                Console.WriteLine(start + ", " + end + ", " + expr + ", " + err);
                 return new RpnCommand(start, end, expr, err);
             }
             else {

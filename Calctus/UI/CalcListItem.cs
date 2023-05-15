@@ -106,7 +106,7 @@ namespace Shapoco.Calctus.UI {
             HasFocus;
 
         public bool IsRpnCommand(out Token[] symbols) {
-            if (Lexer.TryGetRpnSymbols(Expression, out symbols)) {
+            if (Lexer.TryGetRpnSymbols(ExprText, out symbols)) {
                 return true;
             }
             else {
@@ -148,9 +148,16 @@ namespace Shapoco.Calctus.UI {
             }
         }
 
-        public string Expression {
+        public string ExprText {
             get => _exprBox.Text;
             set => _exprBox.Text = value;
+        }
+
+        public Expr ExprObj => _exprBox.Expr;
+
+        public Exception ExprError {
+            get => _exprBox.Error;
+            set => _exprBox.Error = value;
         }
 
         public string Answer {

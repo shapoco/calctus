@@ -57,7 +57,7 @@ namespace Shapoco.Calctus.Parser {
                     return new Token(TokenType.Eos, Position, null);
                 }
                 else {
-                    throw new SyntaxError(Position, "Internal error: Parser overrun");
+                    throw new LexerError(Position, "Internal error: Parser overrun");
                 }
             }
 
@@ -88,8 +88,17 @@ namespace Shapoco.Calctus.Parser {
                 return new Token(TokenType.Symbol, pos, tok);
             }
             else {
-                throw new SyntaxError(pos, "Unknown token starts with: '" + (char)_tr.Peek() + "'");
+                throw new LexerError(pos, "Unknown token starts with: '" + (char)_tr.Peek() + "'");
             }
+        }
+
+        /// <summary>文字列の末端まで全てのトークンを読み出す</summary>
+        public TokenQueue PopToEnd() {
+            var queue = new TokenQueue();
+            while (!_eosReaded) {
+                queue.Enqueue(Pop());
+            }
+            return queue;
         }
 
         /// <summary>

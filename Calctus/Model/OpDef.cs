@@ -99,11 +99,11 @@ namespace Shapoco.Calctus.Model {
         public static OpDef Match(OpType typ, Token tok) {
             var ops = AllOperators.Where(p=>p.Symbol == tok.Text).ToArray();
             if (ops.Length == 0) {
-                throw new Parser.SyntaxError(tok.Position, tok + " is not operator");
+                throw new Parser.LexerError(tok.Position, tok + " is not operator");
             }
             var op = ops.FirstOrDefault(p => p.Type == typ);
             if (op == null) {
-                throw new Parser.SyntaxError(tok.Position, tok + " is not " + typ.ToString());
+                throw new Parser.LexerError(tok.Position, tok + " is not " + typ.ToString());
             }
             return op;
         }

@@ -12,8 +12,20 @@ namespace Shapoco.Calctus.Model {
             this.Token = t;
         }
 
+        public Val Eval(EvalContext ctx) {
+            try {
+                return OnEval(ctx);
+            }
+            catch (EvalError ex) {
+                throw ex;
+            }
+            catch (Exception ex) {
+                throw new EvalError(ctx, Token, ex.Message);
+            }
+        }
+
         /// <summary>この式を評価して値を返す</summary>
-        public abstract Val Eval(EvalContext ctx);
+        protected abstract Val OnEval(EvalContext ctx);
     }
 
     /// <summary>演算子</summary>
@@ -32,7 +44,7 @@ namespace Shapoco.Calctus.Model {
             this.A = a;
         }
 
-        public override Val Eval(EvalContext e) {
+        protected override Val OnEval(EvalContext e) {
             if (Method == OpDef.Plus) return A.Eval(e);
             if (Method == OpDef.ArithInv) return A.Eval(e).ArithInv(e);
             if (Method == OpDef.BitNot) return A.Eval(e).BitNot(e);
@@ -53,7 +65,7 @@ namespace Shapoco.Calctus.Model {
             this.B = b;
         }
 
-        public override Val Eval(EvalContext e) {
+        protected override Val OnEval(EvalContext e) {
             if (Method == OpDef.Assign) {
                 if (A is VarRef aRef) {
                     var val = B.Eval(e);
@@ -61,7 +73,7 @@ namespace Shapoco.Calctus.Model {
                     return val;
                 }
                 else {
-                    throw new EvalError(e, A.Token, "left hand of " + Token + " must be variant");
+                    throw new InvalidOperationException("left hand of " + Token + " must be variant");
                 }
             }
             if (Method == OpDef.Frac) {
@@ -116,7 +128,7 @@ namespace Shapoco.Calctus.Model {
     class Number : Literal {
         public Number(Token t) : base(((NumberTokenHint)t.Hint).Value, t) { }
 
-        public override Val Eval(EvalContext ctx) => Value;
+        protected override Val OnEval(EvalContext ctx) => Value;
         public override string ToString() => Value.ToString();
     }
 
@@ -124,14 +136,14 @@ namespace Shapoco.Calctus.Model {
     class BoolLiteral : Literal {
         public BoolLiteral(Token t) : base(new BoolVal(bool.Parse(t.Text)), t) { }
 
-        public override Val Eval(EvalContext ctx) => Value;
+        protected override Val OnEval(EvalContext ctx) => Value;
         public override string ToString() => Value.ToString();
     }
 
     class VarRef : Expr {
         public Token RefName => Token;
         public VarRef(Token name) : base(name) { }
-        public override Val Eval(EvalContext ctx) => ctx.Ref(RefName, false).Value;
+        protected override Val OnEval(EvalContext ctx) => ctx.Ref(RefName, false).Value;
     }
 
     class FuncRef : Expr {
@@ -142,7 +154,7 @@ namespace Shapoco.Calctus.Model {
             this.Args = args;
         }
 
-        public override Val Eval(EvalContext ctx) {
+        protected override Val OnEval(EvalContext ctx) {
             var f = FuncDef.Match(Name, Args.Length, ctx.Settings.AllowExternalFunctions);
             var args = Args.Select(p => p.Eval(ctx)).ToArray();
             return f.Call(ctx, args);

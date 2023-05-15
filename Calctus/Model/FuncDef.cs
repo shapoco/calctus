@@ -249,7 +249,7 @@ namespace Shapoco.Calctus.Model {
             var funcs = allowExtermals ? EnumAllFunctions() : NativeFunctions;
             var f = funcs.FirstOrDefault(p => p.Name == tok.Text && (p.ArgCount == numArgs || p.ArgCount == Variadic));
             if (f == null) {
-                throw new Shapoco.Calctus.Parser.SyntaxError(tok.Position, "function " + tok + "(" + numArgs + ") was not found.");
+                throw new Shapoco.Calctus.Parser.LexerError(tok.Position, "function " + tok + "(" + numArgs + ") was not found.");
             }
             return f;
         }

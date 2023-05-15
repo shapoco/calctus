@@ -94,6 +94,7 @@
     <Compile Include="Calctus\Model\Types.cs" />
     <Compile Include="Calctus\Model\Val.cs" />
     <Compile Include="Calctus\Model\Var.cs" />
+    <Compile Include="Calctus\Parser\TokenQueue.cs" />
     <Compile Include="Calctus\Parser\Types.cs" />
     <Compile Include="Calctus\Settings.cs" />
     <Compile Include="Calctus\UI\CalcListItem.cs">
