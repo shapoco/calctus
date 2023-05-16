@@ -54,7 +54,7 @@ namespace Shapoco.Calctus.Parser {
 
             var expr = vals.Pop();
             if (last && !Eos) {
-                throw new ParserError(expr.Token, "Operator missing");
+                throw new ParserError(_lastToken, "Operator missing");
             }
             return expr;
         }
