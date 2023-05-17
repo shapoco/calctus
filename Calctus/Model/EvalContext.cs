@@ -25,7 +25,7 @@ namespace Shapoco.Calctus.Model {
         public void RequestBeep() { _beepRequested = true; }
 
         public void DefConst(string name, Val val, string desc) {
-            _vars.Add(name, new Var(new Token(TokenType.Symbol, TextPosition.Empty, name), val, true, desc));
+            _vars.Add(name, new Var(new Token(TokenType.Symbol, TextPosition.Nowhere, name), val, true, desc));
         }
 
         private void AddConstantReal(string name, real value, string desc) {
@@ -66,7 +66,7 @@ namespace Shapoco.Calctus.Model {
         }
 
         public Var Ref(string name, bool allowCreate) {
-            return Ref(new Token(TokenType.Word, TextPosition.Empty, name), allowCreate);
+            return Ref(new Token(TokenType.Word, TextPosition.Nowhere, name), allowCreate);
         }
 
         public void Undef(string name, bool ignoreError) {

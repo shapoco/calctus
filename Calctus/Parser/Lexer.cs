@@ -96,7 +96,7 @@ namespace Shapoco.Calctus.Parser {
         public TokenQueue PopToEnd() {
             var queue = new TokenQueue();
             while (!_eosReaded) {
-                queue.Enqueue(Pop());
+                queue.PushBack(Pop());
             }
             return queue;
         }

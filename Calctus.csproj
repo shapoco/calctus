@@ -160,6 +160,7 @@
     <Compile Include="Calctus\UI\ExpressionBox.cs">
       <SubType>Component</SubType>
     </Compile>
+    <Compile Include="Model\IEquatable.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
     <Compile Include="Windows\StartupShortcut.cs" />
     <EmbeddedResource Include="Calctus\UI\ConstEditForm.resx">

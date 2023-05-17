@@ -34,6 +34,7 @@ namespace Shapoco.Calctus.UI {
         public CalcListItem(CalcListBox owner) {
             _owner = owner;
             this.RadixMode = owner.RadixMode;
+            _exprBox.CompleteParentheses = true;
             _ansBox.PlaceHolder = "?";
             _ansBox.ReadOnly = true;
             _exprBox.KeyDown += box_KeyDown;

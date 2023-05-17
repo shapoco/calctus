@@ -7,40 +7,55 @@ using Shapoco.Calctus.Model;
 using Shapoco.Calctus.Model.Syntax;
 
 namespace Shapoco.Calctus.Parser {
-    class TokenQueue {
-        private List<Token> _tokens = new List<Token>();
-        private Token _eos = null;
+    class TokenQueue : List<Token>, ICloneable {
+        private TextPosition _lastPos = TextPosition.Empty;
 
-        public void Enqueue(Token token) {
-            _tokens.Add(token);
+        public void PushBack(Token token) {
+            Add(token);
         }
 
-        public Token Dequeue() {
-            if (_tokens.Count > 0) {
-                var t = _tokens[0];
-                _tokens.RemoveAt(0);
-                if (t.Type == TokenType.Eos) {
-                    _eos = t;
-                }
-                return t;
-            }
-            else {
-                return _eos;
-            }
+        public Token PopFront() {
+            var t = this[0];
+            RemoveAt(0);
+            _lastPos = t.Position;
+            return t;
         }
 
         public TextPosition Position {
             get {
-                if (_tokens.Count > 0) {
-                    return _tokens[0].Position;
+                if (Count > 0) {
+                    return this[0].Position;
                 }
                 else {
-                    return _eos.Position;
+                    return _lastPos;
                 }
             }
         }
 
-        public Token this[int index] => _tokens[index];
-        public int Count => _tokens.Count;
+        public void CompleteParentheses() {
+            int depth = 0;
+            foreach (var t in this) {
+                if (t.Type == TokenType.Symbol) {
+                    if (t.Text == "(") {
+                        depth++;
+                    }
+                    else if (t.Text == ")") {
+                        depth--;
+                    }
+                }
+            }
+            while (depth < 0) {
+                Insert(0, new Token(TokenType.Symbol, TextPosition.Nowhere, "("));
+                depth++;
+            }
+        }
+
+        public object Clone() {
+            var clone = new TokenQueue();
+            foreach(var t in this) {
+                clone.PushBack(t);
+            }
+            return clone;
+        }
     }
 }

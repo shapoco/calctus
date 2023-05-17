@@ -15,11 +15,6 @@ namespace Shapoco.Calctus.UI {
     class ExpressionBox : Control {
         public const int TextMargin = 0;
 
-        public static readonly Regex SymbolRegex = new Regex(@"[+\-*/%:^|&=<>~!,]");
-        public static readonly Regex IdRegex = new Regex(@"\b[a-zA-Z_][a-zA-Z0-9_]*\b");
-        public static readonly Regex ColorRegex = new Regex(@"#([0-9a-fA-F]{6}|[0-9a-fA-F]{3})\b");
-        public static readonly Regex CharRegex = new Regex("'([^'\\\\]|\\\\[abfnrtv\\\\\'0]|\\\\o[0-7]{3}|\\\\x[0-9a-fA-F]{2}|\\\\u[0-9a-fA-F]{4})'");
-        public static readonly Regex PrefixRegex = new Regex(@"\b([1-9][0-9]*|0)(\.[0-9]+)?([ryzafpnum_kMGTPEZYR]|[kMGTPEZYR]i)\b");
         public static readonly Regex NonWordRegex = new Regex(@"\W");
         public static readonly Regex NonWordRtlRegex = new Regex(@"\W", RegexOptions.RightToLeft);
 
@@ -213,6 +208,8 @@ namespace Shapoco.Calctus.UI {
 
         private static Timer _timer = new Timer();
 
+        private bool _completeParentheses = false;
+
         private TokenQueue _tokens = new TokenQueue();
         private Expr _expr = null;
         private Exception _error = null;
@@ -307,6 +304,15 @@ namespace Shapoco.Calctus.UI {
                 if (value == _error) return;
                 _error = value;
                 this.Invalidate();
+            }
+        }
+
+        public bool CompleteParentheses {
+            get => _completeParentheses;
+            set {
+                if (value == _completeParentheses) return;
+                _completeParentheses = value;
+                relayoutChars();
             }
         }
 
@@ -1016,14 +1022,15 @@ namespace Shapoco.Calctus.UI {
             try {
                 // 字句解析
                 _tokens = new Lexer(text).PopToEnd();
-                int n = _tokens.Count;
-                for (int i = 0; i < n - 1; i++) {
-                    _chars[_tokens[i].Position.Index].FirstOfToken = true;
+
+                if (_completeParentheses) {
+                    // 不足している括弧の補完
+                    _tokens.CompleteParentheses();
                 }
 
                 try {
                     // 構文解析
-                    _expr = Parser.Parser.Parse(_tokens);
+                    _expr = Parser.Parser.Parse((TokenQueue)_tokens.Clone());
                     _error = null;
                 }
                 catch (Exception ex) {
@@ -1064,120 +1071,83 @@ namespace Shapoco.Calctus.UI {
                 }
             }
 
-            // 識別子の強調表示
-            {
-                var matches = IdRegex.Matches(text);
-                for (int i = 0; i < matches.Count; i++) {
-                    var m = matches[i];
-                    for (int j = 0; j < m.Length; j++) {
-                        _chars[m.Index + j].Style.ForeColor = IdColor;
+            // 強調表示
+            int parDepthCounter = 0;
+            int parDepth = 0;
+            foreach (var t in _tokens) {
+                // 括弧の深さのカウント
+                if (t.Type == TokenType.Symbol) {
+                    if (t.Text == "(") {
+                        parDepth = parDepthCounter;
+                        parDepthCounter++;
+                    }
+                    else if (t.Text == ")") {
+                        parDepthCounter--;
+                        parDepth = parDepthCounter;
                     }
                 }
-            }
 
-            // 色の強調表示
-            {
-                var matches = ColorRegex.Matches(text);
-                for (int i = 0; i < matches.Count; i++) {
-                    var m = matches[i];
-                    var s = m.Value.Substring(1);
-                    var rgb = Convert.ToInt32(s, 16);
-                    
-                    // 背景色
-                    Color back = Color.Black;
-                    if (s.Length == 3) {
-                        var r = (rgb >> 8) & 0xf;
-                        var g = (rgb >> 4) & 0xf;
-                        var b = rgb & 0xf;
-                        r |= r << 4;
-                        g |= g << 4;
-                        b |= b << 4;
-                        rgb = (0xff << 24) | (r << 16) | (g << 8) | b;
-                        back = Color.FromArgb(rgb);
-                    }
-                    else {
-                        rgb |= (0xff << 24);
-                        back = Color.FromArgb(rgb);
-                    }
-
-                    // 前景色
-                    Color fore;
-                    int gray = ((30 * back.R) + (59 * back.G) + (11 * back.B)) / 100;
-                    if (gray < 128) {
-                        fore = Color.White;
-                    }
-                    else {
-                        fore = Color.Black;
-                    }
-
-                    for (int j = 0; j < m.Length; j++) {
-                        _chars[m.Index + j].Style.BackColor = back;
-                        _chars[m.Index + j].Style.ForeColor = fore;
-                    }
-                }
-            }
-
-            // 記号の強調表示
-            {
-                var matches = SymbolRegex.Matches(text);
-                for (int i = 0; i < matches.Count; i++) {
-                    var m = matches[i];
-                    for (int j = 0; j < m.Length; j++) {
-                        _chars[m.Index + j].Style.ForeColor = SymbolColor;
-                    }
-                }
-            }
-
-            // 日付リテラルの強調表示
-            {
-                var matches = NumberFormatter.DateTime.Pattern.Matches(text);
-                for (int i = 0; i < matches.Count; i++) {
-                    var m = matches[i];
-                    for (int j = 0; j < m.Length; j++) {
-                        _chars[m.Index + j].Style.ForeColor = LiteralColor;
-                    }
-                }
-            }
-
-            // 文字リテラルの強調表示
-            {
-                var matches = CharRegex.Matches(text);
-                for (int i = 0; i < matches.Count; i++) {
-                    var m = matches[i];
-                    for (int j = 0; j < m.Length; j++) {
-                        _chars[m.Index + j].Style.ForeColor = LiteralColor;
-                    }
-                }
-            }
-
-            // SI接頭語の強調表示
-            {
-                var matches = PrefixRegex.Matches(text);
-                for (int i = 0; i < matches.Count; i++) {
-                    var m = matches[i].Groups[3];
-                    for (int j = 0; j < m.Length; j++) {
-                        _chars[m.Index + j].Style.ForeColor = PrefixColor;
-                    }
-                }
-            }
-
-            // 括弧の強調表示
-            {
-                var stack = new Stack<int>();
-                for (int i = 0; i < text.Length; i++ ) {
-                    var c = text[i];
-                    var foreColor = _chars[i].Style.ForeColor;
-                    if (c == '(' && foreColor == Color.Transparent) {
-                        stack.Push(i);
-                    }
-                    else if (c == ')' && foreColor == Color.Transparent) {
-                        if (stack.Count > 0) {
-                            int start = stack.Pop();
-                            var color = ParenthesisColors[stack.Count % ParenthesisColors.Length];
-                            _chars[start].Style.ForeColor = color;
-                            _chars[i].Style.ForeColor = color;
+                // 位置情報を持たないトークンは無視する
+                if (t.Position == TextPosition.Nowhere) continue;
+                
+                // トークン種別に応じた強調表示
+                switch (t.Type) {
+                    case TokenType.Word:
+                    case TokenType.BoolLiteral:
+                        // 識別子の強調表示
+                        for (int i = 0; i < t.Text.Length; i++) {
+                            _chars[t.Position.Index + i].Style.ForeColor = IdColor;
                         }
-                    }
+                        break;
+
+                    case TokenType.NumericLiteral:
+                        if (t.Hint is NumberTokenHint nth) {
+                            if (nth.Value.FormatHint.Formatter == NumberFormatter.SiPrefixed) {
+                                // SI接頭語の強調表示
+                                _chars[t.Position.Index + t.Text.Length - 1].Style.ForeColor = PrefixColor;
+                            }
+                            else if (nth.Value.FormatHint.Formatter == NumberFormatter.BinaryPrefixed) {
+                                // 二進接頭語の強調表示
+                                _chars[t.Position.Index + t.Text.Length - 2].Style.ForeColor = PrefixColor;
+                                _chars[t.Position.Index + t.Text.Length - 1].Style.ForeColor = PrefixColor;
+                            }
+                            else if (nth.Value.FormatHint.Formatter == NumberFormatter.WebColor) {
+                                // WebColorの強調表示
+                                var back = Color.FromArgb((0xff << 24) | nth.Value.AsInt);
+                                int gray = ((30 * back.R) + (59 * back.G) + (11 * back.B)) / 100;
+                                var fore = gray < 128 ? Color.White : Color.Black;
+                                for (int i = 0; i < t.Text.Length; i++) {
+                                    _chars[t.Position.Index + i].Style.BackColor = back;
+                                    _chars[t.Position.Index + i].Style.ForeColor = fore;
+                                }
+                            }
+                            else if (nth.Value.FormatHint.Formatter == NumberFormatter.CStyleChar) {
+                                // 文字リテラルの強調表示
+                                for (int i = 0; i < t.Text.Length; i++) {
+                                    _chars[t.Position.Index + i].Style.ForeColor = LiteralColor;
+                                }
+                            }
+                            else if (nth.Value.FormatHint.Formatter == NumberFormatter.DateTime) {
+                                // 日付リテラルの強調表示
+                                for (int i = 0; i < t.Text.Length; i++) {
+                                    _chars[t.Position.Index + i].Style.ForeColor = LiteralColor;
+                                }
+                            }
+                        }
+                        break;
+
+                    case TokenType.Symbol:
+                        // 記号の強調表示
+                        if (t.Text == "(" || t.Text == ")") {
+                            _chars[t.Position.Index].Style.ForeColor 
+                                = ParenthesisColors[parDepth % ParenthesisColors.Length];
+                        }
+                        else {
+                            for (int i = 0; i < t.Text.Length; i++) {
+                                _chars[t.Position.Index + i].Style.ForeColor = SymbolColor;
+                            }
+                        }
+                        break;
                 }
             }
 
@@ -1231,7 +1201,6 @@ namespace Shapoco.Calctus.UI {
         }
 
         struct CharInfo {
-            public bool FirstOfToken;
             public float X;
             public float Width;
             public Style Style;

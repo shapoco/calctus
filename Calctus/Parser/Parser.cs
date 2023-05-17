@@ -102,7 +102,7 @@ namespace Shapoco.Calctus.Parser {
 
         public Token Peek() {
             if (_buff == null) {
-                _buff = _queue.Dequeue();
+                _buff = _queue.PopFront();
             }
             return _buff;
         }
