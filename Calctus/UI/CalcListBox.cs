@@ -631,6 +631,8 @@ namespace Shapoco.Calctus.UI {
 
             for (int i = 0; i < _items.Count; i++) {
                 var item = _items[i];
+                item.ExprEvalError = null;
+
                 try {
                     item.IsRpnOperand = (rpnStart <= i && i < rpnEnd);
                     if (rpnStart <= i && i < rpnEnd) {
@@ -644,7 +646,7 @@ namespace Shapoco.Calctus.UI {
                             expr = Parser.Parser.Parse(rpn.Expression);
                         }
                         else {
-                            if (item.ExprError != null) throw item.ExprError;
+                            if (item.ExprSyntaxError != null) throw item.ExprSyntaxError;
                             expr = item.ExprObj;
                         }
                         var val = expr.Eval(ctx);
@@ -658,7 +660,6 @@ namespace Shapoco.Calctus.UI {
 
                         item.Answer = val.ToString(ctx);
                         item.Hint = "";
-                        item.ExprError = null;
                         ctx.Ref(LastAnsId, true).Value = val;
 
                         item.IsHighlited = ctx.HighlightRequested;
@@ -669,7 +670,7 @@ namespace Shapoco.Calctus.UI {
                     item.Answer = "";
                     item.Hint = "? " + ex.Message;
                     item.IsHighlited = false;
-                    item.ExprError = ex;
+                    item.ExprEvalError = ex;
                     ctx.ResetHighlight();
                     ctx.Undef(LastAnsId, true);
                 }

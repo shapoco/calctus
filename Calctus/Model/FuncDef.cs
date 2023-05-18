@@ -99,19 +99,15 @@ namespace Shapoco.Calctus.Model {
             return new RealVal(RMath.Pow(prod, 1m / a.Length), a[0].FormatHint);
         }, "Geometric mean of the arguments");
 
-        public static readonly FuncDef togray = new FuncDef("togray", (e, a) => {
-            var bin = a[0].AsLong;
-            return new RealVal(bin ^ ((bin >> 1) & 0x7fffffffffffffff), a[0].FormatHint);
-        }, "Converts the value from binary to gray-code.");
-
-        public static readonly FuncDef fromgray = new FuncDef("fromgray", (e, a) => {
-            var gray = a[0].AsLong;
-            var bin = gray;
-            for (int i = 1; i < 64; i++) {
-                bin = bin ^ ((gray >> i) & 0x7fffffffffffffff);
-            }
-            return new RealVal(bin, a[0].FormatHint);
-        }, "Converts the value from gray-code to binary.");
+        public static readonly FuncDef togray = new FuncDef("togray", (e, a) => new RealVal(LMath.ToGray(a[0].AsLong), a[0].FormatHint), "Converts the value from binary to gray-code.");
+        public static readonly FuncDef fromgray = new FuncDef("fromgray", (e, a) =>  new RealVal(LMath.FromGray(a[0].AsLong), a[0].FormatHint), "Converts the value from gray-code to binary.");
+        public static readonly FuncDef swapnib = new FuncDef("swapnib", (e, a) => new RealVal(LMath.SwapNibbles(a[0].AsLong), a[0].FormatHint), "Swaps the nibble of each byte.");
+        public static readonly FuncDef swap2 = new FuncDef("swap2", (e, a) => new RealVal(LMath.Swap2(a[0].AsLong), a[0].FormatHint), "Swaps even and odd bytes.");
+        public static readonly FuncDef swap4 = new FuncDef("swap4", (e, a) => new RealVal(LMath.Swap4(a[0].AsLong), a[0].FormatHint), "Reverses the order of each 4 bytes.");
+        public static readonly FuncDef swap8 = new FuncDef("swap8", (e, a) => new RealVal(LMath.Swap8(a[0].AsLong), a[0].FormatHint), "Reverses the order of each 8 bytes.");
+        public static readonly FuncDef rev = new FuncDef("rev", 2, (e, a) => new RealVal(LMath.Revert(a[0].AsLong, a[1].AsInt), a[0].FormatHint), "Reverses the lower b bits of a.");
+        public static readonly FuncDef rotl = new FuncDef("rotl", 2, (e, a) => new RealVal(LMath.RotateLeft(a[0].AsLong, a[1].AsInt), a[0].FormatHint), "Rotates left the lower b bits of a.");
+        public static readonly FuncDef rotr = new FuncDef("rotr", 2, (e, a) => new RealVal(LMath.RotateRight(a[0].AsLong, a[1].AsInt), a[0].FormatHint), "Rotates right the lower b bits of a.");
 
         public static readonly FuncDef now = new FuncDef("now", 0, (e, a) => new RealVal(UnixTime.FromLocalTime(DateTime.Now)).FormatDateTime(), "Current epoch time");
 

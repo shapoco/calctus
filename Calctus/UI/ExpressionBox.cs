@@ -212,7 +212,8 @@ namespace Shapoco.Calctus.UI {
 
         private TokenQueue _tokens = new TokenQueue();
         private Expr _expr = null;
-        private Exception _error = null;
+        private Exception _syntaxError = null;
+        private Exception _evalError = null;
 
         private CharInfo[] _chars = new CharInfo[0];
         private TextSegment[] _segments = new TextSegment[0];
@@ -298,11 +299,15 @@ namespace Shapoco.Calctus.UI {
 
         public Expr Expr => _expr;
 
-        public Exception Error {
-            get => _error;
+        public Exception SyntaxError {
+            get => _syntaxError;
+        }
+
+        public Exception EvalError {
+            get => _evalError;
             set {
-                if (value == _error) return;
-                _error = value;
+                if (value == _evalError) return;
+                _evalError = value;
                 this.Invalidate();
             }
         }
@@ -759,21 +764,23 @@ namespace Shapoco.Calctus.UI {
                 }
             }
 
-            if (Text.Length > 0 && _error != null) {
+            var error = _syntaxError != null ? _syntaxError : _evalError;
+
+            if (Text.Length > 0 && error != null) {
                 // 文法エラーの強調表示
                 int errorStart = 0;
                 int errorEnd = Text.Length;
-                if (_error is LexerError syntaxError) {
+                if (error is LexerError syntaxError) {
                     errorStart = syntaxError.Position.Index;
                     errorEnd = errorStart + 1;
                 }
-                else if (_error is ParserError parserError) {
+                else if (error is ParserError parserError) {
                     if (parserError.Token != null && parserError.Token.Text != null) {
                         errorStart = parserError.Token.Position.Index;
                         errorEnd = errorStart + parserError.Token.Text.Length;
                     }
                 }
-                else if (_error is EvalError evalError) {
+                else if (error is EvalError evalError) {
                     if (evalError.Token != null && evalError.Token.Text != null) {
                         errorStart = evalError.Token.Position.Index;
                         errorEnd = errorStart + evalError.Token.Text.Length;
@@ -1031,19 +1038,19 @@ namespace Shapoco.Calctus.UI {
                 try {
                     // 構文解析
                     _expr = Parser.Parser.Parse((TokenQueue)_tokens.Clone());
-                    _error = null;
+                    _syntaxError = null;
                 }
                 catch (Exception ex) {
                     // 構文解析エラー
                     _expr = null;
-                    _error = ex;
+                    _syntaxError = ex;
                 }
             }
             catch (Exception ex) {
                 // 字句解析エラー
                 _tokens = new TokenQueue();
                 _expr = null;
-                _error = ex;
+                _syntaxError = ex;
             }
 
             int xShift = 0;

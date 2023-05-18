@@ -156,9 +156,13 @@ namespace Shapoco.Calctus.UI {
 
         public Expr ExprObj => _exprBox.Expr;
 
-        public Exception ExprError {
-            get => _exprBox.Error;
-            set => _exprBox.Error = value;
+        public Exception ExprSyntaxError {
+            get => _exprBox.SyntaxError;
+        }
+
+        public Exception ExprEvalError {
+            get => _exprBox.EvalError;
+            set => _exprBox.EvalError = value;
         }
 
         public string Answer {
