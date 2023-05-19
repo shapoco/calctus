@@ -71,6 +71,8 @@ A calculator for Windows.
 |Max/Min|`max(...)`, `min(...)`|`Decimal`|
 |Sum/Average:new:|`sum(...)`, `ave(...)`, `harmean(...)`, `invsum(...)`, `geomean(...)`|`Decimal`|
 |GCD, LCM:new:|`gcd(a, b)`, `lcm(a, b)`|`Decimal`|
+|Bit/Byte Operations:new:|`swapnib(x)`, `swap2(x)`, `swap4(x)`, `swap8(x)`, `reverse(x,w)`, `reverseb(x)`, `rotatel(x,w)`, `rotater(x,w)`, `count1(x,w)`|`Int64`|
+|Parity/ECC:new:|`xorreduce(x)`, `parity(x)`, `eccwidth(x)`, `eccenc(x,w)`, `eccdec(e,x,w)`|`Int64`|
 |Gray-code:new:|`togray(x)`, `fromgray(x)`|`Int64`|
 |Fractions:new:|~~`frac(x)`~~`rat(x)`, ~~`frac(x,a)`~~`rat(x,a)`, ~~`frac(x,a,b)`~~, `real(x)`|`Decimal`|
 |Representation|`dec(x)`, `hex(x)`, `bin(x)`, `oct(x)`, `char(x)`, `si(x)`:new:, `bi(x)`:new:, `datetime(x)`|`Decimal`|
