@@ -50,7 +50,7 @@ namespace Shapoco.Calctus.Model {
                 ((val >> 56) & 0x00000000000000ff);
         }
 
-        public static long Revert(long val, int nbits) {
+        public static long Reverse(long val, int nbits) {
             if (nbits < 1 || 64 < nbits) throw new ArgumentOutOfRangeException();
             long ret = 0;
             for (int i = 0; i < nbits; i++) {
@@ -59,6 +59,18 @@ namespace Shapoco.Calctus.Model {
                 val >>= 1;
             }
             return ret;
+        }
+
+        public static long ReverseBytes(long val) {
+            return
+                ((val & 0x0101010101010101) << 7) |
+                ((val & 0x0202020202020202) << 5) |
+                ((val & 0x0404040404040404) << 3) |
+                ((val & 0x0808080808080808) << 1) |
+                ((val >> 1) & 0x0808080808080808) |
+                ((val >> 3) & 0x0404040404040404) |
+                ((val >> 5) & 0x0202020202020202) |
+                ((val >> 7) & 0x0101010101010101);
         }
 
         public static long RotateLeft(long val, int nbits) {
@@ -79,14 +91,84 @@ namespace Shapoco.Calctus.Model {
             return val;
         }
 
-        public static long XorReduce(long val) {
+        public static int XorReduce(long val) {
             val ^= val >> 32;
             val ^= val >> 16;
             val ^= val >> 8;
             val ^= val >> 4;
             val ^= val >> 2;
             val ^= val >> 1;
-            return val & 1L;
+            return (int)(val & 1L);
+        }
+
+        public static int OddParity(long val) => XorReduce(val) ^ 1;
+
+        public static int CountOnes(long val) {
+            val = (val & 0x5555555555555555) + ((val >> 1) & 0x5555555555555555);
+            val = (val & 0x3333333333333333) + ((val >> 2) & 0x3333333333333333);
+            val = (val & 0x0f0f0f0f0f0f0f0f) + ((val >> 4) & 0x0f0f0f0f0f0f0f0f);
+            val = (val & 0x00ff00ff00ff00ff) + ((val >> 8) & 0x00ff00ff00ff00ff);
+            val = (val & 0x0000ffff0000ffff) + ((val >> 16) & 0x0000ffff0000ffff);
+            val = (val & 0x00000000ffffffff) + ((val >> 32) & 0x00000000ffffffff);
+            return (int)val;
+        }
+
+        public static readonly long[] EccXorMask = {
+            unchecked((long)0xab55555556aaad5b),
+            unchecked((long)0xcd9999999b33366d),
+            unchecked((long)0xf1e1e1e1e3c3c78e),
+            unchecked((long)0x01fe01fe03fc07f0),
+            unchecked((long)0x01fffe0003fff800),
+            unchecked((long)0x01fffffffc000000),
+            unchecked((long)0xfe00000000000000),
+        };
+
+        public static readonly int[] EccCorrectionTable = {
+             0, -1, -2,  1, -3,  2,  3,  4, -4,  5,  6,  7,  8,  9, 10, 11,
+            -5, 12, 13, 14, 15, 16, 17, 18, 19, 20, 21, 22, 23, 24, 25, 26,
+            -6, 27, 28, 29, 30, 31, 32, 33, 34, 35, 36, 37, 38, 39, 40, 41,
+            42, 43, 44, 45, 46, 47, 48, 49, 50, 51, 52, 53, 54, 55, 56, 57,
+            -7, 58, 59, 60, 61, 62, 63, 64,
+        };
+
+        public static int EccWidth(int dataWidth) {
+            if (dataWidth < 1 || 1024 < dataWidth) throw new ArgumentOutOfRangeException();
+            int eccWidth = (int)RMath.Ceiling(RMath.Log2(dataWidth + 1));
+            if (eccWidth + dataWidth >= (1 << eccWidth)) {
+                eccWidth += 1;
+            }
+            return eccWidth + 1;
+        }
+
+        public static int EccEncode(long data, int dataWidth) {
+            if (dataWidth < 1 || 64 < dataWidth) throw new ArgumentOutOfRangeException();
+            var eccWidth = EccWidth(dataWidth);
+            var ecc = 0;
+            for (int i = 0; i < eccWidth - 1; i++) {
+                var bit = XorReduce(data & EccXorMask[i]);
+                ecc |= bit << i;
+            }
+            ecc |= OddParity(data) << (eccWidth - 1);
+            return ecc;
+        }
+
+        public static int EccDecode(int ecc, long data, int dataWidth) {
+            var parity = OddParity(ecc) ^ OddParity(data);
+            ecc ^= EccEncode(data, dataWidth);
+            ecc &= ((1 << (EccWidth(dataWidth) - 1)) - 1);
+            var errPos = EccCorrectionTable[ecc];
+            if (parity == 0 && errPos != 0) {
+                return -1; // 2-bit error
+            }
+            else if (errPos == 0) {
+                return 0; // no error
+            }
+            else if (errPos < 0) {
+                return dataWidth - errPos; // 1-bit error in ECC bits
+            }
+            else {
+                return errPos; // 1-bit error in data bits
+            }
         }
     }
 }
