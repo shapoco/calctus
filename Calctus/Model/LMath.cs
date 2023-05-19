@@ -148,26 +148,34 @@ namespace Shapoco.Calctus.Model {
                 var bit = XorReduce(data & EccXorMask[i]);
                 ecc |= bit << i;
             }
-            ecc |= OddParity(data) << (eccWidth - 1);
+            ecc |= (OddParity(ecc) ^ OddParity(data)) << (eccWidth - 1);
             return ecc;
         }
 
         public static int EccDecode(int ecc, long data, int dataWidth) {
             var parity = OddParity(ecc) ^ OddParity(data);
-            ecc ^= EccEncode(data, dataWidth);
-            ecc &= ((1 << (EccWidth(dataWidth) - 1)) - 1);
-            var errPos = EccCorrectionTable[ecc];
-            if (parity == 0 && errPos != 0) {
-                return -1; // 2-bit error
-            }
-            else if (errPos == 0) {
-                return 0; // no error
-            }
-            else if (errPos < 0) {
-                return dataWidth - errPos; // 1-bit error in ECC bits
+            var eccWidth = EccWidth(dataWidth);
+            var syndrome = ecc ^ EccEncode(data, dataWidth);
+            syndrome &= (1 << (eccWidth - 1)) - 1;
+            var errPos = EccCorrectionTable[syndrome];
+            if (parity == 0) {
+                if (errPos == 0) {
+                    return 0; // no error
+                }
+                else {
+                    return -1; // 2-bit error
+                }
             }
             else {
-                return errPos; // 1-bit error in data bits
+                if (errPos == 0) {
+                    return dataWidth + eccWidth; // parity error
+                }
+                else if (errPos < 0) {
+                    return dataWidth - errPos; // 1-bit error in ECC bits
+                }
+                else {
+                    return errPos; // 1-bit error in data bits
+                }
             }
         }
     }
