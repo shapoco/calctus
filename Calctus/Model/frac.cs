@@ -56,7 +56,7 @@ namespace Shapoco.Calctus.Model {
 
         public override int GetHashCode() => Nume.GetHashCode() ^ Deno.GetHashCode();
 
-        public override string ToString() => Nume + ":" + Deno;
+        public override string ToString() => Nume + "$" + Deno;
 
         public static explicit operator double(frac val) => (double)((decimal)val.Nume / (decimal)val.Deno);
         public static explicit operator decimal(frac val) => (decimal)val.Nume / (decimal)val.Deno;
