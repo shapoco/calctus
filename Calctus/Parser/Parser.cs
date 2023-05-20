@@ -53,6 +53,15 @@ namespace Shapoco.Calctus.Parser {
             }
 
             var expr = vals.Pop();
+
+            // 条件演算子
+            if (ReadIf("?", out Token tok)) {
+                var trueVal = Expr();
+                Expect(":");
+                var falseVal = Expr();
+                expr = new CondOp(tok, expr, trueVal, falseVal);
+            }
+
             if (last && !Eos) {
                 throw new ParserError(_lastToken, "Operator missing");
             }
@@ -180,7 +189,7 @@ namespace Shapoco.Calctus.Parser {
             => Peek().Type == TokenType.Eos;
 
         public bool EndOfExpr
-            => Eos || (Peek().Text == ")") || (Peek().Text == "]") || (Peek().Text == ",") || (Peek().Text == ":");
+            => Eos || (Peek().Text == ")") || (Peek().Text == "]") || (Peek().Text == ",") || (Peek().Text == ":") || (Peek().Text == "?");
 
         public void Expect(string s) {
             if (!ReadIf(s)) {

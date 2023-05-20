@@ -20,7 +20,7 @@ namespace Shapoco.Calctus.Parser {
         private readonly Regex OpSymbolRule;
 
         // 演算子以外の記号
-        private readonly Regex GeneralSymbolRule = new Regex(@"[()\[\],:]");
+        private readonly Regex GeneralSymbolRule = new Regex(@"[()\[\],:?]");
 
         // 数値リテラル
         private readonly NumberFormatter[] _numberFormatters;
