@@ -46,9 +46,10 @@ namespace Shapoco.Calctus.Model.Standard {
             }
         }
 
-        public static void RgbToHsv(real r, real g, real b, out real h, out real s, out real v) {
+        public static real[] RgbToHsv(real r, real g, real b) {
             var min = RMath.Min(r, RMath.Min(g, b));
             var max = RMath.Max(r, RMath.Max(g, b));
+            real h, s, v;
             h = rgbToHue(r, g, b, min, max);
             if (max == 0) {
                 s = 0;
@@ -57,14 +58,12 @@ namespace Shapoco.Calctus.Model.Standard {
                 s = 100 * (max - min) / max;
             }
             v = max * 100 / 255;
+            return new real[]{h, s, v};
         }
-        public static void RgbToHsv(real rgb, out real h, out real s, out real v) {
+        public static real[] RgbToHsv(real rgb) {
             Unpack(rgb, out int r, out int g, out int b);
-            RgbToHsv(r, g, b, out h, out s, out v);
+            return RgbToHsv(r, g, b);
         }
-        public static real RgbToHsv_H(real rgb) { RgbToHsv(rgb, out real h, out _, out _); return h; }
-        public static real RgbToHsv_S(real rgb) { RgbToHsv(rgb, out _, out real s, out _); return s; }
-        public static real RgbToHsv_V(real rgb) { RgbToHsv(rgb, out _, out _, out real v); return v; }
 
         public static void HsvToRgb(real h, real s, real v, out real r, out real g, out real b) {
             h = h % 360;
@@ -104,9 +103,10 @@ namespace Shapoco.Calctus.Model.Standard {
         public static real HsvToRgb_G(real h, real s, real v) { HsvToRgb(h, s, v, out _, out real g, out _); return g; }
         public static real HsvToRgb_B(real h, real s, real v) { HsvToRgb(h, s, v, out _, out _, out real b); return b; }
 
-        public static void RgbToHsl(real r, real g, real b, out real h, out real s, out real l) {
+        public static real[] RgbToHsl(real r, real g, real b) {
             var min = RMath.Min(r, RMath.Min(g, b));
             var max = RMath.Max(r, RMath.Max(g, b));
+            real h, s, l;
             h = rgbToHue(r, g, b, min, max);
             var p = (255 - RMath.Abs(max + min - 255));
             if (p == 0) {
@@ -116,14 +116,12 @@ namespace Shapoco.Calctus.Model.Standard {
                 s = 100 * (max - min) / p;
             }
             l = 100 * (max + min) / (255 * 2);
+            return new[] { h, s, l };
         }
-        public static void RgbToHsl(real rgb, out real h, out real s, out real l) {
+        public static real[] RgbToHsl(real rgb) {
             Unpack(rgb, out int r, out int g, out int b);
-            RgbToHsl(r, g, b, out h, out s, out l);
+            return RgbToHsl(r, g, b);
         }
-        public static real RgbToHsl_H(real rgb) { RgbToHsl(rgb, out real h, out _, out _); return h; }
-        public static real RgbToHsl_S(real rgb) { RgbToHsl(rgb, out _, out real s, out _); return s; }
-        public static real RgbToHsl_L(real rgb) { RgbToHsl(rgb, out _, out _, out real l); return l; }
 
         public static void HslToRgb(real h, real s, real l, out real r, out real g, out real b) {
             h = h % 360;

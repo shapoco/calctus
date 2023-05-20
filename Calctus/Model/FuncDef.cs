@@ -134,77 +134,52 @@ namespace Shapoco.Calctus.Model {
         public static readonly FuncDef e3floor = new FuncDef("e3floor", (e, a) => new RealVal(PreferredNumbers.Floor(Eseries.E3, a[0].AsReal), a[0].FormatHint), "E3 series floor");
         public static readonly FuncDef e3ceil = new FuncDef("e3ceil", (e, a) => new RealVal(PreferredNumbers.Ceiling(Eseries.E3, a[0].AsReal), a[0].FormatHint), "E3 series ceiling");
         public static readonly FuncDef e3round = new FuncDef("e3round", (e, a) => new RealVal(PreferredNumbers.Round(Eseries.E3, a[0].AsReal), a[0].FormatHint), "E3 series round");
-        public static readonly FuncDef e3ratio_l = new FuncDef("e3ratio_l", (e, a) => new RealVal(PreferredNumbers.FindSplitPair(Eseries.E3, a[0].AsReal)[0]), "Low-side of E3 series value of divider resistor");
-        public static readonly FuncDef e3ratio_h = new FuncDef("e3ratio_h", (e, a) => new RealVal(PreferredNumbers.FindSplitPair(Eseries.E3, a[0].AsReal)[1]), "High-side of E3 series value of divider resistor");
+        public static readonly FuncDef e3ratio = new FuncDef("e3ratio", (e, a) => new ArrayVal(PreferredNumbers.FindSplitPair(Eseries.E3, a[0].AsReal)), "E3 series value of divider resistor");
 
         public static readonly FuncDef e6floor = new FuncDef("e6floor", (e, a) => new RealVal(PreferredNumbers.Floor(Eseries.E6, a[0].AsReal), a[0].FormatHint), "E6 series floor");
         public static readonly FuncDef e6ceil = new FuncDef("e6ceil", (e, a) => new RealVal(PreferredNumbers.Ceiling(Eseries.E6, a[0].AsReal), a[0].FormatHint), "E6 series ceiling");
         public static readonly FuncDef e6round = new FuncDef("e6round", (e, a) => new RealVal(PreferredNumbers.Round(Eseries.E6, a[0].AsReal), a[0].FormatHint), "E6 series round");
-        public static readonly FuncDef e6ratio_l = new FuncDef("e6ratio_l", (e, a) => new RealVal(PreferredNumbers.FindSplitPair(Eseries.E6, a[0].AsReal)[0]), "Low-side of E6 series value of divider resistor");
-        public static readonly FuncDef e6ratio_h = new FuncDef("e6ratio_h", (e, a) => new RealVal(PreferredNumbers.FindSplitPair(Eseries.E6, a[0].AsReal)[1]), "High-side of E6 series value of divider resistor");
+        public static readonly FuncDef e6ratio = new FuncDef("e6ratio", (e, a) => new ArrayVal(PreferredNumbers.FindSplitPair(Eseries.E6, a[0].AsReal)), "E6 series value of divider resistor");
 
         public static readonly FuncDef e12floor = new FuncDef("e12floor", (e, a) => new RealVal(PreferredNumbers.Floor(Eseries.E12, a[0].AsReal), a[0].FormatHint), "E12 series floor");
         public static readonly FuncDef e12ceil = new FuncDef("e12ceil", (e, a) => new RealVal(PreferredNumbers.Ceiling(Eseries.E12, a[0].AsReal), a[0].FormatHint), "E12 series ceiling");
         public static readonly FuncDef e12round = new FuncDef("e12round", (e, a) => new RealVal(PreferredNumbers.Round(Eseries.E12, a[0].AsReal), a[0].FormatHint), "E12 series round");
-        public static readonly FuncDef e12ratio_l = new FuncDef("e12ratio_l", (e, a) => new RealVal(PreferredNumbers.FindSplitPair(Eseries.E12, a[0].AsReal)[0]), "Low-side of E12 series value of divider resistor");
-        public static readonly FuncDef e12ratio_h = new FuncDef("e12ratio_h", (e, a) => new RealVal(PreferredNumbers.FindSplitPair(Eseries.E12, a[0].AsReal)[1]), "High-side of E12 series value of divider resistor");
+        public static readonly FuncDef e12ratio = new FuncDef("e12ratio", (e, a) => new ArrayVal(PreferredNumbers.FindSplitPair(Eseries.E12, a[0].AsReal)), "E12 series value of divider resistor");
 
         public static readonly FuncDef e24floor = new FuncDef("e24floor", (e, a) => new RealVal(PreferredNumbers.Floor(Eseries.E24, a[0].AsReal), a[0].FormatHint), "E24 series floor");
         public static readonly FuncDef e24ceil = new FuncDef("e24ceil", (e, a) => new RealVal(PreferredNumbers.Ceiling(Eseries.E24, a[0].AsReal), a[0].FormatHint), "E24 series ceiling");
         public static readonly FuncDef e24round = new FuncDef("e24round", (e, a) => new RealVal(PreferredNumbers.Round(Eseries.E24, a[0].AsReal), a[0].FormatHint), "E24 series round");
-        public static readonly FuncDef e24ratio_l = new FuncDef("e24ratio_l", (e, a) => new RealVal(PreferredNumbers.FindSplitPair(Eseries.E24, a[0].AsReal)[0]), "Low-side of E24 series value of divider resistor");
-        public static readonly FuncDef e24ratio_h = new FuncDef("e24ratio_h", (e, a) => new RealVal(PreferredNumbers.FindSplitPair(Eseries.E24, a[0].AsReal)[1]), "High-side of E24 series value of divider resistor");
+        public static readonly FuncDef e24ratio = new FuncDef("e24ratio", (e, a) => new ArrayVal(PreferredNumbers.FindSplitPair(Eseries.E24, a[0].AsReal)), "E24 series value of divider resistor");
 
         public static readonly FuncDef e48floor = new FuncDef("e48floor", (e, a) => new RealVal(PreferredNumbers.Floor(Eseries.E48, a[0].AsReal), a[0].FormatHint), "E48 series floor");
         public static readonly FuncDef e48ceil = new FuncDef("e48ceil", (e, a) => new RealVal(PreferredNumbers.Ceiling(Eseries.E48, a[0].AsReal), a[0].FormatHint), "E48 series ceiling");
         public static readonly FuncDef e48round = new FuncDef("e48round", (e, a) => new RealVal(PreferredNumbers.Round(Eseries.E48, a[0].AsReal), a[0].FormatHint), "E48 series round");
-        public static readonly FuncDef e48ratio_l = new FuncDef("e48ratio_l", (e, a) => new RealVal(PreferredNumbers.FindSplitPair(Eseries.E48, a[0].AsReal)[0]), "Low-side of E48 series value of divider resistor");
-        public static readonly FuncDef e48ratio_h = new FuncDef("e48ratio_h", (e, a) => new RealVal(PreferredNumbers.FindSplitPair(Eseries.E48, a[0].AsReal)[1]), "High-side of E48 series value of divider resistor");
+        public static readonly FuncDef e48ratio = new FuncDef("e48ratio", (e, a) => new ArrayVal(PreferredNumbers.FindSplitPair(Eseries.E48, a[0].AsReal)), "E48 series value of divider resistor");
 
         public static readonly FuncDef e96floor = new FuncDef("e96floor", (e, a) => new RealVal(PreferredNumbers.Floor(Eseries.E96, a[0].AsReal), a[0].FormatHint), "E96 series floor");
         public static readonly FuncDef e96ceil = new FuncDef("e96ceil", (e, a) => new RealVal(PreferredNumbers.Ceiling(Eseries.E96, a[0].AsReal), a[0].FormatHint), "E96 series ceiling");
         public static readonly FuncDef e96round = new FuncDef("e96round", (e, a) => new RealVal(PreferredNumbers.Round(Eseries.E96, a[0].AsReal), a[0].FormatHint), "E96 series round");
-        public static readonly FuncDef e96ratio_l = new FuncDef("e96ratio_l", (e, a) => new RealVal(PreferredNumbers.FindSplitPair(Eseries.E96, a[0].AsReal)[0]), "Low-side of E96 series value of divider resistor");
-        public static readonly FuncDef e96ratio_h = new FuncDef("e96ratio_h", (e, a) => new RealVal(PreferredNumbers.FindSplitPair(Eseries.E96, a[0].AsReal)[1]), "High-side of E96 series value of divider resistor");
+        public static readonly FuncDef e96ratio = new FuncDef("e96ratio", (e, a) => new ArrayVal(PreferredNumbers.FindSplitPair(Eseries.E96, a[0].AsReal)), "E96 series value of divider resistor");
 
         public static readonly FuncDef e192floor = new FuncDef("e192floor", (e, a) => new RealVal(PreferredNumbers.Floor(Eseries.E192, a[0].AsReal), a[0].FormatHint), "E192 series floor");
         public static readonly FuncDef e192ceil = new FuncDef("e192ceil", (e, a) => new RealVal(PreferredNumbers.Ceiling(Eseries.E192, a[0].AsReal), a[0].FormatHint), "E192 series ceiling");
         public static readonly FuncDef e192round = new FuncDef("e192round", (e, a) => new RealVal(PreferredNumbers.Round(Eseries.E192, a[0].AsReal), a[0].FormatHint), "E192 series round");
-        public static readonly FuncDef e192ratio_l = new FuncDef("e192ratio_l", (e, a) => new RealVal(PreferredNumbers.FindSplitPair(Eseries.E192, a[0].AsReal)[0]), "Low-side of E192 series value of divider resistor");
-        public static readonly FuncDef e192ratio_h = new FuncDef("e192ratio_h", (e, a) => new RealVal(PreferredNumbers.FindSplitPair(Eseries.E192, a[0].AsReal)[1]), "High-side of E192 series value of divider resistor");
+        public static readonly FuncDef e192ratio = new FuncDef("e192ratio", (e, a) => new ArrayVal(PreferredNumbers.FindSplitPair(Eseries.E192, a[0].AsReal)), "E192 series value of divider resistor");
 
         public static readonly FuncDef rgb_3 = new FuncDef("rgb", 3, (e, a) => new RealVal(ColorSpace.SatPack(a[0].AsReal, a[1].AsReal, a[2].AsReal)).FormatWebColor(), "Generates 24 bit color value from R, G, B.");
         public static readonly FuncDef rgb_1 = new FuncDef("rgb", (e, a) => a[0].FormatWebColor(), "Converts the value to web-color representation.");
 
         public static readonly FuncDef hsv2rgb = new FuncDef("hsv2rgb", 3, (e, a) => new RealVal(ColorSpace.HsvToRgb(a[0].AsReal, a[1].AsReal, a[2].AsReal)).FormatWebColor(), "Converts from H, S, V to 24 bit RGB color value.");
-        public static readonly FuncDef hsv2rgb_r = new FuncDef("hsv2rgb_r", 3, (e, a) => new RealVal(ColorSpace.HsvToRgb_R(a[0].AsReal, a[1].AsReal, a[2].AsReal)), "Converts from H, S, V to RGB color and returns R.");
-        public static readonly FuncDef hsv2rgb_g = new FuncDef("hsv2rgb_g", 3, (e, a) => new RealVal(ColorSpace.HsvToRgb_G(a[0].AsReal, a[1].AsReal, a[2].AsReal)), "Converts from H, S, V to RGB color and returns G.");
-        public static readonly FuncDef hsv2rgb_b = new FuncDef("hsv2rgb_b", 3, (e, a) => new RealVal(ColorSpace.HsvToRgb_B(a[0].AsReal, a[1].AsReal, a[2].AsReal)), "Converts from H, S, V to RGB color and returns B.");
-
-        public static readonly FuncDef rgb2hsv_h = new FuncDef("rgb2hsv_h", (e, a) => new RealVal(ColorSpace.RgbToHsv_H(a[0].AsReal)), "Converts the 24 bit RGB color value to HSV and returns H.");
-        public static readonly FuncDef rgb2hsv_s = new FuncDef("rgb2hsv_s", (e, a) => new RealVal(ColorSpace.RgbToHsv_S(a[0].AsReal)), "Converts the 24 bit RGB color value to HSV and returns S.");
-        public static readonly FuncDef rgb2hsv_v = new FuncDef("rgb2hsv_v", (e, a) => new RealVal(ColorSpace.RgbToHsv_V(a[0].AsReal)), "Converts the 24 bit RGB color value to HSV and returns V.");
+        public static readonly FuncDef rgb2hsv = new FuncDef("rgb2hsv", (e, a) => new ArrayVal(ColorSpace.RgbToHsv(a[0].AsReal)), "Converts the 24 bit RGB color value to HSV.");
 
         public static readonly FuncDef hsl2rgb = new FuncDef("hsl2rgb", 3, (e, a) => new RealVal(ColorSpace.HslToRgb(a[0].AsReal, a[1].AsReal, a[2].AsReal)).FormatWebColor(), "Convert from H, S, L to 24 bit color RGB value.");
-        public static readonly FuncDef hsl2rgb_r = new FuncDef("hsl2rgb_r", 3, (e, a) => new RealVal(ColorSpace.HslToRgb_R(a[0].AsReal, a[1].AsReal, a[2].AsReal)), "Converts from H, S, L to RGB color and returns R.");
-        public static readonly FuncDef hsl2rgb_g = new FuncDef("hsl2rgb_g", 3, (e, a) => new RealVal(ColorSpace.HslToRgb_G(a[0].AsReal, a[1].AsReal, a[2].AsReal)), "Converts from H, S, L to RGB color and returns G.");
-        public static readonly FuncDef hsl2rgb_b = new FuncDef("hsl2rgb_b", 3, (e, a) => new RealVal(ColorSpace.HslToRgb_B(a[0].AsReal, a[1].AsReal, a[2].AsReal)), "Converts from H, S, L to RGB color and returns B.");
-
-        public static readonly FuncDef rgb2hsl_h = new FuncDef("rgb2hsl_h", (e, a) => new RealVal(ColorSpace.RgbToHsl_H(a[0].AsReal)), "Converts the 24 bit RGB color value to HSL and returns H.");
-        public static readonly FuncDef rgb2hsl_s = new FuncDef("rgb2hsl_s", (e, a) => new RealVal(ColorSpace.RgbToHsl_S(a[0].AsReal)), "Converts the 24 bit RGB color value to HSL and returns S.");
-        public static readonly FuncDef rgb2hsl_l = new FuncDef("rgb2hsl_l", (e, a) => new RealVal(ColorSpace.RgbToHsl_L(a[0].AsReal)), "Converts the 24 bit RGB color value to HSL and returns L.");
+        public static readonly FuncDef rgb2hsl = new FuncDef("rgb2hsl", (e, a) => new ArrayVal(ColorSpace.RgbToHsl(a[0].AsReal)), "Converts the 24 bit RGB color value to HSL.");
 
         public static readonly FuncDef yuv2rgb_3 = new FuncDef("yuv2rgb", 3, (e, a) => new RealVal(ColorSpace.YuvToRgb(a[0].AsReal, a[1].AsReal, a[2].AsReal)).FormatWebColor(), "Converts Y, U, V to 24 bit RGB color.");
         public static readonly FuncDef yuv2rgb_1 = new FuncDef("yuv2rgb", (e, a) => new RealVal(ColorSpace.YuvToRgb(a[0].AsReal)).FormatWebColor(), "Converts the 24 bit YUV color to 24 bit RGB.");
-        public static readonly FuncDef yuv2rgb_r = new FuncDef("yuv2rgb_r", (e, a) => new RealVal(ColorSpace.YuvToRgb_R(a[0].AsReal)), "Converts the 24 bit YUV color to 24 bit RGB and returns R.");
-        public static readonly FuncDef yuv2rgb_g = new FuncDef("yuv2rgb_g", (e, a) => new RealVal(ColorSpace.YuvToRgb_G(a[0].AsReal)), "Converts the 24 bit YUV color to 24 bit RGB and returns G.");
-        public static readonly FuncDef yuv2rgb_b = new FuncDef("yuv2rgb_b", (e, a) => new RealVal(ColorSpace.YuvToRgb_B(a[0].AsReal)), "Converts the 24 bit YUV color to 24 bit RGB and returns B.");
 
         public static readonly FuncDef rgb2yuv_3 = new FuncDef("rgb2yuv", 3, (e, a) => new RealVal(ColorSpace.RgbToYuv(a[0].AsReal, a[1].AsReal, a[2].AsReal)).FormatHex(), "Converts R, G, B to 24 bit YUV color.");
         public static readonly FuncDef rgb2yuv_1 = new FuncDef("rgb2yuv", (e, a) => new RealVal(ColorSpace.RgbToYuv(a[0].AsReal)).FormatHex(), "Converts 24bit RGB color to 24 bit YUV.");
-        public static readonly FuncDef rgb2yuv_y = new FuncDef("rgb2yuv_y", (e, a) => new RealVal(ColorSpace.RgbToYuv_Y(a[0].AsReal)), "Converts 24bit RGB color to 24 bit YUV and returns Y.");
-        public static readonly FuncDef rgb2yuv_u = new FuncDef("rgb2yuv_u", (e, a) => new RealVal(ColorSpace.RgbToYuv_U(a[0].AsReal)), "Converts 24bit RGB color to 24 bit YUV and returns U.");
-        public static readonly FuncDef rgb2yuv_v = new FuncDef("rgb2yuv_v", (e, a) => new RealVal(ColorSpace.RgbToYuv_V(a[0].AsReal)), "Converts 24bit RGB color to 24 bit YUV and returns V.");
 
         public static readonly FuncDef prime = new FuncDef("prime", (e, a) => new RealVal(RMath.Prime(a[0].AsInt)), "Returns a-th prime number.");
         public static readonly FuncDef isprime = new FuncDef("isprime", (e, a) => new BoolVal(RMath.IsPrime(a[0].AsReal)), "Returns whether the value is prime or not.");
