@@ -36,6 +36,26 @@ namespace Shapoco.Calctus.Model {
 
         public Val this[int index] => _raw[index];
 
+        public ArrayVal Slice(int from, int to) {
+            if (from > to) throw new ArgumentOutOfRangeException();
+            Val[] slice = new Val[to - from + 1];
+            for (int i = 0; i < slice.Length; i++) {
+                slice[i] = _raw[from + i];
+            }
+            return new ArrayVal(slice, FormatHint);
+        }
+
+        public ArrayVal Modify(int from, int to, Val[] newValue) {
+            if (from > to) throw new ArgumentOutOfRangeException();
+            if (newValue.Length != to - from + 1) throw new ArgumentOutOfRangeException();
+            var array = new Val[_raw.Length];
+            Array.Copy(_raw, 0, array, 0, _raw.Length);
+            for (int i = from; i <= to; i++) {
+                array[i] = newValue[i - from];
+            }
+            return new ArrayVal(array, FormatHint);
+        }
+
         public override object Raw => _raw;
 
         public override bool IsScalar => false;

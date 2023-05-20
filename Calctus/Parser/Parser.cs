@@ -72,9 +72,13 @@ namespace Shapoco.Calctus.Parser {
         public Expr ElemRefExpr() {
             var operand = Operand();
             if (ReadIf("[", out Token tok)) {
-                var index = Expr();
+                var from = Expr();
+                var to = from;
+                if (ReadIf(":")) {
+                    to = Expr();
+                }
                 Expect("]");
-                return new ElemRef(tok, operand, index);
+                return new PartRef(tok, operand, from, to);
             }
             else {
                 return operand;
@@ -176,7 +180,7 @@ namespace Shapoco.Calctus.Parser {
             => Peek().Type == TokenType.Eos;
 
         public bool EndOfExpr
-            => Eos || (Peek().Text == ")") || (Peek().Text == "]") || (Peek().Text == ",");
+            => Eos || (Peek().Text == ")") || (Peek().Text == "]") || (Peek().Text == ",") || (Peek().Text == ":");
 
         public void Expect(string s) {
             if (!ReadIf(s)) {

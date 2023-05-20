@@ -68,8 +68,37 @@ namespace Shapoco.Calctus.Model {
         protected override Val OnEval(EvalContext e) {
             if (Method == OpDef.Assign) {
                 if (A is VarRef aRef) {
+                    // 変数の参照
                     var val = B.Eval(e);
                     e.Ref(aRef.RefName, allowCreate: true).Value = val;
+                    return val;
+                }
+                else if (A is PartRef pRef && pRef.Target is VarRef tRef) {
+                    // Part Select を使った参照
+                    var val = B.Eval(e);
+                    var from = pRef.IndexFrom.Eval(e).AsInt;
+                    var to = pRef.IndexTo.Eval(e).AsInt;
+                    var varRef = e.Ref(tRef.RefName, allowCreate: false);
+                    var varVal = varRef.Value;
+                    if (varVal is ArrayVal array) {
+                        // 配列の書き換え
+                        if (from == to) {
+                            array = array.Modify(from, to, new Val[] { val });
+                        }
+                        else {
+                            array = array.Modify(from, to, (Val[])val.Raw);
+                        }
+                        varVal = array;
+                    }
+                    else {
+                        // ビットフィールドの書き換え
+                        var mask = ((1L << (from - to + 1)) - 1L) << to;
+                        var buff = varVal.AsLong;
+                        buff &= ~mask;
+                        buff |= (val.AsLong << to) & mask;
+                        varVal = new RealVal(buff, varVal.FormatHint);
+                    }
+                    varRef.Value = varVal;
                     return val;
                 }
                 else {
@@ -174,24 +203,38 @@ namespace Shapoco.Calctus.Model {
         }
     }
 
-    class ElemRef : Expr {
+    class PartRef : Expr {
         public Token Name => Token;
-        public readonly Expr Array;
-        public readonly Expr Index;
+        public readonly Expr Target;
+        public readonly Expr IndexFrom;
+        public readonly Expr IndexTo;
 
-        public ElemRef(Token startBracket, Expr array, Expr index) : base(startBracket) {
-            Array = array;
-            Index = index;
+        public PartRef(Token startBracket, Expr target, Expr from, Expr to) : base(startBracket) {
+            Target = target;
+            IndexFrom = from;
+            IndexTo = to;
         }
 
         protected override Val OnEval(EvalContext ctx) {
-            var idx = Index.Eval(ctx);
-            var obj = Array.Eval(ctx);
+            var from = IndexFrom.Eval(ctx).AsInt;
+            var to = IndexTo.Eval(ctx).AsInt;
+            var obj = Target.Eval(ctx);
             if (obj is ArrayVal array) {
-                return array[idx.AsInt];
+                if (from == to) {
+                    return array[from];
+                }
+                else {
+                    return array.Slice(from, to);
+                }
             }
             else {
-                throw new InvalidOperationException();
+                if (from < to) throw new ArgumentOutOfRangeException();
+                if (from < 0 || 63 <= from) throw new ArgumentOutOfRangeException();
+                if (to < 0 || 63 <= to) throw new ArgumentOutOfRangeException();
+                var val = obj.AsLong;
+                val >>= to;
+                val &= (1L << (from - to + 1)) - 1L;
+                return new RealVal(val, obj.FormatHint);
             }
         }
     }
