@@ -31,6 +31,39 @@ namespace Shapoco.Calctus.Model.Standard {
             return SatPack(r, g, b);
         }
 
+        public static int Pack565(int r, int g, int b) {
+            return
+                (Math.Max(0, Math.Min(31, r)) << 11) |
+                (Math.Max(0, Math.Min(63, g)) << 5) |
+                Math.Max(0, Math.Min(31, b));
+        }
+
+        public static int[] Unpack565(int rgb) {
+            return new int[] {
+                (rgb >> 11) & 0x1f,
+                (rgb >> 5) & 0x3f,
+                rgb & 0x1f,
+            };
+        }
+
+        public static int Rgb888To565(int rgb) {
+            var r = Math.Min(31, (((rgb >> 18) & 0x3f) + 1) >> 1);
+            var g = Math.Min(63, (((rgb >> 9) & 0x7f) + 1) >> 1);
+            var b = Math.Min(31, (((rgb >> 2) & 0x3f) + 1) >> 1);
+            return Pack565(r, g, b);
+        }
+
+        public static int Rgb565To888(int rgb) {
+            var ch = Unpack565(rgb);
+            var r = ch[0];
+            var g = ch[1];
+            var b = ch[2];
+            r = (r << 3) | ((r >> 2) & 0x7);
+            g = (g << 2) | ((g >> 4) & 0x3);
+            b = (b << 3) | ((b >> 2) & 0x7);
+            return SatPack(r, g, b);
+        }
+
         private static real rgbToHue(real r, real g, real b, real min, real max) {
             if (min == max) {
                 return 0;

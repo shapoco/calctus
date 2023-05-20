@@ -52,7 +52,7 @@ namespace Shapoco.Calctus.Model.Syntax {
         };
 
         public static string RealToString(real val, EvalContext e, bool allowENotation) {
-            if (val == 0.0m) return "0.0";
+            if (val == 0.0m) return "0";
 
             var s = e.Settings;
 

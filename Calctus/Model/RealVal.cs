@@ -61,13 +61,15 @@ namespace Shapoco.Calctus.Model {
 
         protected override RealVal OnAsRealVal() => new RealVal((real)Raw, FormatHint);
         public override real AsReal => _raw;
-        public override real[] AsRealArray => new real[] { _raw };
         public override frac AsFrac => (frac)_raw;
         public override double AsDouble => (double)_raw;
         public override long AsLong => (long)_raw; // todo: 丸め/切り捨ての明示は不要？
-        public override long[] AsLongArray => new long[] { (long)_raw }; // todo: 丸め/切り捨ての明示は不要？
         public override int AsInt => (int)_raw; // todo: 丸め/切り捨ての明示は不要？
         public override bool AsBool => throw new InvalidCastException();
+
+        public override real[] AsRealArray => new real[] { _raw };
+        public override long[] AsLongArray => new long[] { (long)_raw }; // todo: 丸め/切り捨ての明示は不要？
+        public override int[] AsIntArray => new int[] { (int)_raw };
 
         public override string ToString(EvalContext e) => FormatHint.Formatter.Format(this, e);
         //public static implicit operator double(RealVal val) => val.AsDouble();

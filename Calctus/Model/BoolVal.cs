@@ -21,13 +21,15 @@ namespace Shapoco.Calctus.Model {
         public override bool IsInteger => false;
 
         public override real AsReal => throw new InvalidCastException();
-        public override real[] AsRealArray => throw new InvalidCastException();
         public override frac AsFrac => throw new InvalidCastException();
         public override double AsDouble => throw new InvalidCastException();
         public override long AsLong => throw new InvalidCastException();
-        public override long[] AsLongArray => throw new InvalidCastException();
         public override int AsInt => throw new InvalidCastException();
         public override bool AsBool => _raw;
+
+        public override real[] AsRealArray => throw new InvalidCastException();
+        public override long[] AsLongArray => throw new InvalidCastException();
+        public override int[] AsIntArray => throw new InvalidCastException();
 
         public override string ToString(EvalContext e) => _raw ? TrueKeyword : FalseKeyword;
 

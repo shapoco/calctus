@@ -184,6 +184,12 @@ namespace Shapoco.Calctus.Model {
         public static readonly FuncDef rgb2yuv_3 = new FuncDef("rgb2yuv", 3, (e, a) => new RealVal(ColorSpace.RgbToYuv(a[0].AsReal, a[1].AsReal, a[2].AsReal)).FormatHex(), "Converts R, G, B to 24 bit YUV color.");
         public static readonly FuncDef rgb2yuv_1 = new FuncDef("rgb2yuv", (e, a) => new RealVal(ColorSpace.RgbToYuv(a[0].AsReal)).FormatHex(), "Converts 24bit RGB color to 24 bit YUV.");
 
+        public static readonly FuncDef rgbto565 = new FuncDef("rgbto565", (e, a) => new RealVal(ColorSpace.Rgb888To565(a[0].AsInt)).FormatHex(), "Downconverts RGB888 color to RGB565.");
+        public static readonly FuncDef rgbfrom565 = new FuncDef("rgbfrom565", (e, a) => new RealVal(ColorSpace.Rgb565To888(a[0].AsInt)).FormatWebColor(), "Upconverts RGB565 color to RGB888.");
+
+        public static readonly FuncDef pack565 = new FuncDef("pack565", 3, (e, a) => new RealVal(ColorSpace.Pack565(a[0].AsInt, a[1].AsInt, a[2].AsInt)).FormatHex(), "Packs the 3 values to an RGB565 color.");
+        public static readonly FuncDef unpack565 = new FuncDef("unpack565", (e, a) => new ArrayVal(ColorSpace.Unpack565(a[0].AsInt)), "Unpacks the RGB565 color to 3 values.");
+
         public static readonly FuncDef prime = new FuncDef("prime", (e, a) => new RealVal(RMath.Prime(a[0].AsInt)), "Returns a-th prime number.");
         public static readonly FuncDef isprime = new FuncDef("isprime", (e, a) => new BoolVal(RMath.IsPrime(a[0].AsReal)), "Returns whether the value is prime or not.");
         public static readonly FuncDef primefact = new FuncDef("primefact", (e, a) => new ArrayVal(RMath.PrimeFactors(a[0].AsReal), a[0].FormatHint), "Returns prime factors.");

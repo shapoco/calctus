@@ -26,6 +26,13 @@ namespace Shapoco.Calctus.Model {
             }
             this._raw = array;
         }
+        public ArrayVal(int[] val, ValFormatHint fmt = null) : base(fmt) {
+            var array = new Val[val.Length];
+            for (int i = 0; i < val.Length; i++) {
+                array[i] = new RealVal(val[i], fmt);
+            }
+            this._raw = array;
+        }
 
         public Val this[int index] => _raw[index];
 
@@ -35,13 +42,15 @@ namespace Shapoco.Calctus.Model {
         public override bool IsInteger => false;
 
         public override real AsReal => throw new InvalidCastException();
-        public override real[] AsRealArray => _raw.Select(p => p.AsReal).ToArray();
         public override frac AsFrac => throw new InvalidCastException();
         public override double AsDouble => throw new InvalidCastException();
         public override long AsLong => throw new InvalidCastException();
-        public override long[] AsLongArray => _raw.Select(p => p.AsLong).ToArray();
         public override int AsInt => throw new InvalidCastException();
         public override bool AsBool => throw new InvalidCastException();
+
+        public override real[] AsRealArray => _raw.Select(p => p.AsReal).ToArray();
+        public override long[] AsLongArray => _raw.Select(p => p.AsLong).ToArray();
+        public override int[] AsIntArray => _raw.Select(p => p.AsInt).ToArray();
 
         public override string ToString(EvalContext e) {
             var sb = new StringBuilder();

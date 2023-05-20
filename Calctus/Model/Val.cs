@@ -31,13 +31,15 @@ namespace Shapoco.Calctus.Model {
         protected abstract RealVal OnAsRealVal();
 
         public abstract real AsReal { get; }
-        public abstract real[] AsRealArray { get; }
         public abstract frac AsFrac { get; }
         public abstract double AsDouble { get; }
         public abstract long AsLong { get; }
-        public abstract long[] AsLongArray { get; }
         public abstract int AsInt { get; }
         public abstract bool AsBool { get; }
+
+        public abstract real[] AsRealArray { get; }
+        public abstract long[] AsLongArray { get; }
+        public abstract int[] AsIntArray { get; }
 
         //public static implicit operator Val(double val) => new RealVal(val);
         //public static implicit operator double(Val val) => val.AsDouble();
