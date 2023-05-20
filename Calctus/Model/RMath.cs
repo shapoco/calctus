@@ -236,7 +236,7 @@ namespace Shapoco.Calctus.Model {
         public static real[] PrimeFactors(real realN) {
             var res = new List<real>();
             if (Floor(realN) != realN) throw new ArgumentException();
-            if (realN < 1) throw new ArgumentOutOfRangeException();
+            if (realN < 1 || 100000000000000 < realN) throw new ArgumentOutOfRangeException();
             long n = (long)realN;
             for (long a = 2; a * a <= n; ++a) {
                 while (n % a == 0) {
