@@ -66,6 +66,17 @@ namespace Shapoco.Calctus.Parser {
                 Expect(")");
                 return ret;
             }
+            else if (ReadIf("[", out tok)) {
+                var elms = new List<Expr>();
+                if (!ReadIf("]")) {
+                    elms.Add(Expr());
+                    while (ReadIf(",")) {
+                        elms.Add(Expr());
+                    }
+                    Expect("]");
+                }
+                return new ArrayExpr(tok, elms.ToArray());
+            }
             else if (ReadIf(TokenType.NumericLiteral, out tok)) {
                 return new Number(tok);
             }
@@ -146,7 +157,7 @@ namespace Shapoco.Calctus.Parser {
             => Peek().Type == TokenType.Eos;
 
         public bool EndOfExpr
-            => Eos || (Peek().Text == ")") || (Peek().Text == ",");
+            => Eos || (Peek().Text == ")") || (Peek().Text == "]") || (Peek().Text == ",");
 
         public void Expect(string s) {
             if (!ReadIf(s)) {

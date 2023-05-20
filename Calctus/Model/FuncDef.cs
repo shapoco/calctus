@@ -208,6 +208,7 @@ namespace Shapoco.Calctus.Model {
 
         public static readonly FuncDef prime = new FuncDef("prime", (e, a) => new RealVal(RMath.Prime(a[0].AsInt)), "Returns a-th prime number.");
         public static readonly FuncDef isprime = new FuncDef("isprime", (e, a) => new BoolVal(RMath.IsPrime(a[0].AsReal)), "Returns whether the value is prime or not.");
+        public static readonly FuncDef primefact = new FuncDef("primefact", (e, a) => new ArrayVal(RMath.PrimeFactors(a[0].AsReal), a[0].FormatHint), "Returns prime factors.");
 
         public static readonly FuncDef rand = new FuncDef("rand", 0, (e, a) => new RealVal((real)rng.NextDouble()), "Generates a random value between 0.0 and 1.0.");
         public static readonly FuncDef rand_2 = new FuncDef("rand", 2, (e, a) => {

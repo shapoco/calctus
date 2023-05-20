@@ -53,6 +53,7 @@
   <ItemGroup>
     <Compile Include="AppDataManager.cs" />
     <Compile Include="Calctus\Assert.cs" />
+    <Compile Include="Calctus\Model\ArrayVal.cs" />
     <Compile Include="Calctus\Model\BoolVal.cs" />
     <Compile Include="Calctus\Model\EvalSettings.cs" />
     <Compile Include="Calctus\Model\ExtFuncDef.cs" />
