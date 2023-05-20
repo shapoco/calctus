@@ -99,6 +99,9 @@ namespace Shapoco.Calctus.Model {
             return new RealVal(RMath.Pow(prod, 1m / a.Length), a[0].FormatHint);
         }, "Geometric mean of the arguments");
 
+        public static readonly FuncDef pack = new FuncDef("pack", 2, (e, a) => new RealVal(LMath.Pack(a[0].AsInt, a[1].AsLongArray)).FormatHex(), "Packs the array elements to a value.");
+        public static readonly FuncDef unpack = new FuncDef("unpack", 2, (e, a) => new ArrayVal(LMath.Unpack(a[0].AsInt, a[1].AsLong)).FormatInt(), "Unpacks the value to an array.");
+
         public static readonly FuncDef swapnib = new FuncDef("swapnib", (e, a) => new RealVal(LMath.SwapNibbles(a[0].AsLong), a[0].FormatHint), "Swaps the nibble of each byte.");
         public static readonly FuncDef swap2 = new FuncDef("swap2", (e, a) => new RealVal(LMath.Swap2(a[0].AsLong), a[0].FormatHint), "Swaps even and odd bytes.");
         public static readonly FuncDef swap4 = new FuncDef("swap4", (e, a) => new RealVal(LMath.Swap4(a[0].AsLong), a[0].FormatHint), "Reverses the order of each 4 bytes.");

@@ -178,5 +178,30 @@ namespace Shapoco.Calctus.Model {
                 }
             }
         }
+
+        /// <summary>パッキング</summary>
+        public static long Pack(int elemWidth, long[] array) {
+            if (elemWidth < 1) throw new ArgumentOutOfRangeException();
+            if (elemWidth * array.Length > 64) throw new ArgumentOutOfRangeException();
+            long buff = 0;
+            for (int i = 0; i < array.Length; ++i) {
+                buff |= array[i] << (elemWidth * i);
+            }
+            return buff;
+        }
+
+        /// <summary>アンパッキング</summary>
+        public static long[] Unpack(int elemWidth, long val) {
+            if (elemWidth < 1) throw new ArgumentOutOfRangeException();
+            var list = new List<long>();
+            while (val != 0) {
+                list.Add(val & ((1L << elemWidth) -1));
+                val >>= elemWidth;
+                val &= (1L << (64 - elemWidth)) - 1L;
+            }
+            return list.ToArray();
+        }
+
+
     }
 }

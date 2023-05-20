@@ -232,6 +232,7 @@ namespace Shapoco.Calctus.Model {
             return a;
         }
 
+        /// <summary>素因数分解</summary>
         public static real[] PrimeFactors(real realN) {
             var res = new List<real>();
             if (Floor(realN) != realN) throw new ArgumentException();
