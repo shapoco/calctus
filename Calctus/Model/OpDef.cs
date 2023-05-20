@@ -87,7 +87,7 @@ namespace Shapoco.Calctus.Model {
         public static IEnumerable<OpDef> AllOperators => NativeOperators;
 
         /// <summary>演算子記号の一覧</summary>
-        public static string[] AllSymbols = NativeOperators.Select(p=>p.Symbol).Distinct().ToArray();
+        public static string[] AllOperatorSymbols = NativeOperators.Select(p=>p.Symbol).Distinct().ToArray();
 
         /// <summary>指定された条件にマッチする演算子定義を返す</summary>
         public static bool Match(OpType typ, string s, out OpDef op) {

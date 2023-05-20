@@ -29,7 +29,7 @@ namespace Shapoco.Calctus.Parser {
             var vals = new Stack<Expr>();
             var ops = new Stack<BinaryOp>();
 
-            vals.Push(Operand());
+            vals.Push(UnaryOpExpr());
 
             while (!EndOfExpr) {
                 var rightOp = new BinaryOp(Read(), null, null);
@@ -39,7 +39,7 @@ namespace Shapoco.Calctus.Parser {
                     vals.Push(new BinaryOp(ops.Pop().Token, a, b));
                 }
                 ops.Push(rightOp);
-                vals.Push(Operand());
+                vals.Push(UnaryOpExpr());
             }
 
             while (ops.Count > 0) {
@@ -57,6 +57,28 @@ namespace Shapoco.Calctus.Parser {
                 throw new ParserError(_lastToken, "Operator missing");
             }
             return expr;
+        }
+
+        public Expr UnaryOpExpr() {
+            var peek = Peek();
+            if (ReadIf(TokenType.OperatorSymbol, out Token tok)) {
+                return new UnaryOp(UnaryOpExpr(), tok);
+            }
+            else {
+                return ElemRefExpr();
+            }
+        }
+
+        public Expr ElemRefExpr() {
+            var operand = Operand();
+            if (ReadIf("[", out Token tok)) {
+                var index = Expr();
+                Expect("]");
+                return new ElemRef(tok, operand, index);
+            }
+            else {
+                return operand;
+            }
         }
 
         public Expr Operand() {
@@ -82,9 +104,6 @@ namespace Shapoco.Calctus.Parser {
             }
             else if (ReadIf(TokenType.BoolLiteral, out tok)) {
                 return new BoolLiteral(tok);
-            }
-            else if (ReadIf(TokenType.Symbol, out tok)) {
-                return new UnaryOp(Operand(), tok);
             }
             else if (ReadIf(TokenType.Word, out tok)) {
                 var args = new List<Expr>();

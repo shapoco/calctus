@@ -20,6 +20,8 @@ namespace Shapoco.Calctus.Model {
             this._raw = array;
         }
 
+        public Val this[int index] => _raw[index];
+
         public override object Raw => _raw;
 
         public override bool IsScalar => false;

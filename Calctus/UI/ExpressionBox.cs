@@ -1083,7 +1083,7 @@ namespace Shapoco.Calctus.UI {
             int parDepth = 0;
             foreach (var t in _tokens) {
                 // 括弧の深さのカウント
-                if (t.Type == TokenType.Symbol) {
+                if (t.Type == TokenType.GeneralSymbol) {
                     if (t.Text == "(") {
                         parDepth = parDepthCounter;
                         parDepthCounter++;
@@ -1143,9 +1143,10 @@ namespace Shapoco.Calctus.UI {
                         }
                         break;
 
-                    case TokenType.Symbol:
+                    case TokenType.OperatorSymbol:
+                    case TokenType.GeneralSymbol:
                         // 記号の強調表示
-                        if (t.Text == "(" || t.Text == ")") {
+                        if ((t.Text == "(" || t.Text == ")") && parDepth >= 0) {
                             _chars[t.Position.Index].Style.ForeColor 
                                 = ParenthesisColors[parDepth % ParenthesisColors.Length];
                         }

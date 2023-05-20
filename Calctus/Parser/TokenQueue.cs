@@ -35,7 +35,7 @@ namespace Shapoco.Calctus.Parser {
         public void CompleteParentheses() {
             int depth = 0;
             foreach (var t in this) {
-                if (t.Type == TokenType.Symbol) {
+                if (t.Type == TokenType.GeneralSymbol) {
                     if (t.Text == "(") {
                         depth++;
                     }
@@ -45,7 +45,7 @@ namespace Shapoco.Calctus.Parser {
                 }
             }
             while (depth < 0) {
-                Insert(0, new Token(TokenType.Symbol, TextPosition.Nowhere, "("));
+                Insert(0, new Token(TokenType.GeneralSymbol, TextPosition.Nowhere, "("));
                 depth++;
             }
         }

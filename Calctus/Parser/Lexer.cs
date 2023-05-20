@@ -17,7 +17,10 @@ namespace Shapoco.Calctus.Parser {
         private bool _eosReaded = false;
 
         // 長い順に並べた演算子記号
-        private readonly Regex SymbolRule;
+        private readonly Regex OpSymbolRule;
+
+        // 演算子以外の記号
+        private readonly Regex GeneralSymbolRule = new Regex(@"[()\[\],]");
 
         // 数値リテラル
         private readonly NumberFormatter[] _numberFormatters;
@@ -25,12 +28,11 @@ namespace Shapoco.Calctus.Parser {
 
         public Lexer(string exprStr, int pos = 0) {
             // 全ての記号にマッチする正規表現の生成
-            var symbols = OpDef.AllSymbols
+            var opSymbols = OpDef.AllOperatorSymbols
                 .OrderByDescending(p => p.Length)
-                .Concat(new string[] { "(", ")", "[", "]", "," })
                 .Select(p => "(" + Regex.Escape(p) + ")")
                 .ToArray();
-            SymbolRule = new Regex("(" + string.Join("|", symbols) + ")");
+            OpSymbolRule = new Regex("(" + string.Join("|", opSymbols) + ")");
 
             _numberFormatters = NumberFormatter.NativeFormats;
             _literalRegexes = _numberFormatters.Select(p => p.Pattern).ToArray();
@@ -83,9 +85,13 @@ namespace Shapoco.Calctus.Parser {
                     return new Token(TokenType.Word, pos, tok);
                 }
             }
-            else if (_tr.Pop(SymbolRule, out tok)) {
-                // 記号
-                return new Token(TokenType.Symbol, pos, tok);
+            else if (_tr.Pop(OpSymbolRule, out tok)) {
+                // 演算子記号
+                return new Token(TokenType.OperatorSymbol, pos, tok);
+            }
+            else if (_tr.Pop(GeneralSymbolRule, out tok)) {
+                // 演算子以外の記号
+                return new Token(TokenType.GeneralSymbol, pos, tok);
             }
             else {
                 throw new LexerError(pos, "Unknown token starts with: '" + (char)_tr.Peek() + "'");
@@ -110,7 +116,7 @@ namespace Shapoco.Calctus.Parser {
                 var list = new List<Token>();
                 while (!lexer.Eos) {
                     var t = lexer.Pop();
-                    if (t.Type != TokenType.Symbol) {
+                    if (t.Type != TokenType.OperatorSymbol) {
                         symbols = null;
                         return false;
                     }

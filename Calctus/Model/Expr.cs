@@ -173,4 +173,26 @@ namespace Shapoco.Calctus.Model {
             return new ArrayVal(Elements.Select(p => p.Eval(ctx)).ToArray());
         }
     }
+
+    class ElemRef : Expr {
+        public Token Name => Token;
+        public readonly Expr Array;
+        public readonly Expr Index;
+
+        public ElemRef(Token startBracket, Expr array, Expr index) : base(startBracket) {
+            Array = array;
+            Index = index;
+        }
+
+        protected override Val OnEval(EvalContext ctx) {
+            var idx = Index.Eval(ctx);
+            var obj = Array.Eval(ctx);
+            if (obj is ArrayVal array) {
+                return array[idx.AsInt];
+            }
+            else {
+                throw new InvalidOperationException();
+            }
+        }
+    }
 }

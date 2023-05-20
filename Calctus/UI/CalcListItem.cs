@@ -10,7 +10,7 @@ using Shapoco.Calctus.Parser;
 
 namespace Shapoco.Calctus.UI {
     class CalcListItem : ContainerControl {
-        private static readonly char[] _selectionCancelChars = OpDef.AllSymbols
+        private static readonly char[] _selectionCancelChars = OpDef.AllOperatorSymbols
                 .Select(p => p[0])
                 .Distinct()
                 .ToArray();

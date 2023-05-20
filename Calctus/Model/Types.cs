@@ -8,7 +8,8 @@ namespace Shapoco.Calctus.Model {
     enum TokenType {
         NumericLiteral,
         BoolLiteral,
-        Symbol,
+        OperatorSymbol,
+        GeneralSymbol,
         Word,
         Eos
     }
