@@ -16,12 +16,12 @@ namespace Shapoco.Calctus.Model.Sheets {
         public event EventHandler AnswerChanged;
 
         private string _exprText = null;
-        private string _ansText = "";
         
         private RadixMode _radixMode = RadixMode.Auto;
         //public Token[] Tokens { get; private set; }
         public Expr ExprTree { get; private set; }
         public Val AnsVal { get; private set; }
+        public string AnsText { get; private set; } = "";
         public Exception SyntaxError { get; private set; }
         public Exception EvalError { get; private set; }
 
@@ -39,22 +39,12 @@ namespace Shapoco.Calctus.Model.Sheets {
             }
         }
 
-        public string AnsText {
-            get => _ansText;
-            set {
-                if (value == _ansText) return;
-                _ansText = value;
-                AnswerChanged?.Invoke(this, EventArgs.Empty);
-            }
-        }
-
         public RadixMode RadixMode {
             get => _radixMode;
             set {
                 if (value == _radixMode) return;
                 _radixMode = value;
-                AnsText = answerToString();
-                RadixModeChanged?.Invoke(this, EventArgs.Empty);
+                ExpressionChanged?.Invoke(this, EventArgs.Empty);
             }
         }
 
@@ -98,6 +88,12 @@ namespace Shapoco.Calctus.Model.Sheets {
             else {
                 try {
                     var val = ExprTree.Eval(e);
+                    switch (RadixMode) {
+                        case RadixMode.Dec: val = val.FormatInt(); break;
+                        case RadixMode.Hex: val = val.FormatHex(); break;
+                        case RadixMode.Bin: val = val.FormatBin(); break;
+                        case RadixMode.Oct: val = val.FormatOct(); break;
+                    }
                     SetStatus(val, null, null);
                 }
                 catch (Exception ex) {
@@ -107,23 +103,13 @@ namespace Shapoco.Calctus.Model.Sheets {
         }
 
         public void SetStatus(Val ans, Exception syntaxError, Exception evalError) {
-            if (ans.Equals(AnsVal) && syntaxError == SyntaxError && evalError == EvalError) return;
+            string ansText = ans.ToString();
+            if (ans.Equals(AnsVal) && ansText != AnsText && syntaxError == SyntaxError && evalError == EvalError) return;
             AnsVal = ans;
-            AnsText = answerToString();
+            AnsText = ansText;
             SyntaxError = syntaxError;
             EvalError = evalError;
-            //AnswerChanged?.Invoke(this, EventArgs.Empty);
-        }
-
-        private string answerToString() {
-            var ans = AnsVal;
-            switch (RadixMode) {
-                case RadixMode.Dec: ans = ans.FormatInt(); break;
-                case RadixMode.Hex: ans = ans.FormatHex(); break;
-                case RadixMode.Bin: ans = ans.FormatBin(); break;
-                case RadixMode.Oct: ans = ans.FormatOct(); break;
-            }
-            return ans.ToString();
+            AnswerChanged?.Invoke(this, EventArgs.Empty);
         }
     }
 }
