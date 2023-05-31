@@ -7,7 +7,7 @@ using Shapoco.Calctus.Model.Types;
 using Shapoco.Calctus.Model.Parsers;
 
 namespace Shapoco.Calctus.Model.Evaluations {
-    class Var {
+    class Var : ICloneable {
         public readonly Token Name;
         public readonly string Description;
         public readonly bool IsReadonly;
@@ -36,5 +36,7 @@ namespace Shapoco.Calctus.Model.Evaluations {
             this.IsReadonly = false;
             this.Description = desc;
         }
+
+        public object Clone() => MemberwiseClone();
     }
 }

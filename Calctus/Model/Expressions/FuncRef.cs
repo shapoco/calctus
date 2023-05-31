@@ -12,10 +12,24 @@ namespace Shapoco.Calctus.Model.Expressions {
             this.Args = args;
         }
 
-        protected override Val OnEval(EvalContext ctx) {
-            var f = FuncDef.Match(Name, Args.Length, ctx.Settings.AllowExternalFunctions);
-            var args = Args.Select(p => p.Eval(ctx)).ToArray();
-            return f.Call(ctx, args);
+        protected override Val OnEval(EvalContext e) {
+            // ユーザ定義関数で一致するものを探す
+            foreach (var v in e.EnumVars()) {
+                if (v.Value is FuncVal fVal) {
+                    var fDef = (FuncDef)fVal.Raw;
+                    if (fDef.Name == Name.Text && (fDef.ArgCount == Args.Length || fDef.ArgCount == FuncDef.Variadic)) {
+                        var args = Args.Select(p => p.Eval(e)).ToArray();
+                        return fDef.Call(e, args);
+                    }
+                }
+            }
+
+            // ユーザ定義関数に一致しなければ組み込み関数を探す
+            {
+                var f = FuncDef.Match(Name, Args.Length, e.Settings.AllowExternalFunctions);
+                var args = Args.Select(p => p.Eval(e)).ToArray();
+                return f.Call(e, args);
+            }
         }
     }
 }

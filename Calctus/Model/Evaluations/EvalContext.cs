@@ -9,7 +9,7 @@ using Shapoco.Calctus.Model.Parsers;
 namespace Shapoco.Calctus.Model.Evaluations {
     class EvalContext {
         private Dictionary<string, Var> _vars = new Dictionary<string, Var>();
-        public readonly EvalSettings Settings = new EvalSettings();
+        public readonly EvalSettings Settings;
 
         public void DefConst(string name, Val val, string desc) {
             _vars.Add(name, new Var(new Token(TokenType.Word, TextPosition.Nowhere, name), val, true, desc));
@@ -24,6 +24,7 @@ namespace Shapoco.Calctus.Model.Evaluations {
         }
 
         public EvalContext() {
+            Settings = new EvalSettings();
             this.AddConstantReal("PI", 3.1415926535897932384626433833m, "circle ratio");
             this.AddConstantReal("E", 2.7182818284590452353602874714m, "base of natural logarithm");
             this.AddConstantHex("INT_MIN", Int32.MinValue, "minimum value of 32 bit signed integer");
@@ -36,6 +37,13 @@ namespace Shapoco.Calctus.Model.Evaluations {
             this.AddConstantHex("ULONG_MAX", UInt64.MaxValue, "maximum value of 64 bit unsigned integer");
             this.AddConstantReal("DECIMAL_MIN", real.MinValue, "minimum value of Decimal");
             this.AddConstantReal("DECIMAL_MAX", real.MaxValue, "maximum value of Decimal");
+        }
+
+        public EvalContext(EvalContext src) {
+            foreach(var k in src._vars.Keys) {
+                _vars.Add(k, (Var)src._vars[k].Clone());
+            }
+            Settings = (EvalSettings)src.Settings.Clone();
         }
 
         public Var Ref(Token name, bool allowCreate) {

@@ -65,6 +65,7 @@
     <Compile Include="Calctus\Model\Sheets\Sheet.cs" />
     <Compile Include="Calctus\Model\Sheets\SheetItem.cs" />
     <Compile Include="Calctus\Model\Mathematics\QMath.cs" />
+    <Compile Include="Calctus\Model\Types\FuncVal.cs" />
     <Compile Include="Calctus\Model\Types\quad.cs" />
     <Compile Include="Calctus\Model\ScriptFilter.cs" />
     <Compile Include="Calctus\Model\Formats\BinaryPrefixFormatter.cs" />
@@ -103,6 +104,7 @@
     <Compile Include="Calctus\Model\Types\Val.cs" />
     <Compile Include="Calctus\Model\Evaluations\Var.cs" />
     <Compile Include="Calctus\Model\Parsers\TokenQueue.cs" />
+    <Compile Include="Calctus\Model\UserFuncDef.cs" />
     <Compile Include="Calctus\Settings.cs" />
     <Compile Include="Calctus\UI\ColorUtils.cs" />
     <Compile Include="Calctus\UI\ConstEditForm.cs">
