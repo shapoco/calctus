@@ -629,7 +629,6 @@ namespace Shapoco.Calctus.UI.Sheets {
         private void linkSheetItem(SheetItem noteItem) {
             var viewItem = new SheetViewItem(this, noteItem);
             noteItem.ExpressionChanged += SheetItem_ExpressionChanged;
-            noteItem.RadixModeChanged += NoteItem_RadixModeChanged;
             noteItem.Tag = viewItem;
             _innerBox.Children.Add(viewItem);
         }
@@ -638,7 +637,6 @@ namespace Shapoco.Calctus.UI.Sheets {
             var viewItem = (SheetViewItem)noteItem.Tag;
             _innerBox.Children.Remove(viewItem);
             noteItem.ExpressionChanged -= SheetItem_ExpressionChanged;
-            noteItem.RadixModeChanged -= NoteItem_RadixModeChanged;
             viewItem.Dispose();
             noteItem.Tag = null;
         }
@@ -648,15 +646,6 @@ namespace Shapoco.Calctus.UI.Sheets {
             var focusedIndex = FocusedIndex;
             if (focusedIndex >= 0 && getViewItem(focusedIndex).SheetItem == senderItem) {
                 _focusedRpnOperation = parseRpnOperation(focusedIndex);
-            }
-            RequestRecalc();
-        }
-
-        private void NoteItem_RadixModeChanged(object sender, EventArgs e) {
-            var senderItem = (SheetItem)sender;
-            var focusedIndex = FocusedIndex;
-            if (focusedIndex >= 0 && getViewItem(focusedIndex).SheetItem == senderItem) {
-                ActiveRadixMode = senderItem.RadixMode;
             }
             RequestRecalc();
         }

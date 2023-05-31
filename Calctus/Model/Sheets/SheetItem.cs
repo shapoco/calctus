@@ -12,7 +12,6 @@ using Shapoco.Calctus.Model.Evaluations;
 namespace Shapoco.Calctus.Model.Sheets {
     class SheetItem {
         public event EventHandler ExpressionChanged;
-        public event EventHandler RadixModeChanged;
         public event EventHandler AnswerChanged;
 
         private string _exprText = null;
