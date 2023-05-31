@@ -41,7 +41,6 @@ namespace Shapoco.Calctus.UI
             this.deleteButton = new System.Windows.Forms.ToolStripButton();
             this.moveUpButton = new System.Windows.Forms.ToolStripButton();
             this.moveDownButton = new System.Windows.Forms.ToolStripButton();
-            this.timerButton = new System.Windows.Forms.ToolStripButton();
             this.notifyIcon = new System.Windows.Forms.NotifyIcon(this.components);
             this.trayMenuStrip = new System.Windows.Forms.ContextMenuStrip(this.components);
             this.contextOpen = new System.Windows.Forms.ToolStripMenuItem();
@@ -54,7 +53,7 @@ namespace Shapoco.Calctus.UI
             this.radixDecButton = new Shapoco.Calctus.UI.FlatRadioButton();
             this.radixAutoButton = new Shapoco.Calctus.UI.FlatRadioButton();
             this.toolTip = new System.Windows.Forms.ToolTip(this.components);
-            this.calcListBox = new Shapoco.Calctus.UI.CalcListBox();
+            this.sheetView = new Shapoco.Calctus.UI.Sheets.SheetView();
             this.toolStrip.SuspendLayout();
             this.trayMenuStrip.SuspendLayout();
             this.panel2.SuspendLayout();
@@ -71,8 +70,7 @@ namespace Shapoco.Calctus.UI
             this.insertButton,
             this.deleteButton,
             this.moveUpButton,
-            this.moveDownButton,
-            this.timerButton});
+            this.moveDownButton});
             this.toolStrip.Location = new System.Drawing.Point(0, 0);
             this.toolStrip.Name = "toolStrip";
             this.toolStrip.Size = new System.Drawing.Size(402, 25);
@@ -168,17 +166,6 @@ namespace Shapoco.Calctus.UI
             this.moveDownButton.Size = new System.Drawing.Size(23, 22);
             this.moveDownButton.Text = "toolStripButton6";
             this.moveDownButton.ToolTipText = "Move Down";
-            // 
-            // timerButton
-            // 
-            this.timerButton.Alignment = System.Windows.Forms.ToolStripItemAlignment.Right;
-            this.timerButton.DisplayStyle = System.Windows.Forms.ToolStripItemDisplayStyle.Image;
-            this.timerButton.Image = global::Shapoco.Properties.Resources.ToolIcon_Timer;
-            this.timerButton.ImageTransparentColor = System.Drawing.Color.Magenta;
-            this.timerButton.Name = "timerButton";
-            this.timerButton.Size = new System.Drawing.Size(23, 22);
-            this.timerButton.Text = "toolStripButton1";
-            this.timerButton.ToolTipText = "Create Timer";
             // 
             // notifyIcon
             // 
@@ -291,17 +278,15 @@ namespace Shapoco.Calctus.UI
             this.radixAutoButton.Text = "Auto";
             this.radixAutoButton.UseVisualStyleBackColor = false;
             // 
-            // calcListBox
+            // bookView
             // 
-            this.calcListBox.BackColor = System.Drawing.Color.FromArgb(((int)(((byte)(32)))), ((int)(((byte)(32)))), ((int)(((byte)(32)))));
-            this.calcListBox.Dock = System.Windows.Forms.DockStyle.Fill;
-            this.calcListBox.Location = new System.Drawing.Point(0, 25);
-            this.calcListBox.Name = "calcListBox";
-            this.calcListBox.RadixMode = Shapoco.Calctus.UI.RadixMode.Auto;
-            this.calcListBox.SelectedIndex = 0;
-            this.calcListBox.Size = new System.Drawing.Size(402, 206);
-            this.calcListBox.TabIndex = 7;
-            this.calcListBox.Text = "calcListBox1";
+            this.sheetView.BackColor = System.Drawing.Color.FromArgb(((int)(((byte)(32)))), ((int)(((byte)(32)))), ((int)(((byte)(32)))));
+            this.sheetView.Dock = System.Windows.Forms.DockStyle.Fill;
+            this.sheetView.Location = new System.Drawing.Point(0, 25);
+            this.sheetView.Name = "bookView";
+            this.sheetView.Size = new System.Drawing.Size(402, 206);
+            this.sheetView.TabIndex = 0;
+            this.sheetView.Text = "bookView1";
             // 
             // MainForm
             // 
@@ -309,7 +294,7 @@ namespace Shapoco.Calctus.UI
             this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
             this.BackColor = System.Drawing.Color.FromArgb(((int)(((byte)(64)))), ((int)(((byte)(64)))), ((int)(((byte)(64)))));
             this.ClientSize = new System.Drawing.Size(402, 246);
-            this.Controls.Add(this.calcListBox);
+            this.Controls.Add(this.sheetView);
             this.Controls.Add(this.panel2);
             this.Controls.Add(this.toolStrip);
             this.ForeColor = System.Drawing.Color.White;
@@ -339,7 +324,6 @@ namespace Shapoco.Calctus.UI
         private FlatRadioButton radixHexButton;
         private FlatRadioButton radixDecButton;
         private FlatRadioButton radixAutoButton;
-        private CalcListBox calcListBox;
         private System.Windows.Forms.ToolStripButton topMostButton;
         private FlatRadioButton radixOctButton;
         private System.Windows.Forms.ToolTip toolTip;
@@ -349,7 +333,7 @@ namespace Shapoco.Calctus.UI
         private System.Windows.Forms.ToolStripButton deleteButton;
         private System.Windows.Forms.ToolStripButton moveUpButton;
         private System.Windows.Forms.ToolStripButton moveDownButton;
-        private System.Windows.Forms.ToolStripButton timerButton;
+        private UI.Sheets.SheetView sheetView;
     }
 }
 

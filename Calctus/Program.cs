@@ -16,11 +16,11 @@ namespace Shapoco.Calctus
         static void Main()
         {
 #if DEBUG
-            Model.Syntax.NumberFormatter.Test();
-            Model.Standard.PreferredNumbers.Test();
-            Model.ufixed113.Test();
-            Model.quad.Test();
-            Model.QMath.Test();
+            Model.Formats.NumberFormatter.Test();
+            Model.Standards.PreferredNumbers.Test();
+            Model.Types.ufixed113.Test();
+            Model.Types.quad.Test();
+            Model.Mathematics.QMath.Test();
 #endif
             Application.EnableVisualStyles();
             Application.SetCompatibleTextRenderingDefault(false);

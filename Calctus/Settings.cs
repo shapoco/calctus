@@ -5,6 +5,7 @@ using System.Text;
 using System.Threading.Tasks;
 using System.Windows.Forms;
 using Shapoco.Calctus.Model;
+using Shapoco.Calctus.Model.Evaluations;
 
 namespace Shapoco.Calctus {
     internal class Settings {

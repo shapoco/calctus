@@ -143,16 +143,6 @@ namespace Shapoco.Properties {
         /// <summary>
         ///   型 System.Drawing.Bitmap のローカライズされたリソースを検索します。
         /// </summary>
-        internal static System.Drawing.Bitmap ToolIcon_Timer {
-            get {
-                object obj = ResourceManager.GetObject("ToolIcon_Timer", resourceCulture);
-                return ((System.Drawing.Bitmap)(obj));
-            }
-        }
-        
-        /// <summary>
-        ///   型 System.Drawing.Bitmap のローカライズされたリソースを検索します。
-        /// </summary>
         internal static System.Drawing.Bitmap ToolIcon_TopMostOff {
             get {
                 object obj = ResourceManager.GetObject("ToolIcon_TopMostOff", resourceCulture);

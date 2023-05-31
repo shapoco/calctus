@@ -9,6 +9,8 @@ using System.Text.RegularExpressions;
 using System.Threading.Tasks;
 using System.Windows.Forms;
 using Shapoco.Calctus.Model;
+using Shapoco.Calctus.Model.Parsers;
+using Shapoco.Calctus.Model.Evaluations;
 
 namespace Shapoco.Calctus.UI {
     partial class ConstEditForm : Form {
@@ -49,7 +51,7 @@ namespace Shapoco.Calctus.UI {
             var valueOk = false;
             try {
                 var ctx = new EvalContext();
-                var expr = Parser.Parser.Parse(valueStr.Text);
+                var expr = Parser.Parse(valueStr.Text);
                 expr.Eval(ctx);
                 valueOk = true;
             } catch { }

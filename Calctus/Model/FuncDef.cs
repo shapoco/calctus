@@ -4,7 +4,11 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 using System.Drawing;
-using Shapoco.Calctus.Model.Standard;
+using Shapoco.Calctus.Model.Standards;
+using Shapoco.Calctus.Model.Types;
+using Shapoco.Calctus.Model.Mathematics;
+using Shapoco.Calctus.Model.Parsers;
+using Shapoco.Calctus.Model.Evaluations;
 
 namespace Shapoco.Calctus.Model {
     class FuncDef {
@@ -203,18 +207,12 @@ namespace Shapoco.Calctus.Model {
         public static readonly FuncDef rand32 = new FuncDef("rand32", 0, (e, a) => new RealVal(rng.Next()), "Generates a 32bit random integer.");
         public static readonly FuncDef rand64 = new FuncDef("rand64", 0, (e, a) => new RealVal((((long)rng.Next()) << 32) | ((long)rng.Next())), "Generates a 64bit random integer.");
 
-        public static readonly FuncDef assert = new FuncDef("assert", (e, a) => { if (!a[0].AsBool) { e.RequestHighlight(); } return a[0]; }, "Highlights the expression if the argument is false.");
-
-        public static readonly FuncDef poll = new FuncDef("poll", (e, a) => { e.RequestRecalc(); return a[0]; }, "Requests recalculation after 1 second.");
-        public static readonly FuncDef alarm = new FuncDef("alarm", (e, a) => {
-            var t = RMath.Floor(a[0].AsReal - UnixTime.FromLocalTime(DateTime.Now));
-            e.RequestRecalc();
-            if (t <= 0) {
-                e.RequestHighlight();
-                e.RequestBeep();
+        public static readonly FuncDef assert = new FuncDef("assert", (e, a) => {
+            if (!a[0].AsBool) {
+                throw new CalctusError("Assertion failed.");
             }
-            return new RealVal(t).FormatInt();
-        }, "Alarms at a specified time.");
+            return a[0];
+        }, "Highlights the expression if the argument is false.");
 
         /// <summary>ネイティブ関数の一覧</summary>
         public static FuncDef[] NativeFunctions = EnumNativeFunctions().ToArray();
@@ -240,7 +238,7 @@ namespace Shapoco.Calctus.Model {
             var funcs = allowExtermals ? EnumAllFunctions() : NativeFunctions;
             var f = funcs.FirstOrDefault(p => p.Name == tok.Text && (p.ArgCount == numArgs || p.ArgCount == Variadic));
             if (f == null) {
-                throw new Shapoco.Calctus.Parser.LexerError(tok.Position, "function " + tok + "(" + numArgs + ") was not found.");
+                throw new LexerError(tok.Position, "function " + tok + "(" + numArgs + ") was not found.");
             }
             return f;
         }

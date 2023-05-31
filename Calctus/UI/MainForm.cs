@@ -10,7 +10,8 @@ using System.Windows.Forms;
 using System.Runtime.InteropServices;
 
 using Shapoco.Calctus.Model;
-using Shapoco.Calctus.Parser;
+using Shapoco.Calctus.Model.Sheets;
+using Shapoco.Calctus.UI.Sheets;
 
 namespace Shapoco.Calctus.UI {
     internal partial class MainForm : Form {
@@ -63,9 +64,9 @@ namespace Shapoco.Calctus.UI {
 #endif
             notifyIcon.MouseClick += NotifyIcon_MouseClick;
 
-            calcListBox.RadixModeChanged += (sender, e) => { this.RadixMode = ((CalcListBox)sender).RadixMode; };
-            calcListBox.DialogOpening += (sender, e) => { TopMost = false; };
-            calcListBox.DialogClosed += (sender, e) => { TopMost = _topMost; };
+            sheetView.RadixModeChanged += (sender, e) => { RadixMode = ((SheetView)sender).ActiveRadixMode; };
+            sheetView.DialogOpening += (sender, e) => { TopMost = false; };
+            sheetView.DialogClosed += (sender, e) => { TopMost = _topMost; };
 
             radixAutoButton.CheckedChanged += (sender, e) => { RadixCheckedChanged((RadioButton)sender, RadixMode.Auto); };
             radixDecButton.CheckedChanged += (sender, e) => { RadixCheckedChanged((RadioButton)sender, RadixMode.Dec); };
@@ -80,14 +81,13 @@ namespace Shapoco.Calctus.UI {
             toolTip.SetToolTip(radixBinButton, "Binary (F11)");
             toolTip.SetToolTip(radixOctButton, "Octal (F12)");
 
-            copyButton.Click += (sender, e) => { calcListBox.Copy(); };
-            pasteButton.Click += (sender, e) => { calcListBox.Paste(); };
-            insertButton.Click += (sender, e) => { calcListBox.ItemInsert(); };
-            deleteButton.Click += (sender, e) => { calcListBox.ItemDelete(); };
-            moveUpButton.Click += (sender, e) => { calcListBox.ItemMoveUp(); };
-            moveDownButton.Click += (sender, e) => { calcListBox.ItemMoveDown(); };
+            copyButton.Click += (sender, e) => { sheetView.Copy(); };
+            pasteButton.Click += (sender, e) => { sheetView.Paste(); };
+            insertButton.Click += (sender, e) => { sheetView.ItemInsert(); };
+            deleteButton.Click += (sender, e) => { sheetView.ItemDelete(); };
+            moveUpButton.Click += (sender, e) => { sheetView.ItemMoveUp(); };
+            moveDownButton.Click += (sender, e) => { sheetView.ItemMoveDown(); };
 
-            timerButton.Click += (sender, e) => { calcListBox.CreateAlarm(); };
             settingsButton.Click += SettingsButton_Click;
             topMostButton.Click += TopMostButton_Click;
             helpButton.Click += (sender, e) => { System.Diagnostics.Process.Start(@"https://github.com/shapoco/calctus"); };
@@ -183,10 +183,10 @@ namespace Shapoco.Calctus.UI {
                 var font_mono_normal = new Font(s.Appearance_Font_Expr_Name, s.Appearance_Font_Size, font_style);
                 var font_mono_large = new Font(s.Appearance_Font_Expr_Name, s.Appearance_Font_Size * font_large_coeff, font_style);
                 this.Font = font_ui_normal;
-                calcListBox.Font = font_mono_large;
+                sheetView.Font = font_mono_large;
             }
             catch { }
-            calcListBox.Recalc();
+            sheetView.RequestRecalc();
         }
 
         private void enableHotkey() {
@@ -272,7 +272,8 @@ namespace Shapoco.Calctus.UI {
 
         private void _focusTimer_Tick(object sender, EventArgs e) {
             _focusTimer.Stop();
-            calcListBox.Refocus();
+            //calcListBox.Refocus();
+            sheetView.Focus();
         }
 
         private void MainForm_KeyDown(object sender, KeyEventArgs e) {
@@ -282,7 +283,7 @@ namespace Shapoco.Calctus.UI {
             }
             else if (e.KeyCode == Keys.F5) {
                 ExtFuncDef.ScanScripts();
-                calcListBox.Recalc();
+                sheetView.RequestRecalc();
             }
             else if (e.KeyCode == Keys.F8) {
                 this.RadixMode = RadixMode.Auto;
@@ -316,7 +317,7 @@ namespace Shapoco.Calctus.UI {
                     case RadixMode.Bin: radixBinButton.Checked = true; break;
                     case RadixMode.Oct: radixOctButton.Checked = true; break;
                 }
-                calcListBox.RadixMode = value;
+                sheetView.ActiveRadixMode = value;
             }
         }
 

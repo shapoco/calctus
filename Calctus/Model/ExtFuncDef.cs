@@ -6,6 +6,9 @@ using System.Threading.Tasks;
 using System.IO;
 using System.Diagnostics;
 using System.Runtime.InteropServices;
+using Shapoco.Calctus.Model.Types;
+using Shapoco.Calctus.Model.Parsers;
+using Shapoco.Calctus.Model.Evaluations;
 
 namespace Shapoco.Calctus.Model {
     class ExtFuncDef : FuncDef {
@@ -59,7 +62,7 @@ namespace Shapoco.Calctus.Model {
                 psi.RedirectStandardOutput = true;
                 var p = Process.Start(psi);
                 var output = p.StandardOutput.ReadToEnd();
-                var expr = Parser.Parser.Parse(output);
+                var expr = Parser.Parse(output);
                 return expr.Eval(new EvalContext());
             }
             catch (Exception ex) {
