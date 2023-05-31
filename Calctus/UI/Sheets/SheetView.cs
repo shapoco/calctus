@@ -806,7 +806,12 @@ namespace Shapoco.Calctus.UI.Sheets {
                 list.Add(new InputCandidate(f.Name, f.ToString(), f.Description, true));
             }
             foreach (var v in ctx.EnumVars()) {
-                list.Add(new InputCandidate(v.Name.Text, v.Name.Text, v.Description, false));
+                if (!(v.Value is FuncVal)) {
+                    list.Add(new InputCandidate(v.Name.Text, v.Name.Text, v.Description, false));
+                }
+            }
+            foreach(var f in ctx.EnumUserFuncs()) {
+                list.Add(new InputCandidate(f.Name, f.ToString(), f.Description, true));
             }
             list.Add(new InputCandidate(Sheet.LastAnsId, Sheet.LastAnsId, "last answer", false));
             list.Add(new InputCandidate(BoolVal.TrueKeyword, BoolVal.TrueKeyword, "true value", false));

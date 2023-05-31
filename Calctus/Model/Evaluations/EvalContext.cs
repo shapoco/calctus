@@ -78,5 +78,7 @@ namespace Shapoco.Calctus.Model.Evaluations {
         }
 
         public IEnumerable<Var> EnumVars() => _vars.Values;
+
+        public IEnumerable<FuncDef> EnumUserFuncs() => _vars.Values.Where(p => p.Value is FuncVal).Select(p => (FuncDef)((FuncVal)p.Value).Raw);
     }
 }

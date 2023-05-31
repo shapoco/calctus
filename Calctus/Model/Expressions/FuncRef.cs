@@ -14,13 +14,10 @@ namespace Shapoco.Calctus.Model.Expressions {
 
         protected override Val OnEval(EvalContext e) {
             // ユーザ定義関数で一致するものを探す
-            foreach (var v in e.EnumVars()) {
-                if (v.Value is FuncVal fVal) {
-                    var fDef = (FuncDef)fVal.Raw;
-                    if (fDef.Name == Name.Text && (fDef.ArgCount == Args.Length || fDef.ArgCount == FuncDef.Variadic)) {
-                        var args = Args.Select(p => p.Eval(e)).ToArray();
-                        return fDef.Call(e, args);
-                    }
+            foreach (var fDef in e.EnumUserFuncs()) {
+                if (fDef.Name == Name.Text && (fDef.ArgCount == Args.Length || fDef.ArgCount == FuncDef.Variadic)) {
+                    var args = Args.Select(p => p.Eval(e)).ToArray();
+                    return fDef.Call(e, args);
                 }
             }
 
