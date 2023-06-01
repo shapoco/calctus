@@ -35,6 +35,10 @@ namespace Shapoco.Calctus.Model.Expressions {
             var pMin = ParamMin != null ? (decimal)ParamMin.Eval(e).AsReal : -10m;
             var pMax = ParamMax != null ? (decimal)ParamMax.Eval(e).AsReal : 10m;
 
+            if (pMin > pMax) {
+                throw new ArgumentException("Invalid parameter range.");
+            }
+
             // ニュートン法
             var scope = new EvalContext(e);
             var results = new List<decimal>();
