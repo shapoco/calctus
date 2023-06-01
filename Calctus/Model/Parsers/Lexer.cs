@@ -23,6 +23,9 @@ namespace Shapoco.Calctus.Model.Parsers {
         // 演算子以外の記号
         private readonly Regex GeneralSymbolRule = new Regex(@"[()\[\],:?]");
 
+        // キーワード
+        private readonly Regex KeywordRule = new Regex(@"(def)\b");
+
         // 数値リテラル
         private readonly NumberFormatter[] _numberFormatters;
         private readonly Regex[] _literalRegexes;
@@ -75,6 +78,10 @@ namespace Shapoco.Calctus.Model.Parsers {
                 var val = f.Parse(m);
                 tok = m.Value;
                 return new Token(TokenType.NumericLiteral, pos, tok, new NumberTokenHint(val));
+            }
+            else if (_tr.Pop(KeywordRule, out tok)) {
+                // キーワード
+                return new Token(TokenType.Keyword, pos, tok);
             }
             else if (_tr.Pop(_wordRegexes, out tok)) {
                 if (tok == BoolVal.TrueKeyword || tok == BoolVal.FalseKeyword) {

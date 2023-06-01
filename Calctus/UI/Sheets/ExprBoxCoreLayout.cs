@@ -187,7 +187,8 @@ namespace Shapoco.Calctus.UI.Sheets {
 
                     case TokenType.OperatorSymbol:
                     case TokenType.GeneralSymbol:
-                        // 記号の強調表示
+                    case TokenType.Keyword:
+                        // 記号とキーワードの強調表示
                         if ((t.Text == "(" || t.Text == ")") && parDepth >= 0) {
                             _chars[t.Position.Index].Style.ForeColor
                                 = ParenthesisColors[parDepth % ParenthesisColors.Length];

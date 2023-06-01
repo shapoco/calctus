@@ -52,20 +52,6 @@ namespace Shapoco.Calctus.Model.Expressions {
                     varRef.Value = varVal;
                     return val;
                 }
-                else if (A is FuncRef fRef) {
-                    // 関数定義
-                    var argNames = new List<string>();
-                    foreach(var arg in fRef.Args) {
-                        if ((arg is VarRef vRef)) {
-                            argNames.Add(vRef.RefName.Text);
-                        }
-                        else {
-                            throw new InvalidOperationException("Invalid function definision");
-                        }
-                    }
-                    e.Ref(fRef.Name, true).Value = new FuncVal(new UserFuncDef(fRef.Name.Text, argNames.ToArray(), B));
-                    return new BoolVal(true);
-                }
                 else {
                     throw new InvalidOperationException("Left hand of " + Token + " must be variant");
                 }

@@ -55,6 +55,7 @@
     <Compile Include="Calctus\Assert.cs" />
     <Compile Include="Calctus\Model\Evaluations\EvalError.cs" />
     <Compile Include="Calctus\Model\Expressions\Types.cs" />
+    <Compile Include="Calctus\Model\Expressions\UserFuncExpr.cs" />
     <Compile Include="Calctus\Model\Parsers\Types.cs" />
     <Compile Include="Calctus\Model\Types\ArrayVal.cs" />
     <Compile Include="Calctus\Model\Sheets\Types.cs" />

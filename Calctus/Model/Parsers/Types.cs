@@ -10,6 +10,7 @@ namespace Shapoco.Calctus.Model.Parsers {
         BoolLiteral,
         OperatorSymbol,
         GeneralSymbol,
+        Keyword,
         Word,
         Eos,
         Empty

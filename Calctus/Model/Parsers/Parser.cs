@@ -23,7 +23,13 @@ namespace Shapoco.Calctus.Model.Parsers {
         }
 
         public Expr Pop(bool last = true) {
-            return Expr(last);
+            Token tok;
+            if (ReadIf("def", out tok)) {
+                return UserFuncDef(tok);
+            }
+            else {
+                return Expr(last);
+            }
         }
 
         public Expr Expr(bool last = false) {
@@ -142,6 +148,22 @@ namespace Shapoco.Calctus.Model.Parsers {
                 var nextToken = Peek();
                 throw new ParserError(nextToken, "Invalid operand: '" + nextToken + "'");
             }
+        }
+
+        public Expr UserFuncDef(Token first) {
+            Expect(TokenType.Word, out Token name);
+            Expect("(");
+            var args = new List<Token>();
+            if (!ReadIf(")")) {
+                do {
+                    Expect(TokenType.Word, out Token arg);
+                    args.Add(arg);
+                } while (ReadIf(","));
+                Expect(")");
+            }
+            Expect("=");
+            var body = Expr(true);
+            return new UserFuncExpr(name, args.ToArray(), body);
         }
 
         public Token Peek() {
