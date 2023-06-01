@@ -17,6 +17,13 @@ namespace Shapoco.Calctus.Model.Expressions {
             Name = name;
             Args = args;
             Body = body;
+            for (int i = 0; i < args.Length - 1; i++) {
+                for (int j = i + 1; j < args.Length; j++) {
+                    if (args[i].Text == args[j].Text) {
+                        throw new ParserError(args[j], "Duplicate argument name");
+                    }
+                }
+            }
         }
 
         protected override Val OnEval(EvalContext e) {

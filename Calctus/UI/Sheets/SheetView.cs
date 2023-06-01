@@ -816,6 +816,7 @@ namespace Shapoco.Calctus.UI.Sheets {
             list.Add(new InputCandidate(Sheet.LastAnsId, Sheet.LastAnsId, "last answer", false));
             list.Add(new InputCandidate(BoolVal.TrueKeyword, BoolVal.TrueKeyword, "true value", false));
             list.Add(new InputCandidate(BoolVal.FalseKeyword, BoolVal.FalseKeyword, "false value", false));
+            list.Add(new InputCandidate("def", "def", "user function definition", false));
             _inputCandidates = list.OrderBy(p => p.Id).ToArray();
             _recalcRequested = false;
         }
