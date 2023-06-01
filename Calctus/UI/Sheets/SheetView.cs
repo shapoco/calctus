@@ -801,6 +801,8 @@ namespace Shapoco.Calctus.UI.Sheets {
 #endif
             var ctx = _sheet.Run();
             ctx.Undef(Sheet.LastAnsId, true);
+
+            // 入力補完候補の列挙
             var list = new List<InputCandidate>();
             foreach (var f in FuncDef.EnumAllFunctions()) {
                 list.Add(new InputCandidate(f.Name, f.ToString(), f.Description, true));
@@ -817,6 +819,7 @@ namespace Shapoco.Calctus.UI.Sheets {
             list.Add(new InputCandidate(BoolVal.TrueKeyword, BoolVal.TrueKeyword, "true value", false));
             list.Add(new InputCandidate(BoolVal.FalseKeyword, BoolVal.FalseKeyword, "false value", false));
             list.Add(new InputCandidate("def", "def", "user function definition", false));
+            list.Add(new InputCandidate("solve", "solve", "Solves the equation using Newton's method.", true));
             _inputCandidates = list.OrderBy(p => p.Id).ToArray();
             _recalcRequested = false;
         }

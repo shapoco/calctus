@@ -25,7 +25,10 @@ namespace Shapoco.Calctus.Model.Parsers {
         public Expr Pop(bool last = true) {
             Token tok;
             if (ReadIf("def", out tok)) {
-                return UserFuncDef(tok);
+                return Def(tok);
+            }
+            else if (ReadIf("solve", out tok)) {
+                return Solve(tok);
             }
             else {
                 return Expr(last);
@@ -150,7 +153,7 @@ namespace Shapoco.Calctus.Model.Parsers {
             }
         }
 
-        public Expr UserFuncDef(Token first) {
+        public Expr Def(Token first) {
             Expect(TokenType.Word, out Token name);
             Expect("(");
             var args = new List<Token>();
@@ -163,7 +166,23 @@ namespace Shapoco.Calctus.Model.Parsers {
             }
             Expect("=");
             var body = Expr(true);
-            return new UserFuncExpr(name, args.ToArray(), body);
+            return new UserFuncExpr(first, name, args.ToArray(), body);
+        }
+
+        public Expr Solve(Token first) {
+            Expect("(");
+            var equation = Expr(false);
+            Expect(",");
+            Expect(TokenType.Word, out Token variant);
+            Expr min = null;
+            Expr max = null;
+            if (ReadIf(",")) {
+                min = Expr(false);
+                Expect(",");
+                max = Expr(false);
+            }
+            Expect(")");
+            return new SolveExpr(first, equation, variant, min, max);
         }
 
         public Token Peek() {

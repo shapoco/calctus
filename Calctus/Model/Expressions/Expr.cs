@@ -16,19 +16,19 @@ namespace Shapoco.Calctus.Model.Expressions {
             this.Token = t;
         }
 
-        public Val Eval(EvalContext ctx) {
+        public Val Eval(EvalContext e) {
             try {
-                return OnEval(ctx);
+                return OnEval(e);
             }
             catch (EvalError ex) {
                 throw ex;
             }
             catch (Exception ex) {
-                throw new EvalError(ctx, Token, ex.Message);
+                throw new EvalError(e, Token, ex.Message);
             }
         }
 
         /// <summary>この式を評価して値を返す</summary>
-        protected abstract Val OnEval(EvalContext ctx);
+        protected abstract Val OnEval(EvalContext e);
     }
 }

@@ -54,6 +54,7 @@
     <Compile Include="AppDataManager.cs" />
     <Compile Include="Calctus\Assert.cs" />
     <Compile Include="Calctus\Model\Evaluations\EvalError.cs" />
+    <Compile Include="Calctus\Model\Expressions\SolveExpr.cs" />
     <Compile Include="Calctus\Model\Expressions\Types.cs" />
     <Compile Include="Calctus\Model\Expressions\UserFuncExpr.cs" />
     <Compile Include="Calctus\Model\Parsers\Types.cs" />

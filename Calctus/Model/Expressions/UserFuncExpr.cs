@@ -13,7 +13,7 @@ namespace Shapoco.Calctus.Model.Expressions {
         public readonly Token[] Args;
         public readonly Expr Body;
 
-        public UserFuncExpr(Token name, Token[] args, Expr body) {
+        public UserFuncExpr(Token keyword, Token name, Token[] args, Expr body) : base(keyword) {
             Name = name;
             Args = args;
             Body = body;
