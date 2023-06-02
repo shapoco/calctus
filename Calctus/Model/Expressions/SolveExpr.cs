@@ -15,9 +15,6 @@ namespace Shapoco.Calctus.Model.Expressions {
         public readonly Expr ParamMin;
         public readonly Expr ParamMax;
 
-        private readonly real H = 1e-5m;
-        private readonly real TOL = 1e-10m;
-
         public SolveExpr(Token keyword, Expr equation, Token variant, Expr paramMin, Expr paramMax) : base(keyword) {
             // 等式が与えられた場合は減算にすり替える
             if (equation is BinaryOp binOp && (binOp.Method == OpDef.Assign || binOp.Method == OpDef.Equal)) {
@@ -31,13 +28,20 @@ namespace Shapoco.Calctus.Model.Expressions {
         }
 
         protected override Val OnEval(EvalContext e) {
-            // 初期値
-            var pMin = ParamMin != null ? (decimal)ParamMin.Eval(e).AsReal : -10m;
-            var pMax = ParamMax != null ? (decimal)ParamMax.Eval(e).AsReal : 10m;
-
-            if (pMin > pMax) {
+            // 初期値の範囲
+            var pMinVal = ParamMin != null ? ParamMin.Eval(e) : new RealVal(-10m);
+            var pMaxVal = ParamMax != null ? ParamMax.Eval(e) : new RealVal(10m);
+            var pMin = (decimal)pMinVal.AsReal;
+            var pMax = (decimal)pMaxVal.AsReal;
+            if (pMin >= pMax) {
                 throw new ArgumentException("Invalid parameter range.");
             }
+
+            // 数値微分用の定数
+            var h = Math.Max(1e-20m, (pMax - pMin) / 1e6m);
+
+            // 収束条件
+            var tol = Math.Max(1e-25m, (pMax - pMin) / 1e12m);
 
             // ニュートン法
             var scope = new EvalContext(e);
@@ -46,8 +50,8 @@ namespace Shapoco.Calctus.Model.Expressions {
             for (int i = 0; i < N; i++) {
                 try {
                     var init = pMin + (pMax - pMin) * i / N;
-                    if (newtonMethod(scope, init, pMin, pMax, out decimal r)) {
-                        if (!results.Any(p => Math.Abs(p - r) < TOL * 2)) {
+                    if (newtonMethod(scope, init, pMin, pMax, h, tol, out decimal r)) {
+                        if (!results.Any(p => Math.Abs(p - r) < tol * 2)) {
                             results.Add(r);
                         }
                     }
@@ -56,24 +60,24 @@ namespace Shapoco.Calctus.Model.Expressions {
             }
 
             if (results.Count == 1) {
-                return new RealVal(results[0]);
+                return new RealVal(results[0]).Format(pMinVal.FormatHint);
             }
             else {
                 results.Sort();
-                return new ArrayVal(results.Select(p => new RealVal(p)).ToArray());
+                return new ArrayVal(results.Select(p => new RealVal(p).Format(pMinVal.FormatHint)).ToArray());
             }
         }
 
-        private bool newtonMethod(EvalContext e, decimal initVal, decimal pMin, decimal pMax, out decimal result) {
+        private bool newtonMethod(EvalContext e, decimal initVal, decimal pMin, decimal pMax, decimal h, decimal tol, out decimal result) {
             decimal p = initVal;
-            for(int i = 0; i < 100; i++) {
-                decimal slope = (evalEquation(e, p + H) - evalEquation(e, p - H)) / (2 * H);
+            for (int i = 0; i < 100; i++) {
+                decimal slope = (evalEquation(e, p + h) - evalEquation(e, p - h)) / (2 * h);
                 decimal nextP = p - evalEquation(e, p) / slope;
                 if (nextP < pMin || pMax < nextP) {
                     result = 0;
                     return false;
                 }
-                if (Math.Abs(nextP - p) < TOL) {
+                if (Math.Abs(nextP - p) < tol) {
                     result = nextP;
                     return true;
                 }
