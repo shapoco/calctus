@@ -174,15 +174,16 @@ namespace Shapoco.Calctus.Model.Parsers {
             var equation = Expr(false);
             Expect(",");
             Expect(TokenType.Word, out Token variant);
-            Expr min = null;
-            Expr max = null;
+            Expr param0 = null;
+            Expr param1 = null;
             if (ReadIf(",")) {
-                min = Expr(false);
-                Expect(",");
-                max = Expr(false);
+                param0 = Expr(false);
+                if (ReadIf(",")) {
+                    param1 = Expr(false);
+                }
             }
             Expect(")");
-            return new SolveExpr(first, equation, variant, min, max);
+            return new SolveExpr(first, equation, variant, param0, param1);
         }
 
         public Token Peek() {

@@ -7,13 +7,14 @@ using Shapoco.Calctus.Model.Evaluations;
 using Shapoco.Calctus.Model.Mathematics;
 using Shapoco.Calctus.Model.Parsers;
 using Shapoco.Calctus.Model.Types;
+using Shapoco.Calctus.Model.Formats;
 
 namespace Shapoco.Calctus.Model.Expressions {
     class SolveExpr : Expr {
         public readonly Expr Equation;
         public readonly Token Variant;
-        public readonly Expr ParamMin;
-        public readonly Expr ParamMax;
+        public readonly Expr Param0;
+        public readonly Expr Param1;
 
         public SolveExpr(Token keyword, Expr equation, Token variant, Expr paramMin, Expr paramMax) : base(keyword) {
             // 等式が与えられた場合は減算にすり替える
@@ -23,33 +24,68 @@ namespace Shapoco.Calctus.Model.Expressions {
 
             Equation = equation;
             Variant = variant;
-            ParamMin = paramMin;
-            ParamMax = paramMax;
+            Param0 = paramMin;
+            Param1 = paramMax;
         }
 
         protected override Val OnEval(EvalContext e) {
-            // 初期値の範囲
-            var pMinVal = ParamMin != null ? ParamMin.Eval(e) : new RealVal(-10m);
-            var pMaxVal = ParamMax != null ? ParamMax.Eval(e) : new RealVal(10m);
-            var pMin = (decimal)pMinVal.AsReal;
-            var pMax = (decimal)pMaxVal.AsReal;
-            if (pMin >= pMax) {
-                throw new ArgumentException("Invalid parameter range.");
+            // パラメータの評価
+            var paramVal0 = Param0 != null ? Param0.Eval(e) : null;
+            var paramVal1 = Param1 != null ? Param1.Eval(e) : null;
+            var formatHint = new FormatHint(NumberFormatter.CStyleReal);
+
+            var initVals = new List<decimal>();
+            var h = 1e-5m;
+            var tol = 1e-10m;
+            var pMin = decimal.MinValue;
+            var pMax = decimal.MaxValue;
+            const int N = 100;
+
+            if (paramVal0 != null && paramVal1 != null) {
+                // 初期値の範囲が指定された場合
+                // --> 範囲を N 分割して初期値を決定
+                pMin = (decimal)paramVal0.AsReal;
+                pMax = (decimal)paramVal1.AsReal;
+                if (pMin >= pMax) {
+                    throw new ArgumentException("Invalid parameter range.");
+                }
+                for (int i = 0; i <= N; i++) {
+                    initVals.Add(pMin + (pMax - pMin) * i / N);
+                }
+                h = Math.Max(1e-16m, (pMax - pMin) / 1e6m);
+                tol = Math.Max(1e-20m, (pMax - pMin) / 1e12m);
+                formatHint = paramVal0.FormatHint;
             }
-
-            // 数値微分用の定数
-            var h = Math.Max(1e-20m, (pMax - pMin) / 1e6m);
-
-            // 収束条件
-            var tol = Math.Max(1e-25m, (pMax - pMin) / 1e12m);
+            else if (paramVal0 != null) {
+                // 初期値が直接指定された場合
+                if (paramVal0 is ArrayVal) {
+                    // 初期値が配列で指定された場合
+                    foreach(var val in paramVal0.AsRealArray) {
+                        initVals.Add(val);
+                    }
+                    var paramValArray = (Val[])paramVal0.Raw;
+                    if (paramValArray.Length > 0) {
+                        formatHint = paramValArray[0].FormatHint;
+                    }
+                }
+                else {
+                    // 初期値がスカラ値で指定された場合
+                    initVals.Add(paramVal0.AsReal);
+                    formatHint = paramVal0.FormatHint;
+                }
+            }
+            else {
+                // 引数が指定されなかった場合
+                for (int i = 0; i <= N; i++) {
+                    initVals.Add(-10 + 20 * i / N);
+                }
+            }
 
             // ニュートン法
             var scope = new EvalContext(e);
             var results = new List<decimal>();
-            const int N = 100;
-            for (int i = 0; i < N; i++) {
+            foreach (var init in initVals) {
                 try {
-                    var init = pMin + (pMax - pMin) * i / N;
                     if (newtonMethod(scope, init, pMin, pMax, h, tol, out decimal r)) {
                         if (!results.Any(p => Math.Abs(p - r) < tol * 2)) {
                             results.Add(r);
@@ -60,11 +96,11 @@ namespace Shapoco.Calctus.Model.Expressions {
             }
 
             if (results.Count == 1) {
-                return new RealVal(results[0]).Format(pMinVal.FormatHint);
+                return new RealVal(results[0]).Format(formatHint);
             }
             else {
                 results.Sort();
-                return new ArrayVal(results.Select(p => new RealVal(p).Format(pMinVal.FormatHint)).ToArray());
+                return new ArrayVal(results.Select(p => new RealVal(p).Format(formatHint)).ToArray());
             }
         }
 

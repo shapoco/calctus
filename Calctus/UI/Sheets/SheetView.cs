@@ -819,7 +819,7 @@ namespace Shapoco.Calctus.UI.Sheets {
             list.Add(new InputCandidate(BoolVal.TrueKeyword, BoolVal.TrueKeyword, "true value", false));
             list.Add(new InputCandidate(BoolVal.FalseKeyword, BoolVal.FalseKeyword, "false value", false));
             list.Add(new InputCandidate("def", "def", "user function definition", false));
-            list.Add(new InputCandidate("solve", "solve(expr,var,min=-10,max=10)", "Solves the equation using Newton's method.", true));
+            list.Add(new InputCandidate("solve", "solve(expr,var,a,b)", "Solves the equation using Newton's method.", true));
             _inputCandidates = list.OrderBy(p => p.Id).ToArray();
             _recalcRequested = false;
         }
