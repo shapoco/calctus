@@ -27,9 +27,6 @@ namespace Shapoco.Calctus.Model.Parsers {
             if (ReadIf("def", out tok)) {
                 return Def(tok);
             }
-            else if (ReadIf("solve", out tok)) {
-                return Solve(tok);
-            }
             else {
                 return Expr(last);
             }
@@ -121,6 +118,9 @@ namespace Shapoco.Calctus.Model.Parsers {
                     Expect("]");
                 }
                 return new ArrayExpr(tok, elms.ToArray());
+            }
+            else if (ReadIf("solve", out tok)) {
+                return Solve(tok);
             }
             else if (ReadIf(TokenType.NumericLiteral, out tok)) {
                 return new Number(tok);

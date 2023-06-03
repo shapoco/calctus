@@ -81,7 +81,7 @@ namespace Shapoco.Calctus.UI.Sheets {
 
             if (e.Handled) return;
 
-            if (candidatesAreShown()) {
+            if (CandidatesAreShown()) {
                 // 入力候補の操作
                 if (e.Modifiers == Keys.None && e.KeyCode == Keys.Up) {
                     e.Handled = true;
@@ -113,7 +113,7 @@ namespace Shapoco.Calctus.UI.Sheets {
                             SelectionStart = _candKeyStart + id.Length;
                         }
                     }
-                    candidatesHide();
+                    CandidatesHide();
                 }
             }
 
@@ -144,8 +144,8 @@ namespace Shapoco.Calctus.UI.Sheets {
                 }
                 SetSelection(selStart, selEnd);
 
-                if (candidatesAreShown() && (SelectionStart < _candKeyStart || SelectionLength > 0)) {
-                    candidatesHide();
+                if (CandidatesAreShown() && (SelectionStart < _candKeyStart || SelectionLength > 0)) {
+                    CandidatesHide();
                 }
             }
             else if (e.KeyCode == Keys.Right) {
@@ -173,8 +173,8 @@ namespace Shapoco.Calctus.UI.Sheets {
                 }
                 SetSelection(selStart, selEnd);
 
-                if (candidatesAreShown() && (SelectionStart < _candKeyStart || SelectionLength > 0)) {
-                    candidatesHide();
+                if (CandidatesAreShown() && (SelectionStart < _candKeyStart || SelectionLength > 0)) {
+                    CandidatesHide();
                 }
             }
             else if (e.KeyCode == Keys.Home) {
@@ -186,7 +186,7 @@ namespace Shapoco.Calctus.UI.Sheets {
                 else {
                     SetSelection(0);
                 }
-                candidatesHide();
+                CandidatesHide();
             }
             else if (e.KeyCode == Keys.End) {
                 // カーソルを末尾へ移動
@@ -197,7 +197,7 @@ namespace Shapoco.Calctus.UI.Sheets {
                 else {
                     SetSelection(this.Text.Length);
                 }
-                candidatesHide();
+                CandidatesHide();
             }
             else if (!this.ReadOnly && e.Modifiers == Keys.None && e.KeyCode == Keys.Back) {
                 // カーソルの前の文字を削除 or 選択範囲を削除
@@ -211,7 +211,7 @@ namespace Shapoco.Calctus.UI.Sheets {
                     this.Text = this.Text.Remove(selStart - 1, 1);
                     SetSelection(selStart - 1);
                 }
-                candidatesUpdate();
+                CandidatesUpdate();
             }
             else if (!this.ReadOnly && e.Modifiers == Keys.None && e.KeyCode == Keys.Delete) {
                 // カーソルの後ろの文字を削除 or 選択範囲を削除
@@ -224,37 +224,37 @@ namespace Shapoco.Calctus.UI.Sheets {
                 else if (selStart < this.Text.Length) {
                     this.Text = this.Text.Remove(selStart, 1);
                 }
-                candidatesUpdate();
+                CandidatesUpdate();
             }
             else if (e.Modifiers == Keys.None && e.KeyCode == Keys.Escape) {
                 e.Handled = true;
-                candidatesHide();
+                CandidatesHide();
             }
             else if (e.Modifiers == Keys.Control) {
                 e.SuppressKeyPress = true;
                 if (e.KeyCode == Keys.C) {
                     e.Handled = true;
-                    candidatesHide();
+                    CandidatesHide();
                     Copy();
                 }
                 else if (e.KeyCode == Keys.X) {
                     e.Handled = true;
-                    candidatesHide();
+                    CandidatesHide();
                     Cut();
                 }
                 else if (e.KeyCode == Keys.V) {
                     e.Handled = true;
-                    candidatesHide();
+                    CandidatesHide();
                     Paste();
                 }
                 else if (e.KeyCode == Keys.A) {
                     e.Handled = true;
-                    candidatesHide();
+                    CandidatesHide();
                     SelectAll();
                 }
                 else if (e.KeyCode == Keys.Z) {
                     e.Handled = true;
-                    candidatesHide();
+                    CandidatesHide();
                     Undo();
                 }
                 else if (e.KeyCode == Keys.Space) {
@@ -304,16 +304,16 @@ namespace Shapoco.Calctus.UI.Sheets {
                 if (!isIdChar(prevChar) && prevChar != '\'' && prevChar != '\"' && prevChar != '#' && prevChar != '\\' && isFirstIdChar(e.KeyChar)) {
                     if (Settings.Instance.Input_IdAutoCompletion) {
                         // 識別子の先頭文字が入力されたら補完候補を表示する
-                        candidatesShow();
+                        CandidatesShow();
                     }
                 }
                 else if (_candKeyStart + 1 < selStart && isIdChar(e.KeyChar)) {
                     // 識別子の2文字目以降が表示されたら補完候補を更新する
-                    candidatesUpdate();
+                    CandidatesUpdate();
                 }
                 else {
                     // 識別子の文字以外が表示されたら補間をキャンセルする
-                    candidatesHide();
+                    CandidatesHide();
                 }
             }
         }
@@ -390,46 +390,46 @@ namespace Shapoco.Calctus.UI.Sheets {
             CursorStateChanged?.Invoke(this, EventArgs.Empty);
         }
 
-        private bool candidatesAreShown() => (_candForm != null);
+        public bool CandidatesAreShown() => (_candForm != null);
 
-        private void candidatesShow() {
+        public void CandidatesShow() {
             if (CandidateProvider == null) return;
-            if (!candidatesAreShown()) {
+            if (!CandidatesAreShown()) {
                 _candForm = new InputCandidateForm(CandidateProvider);
                 _candForm.Visible = true;
-                candidatesSelectKey();
+                CandidatesSelectKey();
                 var e = new QueryScreenCursorLocationEventArgs(_candKeyStart);
                 QueryScreenCursorLocation?.Invoke(this, e);
                 _candForm.Location = e.Result;
-                candidatesSetKey();
+                CandidatesSetKey();
             }
             else {
-                candidatesSelectKey();
-                candidatesSetKey();
+                CandidatesSelectKey();
+                CandidatesSetKey();
             }
         }
 
-        private void candidatesHide() {
-            if (candidatesAreShown()) {
+        public void CandidatesHide() {
+            if (CandidatesAreShown()) {
                 _candForm.Dispose();
                 _candForm = null;
             }
         }
 
-        private void candidatesUpdate() {
-            if (candidatesAreShown()) {
-                candidatesSelectKey();
-                candidatesSetKey();
+        public void CandidatesUpdate() {
+            if (CandidatesAreShown()) {
+                CandidatesSelectKey();
+                CandidatesSetKey();
             }
         }
 
-        private void candidatesSetKey() {
-            if (candidatesAreShown()) {
+        public void CandidatesSetKey() {
+            if (CandidatesAreShown()) {
                 _candForm.SetKey(Text.Substring(_candKeyStart, _candKeyEnd - _candKeyStart));
             }
         }
 
-        private void candidatesSelectKey() {
+        public void CandidatesSelectKey() {
             var text = Text;
             var selStart = SelectionStart;
             var candStart = selStart;

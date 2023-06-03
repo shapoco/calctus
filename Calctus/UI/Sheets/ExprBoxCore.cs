@@ -121,6 +121,7 @@ namespace Shapoco.Calctus.UI.Sheets {
             _cursorVisible = false;
             _cursorBlinkTimer.Tick -= CursorBlinkTimer_Tick;
             _pressedModifiers = Keys.None;
+            _edit.CandidatesHide();
             Invalidate();
         }
 
