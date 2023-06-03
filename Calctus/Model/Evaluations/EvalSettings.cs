@@ -13,6 +13,12 @@ namespace Shapoco.Calctus.Model.Evaluations {
         public bool ENotationAlignment { get; set; } = false;
         public bool AllowExternalFunctions { get; set; } = false;
 
+        /// <summary>false の場合、ニュートン法などの実行時に速度優先の計算方法を適用する</summary>
+        public bool AccuracyPriority { get; set; } = true;
+
+        /// <summary>false の場合、ニュートン法などの実行時に分数を無効化する</summary>
+        public bool FractionEnabled { get; set; } = true;
+
         public object Clone() => MemberwiseClone();
     }
 }

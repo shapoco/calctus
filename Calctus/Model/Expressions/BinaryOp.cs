@@ -65,7 +65,10 @@ namespace Shapoco.Calctus.Model.Expressions {
             if (Method == OpDef.Frac) {
                 var a = A.Eval(e);
                 var b = B.Eval(e);
-                if (b is FracVal) {
+                if (!e.Settings.FractionEnabled) {
+                    return A.Eval(e).Div(e, B.Eval(e));
+                }
+                else if (b is FracVal) {
                     return a.AsRealVal().Div(e, b);
                 }
                 else {

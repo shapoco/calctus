@@ -83,16 +83,15 @@ namespace Shapoco.Calctus.Model.Expressions {
 
             // ニュートン法
             var scope = new EvalContext(e);
+            scope.Settings.AccuracyPriority = false; // 速度優先の計算方法を適用
+            scope.Settings.FractionEnabled = false; // 分数は使用しない
             var results = new List<decimal>();
             foreach (var init in initVals) {
-                try {
-                    if (newtonMethod(scope, init, pMin, pMax, h, tol, out decimal r)) {
-                        if (!results.Any(p => Math.Abs(p - r) < tol * 2)) {
-                            results.Add(r);
-                        }
+                if (newtonMethod(scope, init, pMin, pMax, h, tol, out decimal r)) {
+                    if (!results.Any(p => Math.Abs(p - r) < tol * 2)) {
+                        results.Add(r);
                     }
                 }
-                catch { }
             }
 
             if (results.Count == 1) {
@@ -105,24 +104,29 @@ namespace Shapoco.Calctus.Model.Expressions {
         }
 
         private bool newtonMethod(EvalContext e, decimal initVal, decimal pMin, decimal pMax, decimal h, decimal tol, out decimal result) {
-            decimal p = initVal;
             result = 0;
-            for (int i = 0; i < 100; i++) {
-                decimal slope = (evalEquation(e, p + h) - evalEquation(e, p - h)) / (2 * h);
-                if (slope == 0) {
-                    return false;
+            try {
+                decimal p = initVal;
+                for (int i = 0; i < 100; i++) {
+                    decimal slope = (evalEquation(e, p + h) - evalEquation(e, p - h)) / (2 * h);
+                    if (slope == 0) {
+                        return false;
+                    }
+                    decimal nextP = p - evalEquation(e, p) / slope;
+                    if (nextP < pMin || pMax < nextP) {
+                        return false;
+                    }
+                    if (Math.Abs(nextP - p) < tol) {
+                        result = nextP;
+                        return true;
+                    }
+                    p = nextP;
                 }
-                decimal nextP = p - evalEquation(e, p) / slope;
-                if (nextP < pMin || pMax < nextP) {
-                    return false;
-                }
-                if (Math.Abs(nextP - p) < tol) {
-                    result = nextP;
-                    return true;
-                }
-                p = nextP;
+                return false;
             }
-            return false;
+            catch {
+                return false;
+            }
         }
 
         private decimal evalEquation(EvalContext e, decimal param) {

@@ -801,7 +801,8 @@ namespace Shapoco.Calctus.UI.Sheets {
         private void processRecalcRequest() {
             if (!_recalcRequested) return;
 #if DEBUG
-            Console.WriteLine("Recalc");
+            var sw = new System.Diagnostics.Stopwatch();
+            sw.Start();
 #endif
             var ctx = _sheet.Run();
             ctx.Undef(Sheet.LastAnsId, true);
@@ -826,6 +827,10 @@ namespace Shapoco.Calctus.UI.Sheets {
             list.Add(new InputCandidate("solve", "solve(expr,var,a,b)", "Solves the equation using Newton's method.", true));
             _inputCandidates = list.OrderBy(p => p.Id).ToArray();
             _recalcRequested = false;
+#if DEBUG
+            sw.Stop();
+            Console.WriteLine("Recalc " + sw.ElapsedMilliseconds + "ms");
+#endif
         }
 
     }
