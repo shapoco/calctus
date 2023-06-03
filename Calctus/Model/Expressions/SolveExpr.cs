@@ -106,11 +106,14 @@ namespace Shapoco.Calctus.Model.Expressions {
 
         private bool newtonMethod(EvalContext e, decimal initVal, decimal pMin, decimal pMax, decimal h, decimal tol, out decimal result) {
             decimal p = initVal;
+            result = 0;
             for (int i = 0; i < 100; i++) {
                 decimal slope = (evalEquation(e, p + h) - evalEquation(e, p - h)) / (2 * h);
+                if (slope == 0) {
+                    return false;
+                }
                 decimal nextP = p - evalEquation(e, p) / slope;
                 if (nextP < pMin || pMax < nextP) {
-                    result = 0;
                     return false;
                 }
                 if (Math.Abs(nextP - p) < tol) {
@@ -119,7 +122,6 @@ namespace Shapoco.Calctus.Model.Expressions {
                 }
                 p = nextP;
             }
-            result = 0;
             return false;
         }
 

@@ -59,6 +59,11 @@ namespace Shapoco.Calctus.UI.Sheets {
 
         public Exception SynstaxError => _layout.SyntaxError;
 
+        public Exception EvalError {
+            get => _layout.EvalError;
+            set => _layout.EvalError = value;
+        }
+
         public bool ReadOnly {
             get => _edit.ReadOnly;
             set => _edit.ReadOnly = value;

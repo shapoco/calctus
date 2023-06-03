@@ -29,14 +29,20 @@ namespace Shapoco.Calctus.UI {
         public string TextWillBePasted => textWillBePasted.Text;
 
         private void PasteOptionForm_Load(object sender, EventArgs e) {
+            string text;
             try {
-                sourceText.Text = Clipboard.GetText();
+                text = Clipboard.GetText();
             }
             catch {
-                sourceText.Text = "(Clipboard.GetText() failed.)";
+                text = "(Clipboard.GetText() failed.)";
             }
 
-            var text = sourceText.Text;
+            if (text.IndexOf('\n') >= 0 && text.IndexOf('\r') < 0) {
+                // 改行コードが \n の場合は \r\n にする
+                text = text.Replace("\n", "\r\n");
+            }
+
+            sourceText.Text = text;
 
             if (text.IndexOf('\t') >= 0) {
                 columnDelimiterText.Text = @"\t";
@@ -56,7 +62,7 @@ namespace Shapoco.Calctus.UI {
         private void ColumnDelimiterText_TextChanged(object sender, EventArgs e) {
             var delimiter = getDelimiter();
             var numCols = 0;
-            foreach (var line in sourceText.Text.Split('\n')) {
+            foreach (var line in sourceText.Text.Split(new string[] { "\r\n" }, StringSplitOptions.RemoveEmptyEntries)) {
                 var cols = splitLine(line, delimiter);
                 numCols = Math.Max(numCols, cols.Length);
             }
@@ -66,7 +72,7 @@ namespace Shapoco.Calctus.UI {
         private void ColumnNumberText_TextChanged(object sender, EventArgs e) {
             bool enable = false;
             if (int.TryParse(columnNumberText.Text, out int n)) {
-                enable = n > 0;
+                enable = n >= 0;
             }
             selectColumnButton.Enabled = enable;
         }
@@ -76,19 +82,23 @@ namespace Shapoco.Calctus.UI {
             var sb = new StringBuilder();
             try {
                 var colIndex = int.Parse(columnNumberText.Text) - 1;
-                foreach (var l in sourceText.Text.Split('\n')) {
-                    var line = l.Replace("\r", "");
-                    line = line.TrimEnd();
-                    if (string.IsNullOrEmpty(line)) continue;
-                    var cols = splitLine(line, delimiter);
-                    if (colIndex < cols.Length ) {
-                        if (sb.Length > 0) sb.AppendLine();
-                        sb.Append(cols[colIndex].Trim());
+                if (colIndex == -1) {
+                    textWillBePasted.Text = sourceText.Text;
+                }
+                else {
+                    foreach (var l in sourceText.Text.Split(new string[] { "\r\n" }, StringSplitOptions.RemoveEmptyEntries)) {
+                        var line = l.TrimEnd();
+                        if (string.IsNullOrEmpty(line)) continue;
+                        var cols = splitLine(line, delimiter);
+                        if (colIndex < cols.Length) {
+                            if (sb.Length > 0) sb.AppendLine();
+                            sb.Append(cols[colIndex].Trim());
+                        }
                     }
+                    textWillBePasted.Text = sb.ToString();
                 }
             }
             catch { }
-            textWillBePasted.Text = sb.ToString();
         }
 
         private char getDelimiter() {
@@ -114,9 +124,8 @@ namespace Shapoco.Calctus.UI {
 
         private void RemoveRightHandsButton_Click(object sender, EventArgs e) {
             var sb = new StringBuilder();
-            foreach (var l in textWillBePasted.Text.Split('\n')) {
-                var line = l.Replace("\r", "");
-                line = line.TrimEnd();
+            foreach (var l in textWillBePasted.Text.Split(new string[] { "\r\n" }, StringSplitOptions.RemoveEmptyEntries)) {
+                var line = l.TrimEnd();
 
                 int equalPos = line.LastIndexOf('=');
                 if (equalPos >= 0) {

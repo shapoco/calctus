@@ -58,6 +58,15 @@ namespace Shapoco.Calctus.UI.Sheets {
 
         public int CharHeight => _charHeight;
 
+        public Exception EvalError {
+            get => _evalError;
+            set {
+                if (value == _evalError) return;
+                _evalError = value;
+                _owner.Invalidate();
+            }
+        }
+
         public void Layout(string text) {
             try {
                 // 字句解析

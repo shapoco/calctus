@@ -108,7 +108,15 @@ namespace Shapoco.Calctus.UI.Sheets {
         }
 
         private void updateAnswerBox() {
-            var err = SheetItem.SyntaxError != null ? SheetItem.SyntaxError : SheetItem.EvalError;
+            Exception err = null;
+            if (SheetItem.SyntaxError != null) {
+                err = SheetItem.SyntaxError;
+                ExprBox.EvalError = null;
+            }
+            else {
+                err = SheetItem.EvalError;
+                ExprBox.EvalError = SheetItem.EvalError;
+            }
             if (err == null) {
                 var ans = SheetItem.AnsText;
                 AnsBox.Text = ans == "null" ? "" : ans;

@@ -355,6 +355,10 @@ namespace Shapoco.Calctus.UI.Sheets {
                 e.Handled = true;
                 Paste();
             }
+            else if (e.Modifiers == (Keys.Control | Keys.Shift) && e.KeyCode == Keys.V) {
+                e.Handled = true;
+                MultilinePaste();
+            }
             if (e.Handled) return;
 
             base.OnKeyDown(e);
