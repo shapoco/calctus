@@ -56,12 +56,12 @@ A calculator for Windows.
 |XOR|`+\|`|`Int64`|
 |Logical Shift|`<<`, `>>`|`Int64`|
 |Arithmetic Shift|`<<<`, `>>>`|`Int64`|
+|Bit/Part Select:new:|`[ ]`, `[ : ]`|`Int64`|
 |Compare|`>`, `>=`, `<`, `<=`, `==`, `!=`|`Decimal`|
 |Logical NOT|`!`|`Boolean`|
 |Logical AND|`&&`|`Boolean`|
 |Logical OR|`\|\|`|`Boolean`|
 |Conditional Operator:new:|`? :`|`Boolean`|
-|Bit/Part Select:new:|`[ ]`, `[ : ]`|`Int64`|
 
 ### Variables
 
@@ -122,7 +122,7 @@ User functions can be defined using the `def` keyword.
 
 ```c++
 def f(x) = x^2
-f(x) // --> Calctus answers 9.
+f(3) // --> Calctus answers 9.
 ```
 
 ### External Script Call as Functions
@@ -214,13 +214,13 @@ If only an operator is entered, the expression is "popped" from the history and 
 
 If you use RPN operation, it is recommended to turn off the automatic input of "ans" in the settings.
 
-```
+```c++
 1 [Return]
 2 [Return]
-+ [Return] // "1" and "2" replaced with "1+2"
++ [Return] // --> "1" and "2" replaced with "1+2"
 3 [Return]
 4 [Return]
-+* [Return] // "1+2", "3" and "4" replaced with "(1+2)*(3+4)"
++* [Return] // --> "1+2", "3" and "4" replaced with "(1+2)*(3+4)"
 ```
 
 ![](img/rpn_ops.gif)
