@@ -26,9 +26,11 @@ namespace Shapoco.Calctus.Model.Expressions {
                 }
                 else if (A is PartRef pRef && pRef.Target is VarRef tRef) {
                     // Part Select を使った参照
-                    var val = B.Eval(e);
                     var from = pRef.IndexFrom.Eval(e).AsInt;
                     var to = pRef.IndexTo.Eval(e).AsInt;
+                    if (from < to) throw new ArgumentOutOfRangeException();
+
+                    var val = B.Eval(e);
                     var varRef = e.Ref(tRef.RefName, allowCreate: false);
                     var varVal = varRef.Value;
                     if (varVal is ArrayVal array) {
@@ -43,14 +45,18 @@ namespace Shapoco.Calctus.Model.Expressions {
                     }
                     else {
                         // ビットフィールドの書き換え
-                        var mask = ((1L << (from - to + 1)) - 1L) << to;
+                        if (from < 0 || 63 < from) throw new ArgumentOutOfRangeException();
+                        if (to < 0 || 63 < to) throw new ArgumentOutOfRangeException();
+                        var w = from - to + 1;
+                        var mask = w < 64 ? ((1L << w) - 1L) : unchecked((long)0xffffffffffffffff);
+                        mask <<= to;
                         var buff = varVal.AsLong;
                         buff &= ~mask;
                         buff |= (val.AsLong << to) & mask;
                         varVal = new RealVal(buff, varVal.FormatHint);
                     }
                     varRef.Value = varVal;
-                    return val;
+                    return varVal;
                 }
                 else {
                     throw new InvalidOperationException("Left hand of " + Token + " must be variant");

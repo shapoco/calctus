@@ -30,11 +30,14 @@ namespace Shapoco.Calctus.Model.Expressions {
             }
             else {
                 if (from < to) throw new ArgumentOutOfRangeException();
-                if (from < 0 || 63 <= from) throw new ArgumentOutOfRangeException();
-                if (to < 0 || 63 <= to) throw new ArgumentOutOfRangeException();
+                if (from < 0 || 63 < from) throw new ArgumentOutOfRangeException();
+                if (to < 0 || 63 < to) throw new ArgumentOutOfRangeException();
                 var val = obj.AsLong;
                 val >>= to;
-                val &= (1L << (from - to + 1)) - 1L;
+                int w = from - to + 1;
+                if (w < 64) {
+                    val &= (1L << w) - 1L;
+                }
                 return new RealVal(val, obj.FormatHint);
             }
         }
