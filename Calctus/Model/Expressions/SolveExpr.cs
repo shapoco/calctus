@@ -131,18 +131,12 @@ namespace Shapoco.Calctus.Model.Expressions {
             const int scaleFine = 4;
             const int scaleRange = 18 * scaleFine;
             // center の左側
-            {
-                bool found = false;
-                for (int i = -scaleRange; i < scaleRange; i++) {
-                    try {
-                        var x = center - (decimal)Math.Pow(10, (double)i / scaleFine);
-                        cands.Add(new Sample(x, evalEquation(e, x)));
-                        found = true;
-                    }
-                    catch {
-                        if (found) break;
-                    }
+            for (int i = -scaleRange; i < scaleRange; i++) {
+                try {
+                    var x = center - (decimal)Math.Pow(10, (double)i / scaleFine);
+                    cands.Add(new Sample(x, evalEquation(e, x)));
                 }
+                catch { }
             }
             // center
             try {
@@ -150,18 +144,12 @@ namespace Shapoco.Calctus.Model.Expressions {
             }
             catch { }
             // center の右側
-            {
-                bool found = false;
-                for (int i = -scaleRange; i < scaleRange; i++) {
-                    try {
-                        var x = center + (decimal)Math.Pow(10, (double)i / scaleFine);
-                        cands.Add(new Sample(x, evalEquation(e, x)));
-                        found = true;
-                    }
-                    catch {
-                        if (found) break;
-                    }
+            for (int i = -scaleRange; i < scaleRange; i++) {
+                try {
+                    var x = center + (decimal)Math.Pow(10, (double)i / scaleFine);
+                    cands.Add(new Sample(x, evalEquation(e, x)));
                 }
+                catch { }
             }
             cands.Sort((p, q) => Math.Sign(p.X - q.X));
             return cands;
@@ -172,16 +160,12 @@ namespace Shapoco.Calctus.Model.Expressions {
             if (xMin >= xMax) throw new ArgumentException();
             var cands = new List<Sample>();
             const int N = 100;
-            bool found = false;
             for (int i = 0; i <= N; i++) {
                 try {
                     var x = xMin + (xMax - xMin) * i / N;
                     cands.Add(new Sample(x, evalEquation(e, x)));
-                    found = true;
                 }
-                catch {
-                    if (found) break;
-                }
+                catch { }
             }
             return cands;
         }
