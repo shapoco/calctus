@@ -213,6 +213,25 @@ namespace Shapoco.Calctus.UI.Sheets {
                 }
                 CandidatesUpdate();
             }
+            else if (!this.ReadOnly && e.Modifiers.HasFlag(Keys.Control) && e.KeyCode == Keys.Back) {
+                // カーソルの前の単語を削除 or 選択範囲を削除
+                e.Handled = true;
+                int selStart = this.SelectionStart;
+                int selLen = this.SelectionLength;
+                if (selLen > 0) {
+                    this.SelectedText = "";
+                }
+                else if (selStart > 0) {
+                    var match = NonWordRtlRegex.Match(this.Text, 0, selStart);
+                    var newSelStart = 0;
+                    if (match.Success) {
+                        newSelStart = match.Index;
+                    }
+                    Text = Text.Substring(0, newSelStart) + Text.Substring(selStart);
+                    SetSelection(newSelStart);
+                }
+                CandidatesHide();
+            }
             else if (!this.ReadOnly && e.Modifiers == Keys.None && e.KeyCode == Keys.Delete) {
                 // カーソルの後ろの文字を削除 or 選択範囲を削除
                 e.Handled = true;
