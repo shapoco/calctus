@@ -38,6 +38,11 @@ namespace Shapoco.Calctus.Model.Expressions {
             var paramVal1 = Param1 != null ? Param1.Eval(e) : null;
             var formatHint = new FormatHint(NumberFormatter.CStyleReal);
 
+            // スコープの生成
+            var scope = new EvalContext(e);
+            scope.Settings.AccuracyPriority = false; // 速度優先の計算方法を適用
+            scope.Settings.FractionEnabled = false; // 分数は使用しない
+
             List<decimal> inits;
             decimal h;
             decimal tol;
@@ -46,12 +51,12 @@ namespace Shapoco.Calctus.Model.Expressions {
 
             if (paramVal0 == null && paramVal1 == null) {
                 // 初期値が与えられなかった場合
-                var cands = generateInitCandidates(e, 0);
+                var cands = generateInitCandidates(scope, 0);
                 inits = filterInitCandidates(cands);
 
                 if (inits.Count > 50) {
                     // 初期値が大量に生成された場合は範囲を狭めてみる
-                    cands = generateInitCandidates(e, -5, +5);
+                    cands = generateInitCandidates(scope, -5, +5);
                     inits = filterInitCandidates(cands);
                 }
 
@@ -61,7 +66,7 @@ namespace Shapoco.Calctus.Model.Expressions {
                 // 解の範囲が指定された場合
                 xMin = paramVal0.AsReal;
                 xMax = paramVal1.AsReal;
-                var cands = generateInitCandidates(e, xMin, xMax);
+                var cands = generateInitCandidates(scope, xMin, xMax);
                 inits = filterInitCandidates(cands);
                 determineHTol(xMin, xMax, out h, out tol);
             }
@@ -95,9 +100,6 @@ namespace Shapoco.Calctus.Model.Expressions {
 #endif
 
             // ニュートン法
-            var scope = new EvalContext(e);
-            scope.Settings.AccuracyPriority = false; // 速度優先の計算方法を適用
-            scope.Settings.FractionEnabled = false; // 分数は使用しない
             var sols = new List<decimal>();
             int numMaxIter = 0;
             foreach (var init in inits) {
@@ -129,12 +131,18 @@ namespace Shapoco.Calctus.Model.Expressions {
             const int scaleFine = 4;
             const int scaleRange = 18 * scaleFine;
             // center の左側
-            for (int i = scaleRange; i >= -scaleRange; i--) {
-                try {
-                    var x = center - (decimal)Math.Pow(10, (double)i / scaleFine);
-                    cands.Add(new Sample(x, evalEquation(e, x)));
+            {
+                bool found = false;
+                for (int i = -scaleRange; i < scaleRange; i++) {
+                    try {
+                        var x = center - (decimal)Math.Pow(10, (double)i / scaleFine);
+                        cands.Add(new Sample(x, evalEquation(e, x)));
+                        found = true;
+                    }
+                    catch {
+                        if (found) break;
+                    }
                 }
-                catch { }
             }
             // center
             try {
@@ -142,26 +150,38 @@ namespace Shapoco.Calctus.Model.Expressions {
             }
             catch { }
             // center の右側
-            for (int i = -scaleRange; i < scaleRange; i++) {
-                try {
-                    var x = center + (decimal)Math.Pow(10, (double)i / scaleFine);
-                    cands.Add(new Sample(x, evalEquation(e, x)));
+            {
+                bool found = false;
+                for (int i = -scaleRange; i < scaleRange; i++) {
+                    try {
+                        var x = center + (decimal)Math.Pow(10, (double)i / scaleFine);
+                        cands.Add(new Sample(x, evalEquation(e, x)));
+                        found = true;
+                    }
+                    catch {
+                        if (found) break;
+                    }
                 }
-                catch { }
             }
+            cands.Sort((p, q) => Math.Sign(p.X - q.X));
             return cands;
         }
 
         /// <summary>解が分布する範囲を指定して初期値の候補を生成</summary>
         private List<Sample> generateInitCandidates(EvalContext e, decimal xMin, decimal xMax) {
+            if (xMin >= xMax) throw new ArgumentException();
             var cands = new List<Sample>();
             const int N = 100;
+            bool found = false;
             for (int i = 0; i <= N; i++) {
                 try {
                     var x = xMin + (xMax - xMin) * i / N;
                     cands.Add(new Sample(x, evalEquation(e, x)));
+                    found = true;
                 }
-                catch { }
+                catch {
+                    if (found) break;
+                }
             }
             return cands;
         }
