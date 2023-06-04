@@ -154,7 +154,7 @@ Use the `solve` keyword to solve equations numerically by Newton's method.
 solve(x^2=2,x) // --> Calctus answers [-1.414213562, 1.414213562].
 ```
 
-By default, the Newton's method is applied with an initial value of 101 values between -10 and 10. Therefore, if the solution is concentrated in a narrow range or exists outside the range of -10 to 10, the expected results will not be obtained.
+By default, the Newton's method is performed based on automatically generated initial values. Therefore, it may produce inaccurate results if the solution is concentrated in a small area or exists far from the origin.
 
 In such cases, the 3rd argument can be given an initial value.
 
