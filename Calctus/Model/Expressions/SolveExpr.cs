@@ -48,6 +48,13 @@ namespace Shapoco.Calctus.Model.Expressions {
                 // 初期値が与えられなかった場合
                 var cands = generateInitCandidates(e, 0);
                 inits = filterInitCandidates(cands);
+
+                if (inits.Count > 50) {
+                    // 初期値が大量に生成された場合は範囲を狭めてみる
+                    cands = generateInitCandidates(e, -5, +5);
+                    inits = filterInitCandidates(cands);
+                }
+
                 determineHTol(inits, out h, out tol);
             }
             else if (paramVal0 != null && paramVal1 != null) {
