@@ -4,6 +4,7 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 using System.Windows.Forms;
+using System.Drawing;
 using Shapoco.Calctus.Model;
 using Shapoco.Calctus.Model.Evaluations;
 
@@ -48,6 +49,22 @@ namespace Shapoco.Calctus {
         public string Appearance_Font_Expr_Name { get; set; } = "Consolas";
         public int Appearance_Font_Size { get; set; } = 9;
         public bool Appearance_Font_Bold { get; set; } = false;
+
+        public Color Appearance_Color_Background { get; set; } = Color.FromArgb(32, 32, 32);
+        public Color Appearance_Color_Active_Background { get; set; } = Color.FromArgb(0, 0, 0);
+        public Color Appearance_Color_RPN_Target { get; set; } = Color.FromArgb(0, 0, 64);
+        public Color Appearance_Color_Button_Face { get; set; } = Color.FromArgb(96, 96, 96);
+        public Color Appearance_Color_Text { get; set; } = Color.FromArgb(255, 255, 255);
+        public Color Appearance_Color_Selection { get; set; } = Color.FromArgb(0, 128, 255);
+        public Color Appearance_Color_Symbols { get; set; } = Color.FromArgb(64, 192, 255);
+        public Color Appearance_Color_Identifiers { get; set; } = Color.FromArgb(192, 255, 128);
+        public Color Appearance_Color_Special_Literals { get; set; } = Color.FromArgb(255, 192, 64);
+        public Color Appearance_Color_SI_Prefix { get; set; } = Color.FromArgb(224, 160, 255);
+        public Color Appearance_Color_Parenthesis_1 { get; set; } = Color.FromArgb(64, 192, 255);
+        public Color Appearance_Color_Parenthesis_2 { get; set; } = Color.FromArgb(192, 128, 255);
+        public Color Appearance_Color_Parenthesis_3 { get; set; } = Color.FromArgb(255, 128, 192);
+        public Color Appearance_Color_Parenthesis_4 { get; set; } = Color.FromArgb(255, 192, 64);
+        public Color Appearance_Color_Error { get; set; } = Color.FromArgb(255, 128, 128);
 
         public string UserConstants { get; set; } = "";
         public UserConstant[] GetUserConstants() {

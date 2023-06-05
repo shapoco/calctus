@@ -6,6 +6,7 @@ using System.Linq;
 using System.IO;
 using System.Text;
 using System.Threading.Tasks;
+using System.Drawing;
 
 namespace Shapoco {
     internal static class AppDataManager {
@@ -34,6 +35,13 @@ namespace Shapoco {
                     // 文字列
                     var value = EscapeValue((string)p.GetValue(targetObject));
                     sb.AppendLine(p.Name + "=\"" + value + "\"");
+                }
+                else if (p.PropertyType.Equals(typeof(Color))) {
+                    // 色
+                    var value = (Color)p.GetValue(targetObject);
+                    var valueStr = "00000000" + Convert.ToString(value.ToArgb(), 16);
+                    valueStr = valueStr.Substring(valueStr.Length - 8);
+                    sb.AppendLine(p.Name + "=#" + valueStr);
                 }
                 else if (p.PropertyType.IsPrimitive || p.PropertyType.IsEnum || p.PropertyType.IsValueType) {
                     // プリミティブ型または列挙型
@@ -99,6 +107,7 @@ namespace Shapoco {
                     else if (p.PropertyType.Equals(typeof(Single))) { p.SetValue(targetObject, Single.Parse(valueStr, CultureInfo.InvariantCulture)); }
                     else if (p.PropertyType.Equals(typeof(Decimal))) { p.SetValue(targetObject, Decimal.Parse(valueStr, CultureInfo.InvariantCulture)); }
                     else if (p.PropertyType.IsEnum) { p.SetValue(targetObject, Enum.Parse(p.PropertyType, valueStr)); }
+                    else if (p.PropertyType.Equals(typeof(Color))) { p.SetValue(targetObject, Color.FromArgb(Convert.ToInt32(valueStr.Substring(1), 16))); }
                     else {
                         throw new NotImplementedException($"Unsupported type {p.PropertyType}.");
                     }

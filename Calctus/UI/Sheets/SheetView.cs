@@ -315,6 +315,12 @@ namespace Shapoco.Calctus.UI.Sheets {
             Invalidate();
         }
 
+        public void RelayoutText() {
+            foreach (var noteItem in _sheet.Items) {
+                ((SheetViewItem)noteItem.Tag).RelayoutText();
+            }
+        }
+
         public IEnumerable<InputCandidate> Candidates => _inputCandidates;
 
         protected override void OnFocusedBoxChanged() {
@@ -475,16 +481,18 @@ namespace Shapoco.Calctus.UI.Sheets {
             processRecalcRequest();
             validateLayout(e.Graphics);
 
+            var s = Settings.Instance;
+
             int n = _sheet.Items.Count;
             for (int i = 0; i < n; i++) {
                 var viewItem = getViewItem(i);
                 if (_focusedRpnOperation != null) {
                     if (_focusedRpnOperation.StartIndex <= i && i < _focusedRpnOperation.EndIndex) {
-                        viewItem.BackColor = Color.FromArgb(0, 0, 64);
+                        viewItem.BackColor = s.Appearance_Color_RPN_Target;
                     }
                 }
                 else if (i == _focusedIndex) {
-                    viewItem.BackColor = Color.Black;
+                    viewItem.BackColor = s.Appearance_Color_Active_Background;
                 }
                 else {
                     viewItem.BackColor = Color.Transparent;
@@ -497,9 +505,7 @@ namespace Shapoco.Calctus.UI.Sheets {
         protected override void OnFontChanged(EventArgs e) {
             base.OnFontChanged(e);
             if (_sheet == null) return;
-            foreach (var noteItem in _sheet.Items) {
-                ((SheetViewItem)noteItem.Tag).RelayoutText();
-            }
+            RelayoutText();
         }
 
         protected override void Dispose(bool disposing) {

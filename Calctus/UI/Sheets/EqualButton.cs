@@ -18,7 +18,7 @@ namespace Shapoco.Calctus.UI.Sheets {
         protected override void OnPaint(PaintEventArgs e) {
             base.OnPaint(e);
             var g = e.Graphics;
-            using (var brush = new SolidBrush(ExprBoxCoreLayout.SymbolColor))
+            using (var brush = new SolidBrush(Settings.Instance.Appearance_Color_Symbols))
             using (var sf = new StringFormat()) {
                 sf.Alignment = StringAlignment.Center;
                 sf.LineAlignment = StringAlignment.Center;

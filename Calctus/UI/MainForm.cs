@@ -27,10 +27,10 @@ namespace Shapoco.Calctus.UI {
         private bool _topMost = false;
 
         class CustomProfessionalColors : ProfessionalColorTable {
-            public override Color ToolStripGradientBegin { get { return Color.FromArgb(64, 64, 64); } }
-            public override Color ToolStripGradientMiddle { get { return Color.FromArgb(56, 56, 56); } }
-            public override Color ToolStripGradientEnd { get { return Color.FromArgb(48, 48, 48); } }
-            public override Color ToolStripBorder { get { return Color.FromArgb(64, 64, 64); } }
+            public override Color ToolStripGradientBegin { get { return Settings.Instance.Appearance_Color_Button_Face; } }
+            public override Color ToolStripGradientMiddle { get { return Settings.Instance.Appearance_Color_Button_Face; } }
+            public override Color ToolStripGradientEnd { get { return Settings.Instance.Appearance_Color_Button_Face; } }
+            public override Color ToolStripBorder { get { return Settings.Instance.Appearance_Color_Button_Face; } }
         }
 
         public MainForm() {
@@ -42,8 +42,6 @@ namespace Shapoco.Calctus.UI {
 
             InitializeComponent();
             if (this.DesignMode) return;
-
-            ToolStripManager.Renderer = new ToolStripProfessionalRenderer(new CustomProfessionalColors());
 
             this.Text = Application.ProductName + " (v" + System.Reflection.Assembly.GetExecutingAssembly().GetName().Version + ")";
             this.KeyPreview = true; 
@@ -184,6 +182,24 @@ namespace Shapoco.Calctus.UI {
                 var font_mono_large = new Font(s.Appearance_Font_Expr_Name, s.Appearance_Font_Size * font_large_coeff, font_style);
                 this.Font = font_ui_normal;
                 sheetView.Font = font_mono_large;
+
+                ToolStripManager.Renderer = new ToolStripProfessionalRenderer(new CustomProfessionalColors());
+
+                sheetView.BackColor = s.Appearance_Color_Background;
+                sheetView.ForeColor = s.Appearance_Color_Text;
+                bottomPanel.BackColor = s.Appearance_Color_Background;
+                radixAutoButton.BackColor = s.Appearance_Color_Button_Face;
+                radixDecButton.BackColor = s.Appearance_Color_Button_Face;
+                radixHexButton.BackColor = s.Appearance_Color_Button_Face;
+                radixBinButton.BackColor = s.Appearance_Color_Button_Face;
+                radixOctButton.BackColor = s.Appearance_Color_Button_Face;
+                radixAutoButton.ForeColor = s.Appearance_Color_Text;
+                radixDecButton.ForeColor = s.Appearance_Color_Text;
+                radixHexButton.ForeColor = s.Appearance_Color_Text;
+                radixBinButton.ForeColor = s.Appearance_Color_Text;
+                radixOctButton.ForeColor = s.Appearance_Color_Text;
+                
+                sheetView.RelayoutText();
             }
             catch { }
             sheetView.RequestRecalc();

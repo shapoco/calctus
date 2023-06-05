@@ -46,7 +46,7 @@ namespace Shapoco.Calctus.UI
             this.contextOpen = new System.Windows.Forms.ToolStripMenuItem();
             this.toolStripMenuItem1 = new System.Windows.Forms.ToolStripSeparator();
             this.contextExit = new System.Windows.Forms.ToolStripMenuItem();
-            this.panel2 = new System.Windows.Forms.Panel();
+            this.bottomPanel = new System.Windows.Forms.Panel();
             this.radixOctButton = new Shapoco.Calctus.UI.FlatRadioButton();
             this.radixBinButton = new Shapoco.Calctus.UI.FlatRadioButton();
             this.radixHexButton = new Shapoco.Calctus.UI.FlatRadioButton();
@@ -56,7 +56,7 @@ namespace Shapoco.Calctus.UI
             this.sheetView = new Shapoco.Calctus.UI.Sheets.SheetView();
             this.toolStrip.SuspendLayout();
             this.trayMenuStrip.SuspendLayout();
-            this.panel2.SuspendLayout();
+            this.bottomPanel.SuspendLayout();
             this.SuspendLayout();
             // 
             // toolStrip
@@ -201,16 +201,16 @@ namespace Shapoco.Calctus.UI
             // 
             // panel2
             // 
-            this.panel2.Controls.Add(this.radixOctButton);
-            this.panel2.Controls.Add(this.radixBinButton);
-            this.panel2.Controls.Add(this.radixHexButton);
-            this.panel2.Controls.Add(this.radixDecButton);
-            this.panel2.Controls.Add(this.radixAutoButton);
-            this.panel2.Dock = System.Windows.Forms.DockStyle.Bottom;
-            this.panel2.Location = new System.Drawing.Point(0, 231);
-            this.panel2.Name = "panel2";
-            this.panel2.Size = new System.Drawing.Size(402, 15);
-            this.panel2.TabIndex = 5;
+            this.bottomPanel.Controls.Add(this.radixOctButton);
+            this.bottomPanel.Controls.Add(this.radixBinButton);
+            this.bottomPanel.Controls.Add(this.radixHexButton);
+            this.bottomPanel.Controls.Add(this.radixDecButton);
+            this.bottomPanel.Controls.Add(this.radixAutoButton);
+            this.bottomPanel.Dock = System.Windows.Forms.DockStyle.Bottom;
+            this.bottomPanel.Location = new System.Drawing.Point(0, 231);
+            this.bottomPanel.Name = "panel2";
+            this.bottomPanel.Size = new System.Drawing.Size(402, 15);
+            this.bottomPanel.TabIndex = 5;
             // 
             // radixOctButton
             // 
@@ -295,7 +295,7 @@ namespace Shapoco.Calctus.UI
             this.BackColor = System.Drawing.Color.FromArgb(((int)(((byte)(64)))), ((int)(((byte)(64)))), ((int)(((byte)(64)))));
             this.ClientSize = new System.Drawing.Size(402, 246);
             this.Controls.Add(this.sheetView);
-            this.Controls.Add(this.panel2);
+            this.Controls.Add(this.bottomPanel);
             this.Controls.Add(this.toolStrip);
             this.ForeColor = System.Drawing.Color.White;
             this.Icon = ((System.Drawing.Icon)(resources.GetObject("$this.Icon")));
@@ -304,7 +304,7 @@ namespace Shapoco.Calctus.UI
             this.toolStrip.ResumeLayout(false);
             this.toolStrip.PerformLayout();
             this.trayMenuStrip.ResumeLayout(false);
-            this.panel2.ResumeLayout(false);
+            this.bottomPanel.ResumeLayout(false);
             this.ResumeLayout(false);
             this.PerformLayout();
 
@@ -319,7 +319,7 @@ namespace Shapoco.Calctus.UI
         private System.Windows.Forms.ToolStripMenuItem contextOpen;
         private System.Windows.Forms.ToolStripSeparator toolStripMenuItem1;
         private System.Windows.Forms.ToolStripMenuItem contextExit;
-        private System.Windows.Forms.Panel panel2;
+        private System.Windows.Forms.Panel bottomPanel;
         private FlatRadioButton radixBinButton;
         private FlatRadioButton radixHexButton;
         private FlatRadioButton radixDecButton;
