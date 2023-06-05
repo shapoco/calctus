@@ -13,8 +13,6 @@ using Shapoco.Calctus.Model.Expressions;
 
 namespace Shapoco.Calctus.UI.Sheets {
     class ExprBoxCore : GdiBox {
-        public static readonly Color SelectionColor = Color.FromArgb(128, 0, 128, 255);
-
         public event EventHandler TextChanged;
 
         private GdiControl _owner;
@@ -210,7 +208,7 @@ namespace Shapoco.Calctus.UI.Sheets {
 
             if (this.Focused && this.SelectionLength != 0) {
                 // 選択範囲の描画
-                using (var brush = new SolidBrush(SelectionColor)) {
+                using (var brush = new SolidBrush(Color.FromArgb(128, Settings.Instance.Appearance_Color_Selection))) {
                     g.FillRectangle(brush, getSelectionRectangle());
                 }
             }
