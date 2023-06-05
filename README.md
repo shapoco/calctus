@@ -266,4 +266,6 @@ The timer function has been eliminated.
 
 ![](img/settings_details.png)
 
+![](img/settings_scripts.png)
+
 ----
