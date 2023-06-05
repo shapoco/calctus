@@ -1,6 +1,6 @@
 # Calctus
 
-A calculator for Windows.
+Calctus (カルクタス) is a calculator application for Windows developed for engineers.
 
 ![Screen Shot](img/ss.png)
 
