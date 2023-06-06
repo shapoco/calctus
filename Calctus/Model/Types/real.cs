@@ -8,7 +8,7 @@ using System.Threading.Tasks;
 
 namespace Shapoco.Calctus.Model.Types {
     struct real : IComparable<real> {
-        public static readonly Regex NumberRegex = new Regex(@"^(-?\d+(\.\d+)?)([eE]([+\-]?\d+))?$");
+        public static readonly Regex NumberRegex = new Regex(@"^(-?\d*(\.\d+)?)([eE]([+\-]?\d+))?$");
         public static readonly real MaxValue = (real)decimal.MaxValue;
         public static readonly real MinValue = (real)decimal.MinValue;
 

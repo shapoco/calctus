@@ -9,7 +9,7 @@ using Shapoco.Calctus.Model.Evaluations;
 
 namespace Shapoco.Calctus.Model.Formats {
     class RealFormatter : NumberFormatter {
-        public RealFormatter() : base(new Regex(@"([1-9][0-9]*|0)\.[0-9]+([eE][+-]?[0-9]+)?"), FormatPriority.Neutral) { }
+        public RealFormatter() : base(new Regex(@"([1-9][0-9]*|0?)\.[0-9]+([eE][+-]?[0-9]+)?"), FormatPriority.Neutral) { }
 
         public override Val Parse(Match m) {
             return new RealVal(real.Parse(m.Value), new FormatHint(this));
