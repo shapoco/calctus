@@ -472,6 +472,15 @@ namespace Shapoco.Calctus.UI.Sheets {
             }
         }
 
+        protected override void OnMouseWheel(MouseEventArgs e) {
+            base.OnMouseWheel(e);
+            if (_scrollBar.Visible && e.Delta != 0) {
+                int min = _scrollBar.Minimum;
+                int max = _scrollBar.Maximum - _scrollBar.LargeChange;
+                _scrollBar.Value = Math.Max(min, Math.Min(max, _scrollBar.Value - e.Delta));
+            }
+        }
+
         protected override void OnResize(EventArgs e) {
             base.OnResize(e);
             InvalidateLayout();
