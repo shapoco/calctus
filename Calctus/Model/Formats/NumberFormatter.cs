@@ -22,7 +22,18 @@ namespace Shapoco.Calctus.Model.Formats {
 
         public virtual string Format(Val val, EvalContext e) => OnFormat(val, e);
         protected virtual string OnFormat(Val val, EvalContext e) {
-            if (val is BoolVal) {
+            if (val is ArrayVal aval) {
+                var raw = (Val[])aval.Raw;
+                var sb = new StringBuilder();
+                sb.Append("[");
+                for (int i = 0; i < raw.Length; i++) {
+                    if (i > 0) sb.Append(", ");
+                    sb.Append(raw[i].ToString(e));
+                }
+                sb.Append("]");
+                return sb.ToString();
+            }
+            else if (val is BoolVal) {
                 return val.AsBool ? BoolVal.TrueKeyword : BoolVal.FalseKeyword;
             }
             else {
@@ -36,6 +47,7 @@ namespace Shapoco.Calctus.Model.Formats {
         public static readonly IntFormatter CStyleOct = new IntFormatter(8, "0", new Regex(@"0([0-7]+)"), 1, FormatPriority.LeftPriority);
         public static readonly IntFormatter CStyleBin = new IntFormatter(2, "0b", new Regex(@"0[bB]([01]+)"), 1, FormatPriority.LeftPriority);
         public static readonly CharFormatter CStyleChar = new CharFormatter();
+        public static readonly StringFormatter CStyleString = new StringFormatter();
         public static readonly SiPrefixFormatter SiPrefixed = new SiPrefixFormatter();
         public static readonly BinaryPrefixFormatter BinaryPrefixed = new BinaryPrefixFormatter();
         public static readonly DateTimeFormatter DateTime = new DateTimeFormatter();
@@ -48,6 +60,7 @@ namespace Shapoco.Calctus.Model.Formats {
             CStyleOct, 
             CStyleBin,
             CStyleChar,
+            CStyleString,
             SiPrefixed,
             BinaryPrefixed,
             DateTime,

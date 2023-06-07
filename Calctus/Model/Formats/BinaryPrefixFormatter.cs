@@ -13,11 +13,11 @@ namespace Shapoco.Calctus.Model.Formats {
     class BinaryPrefixFormatter : NumberFormatter {
         private static readonly string Prefixes = "_kMGTPEZYR";
 
-        public BinaryPrefixFormatter() : base(new Regex(@"(([1-9][0-9]*|0?)(\.[0-9]+)?)([" + Prefixes + "])i"), FormatPriority.NextPriority) { }
+        public BinaryPrefixFormatter() : base(new Regex(@"(([1-9][0-9]*|0)(\.[0-9]+)?|(\.[0-9]+))([" + Prefixes + "])i"), FormatPriority.NextPriority) { }
 
         public override Val Parse(Match m) {
             var frac = decimal.Parse(m.Groups[1].Value, CultureInfo.InvariantCulture);
-            var prefixIndex = Prefixes.IndexOf(m.Groups[4].Value);
+            var prefixIndex = Prefixes.IndexOf(m.Groups[5].Value);
             var exp = prefixIndex * 10;
             return new RealVal(frac * Math.Truncate((decimal)Math.Pow(2, exp)), new FormatHint(this));
         }

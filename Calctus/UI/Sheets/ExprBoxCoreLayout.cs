@@ -174,16 +174,16 @@ namespace Shapoco.Calctus.UI.Sheets {
                                     _chars[t.Position.Index + i].Style.ForeColor = fore;
                                 }
                             }
-                            else if (nth.Value.FormatHint.Formatter == NumberFormatter.CStyleChar) {
-                                // 文字リテラルの強調表示
-                                for (int i = 0; i < t.Text.Length; i++) {
-                                    _chars[t.Position.Index + i].Style.ForeColor = s.Appearance_Color_Special_Literals;
-                                }
-                            }
-                            else if (nth.Value.FormatHint.Formatter == NumberFormatter.DateTime) {
-                                // 日付リテラルの強調表示
-                                for (int i = 0; i < t.Text.Length; i++) {
-                                    _chars[t.Position.Index + i].Style.ForeColor = s.Appearance_Color_Special_Literals;
+                            else {
+                                bool isSpecialLiteral =
+                                    (nth.Value.FormatHint.Formatter == NumberFormatter.CStyleChar) ||
+                                    (nth.Value.FormatHint.Formatter == NumberFormatter.CStyleString) ||
+                                    (nth.Value.FormatHint.Formatter == NumberFormatter.DateTime);
+                                if (isSpecialLiteral) {
+                                    // その他の特殊リテラルの強調表示
+                                    for (int i = 0; i < t.Text.Length; i++) {
+                                        _chars[t.Position.Index + i].Style.ForeColor = s.Appearance_Color_Special_Literals;
+                                    }
                                 }
                             }
                         }

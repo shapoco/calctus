@@ -51,12 +51,14 @@ namespace Shapoco.Calctus.Model.Types {
         //public static explicit operator Val(int val) => new RealVal((double)val);
         //public static explicit operator int(Val val) => val.AsInt();
 
+        public Val FormatDefault() => Format(FormatHint.Default);
         public Val FormatInt() => Format(new FormatHint(NumberFormatter.CStyleInt));
         public Val FormatReal() => Format(new FormatHint(NumberFormatter.CStyleReal));
         public Val FormatHex() => Format(new FormatHint(NumberFormatter.CStyleHex));
         public Val FormatBin() => Format(new FormatHint(NumberFormatter.CStyleBin));
         public Val FormatOct() => Format(new FormatHint(NumberFormatter.CStyleOct));
         public Val FormatChar() => Format(new FormatHint(NumberFormatter.CStyleChar));
+        public Val FormatString() => Format(new FormatHint(NumberFormatter.CStyleString));
         public Val FormatSiPrefix() => Format(new FormatHint(NumberFormatter.SiPrefixed));
         public Val FormatBinaryPrefix() => Format(new FormatHint(NumberFormatter.BinaryPrefixed));
         public Val FormatDateTime() => Format(new FormatHint(NumberFormatter.DateTime));

@@ -74,16 +74,7 @@ namespace Shapoco.Calctus.Model.Types {
         public override long[] AsLongArray => _raw.Select(p => p.AsLong).ToArray();
         public override int[] AsIntArray => _raw.Select(p => p.AsInt).ToArray();
 
-        public override string ToString(EvalContext e) {
-            var sb = new StringBuilder();
-            sb.Append("[");
-            for(int i = 0; i < _raw.Length; i++) {
-                if (i > 0) sb.Append(", ");
-                sb.Append(_raw[i].ToString(e));
-            }
-            sb.Append("]");
-            return sb.ToString();
-        }
+        public override string ToString(EvalContext e) => FormatHint.Formatter.Format(this, e);
 
         protected override RealVal OnAsRealVal() => throw new InvalidCastException();
 

@@ -14,11 +14,11 @@ namespace Shapoco.Calctus.Model.Formats {
         private static readonly string Prefixes = "ryzafpnum_kMGTPEZYR";
         private const int PrefixOffset = 9;
 
-        public SiPrefixFormatter() : base(new Regex(@"(([1-9][0-9]*|0?)(\.[0-9]+)?)([" + Prefixes + "])"), FormatPriority.NextPriority) { }
+        public SiPrefixFormatter() : base(new Regex(@"(([1-9][0-9]*|0)(\.[0-9]+)?|(\.[0-9]+))([" + Prefixes + "])"), FormatPriority.NextPriority) { }
 
         public override Val Parse(Match m) {
             var frac = decimal.Parse(m.Groups[1].Value, CultureInfo.InvariantCulture);
-            var prefixIndex = Prefixes.IndexOf(m.Groups[4].Value);
+            var prefixIndex = Prefixes.IndexOf(m.Groups[5].Value);
             var exp = (prefixIndex - PrefixOffset) * 3;
             return new RealVal(frac * RMath.Pow10(exp) , new FormatHint(this));
         }
