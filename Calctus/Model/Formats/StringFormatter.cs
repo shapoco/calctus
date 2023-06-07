@@ -10,7 +10,7 @@ using Shapoco.Calctus.Model.Evaluations;
 
 namespace Shapoco.Calctus.Model.Formats {
     class StringFormatter : NumberFormatter {
-        public StringFormatter() : base(new Regex("\"([^\"\\\\]|\\\\[abfnrtv\"\\\\0]|\\\\o[0-7]{3}|\\\\x[0-9a-fA-F]{2}|\\\\u[0-9a-fA-F]{4})*\""), FormatPriority.NextPriority) { }
+        public StringFormatter() : base(new Regex("\"([^\"\\\\]|\\\\[abfnrtv\"\\\\0]|\\\\o[0-7]{3}|\\\\x[0-9a-fA-F]{2}|\\\\u[0-9a-fA-F]{4})*\""), FormatPriority.Strong) { }
 
         public override Val Parse(Match m) {
             var list = new List<int>();

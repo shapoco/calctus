@@ -11,7 +11,7 @@ using Shapoco.Calctus.Model.Evaluations;
 
 namespace Shapoco.Calctus.Model.Formats {
     class WebColorFormatter : NumberFormatter {
-        public WebColorFormatter() : base(new Regex(@"#([0-9a-fA-F]+)"), FormatPriority.LeftPriority) { }
+        public WebColorFormatter() : base(new Regex(@"#([0-9a-fA-F]+)"), FormatPriority.AlwaysLeft) { }
 
         public override Val Parse(Match m) {
             var tok = m.Groups[1].Value;

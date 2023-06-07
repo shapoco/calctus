@@ -11,7 +11,7 @@ using Shapoco.Calctus.Model.Evaluations;
 
 namespace Shapoco.Calctus.Model.Formats {
     class DateTimeFormatter : NumberFormatter {
-        public DateTimeFormatter() : base(new Regex(@"#(\d+/\d+/\d+|\d+:\d+:\d+(\.\d+)?|\d+/\d+/\d+ \d+:\d+:\d+(\.\d+)?)#"), FormatPriority.LeftPriority) { }
+        public DateTimeFormatter() : base(new Regex(@"#(\d+/\d+/\d+|\d+:\d+:\d+(\.\d+)?|\d+/\d+/\d+ \d+:\d+:\d+(\.\d+)?)#"), FormatPriority.AlwaysLeft) { }
 
         public override Val Parse(Match m) {
             var tok = m.Groups[1].Value;

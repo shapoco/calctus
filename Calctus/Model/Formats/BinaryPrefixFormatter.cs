@@ -13,7 +13,7 @@ namespace Shapoco.Calctus.Model.Formats {
     class BinaryPrefixFormatter : NumberFormatter {
         private static readonly string Prefixes = "_kMGTPEZYR";
 
-        public BinaryPrefixFormatter() : base(new Regex(@"(([1-9][0-9]*|0)(\.[0-9]+)?|(\.[0-9]+))([" + Prefixes + "])i"), FormatPriority.NextPriority) { }
+        public BinaryPrefixFormatter() : base(new Regex(@"(([1-9][0-9]*|0)(\.[0-9]+)?|(\.[0-9]+))([" + Prefixes + "])i"), FormatPriority.Strong) { }
 
         public override Val Parse(Match m) {
             var frac = decimal.Parse(m.Groups[1].Value, CultureInfo.InvariantCulture);

@@ -16,7 +16,7 @@ namespace Shapoco.Calctus.Model.Formats {
         }
 
         public FormatHint Select(FormatHint b) {
-            if (Formatter.Priority == FormatPriority.Neutral && b.Formatter.Priority == FormatPriority.NextPriority) {
+            if (Formatter.Priority == FormatPriority.Weak && b.Formatter.Priority == FormatPriority.Strong) {
                 // 左辺が標準の整数または実数で右辺が接頭語付きの場合は接頭語を優先する
                 return b;
             }
