@@ -11,8 +11,8 @@ using Shapoco.Calctus.Model.Formats;
 
 namespace Shapoco.Calctus.Model.Expressions {
     class SolveExpr : Expr {
-        public const decimal HMin = 1e-13m;
-        public const decimal TolMin = 1e-18m;
+        public const decimal HMin = 1e-18m;
+        public const decimal TolMin = 1e-23m;
         public const decimal HTolRatio = 1e5m;
 
         public readonly Expr Equation;
