@@ -279,7 +279,7 @@ namespace Shapoco.Calctus.UI.Sheets {
                 else if (e.KeyCode == Keys.Space) {
                     if (Settings.Instance.Input_IdAutoCompletion) {
                         e.Handled = true;
-                        //showCandidates();
+                        CandidatesShow();
                     }
                 }
             }

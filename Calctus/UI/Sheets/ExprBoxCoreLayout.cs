@@ -241,7 +241,7 @@ namespace Shapoco.Calctus.UI.Sheets {
         
         /// <summary>カーソル位置からX座標を返す</summary>
         public int CursorPosToX(int i) {
-            if (_chars.Length == 0) {
+            if (_chars.Length == 0 || i < 0) {
                 return 0;
             }
             else if (i < _chars.Length) {
