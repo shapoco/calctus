@@ -54,10 +54,14 @@
     <Compile Include="AppDataManager.cs" />
     <Compile Include="Calctus\Assert.cs" />
     <Compile Include="Calctus\Model\Evaluations\EvalError.cs" />
+    <Compile Include="Calctus\Model\Expressions\PlotExpr.cs" />
+    <Compile Include="Calctus\Model\Graphs\PlotCall.cs" />
     <Compile Include="Calctus\Model\Expressions\SolveExpr.cs" />
     <Compile Include="Calctus\Model\Expressions\Types.cs" />
     <Compile Include="Calctus\Model\Expressions\UserFuncExpr.cs" />
     <Compile Include="Calctus\Model\Formats\StringFormatter.cs" />
+    <Compile Include="Calctus\Model\Graphs\PlotRequest.cs" />
+    <Compile Include="Calctus\Model\Graphs\Types.cs" />
     <Compile Include="Calctus\Model\Parsers\Types.cs" />
     <Compile Include="Calctus\Model\Types\ArrayVal.cs" />
     <Compile Include="Calctus\Model\Sheets\Types.cs" />
@@ -115,6 +119,19 @@
     </Compile>
     <Compile Include="Calctus\UI\ConstEditForm.Designer.cs">
       <DependentUpon>ConstEditForm.cs</DependentUpon>
+    </Compile>
+    <Compile Include="Calctus\Model\Graphs\Graph.cs" />
+    <Compile Include="Calctus\UI\CustomProfessionalColors.cs" />
+    <Compile Include="Calctus\UI\GraphForm.cs">
+      <SubType>Form</SubType>
+    </Compile>
+    <Compile Include="Calctus\UI\GraphForm.Designer.cs">
+      <DependentUpon>GraphForm.cs</DependentUpon>
+    </Compile>
+    <Compile Include="Calctus\Model\Graphs\PlotSettings.cs" />
+    <Compile Include="Calctus\Model\Graphs\Plotter.cs" />
+    <Compile Include="Calctus\UI\GraphPanel.cs">
+      <SubType>Component</SubType>
     </Compile>
     <Compile Include="Calctus\UI\Sheets\EqualButton.cs" />
     <Compile Include="Calctus\UI\Sheets\ExprBoxCoreEdit.cs" />
@@ -187,6 +204,9 @@
     <EmbeddedResource Include="Calctus\UI\ConstEditForm.resx">
       <DependentUpon>ConstEditForm.cs</DependentUpon>
     </EmbeddedResource>
+    <EmbeddedResource Include="Calctus\UI\GraphForm.resx">
+      <DependentUpon>GraphForm.cs</DependentUpon>
+    </EmbeddedResource>
     <EmbeddedResource Include="Calctus\UI\ScriptFilterEditForm.resx">
       <DependentUpon>ScriptFilterEditForm.cs</DependentUpon>
     </EmbeddedResource>
@@ -224,6 +244,7 @@
   </ItemGroup>
   <ItemGroup>
     <Content Include="icon.ico" />
+    <None Include="Resources\ToolIcon_InvertBrightness.png" />
     <None Include="Resources\ToolIcon_Timer.png" />
     <None Include="Resources\ToolIcon_Paste.png" />
     <None Include="Resources\ToolIcon_MoveUp.png" />

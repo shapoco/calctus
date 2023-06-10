@@ -15,6 +15,9 @@ using Shapoco.Calctus.UI.Sheets;
 
 namespace Shapoco.Calctus.UI {
     internal partial class MainForm : Form {
+        private static MainForm _instance = null;
+        public static MainForm Instance => _instance;
+
         [DllImport("user32.dll")]
         public static extern IntPtr GetForegroundWindow();
 
@@ -25,15 +28,11 @@ namespace Shapoco.Calctus.UI {
         private Point _startupWindowPos;
         private Size _startupWindowSize;
         private bool _topMost = false;
-
-        class CustomProfessionalColors : ProfessionalColorTable {
-            public override Color ToolStripGradientBegin { get { return Settings.Instance.Appearance_Color_Button_Face; } }
-            public override Color ToolStripGradientMiddle { get { return Settings.Instance.Appearance_Color_Button_Face; } }
-            public override Color ToolStripGradientEnd { get { return Settings.Instance.Appearance_Color_Button_Face; } }
-            public override Color ToolStripBorder { get { return Settings.Instance.Appearance_Color_Button_Face; } }
-        }
+        private FormWindowState _lastWindowState = FormWindowState.Normal;
 
         public MainForm() {
+            _instance = this;
+
             // フォントの設定が反映されたときにウィンドウサイズも変わってしまうので
             // 起動時のウィンドウサイズ設定値は先に保持しておいて最後に反映する
             var s = Settings.Instance;
@@ -63,8 +62,8 @@ namespace Shapoco.Calctus.UI {
             notifyIcon.MouseClick += NotifyIcon_MouseClick;
 
             sheetView.RadixModeChanged += (sender, e) => { RadixMode = ((SheetView)sender).ActiveRadixMode; };
-            sheetView.DialogOpening += (sender, e) => { TopMost = false; };
-            sheetView.DialogClosed += (sender, e) => { TopMost = _topMost; };
+            sheetView.DialogOpening += (sender, e) => { suspendTopMost(); };
+            sheetView.DialogClosed += (sender, e) => { resumeTopMost(); };
 
             radixAutoButton.CheckedChanged += (sender, e) => { RadixCheckedChanged((RadioButton)sender, RadixMode.Auto); };
             radixDecButton.CheckedChanged += (sender, e) => { RadixCheckedChanged((RadioButton)sender, RadixMode.Dec); };
@@ -91,7 +90,7 @@ namespace Shapoco.Calctus.UI {
             helpButton.Click += (sender, e) => { System.Diagnostics.Process.Start(@"https://github.com/shapoco/calctus"); };
 
             contextOpen.Click += (sender, e) => { showForeground(); };
-            contextExit.Click += (sender, e) => { Application.Exit(); };
+            contextExit.Click += (sender, e) => { appExit(); };
 
             _focusTimer.Tick += _focusTimer_Tick;
         }
@@ -117,6 +116,7 @@ namespace Shapoco.Calctus.UI {
 
         private void MainForm_Activated(object sender, EventArgs e) {
             ExtFuncDef.ScanScripts();
+            GraphForm.ReshowAll();
         }
 
         private void MainForm_Shown(object sender, EventArgs e) {
@@ -139,9 +139,10 @@ namespace Shapoco.Calctus.UI {
 
         private void MainForm_FormClosing(object sender, FormClosingEventArgs e) {
             var s = Settings.Instance;
-            if (e.CloseReason == CloseReason.UserClosing && s.Startup_TrayIcon) {
+            if (e.CloseReason == CloseReason.UserClosing && notifyIcon.Visible) {
                 e.Cancel = true;
                 this.Visible = false;
+                GraphForm.HideAll();
             }
         }
 
@@ -156,6 +157,15 @@ namespace Shapoco.Calctus.UI {
                 s.Window_Width = this.Width;
                 s.Window_Height = this.Height;
             }
+            if (WindowState != _lastWindowState) {
+                if (WindowState == FormWindowState.Minimized) {
+                    GraphForm.SetWindowStatusAll(FormWindowState.Minimized);
+                }
+                else {
+                    GraphForm.SetWindowStatusAll(FormWindowState.Normal);
+                }
+            }
+            _lastWindowState = WindowState;
         }
 
         private void MainForm_LocationChanged(object sender, EventArgs e) {
@@ -203,6 +213,7 @@ namespace Shapoco.Calctus.UI {
             }
             catch { }
             sheetView.RequestRecalc();
+            GraphForm.ReloadSettingsAll();
         }
 
         private void enableHotkey() {
@@ -227,18 +238,17 @@ namespace Shapoco.Calctus.UI {
         }
 
         private void SettingsButton_Click(object sender, EventArgs e) {
-            this.TopMost = false;
+            suspendTopMost();
             var dlg = new SettingsDialog();
             dlg.ShowDialog();
             dlg.Dispose();
             reloadSettings();
-            this.TopMost = _topMost;
+            resumeTopMost();
         }
 
         private void TopMostButton_Click(object sender, EventArgs e) {
             var btn = (ToolStripButton)sender;
-            _topMost = !_topMost;
-            this.TopMost = _topMost;
+            setTopMost(!_topMost);
             if (_topMost) {
                 btn.Image = Properties.Resources.ToolIcon_TopMostOn;
             }
@@ -270,6 +280,26 @@ namespace Shapoco.Calctus.UI {
             }
         }
         
+        private void setTopMost(bool value) {
+            _topMost = value;
+            GraphForm.SetTopMostAll(value);
+            TopMost = value;
+        }
+
+        private void suspendTopMost() {
+            if (_topMost) {
+                GraphForm.SetTopMostAll(false);
+                TopMost = false;
+            }
+        }
+
+        private void resumeTopMost() {
+            if (_topMost) {
+                GraphForm.SetTopMostAll(true);
+                TopMost = true;
+            }
+        }
+
         private void showForeground() {
             this.Visible = true;
             if (this.WindowState == FormWindowState.Minimized) {
@@ -286,9 +316,19 @@ namespace Shapoco.Calctus.UI {
             _focusTimer.Start();
         }
 
+        private void appExit() {
+            GraphForm.CloseAll();
+
+            // 通知アイコン使用時、Application.Exit() ではなぜか MainForm が閉じてくれないので明示的に Close する
+            // タスクトレイに格納されないように通知アイコンを非表示にする
+            notifyIcon.Visible = false; 
+            Close();
+
+            Application.Exit();
+        }
+
         private void _focusTimer_Tick(object sender, EventArgs e) {
             _focusTimer.Stop();
-            //calcListBox.Refocus();
             sheetView.Focus();
         }
 

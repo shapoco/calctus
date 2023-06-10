@@ -67,6 +67,7 @@ namespace Shapoco.Calctus.Model.Types {
         public override long AsLong => (long)_raw; // todo: 丸め/切り捨ての明示は不要？
         public override int AsInt => (int)_raw; // todo: 丸め/切り捨ての明示は不要？
         public override bool AsBool => throw new InvalidCastException();
+        public override string AsString => throw new InvalidCastException();
 
         public override real[] AsRealArray => new real[] { _raw };
         public override long[] AsLongArray => new long[] { (long)_raw }; // todo: 丸め/切り捨ての明示は不要？

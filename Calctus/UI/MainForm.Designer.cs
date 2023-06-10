@@ -47,13 +47,13 @@ namespace Shapoco.Calctus.UI
             this.toolStripMenuItem1 = new System.Windows.Forms.ToolStripSeparator();
             this.contextExit = new System.Windows.Forms.ToolStripMenuItem();
             this.bottomPanel = new System.Windows.Forms.Panel();
+            this.toolTip = new System.Windows.Forms.ToolTip(this.components);
+            this.sheetView = new Shapoco.Calctus.UI.Sheets.SheetView();
             this.radixOctButton = new Shapoco.Calctus.UI.FlatRadioButton();
             this.radixBinButton = new Shapoco.Calctus.UI.FlatRadioButton();
             this.radixHexButton = new Shapoco.Calctus.UI.FlatRadioButton();
             this.radixDecButton = new Shapoco.Calctus.UI.FlatRadioButton();
             this.radixAutoButton = new Shapoco.Calctus.UI.FlatRadioButton();
-            this.toolTip = new System.Windows.Forms.ToolTip(this.components);
-            this.sheetView = new Shapoco.Calctus.UI.Sheets.SheetView();
             this.toolStrip.SuspendLayout();
             this.trayMenuStrip.SuspendLayout();
             this.bottomPanel.SuspendLayout();
@@ -199,7 +199,7 @@ namespace Shapoco.Calctus.UI
             this.contextExit.Size = new System.Drawing.Size(123, 22);
             this.contextExit.Text = "Exit (&X)";
             // 
-            // panel2
+            // bottomPanel
             // 
             this.bottomPanel.Controls.Add(this.radixOctButton);
             this.bottomPanel.Controls.Add(this.radixBinButton);
@@ -208,9 +208,20 @@ namespace Shapoco.Calctus.UI
             this.bottomPanel.Controls.Add(this.radixAutoButton);
             this.bottomPanel.Dock = System.Windows.Forms.DockStyle.Bottom;
             this.bottomPanel.Location = new System.Drawing.Point(0, 231);
-            this.bottomPanel.Name = "panel2";
+            this.bottomPanel.Name = "bottomPanel";
             this.bottomPanel.Size = new System.Drawing.Size(402, 15);
             this.bottomPanel.TabIndex = 5;
+            // 
+            // sheetView
+            // 
+            this.sheetView.ActiveRadixMode = Shapoco.Calctus.Model.Sheets.RadixMode.Auto;
+            this.sheetView.BackColor = System.Drawing.Color.FromArgb(((int)(((byte)(32)))), ((int)(((byte)(32)))), ((int)(((byte)(32)))));
+            this.sheetView.Dock = System.Windows.Forms.DockStyle.Fill;
+            this.sheetView.Location = new System.Drawing.Point(0, 25);
+            this.sheetView.Name = "sheetView";
+            this.sheetView.Size = new System.Drawing.Size(402, 206);
+            this.sheetView.TabIndex = 0;
+            this.sheetView.Text = "bookView1";
             // 
             // radixOctButton
             // 
@@ -277,16 +288,6 @@ namespace Shapoco.Calctus.UI
             this.radixAutoButton.TabStop = true;
             this.radixAutoButton.Text = "Auto";
             this.radixAutoButton.UseVisualStyleBackColor = false;
-            // 
-            // bookView
-            // 
-            this.sheetView.BackColor = System.Drawing.Color.FromArgb(((int)(((byte)(32)))), ((int)(((byte)(32)))), ((int)(((byte)(32)))));
-            this.sheetView.Dock = System.Windows.Forms.DockStyle.Fill;
-            this.sheetView.Location = new System.Drawing.Point(0, 25);
-            this.sheetView.Name = "bookView";
-            this.sheetView.Size = new System.Drawing.Size(402, 206);
-            this.sheetView.TabIndex = 0;
-            this.sheetView.Text = "bookView1";
             // 
             // MainForm
             // 

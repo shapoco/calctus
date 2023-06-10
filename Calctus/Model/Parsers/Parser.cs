@@ -122,6 +122,9 @@ namespace Shapoco.Calctus.Model.Parsers {
             else if (ReadIf("solve", out tok)) {
                 return Solve(tok);
             }
+            else if (ReadIf("plot", out tok)) {
+                return Plot(tok);
+            }
             else if (ReadIf(TokenType.NumericLiteral, out tok)) {
                 return new Number(tok);
             }
@@ -184,6 +187,19 @@ namespace Shapoco.Calctus.Model.Parsers {
             }
             Expect(")");
             return new SolveExpr(first, equation, variant, param0, param1);
+        }
+
+        public Expr Plot(Token first) {
+            Expect("(");
+            Expr windowName = null;
+            var equation = Expr(false);
+            Expect(",");
+            Expect(TokenType.Word, out Token variant);
+            if (ReadIf(",")) {
+                windowName = Expr(false);
+            }
+            Expect(")");
+            return new PlotExpr(first, windowName, equation, variant);
         }
 
         public Token Peek() {

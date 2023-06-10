@@ -27,6 +27,7 @@ namespace Shapoco.Calctus.Model.Types {
         public override long AsLong => throw new InvalidCastException();
         public override int AsInt => throw new InvalidCastException();
         public override bool AsBool => _raw;
+        public override string AsString => throw new InvalidCastException();
 
         public override real[] AsRealArray => throw new InvalidCastException();
         public override long[] AsLongArray => throw new InvalidCastException();

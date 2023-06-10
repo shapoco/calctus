@@ -5,11 +5,13 @@ using System.Text;
 using System.Threading.Tasks;
 using Shapoco.Calctus.Model.Types;
 using Shapoco.Calctus.Model.Parsers;
+using Shapoco.Calctus.Model.Graphs;
 
 namespace Shapoco.Calctus.Model.Evaluations {
     class EvalContext {
         private Dictionary<string, Var> _vars = new Dictionary<string, Var>();
         public readonly EvalSettings Settings;
+        public readonly List<PlotCall> PlotCalls = new List<PlotCall>();
 
         public void DefConst(string name, Val val, string desc) {
             _vars.Add(name, new Var(new Token(TokenType.Word, TextPosition.Nowhere, name), val, true, desc));

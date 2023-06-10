@@ -37,6 +37,7 @@ namespace Shapoco.Calctus.Model.Types {
         public abstract long AsLong { get; }
         public abstract int AsInt { get; }
         public abstract bool AsBool { get; }
+        public abstract string AsString { get; }
 
         public abstract real[] AsRealArray { get; }
         public abstract long[] AsLongArray { get; }

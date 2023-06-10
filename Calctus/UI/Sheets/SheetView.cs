@@ -139,6 +139,8 @@ namespace Shapoco.Calctus.UI.Sheets {
             }
         }
 
+        [Browsable(false)]
+        [DefaultValue(-1)]
         public int FocusedIndex {
             get => _focusedIndex;
             set {
@@ -147,6 +149,8 @@ namespace Shapoco.Calctus.UI.Sheets {
             }
         }
 
+        [Browsable(false)]
+        [DefaultValue(null)]
         public SheetViewItem FocusedViewItem {
             get => (_focusedIndex >= 0) ? getViewItem(_focusedIndex) : null;
             set => FocusedIndex = indexOf(value);
@@ -840,8 +844,12 @@ namespace Shapoco.Calctus.UI.Sheets {
             list.Add(new InputCandidate(BoolVal.FalseKeyword, BoolVal.FalseKeyword, "false value", false));
             list.Add(new InputCandidate("def", "def", "user function definition", false));
             list.Add(new InputCandidate("solve", "solve(expr,var,a,b)", "Solves the equation using Newton's method.", true));
+            list.Add(new InputCandidate("plot", "plot(expr,var,name)", "Plots graph.", true));
             _inputCandidates = list.OrderBy(p => p.Id).ToArray();
             _recalcRequested = false;
+
+            // グラフ描画リクエストの処理
+            GraphForm.RequestPlot(_sheet, ctx.PlotCalls.ToArray());
 #if DEBUG
             sw.Stop();
             Console.WriteLine("Recalc " + sw.ElapsedMilliseconds + "ms");

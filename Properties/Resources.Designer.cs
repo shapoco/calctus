@@ -103,6 +103,16 @@ namespace Shapoco.Properties {
         /// <summary>
         ///   型 System.Drawing.Bitmap のローカライズされたリソースを検索します。
         /// </summary>
+        internal static System.Drawing.Bitmap ToolIcon_InvertBrightness {
+            get {
+                object obj = ResourceManager.GetObject("ToolIcon_InvertBrightness", resourceCulture);
+                return ((System.Drawing.Bitmap)(obj));
+            }
+        }
+        
+        /// <summary>
+        ///   型 System.Drawing.Bitmap のローカライズされたリソースを検索します。
+        /// </summary>
         internal static System.Drawing.Bitmap ToolIcon_MoveDown {
             get {
                 object obj = ResourceManager.GetObject("ToolIcon_MoveDown", resourceCulture);
