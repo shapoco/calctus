@@ -316,11 +316,6 @@ namespace Shapoco.Calctus.UI.Sheets {
                 }
 
                 this.Text = text;
-                if (CandidatesAreShown() && isIdChar(e.KeyChar)) {
-                    // カーソル移動前に候補キーの範囲の拡張
-                    // (入力候補ウィンドウの表示をキャンセルさせないため)
-                    _candKeyEnd += 1;
-                }
                 SetSelection(selStart + 1);
 
                 selStart = SelectionStart;
@@ -409,11 +404,33 @@ namespace Shapoco.Calctus.UI.Sheets {
             selStart = Math.Max(0, Math.Min(Text.Length, selStart));
             selEnd = Math.Max(0, Math.Min(Text.Length, selEnd));
             if (selStart == _selStart && selEnd == _selEnd) return;
-            _selStart = selStart;
-            _selEnd = selEnd;
-            if (selStart != selEnd || selEnd < _candKeyStart || selEnd > _candKeyEnd) {
+            if (selStart != selEnd) {
+                // 選択範囲が作成されたら入力候補を隠す
                 CandidatesHide();
             }
+            else if (selEnd < _candKeyStart) {
+                // カーソルが候補キーより前に移動したら入力候補を隠す
+                CandidatesHide();
+            }
+            else if (_candKeyEnd < selEnd) {
+                // カーソルが候補キーより後ろ移動した場合、可能なら候補キーを拡張する
+                // そうでなければ入力候補を隠す
+                bool keyExtend = true;
+                for (int i = _candKeyEnd; i < selEnd; i++) {
+                    if (!isIdChar(Text[i])) {
+                        keyExtend = false;
+                        break;
+                    }
+                }
+                if (keyExtend) {
+                    _candKeyEnd = selEnd;
+                }
+                else {
+                    CandidatesHide();
+                }
+            }
+            _selStart = selStart;
+            _selEnd = selEnd;
             CursorStateChanged?.Invoke(this, EventArgs.Empty);
         }
 
