@@ -316,6 +316,11 @@ namespace Shapoco.Calctus.UI.Sheets {
                 }
 
                 this.Text = text;
+                if (CandidatesAreShown() && isIdChar(e.KeyChar)) {
+                    // カーソル移動前に候補キーの範囲の拡張
+                    // (入力候補ウィンドウの表示をキャンセルさせないため)
+                    _candKeyEnd += 1;
+                }
                 SetSelection(selStart + 1);
 
                 selStart = SelectionStart;
@@ -406,6 +411,9 @@ namespace Shapoco.Calctus.UI.Sheets {
             if (selStart == _selStart && selEnd == _selEnd) return;
             _selStart = selStart;
             _selEnd = selEnd;
+            if (selStart != selEnd || selEnd < _candKeyStart || selEnd > _candKeyEnd) {
+                CandidatesHide();
+            }
             CursorStateChanged?.Invoke(this, EventArgs.Empty);
         }
 
