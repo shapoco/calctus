@@ -52,10 +52,10 @@ namespace Shapoco.Calctus {
 
         public Color Appearance_Color_Background { get; set; } = Color.FromArgb(32, 32, 32);
         public Color Appearance_Color_Active_Background { get; set; } = Color.FromArgb(0, 0, 0);
-        public Color Appearance_Color_RPN_Target { get; set; } = Color.FromArgb(0, 0, 64);
         public Color Appearance_Color_Button_Face { get; set; } = Color.FromArgb(96, 96, 96);
         public Color Appearance_Color_Text { get; set; } = Color.FromArgb(255, 255, 255);
         public Color Appearance_Color_Selection { get; set; } = Color.FromArgb(0, 128, 255);
+        public Color Appearance_Color_RPN_Target { get; set; } = Color.FromArgb(0, 64, 255);
         public Color Appearance_Color_Symbols { get; set; } = Color.FromArgb(64, 192, 255);
         public Color Appearance_Color_Identifiers { get; set; } = Color.FromArgb(192, 255, 128);
         public Color Appearance_Color_Special_Literals { get; set; } = Color.FromArgb(255, 192, 64);

@@ -499,12 +499,10 @@ namespace Shapoco.Calctus.UI.Sheets {
             int n = _sheet.Items.Count;
             for (int i = 0; i < n; i++) {
                 var viewItem = getViewItem(i);
-                if (_focusedRpnOperation != null) {
-                    if (_focusedRpnOperation.StartIndex <= i && i < _focusedRpnOperation.EndIndex) {
-                        viewItem.BackColor = s.Appearance_Color_RPN_Target;
-                    }
-                }
-                else if (i == _focusedIndex) {
+                viewItem.IsRpnOperand =
+                    (_focusedRpnOperation != null) &&
+                    (_focusedRpnOperation.StartIndex <= i && i < _focusedRpnOperation.EndIndex);
+                if (i == _focusedIndex) {
                     viewItem.BackColor = s.Appearance_Color_Active_Background;
                 }
                 else {

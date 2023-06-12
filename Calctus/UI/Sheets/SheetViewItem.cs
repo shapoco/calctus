@@ -22,6 +22,7 @@ namespace Shapoco.Calctus.UI.Sheets {
         public readonly ExprBoxCore AnsBox;
         public readonly EqualButton Equal;
         public bool IsFreshAnswer = false;
+        private bool _isRpnOperand = false;
         private bool _disposed = false;
         private int _preferredHeight = 0;
 
@@ -58,9 +59,33 @@ namespace Shapoco.Calctus.UI.Sheets {
             base.Dispose(disposing);
         }
 
+        public bool IsRpnOperand {
+            get => _isRpnOperand;
+            set {
+                if (value == _isRpnOperand) return;
+                _isRpnOperand = value;
+                Invalidate();
+            }
+        }
+
         public void RelayoutText() {
             ExprBox.RelayoutText();
             AnsBox.RelayoutText();
+        }
+
+        protected override void OnPaint(PaintEventArgs e) {
+            base.OnPaint(e);
+            var g = e.Graphics;
+            var s = Settings.Instance;
+            if (_isRpnOperand) {
+                using (var pen = new Pen(s.Appearance_Color_RPN_Target, 2))
+                using (var brush = new SolidBrush(Color.FromArgb(128, s.Appearance_Color_RPN_Target))) {
+                    g.FillRectangle(brush, ClientBounds);
+                    var rect = ClientBounds;
+                    rect.Inflate(-1, -1);
+                    g.DrawRectangle(pen, rect);
+                }
+            }
         }
 
         private void ExprBox_TextChanged(object sender, EventArgs e) {
