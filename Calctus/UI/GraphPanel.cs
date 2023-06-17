@@ -245,16 +245,16 @@ namespace Shapoco.Calctus.UI {
             var s = Settings.Instance;
 
             // 目盛りの生成
-            var xNotches = generateScaleNotches(ps.XAxis, ClientSize.Width);
-            var yNotches = generateScaleNotches(ps.YAxis, ClientSize.Height);
+            var xLines = generateScaleNotches(ps.XAxis, ClientSize.Width);
+            var yLines = generateScaleNotches(ps.YAxis, ClientSize.Height);
 
             // レイアウトの調整 (マウスドラッグ中を除く)
             if (_layoutInvalidated && _mousePressedButtons == MouseButtons.None && ModifierKeys == Keys.None) {
-                if (xNotches.Length > 0) {
-                    _xScaleHeight = xNotches.Select(p => (int)g.MeasureString(p.Text, Font).Width).Max();
+                if (xLines.Length > 0) {
+                    _xScaleHeight = xLines.Select(p => (int)g.MeasureString(p.Text, Font).Width).Max();
                 }
-                if (yNotches.Length > 0) {
-                    _yScaleWidth = yNotches.Select(p => (int)g.MeasureString(p.Text, Font).Width).Max();
+                if (yLines.Length > 0) {
+                    _yScaleWidth = yLines.Select(p => (int)g.MeasureString(p.Text, Font).Width).Max();
                 }
                 _layoutInvalidated = false;
             }
@@ -282,33 +282,33 @@ namespace Shapoco.Calctus.UI {
                 dottedPen.DashStyle = System.Drawing.Drawing2D.DashStyle.Dash;
 
                 // 横軸の目盛り
-                foreach (var notch in xNotches) {
-                    if (project(ps.XAxis, notch.Value, graphArea.X, graphArea.Width, out float px)) {
+                foreach (var line in xLines) {
+                    if (project(ps.XAxis, line.Value, graphArea.X, graphArea.Width, out float px)) {
                         var pen =
-                            notch.Value == 0 ? thickPen :
-                            notch.SubLine ? dottedPen : thinPen;
+                            line.Value == 0 ? thickPen :
+                            line.SubLine ? dottedPen : thinPen;
                         g.DrawLine(pen, px, graphArea.Y, px, graphArea.Bottom);
-                        if (!string.IsNullOrEmpty(notch.Text)) {
-                            var sz = g.MeasureString(notch.Text, Font);
+                        if (!string.IsNullOrEmpty(line.Text)) {
+                            var sz = g.MeasureString(line.Text, Font);
                             var bkp2 = g.Save();
                             g.TranslateTransform(px, graphArea.Bottom);
                             g.RotateTransform(-90);
-                            g.DrawString(notch.Text, Font, textBrush, -sz.Width, -sz.Height / 2);
+                            g.DrawString(line.Text, Font, textBrush, -sz.Width, -sz.Height / 2);
                             g.Restore(bkp2);
                         }
                     }
                 }
 
                 // 縦軸の目盛り
-                foreach (var notch in yNotches) {
-                    if (project(ps.YAxis, notch.Value, graphArea.Bottom, -graphArea.Height, out float py)) {
+                foreach (var line in yLines) {
+                    if (project(ps.YAxis, line.Value, graphArea.Bottom, -graphArea.Height, out float py)) {
                         var pen =
-                            notch.Value == 0 ? thickPen :
-                            notch.SubLine ? dottedPen : thinPen;
+                            line.Value == 0 ? thickPen :
+                            line.SubLine ? dottedPen : thinPen;
                         g.DrawLine(pen, graphArea.X, py, graphArea.Right, py);
-                        if (!string.IsNullOrEmpty(notch.Text)) {
-                            var sz = g.MeasureString(notch.Text, Font);
-                            g.DrawString(notch.Text, Font, textBrush, graphArea.X - sz.Width, py - sz.Height / 2);
+                        if (!string.IsNullOrEmpty(line.Text)) {
+                            var sz = g.MeasureString(line.Text, Font);
+                            g.DrawString(line.Text, Font, textBrush, graphArea.X - sz.Width, py - sz.Height / 2);
                         }
                     }
                 }
@@ -353,7 +353,7 @@ namespace Shapoco.Calctus.UI {
 
         }
 
-        private Notch[] generateScaleNotches(AxisSettings axis, int clientSize) {
+        private Gridline[] generateScaleNotches(AxisSettings axis, int clientSize) {
             switch(axis.Type) {
                 case AxisType.Linear: {
                         // 目盛りの間隔
@@ -372,16 +372,16 @@ namespace Shapoco.Calctus.UI {
                         // 目盛りの列挙
                         var origin = Math.Ceiling(axis.PosBottom / step) * step;
                         int n = (int)Math.Floor((max - origin) / step);
-                        var notches = new Notch[n + 1];
+                        var lines = new Gridline[n + 1];
                         for (int i = 0; i <= n; i++) {
                             var x = origin + step * i;
                             var text = siPrefix(x, flog10, fracDigits);
-                            notches[i] = new Notch(x, text);
+                            lines[i] = new Gridline(x, text);
                         }
-                        return notches;
+                        return lines;
                     }
                 case AxisType.Log10: {
-                        var notches = new List<Notch>();
+                        var notches = new List<Gridline>();
                         //var valMin = RMath.Pow10(axis.Min);
                         //var valMax = RMath.Pow10(axis.Min + axis.Range);
                         var expStart = (int)Math.Max(AxisSettings.Log10PosMin, Math.Floor(axis.PosBottom));
@@ -394,7 +394,7 @@ namespace Shapoco.Calctus.UI {
                                 if (axis.PosBottom <= pos && pos <= axis.PosTop) {
                                     bool sub = (mul != 1);
                                     var text = sub ? null : siPrefix(val, RMath.FLog10(val), 0);
-                                    notches.Add(new Notch(val, text, sub));
+                                    notches.Add(new Gridline(val, text, sub));
                                 }
                             }
                         }
@@ -473,11 +473,11 @@ namespace Shapoco.Calctus.UI {
             }
         }
 
-        private struct Notch {
+        private struct Gridline {
             public decimal Value;
             public string Text;
             public bool SubLine;
-            public Notch(decimal val, string text, bool sub = false) {
+            public Gridline(decimal val, string text, bool sub = false) {
                 Value = val;
                 Text = text;
                 SubLine = sub;
