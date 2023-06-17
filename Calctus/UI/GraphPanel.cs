@@ -10,7 +10,7 @@ using Shapoco.Calctus.Model.Mathematics;
 using Shapoco.Calctus.Model.Graphs;
 
 namespace Shapoco.Calctus.UI {
-    class GraphPanel : Panel {
+    class GraphPanel : Control {
         private static readonly string prefixes = "ryzafpnum_kMGTPEZYR";
         private const int prefixOffset = 9;
         private const int GraphAreaMargin = 20;
@@ -28,20 +28,21 @@ namespace Shapoco.Calctus.UI {
         private Point _mouseLastDownPos = Point.Empty;
         private MouseButtons _mousePressedButtons = MouseButtons.None;
 
-        private bool _invertBrightness = false;
+        private bool _whiteBackMode = false;
 
         public GraphPanel() {
             if (DesignMode) return;
             DoubleBuffered = true;
             _plotter.SynchronizingObject = this;
             _plotter.Plotted += _worker_Plotted;
+            PlotSettings.Changed += (sender, e) => { Replot(); };
         }
 
-        public bool InvertBrightness {
-            get => _invertBrightness;
+        public bool WhiteBackMode {
+            get => _whiteBackMode;
             set {
-                if (value == _invertBrightness) return;
-                _invertBrightness = value;
+                if (value == _whiteBackMode) return;
+                _whiteBackMode = value;
                 Invalidate();
             }
         }
@@ -51,7 +52,7 @@ namespace Shapoco.Calctus.UI {
             var ps = PlotSettings;
             var graphArea = getGraphArea();
             if (graphArea.Width > 0) {
-                ps.XNumSteps = graphArea.Width;
+                ps.NumSamples = graphArea.Width;
             }
             _plotter.StartPlot(new PlotRequest(sheet, calls, PlotSettings));
         }
@@ -89,6 +90,11 @@ namespace Shapoco.Calctus.UI {
         protected override void OnResize(EventArgs eventargs) {
             base.OnResize(eventargs);
             Replot();
+        }
+
+        protected override void OnKeyUp(KeyEventArgs e) {
+            base.OnKeyUp(e);
+            invalidateLayout();
         }
 
         protected override void OnMouseDown(MouseEventArgs e) {
@@ -132,12 +138,10 @@ namespace Shapoco.Calctus.UI {
                 if (xScroll || yScroll) {
                     var ps = PlotSettings;
                     var graphArea = getGraphArea();
-                    var dx = xScroll ? (ps.XMax - ps.XMin) * (e.X - _mouseLastMovePos.X) / graphArea.Width : 0m;
-                    var dy = yScroll ? (ps.YMax - ps.YMin) * (_mouseLastMovePos.Y - e.Y) / graphArea.Height : 0m;
-                    ps.XMin -= dx;
-                    ps.XMax -= dx;
-                    ps.YMin -= dy;
-                    ps.YMax -= dy;
+                    var dx = xScroll ? (ps.XAxis.PosRange) * (e.X - _mouseLastMovePos.X) / graphArea.Width : 0m;
+                    var dy = yScroll ? (ps.YAxis.PosRange) * (_mouseLastMovePos.Y - e.Y) / graphArea.Height : 0m;
+                    ps.XAxis.PosBottom -= dx;
+                    ps.YAxis.PosBottom -= dy;
                     invalidateLayout();
                     Replot();
                 }
@@ -157,14 +161,14 @@ namespace Shapoco.Calctus.UI {
                     // 選択された領域を拡大する
                     var ps = PlotSettings;
                     var graphArea = getGraphArea();
-                    var xMin = ps.XMin + (ps.XMax - ps.XMin) * (decimal)(px0 - graphArea.X) / graphArea.Width;
-                    var yMin = ps.YMin + (ps.YMax - ps.YMin) * (decimal)(graphArea.Bottom - py1) / graphArea.Height;
-                    var xMax = ps.XMin + (ps.XMax - ps.XMin) * (decimal)(px1 - graphArea.X) / graphArea.Width;
-                    var yMax = ps.YMin + (ps.YMax - ps.YMin) * (decimal)(graphArea.Bottom - py0) / graphArea.Height;
-                    ps.XMin = xMin;
-                    ps.XMax = xMax;
-                    ps.YMin = yMin;
-                    ps.YMax = yMax;
+                    var xMin = ps.XAxis.PosBottom + (ps.XAxis.PosRange) * (decimal)(px0 - graphArea.X) / graphArea.Width;
+                    var yMin = ps.YAxis.PosBottom + (ps.YAxis.PosRange) * (decimal)(graphArea.Bottom - py1) / graphArea.Height;
+                    var xMax = ps.XAxis.PosBottom + (ps.XAxis.PosRange) * (decimal)(px1 - graphArea.X) / graphArea.Width;
+                    var yMax = ps.YAxis.PosBottom + (ps.YAxis.PosRange) * (decimal)(graphArea.Bottom - py0) / graphArea.Height;
+                    ps.XAxis.PosBottom = xMin;
+                    ps.XAxis.PosRange = xMax - xMin;
+                    ps.YAxis.PosBottom = yMin;
+                    ps.YAxis.PosRange = yMax - yMin;
                     invalidateLayout();
                     Replot();
                 }
@@ -178,86 +182,43 @@ namespace Shapoco.Calctus.UI {
             base.OnMouseWheel(e);
             if (e.Delta == 0) return;
 
-            if (ModifierKeys == Keys.None) {
-                if (getGraphArea().Contains(e.Location)) {
-                    yScroll(e.Delta);
-                }
-                else if (getXScaleArea().Contains(e.Location)) {
-                    xScroll(e.Delta);
-                    Replot();
-                }
-                else if (getYScaleArea().Contains(e.Location)) {
-                    yScroll(e.Delta);
-                }
+            var ps = PlotSettings;
+            var graphArea = getGraphArea();
+            if (getGraphArea().Contains(e.Location)) {
+                zoom(ps.XAxis, graphArea.X, graphArea.Width, e.X, e.Delta);
+                zoom(ps.YAxis, graphArea.Bottom, -graphArea.Height, e.Y, e.Delta);
+                Replot();
             }
-            else if (ModifierKeys == Keys.Shift) {
-                if (getGraphArea().Contains(e.Location)) {
-                    xScroll(e.Delta);
-                    Replot();
-                }
+            else if (getXScaleArea().Contains(e.Location)) {
+                zoom(ps.XAxis, graphArea.X, graphArea.Width, e.X, e.Delta);
+                Replot();
             }
-            else if (ModifierKeys == Keys.Control) {
-                if (getGraphArea().Contains(e.Location)) {
-                    xZoom(e.X, e.Delta);
-                    yZoom(e.Y, e.Delta);
-                    Replot();
-                }
-                else if (getXScaleArea().Contains(e.Location)) {
-                    xZoom(e.X, e.Delta);
-                    Replot();
-                }
-                else if (getYScaleArea().Contains(e.Location)) {
-                    yZoom(e.Y, e.Delta);
-                    Replot();
-                }
+            else if (getYScaleArea().Contains(e.Location)) {
+                zoom(ps.YAxis, graphArea.Bottom, -graphArea.Height, e.Y, e.Delta);
+                Replot();
             }
-            
         }
 
-        private void xScroll(int delta) {
+        private void scroll(AxisSettings axis, int delta) {
             var ps = PlotSettings;
-            if (delta > 0 && ps.XMin < decimal.MinValue / 2) return;
-            if (delta < 0 && ps.XMax > decimal.MaxValue / 2) return;
-            var shift = (ps.XMax - ps.XMin) * delta / 3000;
-            ps.XMin += shift;
-            ps.XMax += shift;
+            if (delta > 0 && axis.PosBottom < axis.PosMin) return;
+            if (delta < 0 && axis.PosRange + axis.PosBottom > axis.PosMax) return;
+            axis.PosBottom += axis.PosRange * delta / 3000;
             invalidateLayout();
         }
 
-        private void yScroll(int delta) {
+        private void zoom(AxisSettings axis, int offset, int size, int px, int delta) {
             var ps = PlotSettings;
-            if (delta > 0 && ps.YMin < decimal.MinValue / 2) return;
-            if (delta < 0 && ps.YMax > decimal.MaxValue / 2) return;
-            var shift = (ps.YMax - ps.YMin) * delta / 3000;
-            ps.YMin += shift;
-            ps.YMax += shift;
-            invalidateLayout();
-        }
-
-        private void xZoom(int px, int delta) {
-            var ps = PlotSettings;
-            var flog10 = RMath.FLog10(ps.XMax - ps.XMin);
+            var flog10 = RMath.FLog10(axis.PosRange);
             var scale = Math.Max(0.5f, 1f - (float)delta / 1000);
             if ((flog10 > 24 && scale > 1) || (flog10 < -24 && scale < 1)) return;
             var graphArea = getGraphArea();
-            var x = ps.XMin + (ps.XMax - ps.XMin) * (px - graphArea.X) / graphArea.Width;
-            ps.XMin = (ps.XMin - x) * (decimal)scale + x;
-            ps.XMax = (ps.XMax - x) * (decimal)scale + x;
+            var x = axis.PosBottom + (axis.PosRange) * (px - offset) / size;
+            axis.PosBottom = (axis.PosBottom - x) * (decimal)scale + x;
+            axis.PosRange *= (decimal)scale;
             invalidateLayout();
         }
-
-        private void yZoom(int py, int delta) {
-            var ps = PlotSettings;
-            var flog10 = RMath.FLog10(ps.YMax - ps.YMin);
-            var scale = Math.Max(0.5f, 1f - (float)delta / 1000);
-            if ((flog10 > 24 && scale > 1) || (flog10 < -24 && scale < 1)) return;
-            var graphArea = getGraphArea();
-            var y = ps.YMin + (ps.YMax - ps.YMin) * (graphArea.Bottom - py) / graphArea.Height;
-            ps.YMin = (ps.YMin - y) * (decimal)scale + y;
-            ps.YMax = (ps.YMax - y) * (decimal)scale + y;
-            invalidateLayout();
-        }
-
+        
         protected override void OnPaint(PaintEventArgs e) {
             base.OnPaint(e);
             if (DesignMode) return;
@@ -284,27 +245,31 @@ namespace Shapoco.Calctus.UI {
             var s = Settings.Instance;
 
             // 目盛りの生成
-            var xNotches = generateScaleNotches(ps.XMin, ps.XMax, ClientSize.Width);
-            var yNotches = generateScaleNotches(ps.YMin, ps.YMax, ClientSize.Height);
+            var xNotches = generateScaleNotches(ps.XAxis, ClientSize.Width);
+            var yNotches = generateScaleNotches(ps.YAxis, ClientSize.Height);
 
             // レイアウトの調整 (マウスドラッグ中を除く)
-            if (_layoutInvalidated && _mousePressedButtons == MouseButtons.None) {
-                _xScaleHeight = xNotches.Select(p => (int)g.MeasureString(p.Text, Font).Width).Max();
-                _yScaleWidth = yNotches.Select(p => (int)g.MeasureString(p.Text, Font).Width).Max();
+            if (_layoutInvalidated && _mousePressedButtons == MouseButtons.None && ModifierKeys == Keys.None) {
+                if (xNotches.Length > 0) {
+                    _xScaleHeight = xNotches.Select(p => (int)g.MeasureString(p.Text, Font).Width).Max();
+                }
+                if (yNotches.Length > 0) {
+                    _yScaleWidth = yNotches.Select(p => (int)g.MeasureString(p.Text, Font).Width).Max();
+                }
                 _layoutInvalidated = false;
             }
 
             var graphArea = getGraphArea();
 
             // 色の取得
-            var invert = _invertBrightness;
-            var backColor = invert ? ColorUtils.InvertHsvValue(BackColor) : BackColor;
-            var textColor = invert ? ColorUtils.InvertHsvValue(s.Appearance_Color_Text) : s.Appearance_Color_Text;
+            var whiteBack = _whiteBackMode;
+            var backColor = whiteBack ? Color.White : BackColor;
+            var textColor = whiteBack ? Color.Black : s.Appearance_Color_Text;
             var palette = new Color[] {
-                invert ? ColorUtils.InvertHsvValue(s.Appearance_Color_Parenthesis_1) : s.Appearance_Color_Parenthesis_1,
-                invert ? ColorUtils.InvertHsvValue(s.Appearance_Color_Parenthesis_2) : s.Appearance_Color_Parenthesis_2,
-                invert ? ColorUtils.InvertHsvValue(s.Appearance_Color_Parenthesis_3) : s.Appearance_Color_Parenthesis_3,
-                invert ? ColorUtils.InvertHsvValue(s.Appearance_Color_Parenthesis_4) : s.Appearance_Color_Parenthesis_4,
+                whiteBack ? Color.FromArgb(192, 64, 64) : s.Appearance_Color_Parenthesis_1,
+                whiteBack ? Color.FromArgb(64, 192, 64) : s.Appearance_Color_Parenthesis_2,
+                whiteBack ? Color.FromArgb(64, 64, 192) : s.Appearance_Color_Parenthesis_3,
+                whiteBack ? Color.FromArgb(192, 64, 192) : s.Appearance_Color_Parenthesis_4,
             };
             g.SmoothingMode = System.Drawing.Drawing2D.SmoothingMode.AntiAlias;
             g.TextRenderingHint = System.Drawing.Text.TextRenderingHint.AntiAlias;
@@ -312,25 +277,40 @@ namespace Shapoco.Calctus.UI {
 
             using (var thickPen = new Pen(textColor))
             using (var thinPen = new Pen(Color.FromArgb(64, textColor)))
+            using (var dottedPen = new Pen(Color.FromArgb(64, textColor)))
             using (var textBrush = new SolidBrush(textColor)) {
+                dottedPen.DashStyle = System.Drawing.Drawing2D.DashStyle.Dash;
+
                 // 横軸の目盛り
                 foreach (var notch in xNotches) {
-                    var px = graphArea.X + (float)(graphArea.Width * (notch.Value - ps.XMin) / (ps.XMax - ps.XMin));
-                    g.DrawLine(notch.Value == 0 ? thickPen : thinPen, px, graphArea.Top, px, graphArea.Bottom);
-                    var sz = g.MeasureString(notch.Text, Font);
-                    var bkp2 = g.Save();
-                    g.TranslateTransform(px, graphArea.Bottom);
-                    g.RotateTransform(-90);
-                    g.DrawString(notch.Text, Font, textBrush, -sz.Width, -sz.Height / 2);
-                    g.Restore(bkp2);
+                    if (project(ps.XAxis, notch.Value, graphArea.X, graphArea.Width, out float px)) {
+                        var pen =
+                            notch.Value == 0 ? thickPen :
+                            notch.SubLine ? dottedPen : thinPen;
+                        g.DrawLine(pen, px, graphArea.Y, px, graphArea.Bottom);
+                        if (!string.IsNullOrEmpty(notch.Text)) {
+                            var sz = g.MeasureString(notch.Text, Font);
+                            var bkp2 = g.Save();
+                            g.TranslateTransform(px, graphArea.Bottom);
+                            g.RotateTransform(-90);
+                            g.DrawString(notch.Text, Font, textBrush, -sz.Width, -sz.Height / 2);
+                            g.Restore(bkp2);
+                        }
+                    }
                 }
 
                 // 縦軸の目盛り
                 foreach (var notch in yNotches) {
-                    var py = graphArea.Bottom - (float)(graphArea.Height * (notch.Value - ps.YMin) / (ps.YMax - ps.YMin));
-                    g.DrawLine(notch.Value == 0 ? thickPen : thinPen, graphArea.X, py, graphArea.Right, py);
-                    var sz = g.MeasureString(notch.Text, Font);
-                    g.DrawString(notch.Text, Font, textBrush, graphArea.X - sz.Width, py - sz.Height / 2);
+                    if (project(ps.YAxis, notch.Value, graphArea.Bottom, -graphArea.Height, out float py)) {
+                        var pen =
+                            notch.Value == 0 ? thickPen :
+                            notch.SubLine ? dottedPen : thinPen;
+                        g.DrawLine(pen, graphArea.X, py, graphArea.Right, py);
+                        if (!string.IsNullOrEmpty(notch.Text)) {
+                            var sz = g.MeasureString(notch.Text, Font);
+                            g.DrawString(notch.Text, Font, textBrush, graphArea.X - sz.Width, py - sz.Height / 2);
+                        }
+                    }
                 }
 
                 // 枠線
@@ -341,25 +321,26 @@ namespace Shapoco.Calctus.UI {
             var bkp = g.Save();
             g.IntersectClip(graphArea);
             int colorIndex = 0;
-            var xRange = ps.XMax - ps.XMin;
-            var yRange = ps.YMax - ps.YMin;
+            var pts = new List<PointF>();
             foreach (var graphs in _graphs.Values) {
                 foreach (var graph in graphs) {
                     using (var pen = new Pen(palette[colorIndex], 2)) {
                         foreach (var polyline in graph.Polylines) {
-                            var pts = new PointF[polyline.Points.Length];
-                            for (int i = 0; i < pts.Length; i++) {
+                            pts.Clear();
+                            for (int i = 0; i < polyline.Points.Length; i++) {
                                 var p = polyline.Points[i];
-                                pts[i] = new PointF(
-                                    (float)(graphArea.X + (p.X - ps.XMin) * graphArea.Width / xRange),
-                                    (float)(graphArea.Bottom - (p.Y - ps.YMin) * graphArea.Height / yRange));
+                                float px = 0, py = 0;
+                                bool ok =
+                                    project(ps.XAxis, p.X, graphArea.X, graphArea.Width, out px) &&
+                                    project(ps.YAxis, p.Y, graphArea.Bottom, -graphArea.Height, out py);
+                                if (ok) pts.Add(new PointF(px, py));
                             }
-                            if (pts.Length == 1) {
+                            if (pts.Count == 1) {
                                 // todo: impl
                             }
                             else {
                                 try {
-                                    g.DrawLines(pen, pts);
+                                    g.DrawLines(pen, pts.ToArray());
                                 }
                                 catch { }
                             }
@@ -372,43 +353,56 @@ namespace Shapoco.Calctus.UI {
 
         }
 
-        private void calcRulerStep(decimal min, decimal max, out decimal lineStep, out int flog10, out int fracDigits) {
-            // 目盛りの間隔
-            var range = max - min;
-            lineStep = RMath.Pow10(RMath.Ceiling(RMath.Log10(range)) - 1);
-            if (lineStep * 2 > range) lineStep /= 10;
-            else if (lineStep * 4 > range) lineStep /= 5;
-            else if (lineStep * 8 > range) lineStep /= 2;
+        private Notch[] generateScaleNotches(AxisSettings axis, int clientSize) {
+            switch(axis.Type) {
+                case AxisType.Linear: {
+                        // 目盛りの間隔
+                        var range = axis.PosRange;
+                        var max = axis.PosBottom + range;
+                        var step = RMath.Pow10(RMath.Ceiling(RMath.Log10(range)) - 1);
+                        if (step * 2 > range) step /= 10;
+                        else if (step * 4 > range) step /= 5;
+                        else if (step * 8 > range) step /= 2;
 
-            // 目盛りの桁数
-            flog10 = (int)RMath.Floor(RMath.Log10(Math.Max(Math.Abs(min), Math.Abs(max))));
-            var logStep = (int)RMath.Floor(RMath.Log10(lineStep));
-            fracDigits = Math.Max(0, (int)Math.Floor((double)flog10 / 3) * 3 - logStep);
-        }
+                        // 目盛りの桁数
+                        var flog10 = RMath.FLog10(Math.Max(Math.Abs(axis.PosBottom), Math.Abs(max)));
+                        var logStep = (int)RMath.Floor(RMath.Log10(step));
+                        var fracDigits = Math.Max(0, (int)Math.Floor((double)flog10 / 3) * 3 - logStep);
 
-        private Notch[] generateScaleNotches(decimal min, decimal max, int clientSize) {
-            // 目盛りの間隔
-            var range = max - min;
-            var step = RMath.Pow10(RMath.Ceiling(RMath.Log10(range)) - 1);
-            if (step * 2 > range) step /= 10;
-            else if (step * 4 > range) step /= 5;
-            else if (step * 8 > range) step /= 2;
-
-            // 目盛りの桁数
-            var flog10 = (int)RMath.Floor(RMath.Log10(Math.Max(Math.Abs(min), Math.Abs(max))));
-            var logStep = (int)RMath.Floor(RMath.Log10(step));
-            var fracDigits = Math.Max(0, (int)Math.Floor((double)flog10 / 3) * 3 - logStep);
-
-            // 目盛りの列挙
-            var origin = Math.Ceiling(min / step) * step;
-            int n = (int)Math.Ceiling((max - origin) / step);
-            var notches = new Notch[n];
-            for (int i = 0; i < n; i++) {
-                var x = origin + step * i;
-                var text = siPrefix(x, flog10, fracDigits);
-                notches[i] = new Notch(x, text);
+                        // 目盛りの列挙
+                        var origin = Math.Ceiling(axis.PosBottom / step) * step;
+                        int n = (int)Math.Floor((max - origin) / step);
+                        var notches = new Notch[n + 1];
+                        for (int i = 0; i <= n; i++) {
+                            var x = origin + step * i;
+                            var text = siPrefix(x, flog10, fracDigits);
+                            notches[i] = new Notch(x, text);
+                        }
+                        return notches;
+                    }
+                case AxisType.Log10: {
+                        var notches = new List<Notch>();
+                        //var valMin = RMath.Pow10(axis.Min);
+                        //var valMax = RMath.Pow10(axis.Min + axis.Range);
+                        var expStart = (int)Math.Max(AxisSettings.Log10PosMin, Math.Floor(axis.PosBottom));
+                        var expEnd = (int)Math.Min(AxisSettings.Log10PosMax, Math.Ceiling(axis.PosTop));
+                        for (var exp = expStart; exp <= expEnd; exp++) {
+                            var valStep = RMath.Pow10(exp);
+                            for (var mul = 1; mul < 10; mul++) {
+                                var val = valStep * mul;
+                                var pos = RMath.Log10(val);
+                                if (axis.PosBottom <= pos && pos <= axis.PosTop) {
+                                    bool sub = (mul != 1);
+                                    var text = sub ? null : siPrefix(val, RMath.FLog10(val), 0);
+                                    notches.Add(new Notch(val, text, sub));
+                                }
+                            }
+                        }
+                        return notches.ToArray();
+                    }
+                default:
+                    throw new NotImplementedException();
             }
-            return notches;
         }
 
         private void invalidateLayout() {
@@ -421,13 +415,30 @@ namespace Shapoco.Calctus.UI {
             GraphAreaMargin, 
             ClientSize.Width - GraphAreaMargin, 
             ClientSize.Height - GraphAreaMargin - _xScaleHeight);
+        
         private Rectangle getXScaleArea() {
             var graphArea = getGraphArea();
             return Rectangle.FromLTRB(graphArea.X, graphArea.Bottom, graphArea.Right, ClientSize.Height);
         }
+        
         private Rectangle getYScaleArea() {
             var graphArea = getGraphArea();
             return Rectangle.FromLTRB(0, graphArea.Top, graphArea.X, graphArea.Bottom);
+        }
+
+        private bool project(AxisSettings axis, decimal val, int offset, int size, out float pos) {
+            try {
+                if (axis.ValueToPos(val, out decimal dpos)) {
+                    dpos = offset + (dpos - axis.PosBottom) * (size / axis.PosRange);
+                    if (-65536 < dpos && dpos < 65536) {
+                        pos = (float)dpos;
+                        return true;
+                    }
+                }
+            }
+            catch { }
+            pos = 0;
+            return false;
         }
 
         private static string siPrefix(decimal r, int flog10, int fracDigits) {
@@ -465,9 +476,11 @@ namespace Shapoco.Calctus.UI {
         private struct Notch {
             public decimal Value;
             public string Text;
-            public Notch(decimal val, string text) {
+            public bool SubLine;
+            public Notch(decimal val, string text, bool sub = false) {
                 Value = val;
                 Text = text;
+                SubLine = sub;
             }
         }
 

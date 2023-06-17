@@ -6,6 +6,7 @@ using System.Threading.Tasks;
 using System.Drawing;
 using Shapoco.Calctus.Model.Types;
 using Shapoco.Calctus.Model.Evaluations;
+using Shapoco.Calctus.Model.Mathematics;
 
 namespace Shapoco.Calctus.Model.Graphs {
     class Graph {
@@ -23,11 +24,13 @@ namespace Shapoco.Calctus.Model.Graphs {
 
             var lines = new List<Polyline>();
             var points = new List<PointD>();
-            for (int i = 0; i <= ps.XNumSteps; i++) {
-                var x = ps.XMin + (ps.XMax - ps.XMin) * i / ps.XNumSteps;
+            for (int i = 0; i <= ps.NumSamples; i++) {
+                var x = 0m; 
                 var y = 0m;
                 bool success = false;
                 try {
+                    var xPos = ps.XAxis.PosBottom + ps.XAxis.PosRange * ((decimal)i / ps.NumSamples);
+                    x = ps.XAxis.PosToValue(xPos);
                     call.Context.Ref(call.Variants[0], true).Value = new RealVal(x);
                     y = call.Expression.Eval(call.Context).AsReal;
                     success = true;
@@ -38,7 +41,7 @@ namespace Shapoco.Calctus.Model.Graphs {
                     points.Add(new PointD(x, y));
                 }
 
-                if (!success || i >= ps.XNumSteps - 1) {
+                if (!success || i >= ps.NumSamples - 1) {
                     if (points.Count > 0) {
                         lines.Add(new Polyline(points.ToArray()));
                         points.Clear();

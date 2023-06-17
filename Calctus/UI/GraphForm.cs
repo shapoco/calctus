@@ -94,10 +94,19 @@ namespace Shapoco.Calctus.UI {
 
         public GraphForm() {
             InitializeComponent();
+
+            axisSettingsX.Label.Text = "X-Axis";
+            axisSettingsY.Label.Text = "Y-Axis";
+
+            axisSettingsX.AxisSettings = graphPanel.PlotSettings.XAxis;
+            axisSettingsY.AxisSettings = graphPanel.PlotSettings.YAxis;
+
+            KeyPreview = true;
+            KeyDown += GraphForm_KeyDown;
             FormClosing += GraphForm_FormClosing;
 
             copyButton.Click += CopyButton_Click;
-            invertBrightnessButton.Click += (sender, e) => { graphPanel.InvertBrightness = !graphPanel.InvertBrightness; };
+            whiteBackModeButton.Click += (sender, e) => { graphPanel.WhiteBackMode = !graphPanel.WhiteBackMode; };
 
             ReloadSettings();
         }
@@ -116,12 +125,19 @@ namespace Shapoco.Calctus.UI {
             var s = Settings.Instance;
 
             try {
-                Font = new Font("Arial", s.Appearance_Font_Size);
+                Font = new Font(s.Appearance_Font_Button_Name, s.Appearance_Font_Size);
             }
             catch { }
 
-            graphPanel.BackColor = s.Appearance_Color_Background;
+            BackColor = s.Appearance_Color_Background;
+            ForeColor = s.Appearance_Color_Text;
             graphPanel.Invalidate();
+        }
+
+        private void GraphForm_KeyDown(object sender, KeyEventArgs e) {
+            if (e.Modifiers == Keys.Control && e.KeyCode == Keys.C) {
+                copyButton.PerformClick();
+            }
         }
 
         private void GraphForm_FormClosing(object sender, FormClosingEventArgs e) {

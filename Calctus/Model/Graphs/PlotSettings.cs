@@ -6,12 +6,34 @@ using System.Threading.Tasks;
 
 namespace Shapoco.Calctus.Model.Graphs {
     class PlotSettings : ICloneable {
-        public decimal XMin = -10.5m;
-        public decimal XMax = 10.5m;
-        public int XNumSteps = 100;
-        public decimal YMin = -10.5m;
-        public decimal YMax = 10.5m;
+        public event EventHandler Changed;
 
-        public object Clone() => MemberwiseClone();
+        public readonly AxisSettings XAxis = new AxisSettings();
+        public readonly AxisSettings YAxis = new AxisSettings();
+        private int _xNumSteps = 100;
+
+        public PlotSettings() {
+            XAxis.Changed += (sender, e) => { PerformChanged(); };
+            YAxis.Changed += (sender, e) => { PerformChanged(); };
+        }
+
+        public int NumSamples {
+            get => _xNumSteps;
+            set {
+                if (value == _xNumSteps) return;
+                _xNumSteps = value;
+                PerformChanged();
+            }
+        }
+
+        public void PerformChanged() => Changed?.Invoke(this, EventArgs.Empty);
+
+        public object Clone() {
+            var clone = new PlotSettings();
+            clone.NumSamples = NumSamples;
+            XAxis.CopyTo(clone.XAxis);
+            YAxis.CopyTo(clone.YAxis);
+            return clone;
+        }
     }
 }

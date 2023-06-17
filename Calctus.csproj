@@ -55,6 +55,7 @@
     <Compile Include="Calctus\Assert.cs" />
     <Compile Include="Calctus\Model\Evaluations\EvalError.cs" />
     <Compile Include="Calctus\Model\Expressions\PlotExpr.cs" />
+    <Compile Include="Calctus\Model\Graphs\AxisSettings.cs" />
     <Compile Include="Calctus\Model\Graphs\PlotCall.cs" />
     <Compile Include="Calctus\Model\Expressions\SolveExpr.cs" />
     <Compile Include="Calctus\Model\Expressions\Types.cs" />
@@ -113,6 +114,9 @@
     <Compile Include="Calctus\Model\Parsers\TokenQueue.cs" />
     <Compile Include="Calctus\Model\UserFuncDef.cs" />
     <Compile Include="Calctus\Settings.cs" />
+    <Compile Include="Calctus\UI\AxisSettingsPanel.cs">
+      <SubType>Component</SubType>
+    </Compile>
     <Compile Include="Calctus\UI\ColorUtils.cs" />
     <Compile Include="Calctus\UI\ConstEditForm.cs">
       <SubType>Form</SubType>

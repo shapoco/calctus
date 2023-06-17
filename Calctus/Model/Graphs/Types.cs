@@ -34,4 +34,10 @@ namespace Shapoco.Calctus.Model.Graphs {
             Points = points;
         }
     }
+
+    enum AxisType {
+        Linear,
+        Log10,
+        //Reciprocal,
+    }
 }
