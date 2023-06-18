@@ -137,7 +137,10 @@
             this.Controls.Add(this.panel1);
             this.Controls.Add(this.toolStrip);
             this.Icon = ((System.Drawing.Icon)(resources.GetObject("$this.Icon")));
+            this.MaximizeBox = false;
+            this.MinimizeBox = false;
             this.Name = "GraphForm";
+            this.ShowInTaskbar = false;
             this.Text = "GraphForm";
             this.toolStrip.ResumeLayout(false);
             this.toolStrip.PerformLayout();

@@ -47,6 +47,7 @@ namespace Shapoco.Calctus.UI {
             this.KeyDown += MainForm_KeyDown;
             this.Load += MainForm_Load;
             this.Activated += MainForm_Activated;
+            this.Deactivate += MainForm_Deactivate;
             this.Shown += MainForm_Shown;
             this.VisibleChanged += MainForm_VisibleChanged;
             this.FormClosing += MainForm_FormClosing;
@@ -116,7 +117,12 @@ namespace Shapoco.Calctus.UI {
 
         private void MainForm_Activated(object sender, EventArgs e) {
             ExtFuncDef.ScanScripts();
-            GraphForm.ReshowAll();
+            //GraphForm.ReshowAll();
+            GraphForm.SetTopMostAll(true);
+        }
+
+        private void MainForm_Deactivate(object sender, EventArgs e) {
+            GraphForm.SetTopMostAll(_topMost);
         }
 
         private void MainForm_Shown(object sender, EventArgs e) {
