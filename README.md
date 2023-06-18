@@ -226,9 +226,13 @@ If you use RPN operation, it is recommended to turn off the automatic input of "
 
 ![](img/rpn_ops.gif)
 
-### ~~Timer~~
+### Graph Plotting :new:
 
-The timer function has been eliminated.
+The plot keyword can be used to draw a graph.
+
+:warning: This feature is experimental and may be removed in future versions.
+
+![](img/graph.png)
 
 ### Keyboard Shortcut
 
