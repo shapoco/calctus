@@ -239,7 +239,7 @@ namespace Shapoco.Calctus.UI.Sheets {
         public void CopyAll() {
             var sb = new StringBuilder();
             foreach (var item in _sheet.Items) {
-                sb.Append(item.ExprText).Append(" = ").AppendLine(item.AnsVal.ToString());
+                sb.Append(item.ExprText).Append(" = ").AppendLine(item.AnsText);
             }
             try {
                 Clipboard.Clear();

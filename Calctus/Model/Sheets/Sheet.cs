@@ -37,11 +37,9 @@ namespace Shapoco.Calctus.Model.Sheets {
             }
 
             // 設定を評価コンテキストに反映する
-            e.Settings.DecimalLengthToDisplay = s.NumberFormat_Decimal_MaxLen;
-            e.Settings.ENotationEnabled = s.NumberFormat_Exp_Enabled;
-            e.Settings.ENotationExpPositiveMin = s.NumberFormat_Exp_PositiveMin;
-            e.Settings.ENotationExpNegativeMax = s.NumberFormat_Exp_NegativeMax;
-            e.Settings.ENotationAlignment = s.NumberFormat_Exp_Alignment;
+            e.ApplyFormatSettings();
+
+            // 外部関数の呼び出しを許可する
             e.Settings.AllowExternalFunctions = true;
 
             int step = 0;
@@ -53,7 +51,7 @@ namespace Shapoco.Calctus.Model.Sheets {
                 var preview = new PreviewExecuteEventArgs(pc, e, item);
                 PreviewExecute?.Invoke(this, preview);
                 if (preview.Overrided) {
-                    item.SetStatus(preview.Answer, preview.SyntaxError, preview.EvalError);
+                    item.SetStatus(e, preview.Answer, preview.SyntaxError, preview.EvalError);
                 }
                 else {
                     item.Eval(e);

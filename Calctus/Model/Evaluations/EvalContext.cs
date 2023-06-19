@@ -48,6 +48,16 @@ namespace Shapoco.Calctus.Model.Evaluations {
             Settings = (EvalSettings)src.Settings.Clone();
         }
 
+        public void ApplyFormatSettings() {
+            // 設定を評価コンテキストに反映する
+            var s = Calctus.Settings.Instance;
+            Settings.DecimalLengthToDisplay = s.NumberFormat_Decimal_MaxLen;
+            Settings.ENotationEnabled = s.NumberFormat_Exp_Enabled;
+            Settings.ENotationExpPositiveMin = s.NumberFormat_Exp_PositiveMin;
+            Settings.ENotationExpNegativeMax = s.NumberFormat_Exp_NegativeMax;
+            Settings.ENotationAlignment = s.NumberFormat_Exp_Alignment;
+        }
+
         public Var Ref(Token name, bool allowCreate) {
             if (_vars.TryGetValue(name.Text, out Var v)) {
                 return v;
