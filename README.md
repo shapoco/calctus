@@ -247,8 +247,9 @@ The plot keyword can be used to draw a graph.
 |`Ctrl` + `Shift` + `V`|Paste with formatting|
 |`Ctrl` + `Shift` + `N`|Insert current time|
 |`Ctrl` + `Shift` + `Del`|Delete all expressions|
-|`Ctrl` + `Shift` + `Up`|Item move up|
-|`Ctrl` + `Shift` + `Down`|Item move down|
+|`Ctrl` + `Shift` + `Up`/`Down`|Item move up/down|
+|`Alt` ( + `Shift` ) + `Left`/`Right`:new:|Move decimal point|
+|`Alt` ( + `Shift` ) + `Up`/`Down`:new:|Change SI prefix|
 |`F1`|Help|
 |`F5`|Recalculation|
 |`F8`|Radix Mode = Auto|
