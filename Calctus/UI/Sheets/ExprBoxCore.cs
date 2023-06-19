@@ -36,6 +36,7 @@ namespace Shapoco.Calctus.UI.Sheets {
             _edit.TextChanged += Edit_TextChanged;
             _edit.CursorStateChanged += Edit_CursorStateChanged;
             _edit.QueryScreenCursorLocation += Edit_QueryScreenCursorLocation;
+            _edit.QueryToken += _edit_QueryToken;
             _layout.Layout(Text);
         }
 
@@ -185,6 +186,10 @@ namespace Shapoco.Calctus.UI.Sheets {
 
         private void Edit_QueryScreenCursorLocation(object sender, QueryScreenCursorLocationEventArgs e) {
             e.Result = PointToScreen(new Point(cursorPosToX(e.CursorPosition), _layout.CharHeight));
+        }
+
+        private void _edit_QueryToken(object sender, QueryTokenEventArgs e) {
+            e.Result = _layout.GetTokenAt(e.CursorPosition, e.TokenType);
         }
 
         public void RelayoutText() => _layout.Layout(Text);

@@ -9,6 +9,10 @@ using System.Drawing;
 using Shapoco.Calctus.Model;
 using Shapoco.Calctus.Model.Formats;
 using Shapoco.Calctus.Model.Sheets;
+using Shapoco.Calctus.Model.Parsers;
+using Shapoco.Calctus.Model.Evaluations;
+using Shapoco.Calctus.Model.Mathematics;
+using Shapoco.Calctus.Model.Types;
 
 namespace Shapoco.Calctus.UI.Sheets {
     class ExprBoxCoreEdit {
@@ -19,6 +23,7 @@ namespace Shapoco.Calctus.UI.Sheets {
         public event EventHandler CursorStateChanged;
 
         public event QueryScreenCursorLocationEventHandler QueryScreenCursorLocation;
+        public event QueryTokenEventHandler QueryToken;
 
         private string _text = "";
         private string _undoBuff = "";
@@ -119,7 +124,7 @@ namespace Shapoco.Calctus.UI.Sheets {
 
             if (e.Handled) return;
             
-            if (e.KeyCode == Keys.Left) {
+            if (!e.Alt && e.KeyCode == Keys.Left) {
                 // カーソルを左へ移動
                 e.Handled = true;
                 int selStart = _selStart;
@@ -148,7 +153,7 @@ namespace Shapoco.Calctus.UI.Sheets {
                     CandidatesHide();
                 }
             }
-            else if (e.KeyCode == Keys.Right) {
+            else if (!e.Alt && e.KeyCode == Keys.Right) {
                 // カーソルを右へ移動
                 e.Handled = true;
                 int selStart = _selStart;
@@ -244,6 +249,18 @@ namespace Shapoco.Calctus.UI.Sheets {
                     this.Text = this.Text.Remove(selStart, 1);
                 }
                 CandidatesUpdate();
+            }
+            else if ((e.Modifiers == Keys.Alt || e.Modifiers == (Keys.Alt | Keys.Shift)) && (e.KeyCode == Keys.Left || e.KeyCode == Keys.Right)) {
+                e.Handled = true;
+                var amount = e.Shift ? 3 : 1;
+                amount = (e.KeyCode == Keys.Left) ? amount : -amount;
+                moveDecimalPoint(amount, false);
+            }
+            else if ((e.Modifiers == Keys.Alt || e.Modifiers == (Keys.Alt | Keys.Shift)) && (e.KeyCode == Keys.Up || e.KeyCode == Keys.Down)) {
+                e.Handled = true;
+                var amount = e.Shift ? 3 : 1;
+                amount = (e.KeyCode == Keys.Up) ? amount : -amount;
+                moveDecimalPoint(amount, true);
             }
             else if (e.Modifiers == Keys.None && e.KeyCode == Keys.Escape) {
                 e.Handled = true;
@@ -395,6 +412,37 @@ namespace Shapoco.Calctus.UI.Sheets {
 
         private bool isFirstIdChar(char c) => ('a' <= c && c <= 'z') || ('A' <= c && c <= 'Z') || c == '_';
         private bool isIdChar(char c) => isFirstIdChar(c) || ('0' <= c && c <= '9');
+
+        private void moveDecimalPoint(int amount, bool siPrefix) {
+            try {
+                var e = new EvalContext();
+                e.ApplyFormatSettings();
+                // カーソル位置のトークンを数値として解釈する
+                var queryTokenArgs = new QueryTokenEventArgs(SelectionStart, Model.Parsers.TokenType.NumericLiteral);
+                QueryToken?.Invoke(this, queryTokenArgs);
+                var token = queryTokenArgs.Result;
+                if (token == null) return;
+                Val val = Parser.Parse(token.Text).Eval(e);
+
+                // 小数点位置移動してフォーマット
+                val = new RealVal(val.AsReal* RMath.Pow10(amount));
+                if (siPrefix) {
+                    // SI接頭語表現
+                    val = val.FormatSiPrefix();
+                }
+                else {
+                    // 適用範囲の設定を無視して指数表現にする
+                    e.Settings.ENotationExpNegativeMax = 0;
+                    e.Settings.ENotationExpPositiveMin = 0;
+                }
+
+                // 再度文字列に変換して元のトークンと差し替える
+                SetSelection(token.Position.Index, token.Position.Index + token.Text.Length);
+                SelectedText = val.ToString(e);
+                SelectionStart = token.Position.Index;
+            }
+            catch { }
+        }
 
         public void SetSelection(int selStart) {
             SetSelection(selStart, selStart);

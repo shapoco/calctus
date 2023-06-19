@@ -267,6 +267,16 @@ namespace Shapoco.Calctus.UI.Sheets {
             }
         }
 
+        public Token GetTokenAt(int i, TokenType type) {
+            foreach(var token in _tokens) {
+                if (string.IsNullOrEmpty(token.Text)) continue;
+                if (token.Position.Index <= i && i <= token.Position.Index + token.Text.Length && token.Type == type) {
+                    return token;
+                }
+            }
+            return null;
+        }
+
         public void Paint(Graphics g, Point offset) {
             var font = _owner.Font;
 
