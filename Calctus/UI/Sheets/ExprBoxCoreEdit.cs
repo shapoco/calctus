@@ -501,7 +501,7 @@ namespace Shapoco.Calctus.UI.Sheets {
                 if (isBinaryPrefix) {
                     changedStr += BinaryPrefixFormatter.GetPrefixString(prefixIndex);
                 }
-                else {
+                else if (prefixIndex != 0) {
                     changedStr += SiPrefixFormatter.GetPrefixChar(prefixIndex);
                 }
 
