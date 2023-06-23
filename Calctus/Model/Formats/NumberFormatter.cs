@@ -20,15 +20,15 @@ namespace Shapoco.Calctus.Model.Formats {
 
         public abstract Val Parse(Match m);
 
-        public virtual string Format(Val val, EvalContext e) => OnFormat(val, e);
-        protected virtual string OnFormat(Val val, EvalContext e) {
+        public virtual string Format(Val val, FormatSettingss fs) => OnFormat(val, fs);
+        protected virtual string OnFormat(Val val, FormatSettingss fs) {
             if (val is ArrayVal aval) {
                 var raw = (Val[])aval.Raw;
                 var sb = new StringBuilder();
                 sb.Append("[");
                 for (int i = 0; i < raw.Length; i++) {
                     if (i > 0) sb.Append(", ");
-                    sb.Append(raw[i].ToString(e));
+                    sb.Append(raw[i].ToString(fs));
                 }
                 sb.Append("]");
                 return sb.ToString();
@@ -37,7 +37,7 @@ namespace Shapoco.Calctus.Model.Formats {
                 return val.AsBool ? BoolVal.TrueKeyword : BoolVal.FalseKeyword;
             }
             else {
-                return RealToString(val.AsReal, e, true);
+                return RealToString(val.AsReal, fs, true);
             }
         }
 
@@ -67,27 +67,25 @@ namespace Shapoco.Calctus.Model.Formats {
             WebColor,
         };
 
-        public static string RealToString(real val, EvalContext e, bool allowENotation) {
+        public static string RealToString(real val, FormatSettingss fs, bool allowENotation) {
             if (val == 0.0m) return "0";
 
-            var s = e.Settings;
-
             var sbDecFormat = new StringBuilder("0.");
-            for (int i = 0; i < s.DecimalLengthToDisplay; i++) {
+            for (int i = 0; i < fs.DecimalLengthToDisplay; i++) {
                 sbDecFormat.Append('#');
             }
             var decFormat = sbDecFormat.ToString();
 
             int exp = RMath.FLog10(val);
-            if (allowENotation && s.ENotationEnabled && exp >= s.ENotationExpPositiveMin) {
-                if (s.ENotationAlignment) {
+            if (allowENotation && fs.ENotationEnabled && exp >= fs.ENotationExpPositiveMin) {
+                if (fs.ENotationAlignment) {
                     exp = (int)Math.Floor((double)exp / 3) * 3;
                 }
                 var frac = val / RMath.Pow10(exp);
-                return frac.ToString(decFormat) + "e+" + exp;
+                return frac.ToString(decFormat) + "e" + exp;
             }
-            else if (allowENotation && s.ENotationEnabled && exp <= s.ENotationExpNegativeMax) {
-                if (s.ENotationAlignment) {
+            else if (allowENotation && fs.ENotationEnabled && exp <= fs.ENotationExpNegativeMax) {
+                if (fs.ENotationAlignment) {
                     exp = (int)Math.Floor((double)exp / 3) * 3;
                 }
                 var frac = val * RMath.Pow10(-exp);
@@ -98,119 +96,119 @@ namespace Shapoco.Calctus.Model.Formats {
             }
         }
 
-        public static void Test(EvalContext e, Val val, string str) {
-            Assert.Equal(nameof(NumberFormatter), val.ToString(e), str);
+        public static void Test(FormatSettingss s, Val val, string str) {
+            Assert.Equal(nameof(NumberFormatter), val.ToString(s), str);
         }
 
         public static void Test() {
             var cint = new FormatHint(CStyleInt);
             {
-                EvalContext e = new EvalContext();
-                e.Settings.DecimalLengthToDisplay = 28;
-                e.Settings.ENotationEnabled = false;
-                e.Settings.ENotationExpPositiveMin = 4;
-                e.Settings.ENotationExpNegativeMax = -3;
-                e.Settings.ENotationAlignment = false;
-                Test(e, new RealVal(0, cint), "0");
-                Test(e, new RealVal(1, cint), "1");
-                Test(e, new RealVal(12345, cint), "12345");
-                Test(e, new RealVal(1234500000000000, cint), "1234500000000000");
-                Test(e, new RealVal(-1, cint), "-1");
-                Test(e, new RealVal(-10, cint), "-10");
-                Test(e, new RealVal(-12345, cint), "-12345");
-                Test(e, new RealVal(-1234500000000000, cint), "-1234500000000000");
-                Test(e, new RealVal(0.1m, cint), "0.1");
-                Test(e, new RealVal(0.01m, cint), "0.01");
-                Test(e, new RealVal(0.001m, cint), "0.001");
-                Test(e, new RealVal(0.0000000000000012345m, cint), "0.0000000000000012345");
-                Test(e, new RealVal(-0.1m, cint), "-0.1");
-                Test(e, new RealVal(-0.01m, cint), "-0.01");
-                Test(e, new RealVal(-0.001m, cint), "-0.001");
-                Test(e, new RealVal(-0.0000000000000012345m, cint), "-0.0000000000000012345");
+                var fs = new FormatSettingss();
+                fs.DecimalLengthToDisplay = 28;
+                fs.ENotationEnabled = false;
+                fs.ENotationExpPositiveMin = 4;
+                fs.ENotationExpNegativeMax = -3;
+                fs.ENotationAlignment = false;
+                Test(fs, new RealVal(0, cint), "0");
+                Test(fs, new RealVal(1, cint), "1");
+                Test(fs, new RealVal(12345, cint), "12345");
+                Test(fs, new RealVal(1234500000000000, cint), "1234500000000000");
+                Test(fs, new RealVal(-1, cint), "-1");
+                Test(fs, new RealVal(-10, cint), "-10");
+                Test(fs, new RealVal(-12345, cint), "-12345");
+                Test(fs, new RealVal(-1234500000000000, cint), "-1234500000000000");
+                Test(fs, new RealVal(0.1m, cint), "0.1");
+                Test(fs, new RealVal(0.01m, cint), "0.01");
+                Test(fs, new RealVal(0.001m, cint), "0.001");
+                Test(fs, new RealVal(0.0000000000000012345m, cint), "0.0000000000000012345");
+                Test(fs, new RealVal(-0.1m, cint), "-0.1");
+                Test(fs, new RealVal(-0.01m, cint), "-0.01");
+                Test(fs, new RealVal(-0.001m, cint), "-0.001");
+                Test(fs, new RealVal(-0.0000000000000012345m, cint), "-0.0000000000000012345");
             }
             {
-                EvalContext e = new EvalContext();
-                e.Settings.DecimalLengthToDisplay = 28;
-                e.Settings.ENotationEnabled = true;
-                e.Settings.ENotationExpPositiveMin = 4;
-                e.Settings.ENotationExpNegativeMax = -3;
-                e.Settings.ENotationAlignment = false;
-                Test(e, new RealVal(0, cint), "0");
-                Test(e, new RealVal(1, cint), "1");
-                Test(e, new RealVal(1000, cint), "1000");
-                Test(e, new RealVal(9999, cint), "9999");
-                Test(e, new RealVal(10000, cint), "1e+4");
-                Test(e, new RealVal(1234500000000000, cint), "1.2345e+15");
-                Test(e, new RealVal(-1, cint), "-1");
-                Test(e, new RealVal(-10, cint), "-10");
-                Test(e, new RealVal(-1000, cint), "-1000");
-                Test(e, new RealVal(-9999, cint), "-9999");
-                Test(e, new RealVal(-10000, cint), "-1e+4");
-                Test(e, new RealVal(-1234500000000000, cint), "-1.2345e+15");
-                Test(e, new RealVal(0.1m, cint), "0.1");
-                Test(e, new RealVal(0.01m, cint), "0.01");
-                Test(e, new RealVal(0.00999m, cint), "9.99e-3");
-                Test(e, new RealVal(0.001m, cint), "1e-3");
-                Test(e, new RealVal(0.0000000000000012345m, cint), "1.2345e-15");
-                Test(e, new RealVal(-0.1m, cint), "-0.1");
-                Test(e, new RealVal(-0.01m, cint), "-0.01");
-                Test(e, new RealVal(-0.00999m, cint), "-9.99e-3");
-                Test(e, new RealVal(-0.001m, cint), "-1e-3");
-                Test(e, new RealVal(-0.0000000000000012345m, cint), "-1.2345e-15");
+                var fs = new FormatSettingss();
+                fs.DecimalLengthToDisplay = 28;
+                fs.ENotationEnabled = true;
+                fs.ENotationExpPositiveMin = 4;
+                fs.ENotationExpNegativeMax = -3;
+                fs.ENotationAlignment = false;
+                Test(fs, new RealVal(0, cint), "0");
+                Test(fs, new RealVal(1, cint), "1");
+                Test(fs, new RealVal(1000, cint), "1000");
+                Test(fs, new RealVal(9999, cint), "9999");
+                Test(fs, new RealVal(10000, cint), "1e+4");
+                Test(fs, new RealVal(1234500000000000, cint), "1.2345e+15");
+                Test(fs, new RealVal(-1, cint), "-1");
+                Test(fs, new RealVal(-10, cint), "-10");
+                Test(fs, new RealVal(-1000, cint), "-1000");
+                Test(fs, new RealVal(-9999, cint), "-9999");
+                Test(fs, new RealVal(-10000, cint), "-1e+4");
+                Test(fs, new RealVal(-1234500000000000, cint), "-1.2345e+15");
+                Test(fs, new RealVal(0.1m, cint), "0.1");
+                Test(fs, new RealVal(0.01m, cint), "0.01");
+                Test(fs, new RealVal(0.00999m, cint), "9.99e-3");
+                Test(fs, new RealVal(0.001m, cint), "1e-3");
+                Test(fs, new RealVal(0.0000000000000012345m, cint), "1.2345e-15");
+                Test(fs, new RealVal(-0.1m, cint), "-0.1");
+                Test(fs, new RealVal(-0.01m, cint), "-0.01");
+                Test(fs, new RealVal(-0.00999m, cint), "-9.99e-3");
+                Test(fs, new RealVal(-0.001m, cint), "-1e-3");
+                Test(fs, new RealVal(-0.0000000000000012345m, cint), "-1.2345e-15");
             }
             {
-                EvalContext e = new EvalContext();
-                e.Settings.DecimalLengthToDisplay = 28;
-                e.Settings.ENotationEnabled = true;
-                e.Settings.ENotationExpPositiveMin = 4;
-                e.Settings.ENotationExpNegativeMax = -3;
-                e.Settings.ENotationAlignment = true;
-                Test(e, new RealVal(0, cint), "0");
-                Test(e, new RealVal(1, cint), "1");
-                Test(e, new RealVal(1000, cint), "1000");
-                Test(e, new RealVal(9999, cint), "9999");
-                Test(e, new RealVal(10000, cint), "10e+3");
-                Test(e, new RealVal(12345, cint), "12.345e+3");
-                Test(e, new RealVal(123456, cint), "123.456e+3");
-                Test(e, new RealVal(1234567, cint), "1.234567e+6");
-                Test(e, new RealVal(1234500000000000, cint), "1.2345e+15");
-                Test(e, new RealVal(-1, cint), "-1");
-                Test(e, new RealVal(-1000, cint), "-1000");
-                Test(e, new RealVal(-9999, cint), "-9999");
-                Test(e, new RealVal(-10000, cint), "-10e+3");
-                Test(e, new RealVal(-12345, cint), "-12.345e+3");
-                Test(e, new RealVal(-123456, cint), "-123.456e+3");
-                Test(e, new RealVal(-1234567, cint), "-1.234567e+6");
-                Test(e, new RealVal(-1234500000000000, cint), "-1.2345e+15");
-                Test(e, new RealVal(0.1m, cint), "0.1");
-                Test(e, new RealVal(0.01m, cint), "0.01");
-                Test(e, new RealVal(0.00999m, cint), "9.99e-3");
-                Test(e, new RealVal(0.001m, cint), "1e-3");
-                Test(e, new RealVal(0.0012345m, cint), "1.2345e-3");
-                Test(e, new RealVal(0.00012345m, cint), "123.45e-6");
-                Test(e, new RealVal(0.000012345m, cint), "12.345e-6");
-                Test(e, new RealVal(0.0000000000000012345m, cint), "1.2345e-15");
-                Test(e, new RealVal(-0.1m, cint), "-0.1");
-                Test(e, new RealVal(-0.01m, cint), "-0.01");
-                Test(e, new RealVal(-0.00999m, cint), "-9.99e-3");
-                Test(e, new RealVal(-0.001m, cint), "-1e-3");
-                Test(e, new RealVal(-0.0012345m, cint), "-1.2345e-3");
-                Test(e, new RealVal(-0.00012345m, cint), "-123.45e-6");
-                Test(e, new RealVal(-0.000012345m, cint), "-12.345e-6");
-                Test(e, new RealVal(-0.0000000000000012345m, cint), "-1.2345e-15");
+                var fs = new FormatSettingss();
+                fs.DecimalLengthToDisplay = 28;
+                fs.ENotationEnabled = true;
+                fs.ENotationExpPositiveMin = 4;
+                fs.ENotationExpNegativeMax = -3;
+                fs.ENotationAlignment = true;
+                Test(fs, new RealVal(0, cint), "0");
+                Test(fs, new RealVal(1, cint), "1");
+                Test(fs, new RealVal(1000, cint), "1000");
+                Test(fs, new RealVal(9999, cint), "9999");
+                Test(fs, new RealVal(10000, cint), "10e+3");
+                Test(fs, new RealVal(12345, cint), "12.345e+3");
+                Test(fs, new RealVal(123456, cint), "123.456e+3");
+                Test(fs, new RealVal(1234567, cint), "1.234567e+6");
+                Test(fs, new RealVal(1234500000000000, cint), "1.2345e+15");
+                Test(fs, new RealVal(-1, cint), "-1");
+                Test(fs, new RealVal(-1000, cint), "-1000");
+                Test(fs, new RealVal(-9999, cint), "-9999");
+                Test(fs, new RealVal(-10000, cint), "-10e+3");
+                Test(fs, new RealVal(-12345, cint), "-12.345e+3");
+                Test(fs, new RealVal(-123456, cint), "-123.456e+3");
+                Test(fs, new RealVal(-1234567, cint), "-1.234567e+6");
+                Test(fs, new RealVal(-1234500000000000, cint), "-1.2345e+15");
+                Test(fs, new RealVal(0.1m, cint), "0.1");
+                Test(fs, new RealVal(0.01m, cint), "0.01");
+                Test(fs, new RealVal(0.00999m, cint), "9.99e-3");
+                Test(fs, new RealVal(0.001m, cint), "1e-3");
+                Test(fs, new RealVal(0.0012345m, cint), "1.2345e-3");
+                Test(fs, new RealVal(0.00012345m, cint), "123.45e-6");
+                Test(fs, new RealVal(0.000012345m, cint), "12.345e-6");
+                Test(fs, new RealVal(0.0000000000000012345m, cint), "1.2345e-15");
+                Test(fs, new RealVal(-0.1m, cint), "-0.1");
+                Test(fs, new RealVal(-0.01m, cint), "-0.01");
+                Test(fs, new RealVal(-0.00999m, cint), "-9.99e-3");
+                Test(fs, new RealVal(-0.001m, cint), "-1e-3");
+                Test(fs, new RealVal(-0.0012345m, cint), "-1.2345e-3");
+                Test(fs, new RealVal(-0.00012345m, cint), "-123.45e-6");
+                Test(fs, new RealVal(-0.000012345m, cint), "-12.345e-6");
+                Test(fs, new RealVal(-0.0000000000000012345m, cint), "-1.2345e-15");
             }
             {
-                EvalContext e = new EvalContext();
-                e.Settings.DecimalLengthToDisplay = 5;
-                e.Settings.ENotationEnabled = false;
-                Test(e, new RealVal(10000, cint), "10000");
-                Test(e, new RealVal(100000, cint), "100000");
-                Test(e, new RealVal(1000000, cint), "1000000");
-                Test(e, new RealVal(0.0001m, cint), "0.0001");
-                Test(e, new RealVal(0.00001m, cint), "0.00001");
-                Test(e, new RealVal(0.000009m, cint), "0.00001");
-                Test(e, new RealVal(0.000005m, cint), "0.00001");
-                Test(e, new RealVal(0.000004999m, cint), "0");
+                var fs = new FormatSettingss();
+                fs.DecimalLengthToDisplay = 5;
+                fs.ENotationEnabled = false;
+                Test(fs, new RealVal(10000, cint), "10000");
+                Test(fs, new RealVal(100000, cint), "100000");
+                Test(fs, new RealVal(1000000, cint), "1000000");
+                Test(fs, new RealVal(0.0001m, cint), "0.0001");
+                Test(fs, new RealVal(0.00001m, cint), "0.00001");
+                Test(fs, new RealVal(0.000009m, cint), "0.00001");
+                Test(fs, new RealVal(0.000005m, cint), "0.00001");
+                Test(fs, new RealVal(0.000004999m, cint), "0");
             }
         }
     }

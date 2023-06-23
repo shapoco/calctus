@@ -28,16 +28,16 @@ namespace Shapoco.Calctus.Model.Formats {
             }
         }
 
-        protected override string OnFormat(Val val, EvalContext e) {
+        protected override string OnFormat(Val val, FormatSettingss fs) {
             if (!(val is RealVal)) {
-                return base.OnFormat(val, e);
+                return base.OnFormat(val, fs);
             }
 
             var fval = val.AsReal;
             var ival = RMath.Truncate(fval);
             if (fval != ival || ival < long.MinValue || long.MaxValue < ival) {
                 // 小数やlongの範囲外の値はデフォルトの数値表現を使用
-                return base.OnFormat(val, e);
+                return base.OnFormat(val, fs);
             }
             else if (ival < 0 || 0xffffff < ival) {
                 // RGB空間の範囲外は通常の16進数で表現

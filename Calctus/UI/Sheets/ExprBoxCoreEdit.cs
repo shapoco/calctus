@@ -6,6 +6,7 @@ using System.Text.RegularExpressions;
 using System.Threading.Tasks;
 using System.Windows.Forms;
 using System.Drawing;
+using System.Globalization;
 using Shapoco.Calctus.Model;
 using Shapoco.Calctus.Model.Formats;
 using Shapoco.Calctus.Model.Sheets;
@@ -252,15 +253,14 @@ namespace Shapoco.Calctus.UI.Sheets {
             }
             else if ((e.Modifiers == Keys.Alt || e.Modifiers == (Keys.Alt | Keys.Shift)) && (e.KeyCode == Keys.Left || e.KeyCode == Keys.Right)) {
                 e.Handled = true;
-                var amount = e.Shift ? 3 : 1;
+                var amount = e.Shift ? 1 : 3;
                 amount = (e.KeyCode == Keys.Left) ? amount : -amount;
-                moveDecimalPoint(amount, false);
+                changeEnotationExp(amount);
             }
-            else if ((e.Modifiers == Keys.Alt || e.Modifiers == (Keys.Alt | Keys.Shift)) && (e.KeyCode == Keys.Up || e.KeyCode == Keys.Down)) {
+            else if (e.Modifiers == Keys.Alt && (e.KeyCode == Keys.Up || e.KeyCode == Keys.Down)) {
                 e.Handled = true;
-                var amount = e.Shift ? 3 : 1;
-                amount = (e.KeyCode == Keys.Up) ? amount : -amount;
-                moveDecimalPoint(amount, true);
+                var amount = (e.KeyCode == Keys.Up) ? 1 : -1;
+                changePrefix(amount);
             }
             else if (e.Modifiers == Keys.None && e.KeyCode == Keys.Escape) {
                 e.Handled = true;
@@ -413,32 +413,101 @@ namespace Shapoco.Calctus.UI.Sheets {
         private bool isFirstIdChar(char c) => ('a' <= c && c <= 'z') || ('A' <= c && c <= 'Z') || c == '_';
         private bool isIdChar(char c) => isFirstIdChar(c) || ('0' <= c && c <= '9');
 
-        private void moveDecimalPoint(int amount, bool siPrefix) {
+        /// <summary>指数を変更する</summary>
+        private void changeEnotationExp(int amount) {
             try {
-                var e = new EvalContext();
-                e.ApplyFormatSettings();
-                // カーソル位置のトークンを数値として解釈する
-                var queryTokenArgs = new QueryTokenEventArgs(SelectionStart, Model.Parsers.TokenType.NumericLiteral);
+                decimal frac;
+                char eChar;
+                int exp;
+
+                // カーソル位置の数値を解釈
+                var queryTokenArgs = new QueryTokenEventArgs(SelectionStart, TokenType.NumericLiteral);
                 QueryToken?.Invoke(this, queryTokenArgs);
                 var token = queryTokenArgs.Result;
                 if (token == null) return;
-                Val val = Parser.Parse(token.Text).Eval(e);
 
-                // 小数点位置移動してフォーマット
-                val = new RealVal(val.AsReal* RMath.Pow10(amount));
-                if (siPrefix) {
-                    // SI接頭語表現
-                    val = val.FormatSiPrefix();
+                if (real.TryParse(token.Text, out frac, out eChar, out exp)) { }
+                else if (SiPrefixFormatter.TryParse(token.Text, out frac, out var prefixIndex)) {
+                    exp = prefixIndex * 3;
                 }
                 else {
-                    // 適用範囲の設定を無視して指数表現にする
-                    e.Settings.ENotationExpNegativeMax = 0;
-                    e.Settings.ENotationExpPositiveMin = 0;
+                    frac = Parser.Parse(token.Text).Eval(new EvalContext()).AsReal;
+                    exp = 0;
+                }
+
+                if (eChar != 'e' && eChar != 'E') eChar = 'e';
+
+                // 指数を変更
+                frac *= RMath.Pow10(-amount);
+                exp += amount;
+                if (exp < -28 || 28 < exp) return;
+
+                // 文字列に変換
+                var changedStr = 
+                    frac.ToString("0.##############################", CultureInfo.InvariantCulture)
+                    + eChar + exp.ToString(CultureInfo.InvariantCulture);
+
+                // 再度文字列に変換して元のトークンと差し替える
+                SetSelection(token.Position.Index, token.Position.Index + token.Text.Length);
+                SelectedText = changedStr;
+                SelectionStart = token.Position.Index;
+            }
+            catch { }
+        }
+
+        /// <summary>SI接頭語を変更する</summary>
+        private void changePrefix(int amount) {
+            try {
+                decimal frac;
+                int prefixIndex;
+                bool isBinaryPrefix;
+
+                // カーソル位置の数値を解釈
+                var queryTokenArgs = new QueryTokenEventArgs(SelectionStart, TokenType.NumericLiteral);
+                QueryToken?.Invoke(this, queryTokenArgs);
+                var token = queryTokenArgs.Result;
+                if (token == null) return;
+
+                if (SiPrefixFormatter.TryParse(token.Text, out frac, out prefixIndex)) {
+                    isBinaryPrefix = false;
+                }
+                else if (BinaryPrefixFormatter.TryParse(token.Text, out frac, out prefixIndex)) {
+                    isBinaryPrefix = true;
+                }
+                else {
+                    frac = Parser.Parse(token.Text).Eval(new EvalContext()).AsReal;
+                    prefixIndex = 0;
+                    isBinaryPrefix = false;
+                }
+
+                // 接頭語を変更
+                if (isBinaryPrefix) {
+                    frac *= (decimal)Math.Pow(1024, -amount);
+                    prefixIndex += amount;
+                    if (prefixIndex < BinaryPrefixFormatter.MinPrefixIndex || BinaryPrefixFormatter.MaxPrefixIndex < prefixIndex) {
+                        return;
+                    }
+                }
+                else {
+                    frac *= RMath.Pow10(-amount * 3);
+                    prefixIndex += amount;
+                    if (prefixIndex < SiPrefixFormatter.MinPrefixIndex || SiPrefixFormatter.MaxPrefixIndex < prefixIndex) {
+                        return;
+                    }
+                }
+
+                // 文字列に変換
+                string changedStr = frac.ToString("0.##############################", CultureInfo.InvariantCulture);
+                if (isBinaryPrefix) {
+                    changedStr += BinaryPrefixFormatter.GetPrefixString(prefixIndex);
+                }
+                else {
+                    changedStr += SiPrefixFormatter.GetPrefixChar(prefixIndex);
                 }
 
                 // 再度文字列に変換して元のトークンと差し替える
                 SetSelection(token.Position.Index, token.Position.Index + token.Text.Length);
-                SelectedText = val.ToString(e);
+                SelectedText = changedStr;
                 SelectionStart = token.Position.Index;
             }
             catch { }

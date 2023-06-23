@@ -8,7 +8,7 @@ using System.Threading.Tasks;
 
 namespace Shapoco.Calctus.Model.Types {
     struct real : IComparable<real> {
-        public static readonly Regex NumberRegex = new Regex(@"^(-?\d*(\.\d+)?)([eE]([+\-]?\d+))?$");
+        private static readonly Regex NumberRegex = new Regex(@"^(-?\d*(\.\d+)?)((e|E)([+\-]?\d+))?$");
         public static readonly real MaxValue = (real)decimal.MaxValue;
         public static readonly real MinValue = (real)decimal.MinValue;
 
@@ -30,23 +30,36 @@ namespace Shapoco.Calctus.Model.Types {
             }
         }
 
-        public static real Parse(string str) {
+        public static bool TryParse(string str, out decimal frac, out char eChar, out int exp) {
+            frac = 0;
+            eChar = '\0';
+            exp = 0;
+
             var m = NumberRegex.Match(str);
-            if (m.Success) {
-                var frac = decimal.Parse(m.Groups[1].Value, CultureInfo.InvariantCulture);
-                var exp = 0;
-                if (m.Groups[3].Success) {
-                    exp = int.Parse(m.Groups[4].Value, CultureInfo.InvariantCulture);
-                }
-                if (exp >= 0) {
-                    return frac * Math.Round((decimal)Math.Pow(10, exp));
-                }
-                else {
-                    return frac / Math.Round((decimal)Math.Pow(10, -exp));
-                }
+            if (!m.Success) {
+                return false;
+            }
+            frac = decimal.Parse(m.Groups[1].Value, CultureInfo.InvariantCulture);
+            if (m.Groups[3].Success) {
+                eChar = m.Groups[4].Value[0];
+                exp = int.Parse(m.Groups[5].Value, CultureInfo.InvariantCulture);
+            }
+            return true;
+        }
+
+        public static void Parse(string str, out decimal frac, out char eChar, out int exp) {
+            if (!TryParse(str, out frac, out eChar, out exp)) {
+                throw new CalctusError("Invalid number format.");
+            }
+        }
+
+        public static real Parse(string str) {
+            Parse(str, out decimal frac, out _, out int exp);
+            if (exp >= 0) {
+                return frac * Math.Round((decimal)Math.Pow(10, exp));
             }
             else {
-                throw new Calctus.Model.CalctusError("Invalid number format.");
+                return frac / Math.Round((decimal)Math.Pow(10, -exp));
             }
         }
 

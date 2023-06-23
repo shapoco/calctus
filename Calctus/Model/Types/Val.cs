@@ -142,7 +142,7 @@ namespace Shapoco.Calctus.Model.Types {
         protected abstract Val OnLogicAnd(EvalContext ctx, Val b);
         protected abstract Val OnLogicOr(EvalContext ctx, Val b);
 
-        public override string ToString() => this.ToString(new EvalContext());
-        public abstract string ToString(EvalContext e);
+        public override string ToString() => this.ToString(new FormatSettingss());
+        public abstract string ToString(FormatSettingss fs);
     }
 }

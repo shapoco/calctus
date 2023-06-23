@@ -31,7 +31,7 @@ namespace Shapoco.Calctus.Model.Types {
         public override long[] AsLongArray => throw new InvalidCastException();
         public override int[] AsIntArray => throw new InvalidCastException();
 
-        public override string ToString(EvalContext e) => _raw.Name + "()";
+        public override string ToString(FormatSettingss fs) => _raw.Name + "()";
 
         protected override RealVal OnAsRealVal() => throw new InvalidCastException();
 

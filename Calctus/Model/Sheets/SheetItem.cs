@@ -82,7 +82,7 @@ namespace Shapoco.Calctus.Model.Sheets {
 
         public void Eval(EvalContext e) {
             if (SyntaxError != null) {
-                SetStatus(e, NullVal.Instance, SyntaxError, null);
+                SetStatus(NullVal.Instance, SyntaxError, null);
             }
             else {
                 try {
@@ -93,16 +93,16 @@ namespace Shapoco.Calctus.Model.Sheets {
                         case RadixMode.Bin: val = val.FormatBin(); break;
                         case RadixMode.Oct: val = val.FormatOct(); break;
                     }
-                    SetStatus(e, val, null, null);
+                    SetStatus(val, null, null);
                 }
                 catch (Exception ex) {
-                    SetStatus(e, NullVal.Instance, null, ex);
+                    SetStatus(NullVal.Instance, null, ex);
                 }
             }
         }
 
-        public void SetStatus(EvalContext e, Val ans, Exception syntaxError, Exception evalError) {
-            string ansText = ans.ToString(e);
+        public void SetStatus(Val ans, Exception syntaxError, Exception evalError) {
+            string ansText = ans.ToString();
             if (ans.Equals(AnsVal) && ansText != AnsText && syntaxError == SyntaxError && evalError == EvalError) return;
             AnsVal = ans;
             AnsText = ansText;

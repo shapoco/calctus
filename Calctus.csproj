@@ -55,6 +55,7 @@
     <Compile Include="Calctus\Assert.cs" />
     <Compile Include="Calctus\Model\Evaluations\EvalError.cs" />
     <Compile Include="Calctus\Model\Expressions\PlotExpr.cs" />
+    <Compile Include="Calctus\Model\Formats\FormatSettingss.cs" />
     <Compile Include="Calctus\Model\Graphs\AxisSettings.cs" />
     <Compile Include="Calctus\Model\Graphs\PlotCall.cs" />
     <Compile Include="Calctus\Model\Expressions\SolveExpr.cs" />

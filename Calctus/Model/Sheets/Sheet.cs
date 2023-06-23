@@ -36,9 +36,6 @@ namespace Shapoco.Calctus.Model.Sheets {
                 e.DefConst(name, vars[name], "plot variant");
             }
 
-            // 設定を評価コンテキストに反映する
-            e.ApplyFormatSettings();
-
             // 外部関数の呼び出しを許可する
             e.Settings.AllowExternalFunctions = true;
 
@@ -51,7 +48,7 @@ namespace Shapoco.Calctus.Model.Sheets {
                 var preview = new PreviewExecuteEventArgs(pc, e, item);
                 PreviewExecute?.Invoke(this, preview);
                 if (preview.Overrided) {
-                    item.SetStatus(e, preview.Answer, preview.SyntaxError, preview.EvalError);
+                    item.SetStatus(preview.Answer, preview.SyntaxError, preview.EvalError);
                 }
                 else {
                     item.Eval(e);

@@ -86,16 +86,16 @@ namespace Shapoco.Calctus.Model.Formats {
             return new RealVal(Unescape(m.Groups[1].Value), new FormatHint(this));
         }
 
-        protected override string OnFormat(Val val, EvalContext e) {
+        protected override string OnFormat(Val val, FormatSettingss fs) {
             if (!val.IsInteger) {
                 // 整数でない場合はデフォルトの数値表現を使用
-                return base.OnFormat(val, e);
+                return base.OnFormat(val, fs);
             }
 
             var ival = val.AsReal;
             if (ival < char.MinValue || char.MaxValue < ival) {
                 // 小数やcharの範囲外の値はデフォルトの数値表現を使用
-                return base.OnFormat(val, e);
+                return base.OnFormat(val, fs);
             }
 
             // エスケープしてクォーテーションで囲う

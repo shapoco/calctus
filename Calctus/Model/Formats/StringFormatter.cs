@@ -20,16 +20,16 @@ namespace Shapoco.Calctus.Model.Formats {
             return new ArrayVal(list.ToArray(), new FormatHint(this));
         }
 
-        protected override string OnFormat(Val val, EvalContext e) {
+        protected override string OnFormat(Val val, FormatSettingss fs) {
             if (!(val is ArrayVal aval)) {
                 // 配列以外にはデフォルトの表現を適用
-                return base.OnFormat(val, e);
+                return base.OnFormat(val, fs);
             }
 
             var vals = (Val[])aval.Raw;
             if (!vals.All(p => p.IsInteger && char.MinValue <= p.AsReal && p.AsReal <= char.MaxValue)) {
                 // char の範囲外の値や小数を含む場合はデフォルトの表現を適用
-                return base.OnFormat(val, e);
+                return base.OnFormat(val, fs);
             }
 
             // 文字列表現への変換

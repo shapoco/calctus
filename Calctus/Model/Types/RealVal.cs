@@ -73,7 +73,7 @@ namespace Shapoco.Calctus.Model.Types {
         public override long[] AsLongArray => new long[] { (long)_raw }; // todo: 丸め/切り捨ての明示は不要？
         public override int[] AsIntArray => new int[] { (int)_raw };
 
-        public override string ToString(EvalContext e) => FormatHint.Formatter.Format(this, e);
+        public override string ToString(FormatSettingss fs) => FormatHint.Formatter.Format(this, fs);
         //public static implicit operator double(RealVal val) => val.AsDouble();
         //public static implicit operator RealVal(double val) => new RealVal(val);
 

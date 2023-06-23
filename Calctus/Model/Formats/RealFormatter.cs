@@ -15,12 +15,12 @@ namespace Shapoco.Calctus.Model.Formats {
             return new RealVal(real.Parse(m.Value), new FormatHint(this));
         }
 
-        protected override string OnFormat(Val val, EvalContext e) {
+        protected override string OnFormat(Val val, FormatSettingss fs) {
             if (val is RealVal) {
-                return RealToString(val.AsReal, e, true);
+                return RealToString(val.AsReal, fs, true);
             }
             else {
-                return base.OnFormat(val, e);
+                return base.OnFormat(val, fs);
             }
         }
     }

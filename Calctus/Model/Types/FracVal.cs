@@ -32,7 +32,7 @@ namespace Shapoco.Calctus.Model.Types {
         public override long[] AsLongArray => new long[] { (long)_raw };
         public override int[] AsIntArray => new int[] { (int)_raw };
 
-        public override string ToString(EvalContext e) => _raw.ToString();
+        public override string ToString(FormatSettingss fs) => _raw.ToString();
 
         public static Val Normalize(frac f, FormatHint hint) {
             if (f.Deno == 1) {
