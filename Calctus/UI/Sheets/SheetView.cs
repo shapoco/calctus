@@ -256,18 +256,13 @@ namespace Shapoco.Calctus.UI.Sheets {
         }
 
         public void MultilinePaste() {
-            int insertPos = FocusedIndex;
-            if (insertPos < 0) insertPos = _sheet.Items.Count;
-
             var dlg = new PasteOptionForm();
             DialogOpening?.Invoke(this, EventArgs.Empty);
             if (dlg.ShowDialog() == DialogResult.OK) {
-                var lines = dlg.TextWillBePasted.Split('\n');
-                for (int i = 0; i < lines.Length; i++) {
-                    lines[i] = lines[i].Replace("\r", "");
-                }
-                _operator.Insert(insertPos, lines, ActiveRadixMode, true);
-                focusViewItem(insertPos - 1);
+                int insertPos = FocusedIndex;
+                if (insertPos < 0) insertPos = _sheet.Items.Count;
+                var lines = dlg.TextWillBePasted.Split(new char[] { '\n', '\r' }, StringSplitOptions.RemoveEmptyEntries);
+                _operator.Insert(insertPos, lines, ActiveRadixMode, true, InsertOptions.Focus);
             }
             dlg.Dispose();
             DialogClosed?.Invoke(this, EventArgs.Empty);
@@ -276,9 +271,7 @@ namespace Shapoco.Calctus.UI.Sheets {
         public void Clear() {
             var ans = MessageBox.Show("Are you sure you want to delete all?", Application.ProductName, MessageBoxButtons.OKCancel, MessageBoxIcon.Exclamation);
             if (ans == DialogResult.OK) {
-                _sheet.Items.Clear();
-                _sheet.Items.Add(new SheetItem());
-                focusViewItem(0);
+                _operator.Clear();
             }
         }
 

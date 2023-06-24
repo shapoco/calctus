@@ -60,10 +60,11 @@ namespace Shapoco.Calctus.UI.Sheets {
             var sheet = _view.Sheet;
             for (int i = 0; i < expr.Length; i++) {
                 int insertPos = index + i;
+                Console.WriteLine(i + ", " + insertPos);
                 if (i == 0 && insertPos < sheet.Items.Count && string.IsNullOrEmpty(sheet.Items[insertPos].ExprText) && overwriteEmptyLine) {
                     // overwriteEmptyLine が true かつ挿入箇所が空行の場合は上書き
-                    b.ChangeExpression(insertPos, sheet.Items[insertPos].ExprText);
-                    b.ChangeRadixMode(insertPos, sheet.Items[insertPos].RadixMode);
+                    b.ChangeExpression(insertPos, expr[i]);
+                    b.ChangeRadixMode(insertPos, radix);
                 }
                 else {
                     b.Insert(insertPos, expr[i], radix,
@@ -82,9 +83,14 @@ namespace Shapoco.Calctus.UI.Sheets {
             }
             if (allDeleted) {
                 // リストが空になる場合は空行を1行追加する
-                b.Insert(0, "", _view.ActiveRadixMode);
+                b.Insert(0, "", _view.ActiveRadixMode, InsertOptions.Focus);
             }
             commitAction(b.Compile());
+        }
+
+        /// <summary>シートのクリア</summary>
+        public void Clear() {
+            Delete(0, _view.Sheet.Items.Count);
         }
 
         /// <summary>式の移動</summary>
