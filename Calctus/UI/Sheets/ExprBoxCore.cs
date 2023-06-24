@@ -105,7 +105,7 @@ namespace Shapoco.Calctus.UI.Sheets {
 
         public override Size GetPreferredSize() => _layout.PreferredSize;
 
-        public override Point GetCursorPosition() => getCursorRectangle().Location;
+        public override Point GetCursorPosition() => getCursorLocation();
 
         protected override void OnGotFocus() {
             base.OnGotFocus();
@@ -231,10 +231,15 @@ namespace Shapoco.Calctus.UI.Sheets {
         private int xToCursorPos(int x) => _layout.XtoCursorPos(x - _scrollX);
         private int cursorPosToX(int cursorPos) => _scrollX + _layout.CursorPosToX(cursorPos);
 
+        /// <summary>現在のカーソルの位置を返す</summary>
+        private Point getCursorLocation() {
+            return new Point(cursorPosToX(_edit.CursorPos), 0);
+        }
+
         /// <summary>現在のカーソルの矩形を返す</summary>
         private Rectangle getCursorRectangle() {
-            var cursorX = cursorPosToX(_edit.CursorPos);
-            return new Rectangle(cursorX - 1, 0, 2, _layout.CharHeight);
+            var cursorLoc = getCursorLocation();
+            return new Rectangle(cursorLoc.X - 1, cursorLoc.Y, 2, _layout.CharHeight);
         }
 
         /// <summary>選択領域の矩形を返す</summary>
