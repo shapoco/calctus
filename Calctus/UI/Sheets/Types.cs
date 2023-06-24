@@ -43,4 +43,10 @@ namespace Shapoco.Calctus.UI.Sheets {
         }
     }
 
+    [Flags]
+    enum InsertOptions {
+        None = 0x0,
+        FreshAnswer = 0x1,
+        Focus = 0x2
+    }
 }

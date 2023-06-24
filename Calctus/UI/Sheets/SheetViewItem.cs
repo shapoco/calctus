@@ -25,6 +25,7 @@ namespace Shapoco.Calctus.UI.Sheets {
         private bool _isRpnOperand = false;
         private bool _disposed = false;
         private int _preferredHeight = 0;
+        private bool _ignoreExprChanged = false;
 
         public SheetViewItem(SheetView view, SheetItem bookItem) : base(view) {
             _view = view;
@@ -89,7 +90,8 @@ namespace Shapoco.Calctus.UI.Sheets {
         }
 
         private void ExprBox_TextChanged(object sender, EventArgs e) {
-            SheetItem.SetExprTree(ExprBox.Text, ExprBox.ExprObject, ExprBox.SynstaxError);
+            if (_ignoreExprChanged) return;
+            _view.Operator.ChangeExpression(_view.IndexOf(this), ExprBox.Text);
             IsFreshAnswer = false;
             int prefHeight = GetPreferredSize().Height;
             if (prefHeight != _preferredHeight) {
@@ -123,9 +125,11 @@ namespace Shapoco.Calctus.UI.Sheets {
         }
 
         private void BookItem_ExpressionChanged(object sender, EventArgs e) {
+            _ignoreExprChanged = true;
             var err = SheetItem.SyntaxError != null ? SheetItem.SyntaxError : SheetItem.EvalError;
             ExprBox.Text = SheetItem.ExprText;
             updateAnswerBox();
+            _ignoreExprChanged = false;
         }
 
         private void BookItem_AnswerChanged(object sender, EventArgs e) {

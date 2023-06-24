@@ -24,8 +24,9 @@ namespace Shapoco.Calctus.Model.Sheets {
         public Exception SyntaxError { get; private set; }
         public Exception EvalError { get; private set; }
 
-        public SheetItem(string expr = "") {
+        public SheetItem(string expr = "", RadixMode radix = RadixMode.Auto) {
             ExprText = expr;
+            RadixMode = radix;
         }
 
         public object Tag = null;

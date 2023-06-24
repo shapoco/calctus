@@ -158,6 +158,10 @@
       <SubType>Form</SubType>
     </Compile>
     <Compile Include="Calctus\UI\Sheets\IInputCandidateProvider.cs" />
+    <Compile Include="Calctus\UI\Sheets\SheetAction.cs" />
+    <Compile Include="Calctus\UI\Sheets\UndoEntryBuilder.cs" />
+    <Compile Include="Calctus\UI\Sheets\SheetOperator.cs" />
+    <Compile Include="Calctus\UI\Sheets\SheetViewState.cs" />
     <Compile Include="Calctus\UI\Sheets\SheetView.cs">
       <SubType>Component</SubType>
     </Compile>
@@ -191,6 +195,7 @@
       <DependentUpon>SettingsDialog.cs</DependentUpon>
     </Compile>
     <Compile Include="Calctus\UI\Sheets\Types.cs" />
+    <Compile Include="Calctus\UI\Sheets\UndoEntry.cs" />
     <Compile Include="Calctus\UI\Types.cs" />
     <Compile Include="Calctus\Model\Expressions\ArrayExpr.cs" />
     <Compile Include="Calctus\Model\Expressions\BinaryOp.cs" />
