@@ -12,7 +12,8 @@ using Shapoco.Calctus.Model.Formats;
 
 namespace Shapoco.Calctus.Model.Parsers {
     class Lexer {
-        private static readonly Regex _wordRegexes = new Regex(@"[a-zA-Z_][a-zA-Z0-9_]*");
+        public const string IdPattern = @"[\p{L}_][\p{L}\p{N}_]*";
+        private static readonly Regex _wordRegexes = new Regex(IdPattern);
 
         private StringMatchReader _tr;
         private bool _eosReaded = false;
@@ -138,6 +139,9 @@ namespace Shapoco.Calctus.Model.Parsers {
                 return false;
             }
         }
+
+        public static bool IsFirstIdChar(char c) => char.IsLetter(c) || c == '_';
+        public static bool IsFollowingIdChar(char c) => char.IsLetter(c) || char.IsDigit(c) || c == '_';
 
         public static void Test(string exprStr) {
             Lexer lex = new Lexer(exprStr);

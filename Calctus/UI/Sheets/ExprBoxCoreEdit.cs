@@ -337,13 +337,13 @@ namespace Shapoco.Calctus.UI.Sheets {
 
                 selStart = SelectionStart;
                 var prevChar = selStart >= 2 ? text[selStart - 2] : '\0';
-                if (!isIdChar(prevChar) && prevChar != '\'' && prevChar != '\"' && prevChar != '#' && prevChar != '\\' && isFirstIdChar(e.KeyChar)) {
+                if (!Lexer.IsFollowingIdChar(prevChar) && prevChar != '\'' && prevChar != '\"' && prevChar != '#' && prevChar != '\\' && Lexer.IsFirstIdChar(e.KeyChar)) {
                     if (Settings.Instance.Input_IdAutoCompletion) {
                         // 識別子の先頭文字が入力されたら補完候補を表示する
                         CandidatesShow();
                     }
                 }
-                else if (_candKeyStart + 1 < selStart && isIdChar(e.KeyChar)) {
+                else if (_candKeyStart + 1 < selStart && Lexer.IsFollowingIdChar(e.KeyChar)) {
                     // 識別子の2文字目以降が表示されたら補完候補を更新する
                     CandidatesUpdate();
                 }
@@ -409,9 +409,6 @@ namespace Shapoco.Calctus.UI.Sheets {
             Text = _undoBuff;
             SetSelection(Text.Length);
         }
-
-        private bool isFirstIdChar(char c) => ('a' <= c && c <= 'z') || ('A' <= c && c <= 'Z') || c == '_';
-        private bool isIdChar(char c) => isFirstIdChar(c) || ('0' <= c && c <= '9');
 
         /// <summary>指数を変更する</summary>
         private void changeEnotationExp(int amount) {
@@ -534,7 +531,7 @@ namespace Shapoco.Calctus.UI.Sheets {
                 // そうでなければ入力候補を隠す
                 bool keyExtend = true;
                 for (int i = _candKeyEnd; i < selEnd; i++) {
-                    if (!isIdChar(Text[i])) {
+                    if (!Lexer.IsFollowingIdChar(Text[i])) {
                         keyExtend = false;
                         break;
                     }
@@ -595,7 +592,7 @@ namespace Shapoco.Calctus.UI.Sheets {
             var selStart = SelectionStart;
             var candStart = selStart;
             var candEnd = selStart;
-            while (candStart > 0 && isIdChar(text[candStart - 1])) {
+            while (candStart > 0 && Lexer.IsFollowingIdChar(text[candStart - 1])) {
                 candStart--;
             }
             _candKeyStart = candStart;
