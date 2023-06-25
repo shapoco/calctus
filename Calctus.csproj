@@ -254,6 +254,8 @@
   </ItemGroup>
   <ItemGroup>
     <Content Include="icon.ico" />
+    <None Include="Resources\ToolIcon_Undo.png" />
+    <None Include="Resources\ToolIcon_Redo.png" />
     <None Include="Resources\ToolIcon_InvertBrightness.png" />
     <None Include="Resources\ToolIcon_Timer.png" />
     <None Include="Resources\ToolIcon_Paste.png" />

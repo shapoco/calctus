@@ -79,6 +79,8 @@ namespace Shapoco.Calctus.UI {
             toolTip.SetToolTip(radixBinButton, "Binary (F11)");
             toolTip.SetToolTip(radixOctButton, "Octal (F12)");
 
+            undoButton.Click += (sender, e) => { sheetView.Undo(); };
+            redoButton.Click += (sender, e) => { sheetView.Redo(); };
             copyButton.Click += (sender, e) => { sheetView.Copy(); };
             pasteButton.Click += (sender, e) => { sheetView.Paste(); };
             insertButton.Click += (sender, e) => { sheetView.ItemInsert(); };

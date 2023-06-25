@@ -99,9 +99,12 @@ namespace Shapoco.Calctus.UI.Sheets {
         }
         public void InsertCurrentTime() {
             if (!ReadOnly) {
+                CandidateHide();
                 _edit.SelectedText = DateTimeFormatter.ToString(DateTime.Now);
             }
         }
+
+        public void CandidateHide() => _edit.CandidatesHide();
 
         public override Size GetPreferredSize() => _layout.PreferredSize;
 

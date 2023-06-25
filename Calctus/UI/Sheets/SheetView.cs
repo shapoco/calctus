@@ -37,20 +37,23 @@ namespace Shapoco.Calctus.UI.Sheets {
         private RadixMode _activeRadixMode = RadixMode.Auto;
 
         private ContextMenuStrip _ctxMenu = new ContextMenuStrip();
+        private ToolStripMenuItem _cmenuUndo = new ToolStripMenuItem("Undo");
+        private ToolStripMenuItem _cmenuRedo = new ToolStripMenuItem("Redo");
+        private ToolStripSeparator _cmenuSep0 = new ToolStripSeparator();
         private ToolStripMenuItem _cmenuTextCut = new ToolStripMenuItem("Cut Text");
         private ToolStripMenuItem _cmenuTextCopy = new ToolStripMenuItem("Copy Text");
         private ToolStripMenuItem _cmenuTextPaste = new ToolStripMenuItem("Paste Text");
         private ToolStripMenuItem _cmenuTextDelete = new ToolStripMenuItem("Delete Text");
-        private ToolStripSeparator _cmenuSep0 = new ToolStripSeparator();
-        private ToolStripMenuItem _cmenuCopyAll = new ToolStripMenuItem("Copy All");
         private ToolStripSeparator _cmenuSep1 = new ToolStripSeparator();
-        private ToolStripMenuItem _cmenuInsertTime = new ToolStripMenuItem("Insert Current Time");
+        private ToolStripMenuItem _cmenuCopyAll = new ToolStripMenuItem("Copy All");
         private ToolStripSeparator _cmenuSep2 = new ToolStripSeparator();
+        private ToolStripMenuItem _cmenuInsertTime = new ToolStripMenuItem("Insert Current Time");
+        private ToolStripSeparator _cmenuSep3 = new ToolStripSeparator();
         private ToolStripMenuItem _cmenuMoveUp = new ToolStripMenuItem("Move Up");
         private ToolStripMenuItem _cmenuMoveDown = new ToolStripMenuItem("Move Down");
-        private ToolStripSeparator _cmenuSep3 = new ToolStripSeparator();
-        private ToolStripMenuItem _cmenuItemInsert = new ToolStripMenuItem("Insert Item");
-        private ToolStripMenuItem _cmenuItemDelete = new ToolStripMenuItem("Delete Item");
+        private ToolStripSeparator _cmenuSep4 = new ToolStripSeparator();
+        private ToolStripMenuItem _cmenuItemInsert = new ToolStripMenuItem("Insert Line");
+        private ToolStripMenuItem _cmenuItemDelete = new ToolStripMenuItem("Delete Line");
         private ToolStripSeparator _cmenuTextSep2 = new ToolStripSeparator();
         private ToolStripMenuItem _cmenuClear = new ToolStripMenuItem("Clear");
 
@@ -73,6 +76,8 @@ namespace Shapoco.Calctus.UI.Sheets {
             Sheet = sheet;
             FocusedIndex = 0;
 
+            _cmenuUndo.ShortcutKeyDisplayString = "Ctrl+Z";
+            _cmenuRedo.ShortcutKeyDisplayString = "Ctrl+Y";
             _cmenuTextCut.ShortcutKeyDisplayString = "Ctrl+X";
             _cmenuTextCopy.ShortcutKeyDisplayString = "Ctrl+C";
             _cmenuTextPaste.ShortcutKeyDisplayString = "Ctrl+V";
@@ -84,6 +89,8 @@ namespace Shapoco.Calctus.UI.Sheets {
             _cmenuItemDelete.ShortcutKeyDisplayString = "Shift+Del";
             _cmenuClear.ShortcutKeyDisplayString = "Ctrl+Shift+Del";
 
+            _cmenuUndo.Click += (sender, e) => { Undo(); };
+            _cmenuRedo.Click += (sender, e) => { Redo(); };
             _cmenuTextCut.Click += (sender, e) => { getFocusedExprBox()?.Cut(); };
             _cmenuTextCopy.Click += (sender, e) => { Copy(); };
             _cmenuTextPaste.Click += (sender, e) => { Paste(); };
@@ -97,18 +104,21 @@ namespace Shapoco.Calctus.UI.Sheets {
             _cmenuClear.Click += (sender, e) => { Clear(); };
 
             _ctxMenu.Items.AddRange(new ToolStripItem[] {
+                _cmenuUndo,
+                _cmenuRedo,
+                _cmenuSep0,
                 _cmenuTextCut,
                 _cmenuTextCopy,
                 _cmenuTextPaste,
                 _cmenuTextDelete,
-                _cmenuSep0,
-                _cmenuCopyAll,
                 _cmenuSep1,
-                _cmenuInsertTime,
+                _cmenuCopyAll,
                 _cmenuSep2,
+                _cmenuInsertTime,
+                _cmenuSep3,
                 _cmenuMoveUp,
                 _cmenuMoveDown,
-                _cmenuSep3,
+                _cmenuSep4,
                 _cmenuItemInsert,
                 _cmenuItemDelete,
                 _cmenuTextSep2,
@@ -190,6 +200,7 @@ namespace Shapoco.Calctus.UI.Sheets {
         }
 
         public void ItemMoveUp() {
+            CandidateHide();
             var selIndex = FocusedIndex;
             if (selIndex > 0) { 
                 _operator.Move(selIndex, selIndex - 1);
@@ -198,6 +209,7 @@ namespace Shapoco.Calctus.UI.Sheets {
         }
 
         public void ItemMoveDown() {
+            CandidateHide();
             var selIndex = FocusedIndex;
             if (selIndex < _sheet.Items.Count - 1) {
                 _operator.Move(selIndex, selIndex + 1);
@@ -206,6 +218,7 @@ namespace Shapoco.Calctus.UI.Sheets {
         }
 
         public void ItemInsert() {
+            CandidateHide();
             var insIndex = FocusedIndex;
             if (insIndex < 0) {
                 insIndex = _sheet.Items.Count;
@@ -215,6 +228,7 @@ namespace Shapoco.Calctus.UI.Sheets {
         }
 
         public void ItemDelete() {
+            CandidateHide();
             int selIndex = FocusedIndex;
             _operator.Delete(selIndex);
             if (selIndex < _sheet.Items.Count) {
@@ -225,9 +239,13 @@ namespace Shapoco.Calctus.UI.Sheets {
             }
         }
 
-        public void Copy() => getFocusedExprBox()?.Copy();
+        public void Copy() {
+            CandidateHide();
+            getFocusedExprBox()?.Copy();
+        }
 
         public void CopyAll() {
+            CandidateHide();
             var sb = new StringBuilder();
             foreach (var item in _sheet.Items) {
                 sb.Append(item.ExprText).Append(" = ").AppendLine(item.AnsText);
@@ -242,6 +260,7 @@ namespace Shapoco.Calctus.UI.Sheets {
         }
 
         public void Paste() {
+            CandidateHide();
             var viewItem = FocusedViewItem;
             if (viewItem == null) return;
             try {
@@ -254,6 +273,16 @@ namespace Shapoco.Calctus.UI.Sheets {
                 }
             }
             catch { }
+        }
+
+        public void Undo() {
+            CandidateHide();
+            _operator.Undo();
+        }
+
+        public void Redo() {
+            CandidateHide();
+            _operator.Redo();
         }
 
         public void MultilinePaste() {
@@ -303,6 +332,8 @@ namespace Shapoco.Calctus.UI.Sheets {
             }
         }
 
+        public void CandidateHide() => FocusedViewItem?.ExprBox.CandidateHide();
+
         public IEnumerable<InputCandidate> Candidates => _inputCandidates;
 
         protected override void OnFocusedBoxChanged() {
@@ -349,11 +380,11 @@ namespace Shapoco.Calctus.UI.Sheets {
             }
             else if (e.Modifiers == Keys.Control && e.KeyCode == Keys.Z) {
                 e.Handled = true;
-                _operator.Undo();
+                Undo();
             }
             else if (e.Modifiers == Keys.Control && e.KeyCode == Keys.Y) {
                 e.Handled = true;
-                _operator.Redo();
+                Redo();
             }
 
             if (e.Handled) return;
@@ -364,6 +395,7 @@ namespace Shapoco.Calctus.UI.Sheets {
 
             if (e.Modifiers == Keys.None && e.KeyCode == Keys.Return) { 
                 e.Handled = true;
+                CandidateHide();
 
                 // Return
                 var rpn = parseRpnOperation(selIndex);
@@ -655,6 +687,8 @@ namespace Shapoco.Calctus.UI.Sheets {
         private void openContextMenu(Point screenPos) {
             var selIndex = FocusedIndex;
             var focusBox = getFocusedExprBox();
+            _cmenuUndo.Enabled = _operator.CanUndo;
+            _cmenuRedo.Enabled = _operator.CanRedo;
             _cmenuTextCut.Enabled = focusBox != null && !focusBox.ReadOnly && focusBox.SelectionLength > 0;
             _cmenuTextCopy.Enabled = focusBox != null;
             _cmenuTextPaste.Enabled = focusBox != null && !focusBox.ReadOnly;

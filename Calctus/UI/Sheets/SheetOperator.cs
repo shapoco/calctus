@@ -30,9 +30,12 @@ namespace Shapoco.Calctus.UI.Sheets {
             }
         }
 
+        public bool CanUndo => _undoBufferIndex > 0;
+        public bool CanRedo => _undoBufferIndex < _undoBuffer.Count;
+
         /// <summary>アンドゥ</summary>
         public void Undo() {
-            if (_undoBufferIndex <= 0) return;
+            if (!CanUndo) return;
             _undoBufferIndex--;
             var entry = _undoBuffer[_undoBufferIndex];
             entry.UndoAction.Apply(_view);
@@ -41,7 +44,7 @@ namespace Shapoco.Calctus.UI.Sheets {
 
         /// <summary>リドゥ</summary>
         public void Redo() {
-            if (_undoBufferIndex >= _undoBuffer.Count) return;
+            if (!CanRedo) return;
             _undoBuffer[_undoBufferIndex].RedoAction.Apply(_view);
             _undoBufferIndex++;
             if (_undoBufferIndex < _undoBuffer.Count) {
