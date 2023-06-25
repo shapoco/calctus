@@ -46,7 +46,7 @@ namespace Shapoco.Calctus.UI.Sheets {
             var viewItem = ((SheetViewItem)item.Tag);
             viewItem.IsFreshAnswer = Options.HasFlag(InsertOptions.FreshAnswer);
             if (Options.HasFlag(InsertOptions.Focus)) {
-                view.FocusedViewItem = viewItem;
+                view.FocusViewItem(Index);
             }
         }
     }
