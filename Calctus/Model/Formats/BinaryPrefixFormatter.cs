@@ -12,41 +12,65 @@ using Shapoco.Calctus.Model.Evaluations;
 namespace Shapoco.Calctus.Model.Formats {
     class BinaryPrefixFormatter : NumberFormatter {
         private static readonly string Prefixes = "_kMGTPEZYR";
+        private static readonly Regex patternRegex = new Regex(@"(([1-9][0-9]*|0)(\.[0-9]+)?|(\.[0-9]+))([" + Prefixes + "])i");
+        public const int MinPrefixIndex = 0;
+        public const int MaxPrefixIndex = 9;
 
-        public BinaryPrefixFormatter() : base(new Regex(@"(([1-9][0-9]*|0)(\.[0-9]+)?)([" + Prefixes + "])i"), FormatPriority.NextPriority) { }
+        public BinaryPrefixFormatter() : base(patternRegex, FormatPriority.Strong) { }
+
+        private static void extractMatch(Match m, out decimal frac, out int prefixIndex) {
+            frac = decimal.Parse(m.Groups[1].Value, CultureInfo.InvariantCulture);
+            prefixIndex = Prefixes.IndexOf(m.Groups[5].Value);
+        }
+
+        public static bool TryParse(string str, out decimal frac, out int prefixIndex) {
+            frac = 0;
+            prefixIndex = 0;
+            var m = patternRegex.Match(str);
+            if (m.Success && m.Index == 0 && m.Length == str.Length) {
+                extractMatch(m, out frac, out prefixIndex);
+                return true;
+            }
+            else {
+                return false;
+            }
+        }
 
         public override Val Parse(Match m) {
-            var frac = decimal.Parse(m.Groups[1].Value, CultureInfo.InvariantCulture);
-            var prefixIndex = Prefixes.IndexOf(m.Groups[4].Value);
+            extractMatch(m, out var frac, out var prefixIndex);
             var exp = prefixIndex * 10;
             return new RealVal(frac * Math.Truncate((decimal)Math.Pow(2, exp)), new FormatHint(this));
         }
 
-        protected override string OnFormat(Val val, EvalContext e) {
+        protected override string OnFormat(Val val, FormatSettingss fs) {
             if (val is RealVal) {
                 var r = val.AsReal;
                 int prefixIndex = 0;
                 if (r != 0) {
                     prefixIndex = (int)RMath.Floor(RMath.Log2(RMath.Abs(r)) / 10);
                 }
-                if (prefixIndex < 0) {
-                    prefixIndex = 0;
+                if (prefixIndex < MinPrefixIndex) {
+                    prefixIndex = MinPrefixIndex;
                 }
-                else if (prefixIndex >= Prefixes.Length) {
-                    prefixIndex = Prefixes.Length - 1;
+                else if (prefixIndex > MaxPrefixIndex) {
+                    prefixIndex = MaxPrefixIndex;
                 }
                 var exp = prefixIndex * 10;
                 var frac = r / Math.Truncate((decimal)Math.Pow(2, exp));
                 if (prefixIndex == 0) {
-                    return RealToString(frac, e, false);
+                    return RealToString(frac, fs, false);
                 }
                 else {
-                    return RealToString(frac, e, false) + Prefixes[prefixIndex] + "i";
+                    return RealToString(frac, fs, false) + GetPrefixString(prefixIndex);
                 }
             }
             else {
-                return base.OnFormat(val, e);
+                return base.OnFormat(val, fs);
             }
+        }
+
+        public static string GetPrefixString(int prefixIndex) {
+            return Prefixes[prefixIndex] + "i";
         }
     }
 }

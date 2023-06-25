@@ -37,6 +37,7 @@ namespace Shapoco.Calctus.Model.Types {
         public abstract long AsLong { get; }
         public abstract int AsInt { get; }
         public abstract bool AsBool { get; }
+        public abstract string AsString { get; }
 
         public abstract real[] AsRealArray { get; }
         public abstract long[] AsLongArray { get; }
@@ -51,12 +52,14 @@ namespace Shapoco.Calctus.Model.Types {
         //public static explicit operator Val(int val) => new RealVal((double)val);
         //public static explicit operator int(Val val) => val.AsInt();
 
+        public Val FormatDefault() => Format(FormatHint.Default);
         public Val FormatInt() => Format(new FormatHint(NumberFormatter.CStyleInt));
         public Val FormatReal() => Format(new FormatHint(NumberFormatter.CStyleReal));
         public Val FormatHex() => Format(new FormatHint(NumberFormatter.CStyleHex));
         public Val FormatBin() => Format(new FormatHint(NumberFormatter.CStyleBin));
         public Val FormatOct() => Format(new FormatHint(NumberFormatter.CStyleOct));
         public Val FormatChar() => Format(new FormatHint(NumberFormatter.CStyleChar));
+        public Val FormatString() => Format(new FormatHint(NumberFormatter.CStyleString));
         public Val FormatSiPrefix() => Format(new FormatHint(NumberFormatter.SiPrefixed));
         public Val FormatBinaryPrefix() => Format(new FormatHint(NumberFormatter.BinaryPrefixed));
         public Val FormatDateTime() => Format(new FormatHint(NumberFormatter.DateTime));
@@ -139,7 +142,7 @@ namespace Shapoco.Calctus.Model.Types {
         protected abstract Val OnLogicAnd(EvalContext ctx, Val b);
         protected abstract Val OnLogicOr(EvalContext ctx, Val b);
 
-        public override string ToString() => this.ToString(new EvalContext());
-        public abstract string ToString(EvalContext e);
+        public override string ToString() => this.ToString(new FormatSettingss());
+        public abstract string ToString(FormatSettingss fs);
     }
 }

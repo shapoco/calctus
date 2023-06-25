@@ -22,6 +22,7 @@ namespace Shapoco.Calctus.UI.Sheets {
         public event EventHandler DialogClosed;
 
         private Sheet _sheet = null;
+        private SheetOperator _operator = null;
         private int _focusedIndex = -1;
         private RpnOperation _focusedRpnOperation = null;
         private bool _recalcRequested = true;
@@ -36,20 +37,23 @@ namespace Shapoco.Calctus.UI.Sheets {
         private RadixMode _activeRadixMode = RadixMode.Auto;
 
         private ContextMenuStrip _ctxMenu = new ContextMenuStrip();
+        private ToolStripMenuItem _cmenuUndo = new ToolStripMenuItem("Undo");
+        private ToolStripMenuItem _cmenuRedo = new ToolStripMenuItem("Redo");
+        private ToolStripSeparator _cmenuSep0 = new ToolStripSeparator();
         private ToolStripMenuItem _cmenuTextCut = new ToolStripMenuItem("Cut Text");
         private ToolStripMenuItem _cmenuTextCopy = new ToolStripMenuItem("Copy Text");
         private ToolStripMenuItem _cmenuTextPaste = new ToolStripMenuItem("Paste Text");
         private ToolStripMenuItem _cmenuTextDelete = new ToolStripMenuItem("Delete Text");
-        private ToolStripSeparator _cmenuSep0 = new ToolStripSeparator();
-        private ToolStripMenuItem _cmenuCopyAll = new ToolStripMenuItem("Copy All");
         private ToolStripSeparator _cmenuSep1 = new ToolStripSeparator();
-        private ToolStripMenuItem _cmenuInsertTime = new ToolStripMenuItem("Insert Current Time");
+        private ToolStripMenuItem _cmenuCopyAll = new ToolStripMenuItem("Copy All");
         private ToolStripSeparator _cmenuSep2 = new ToolStripSeparator();
+        private ToolStripMenuItem _cmenuInsertTime = new ToolStripMenuItem("Insert Current Time");
+        private ToolStripSeparator _cmenuSep3 = new ToolStripSeparator();
         private ToolStripMenuItem _cmenuMoveUp = new ToolStripMenuItem("Move Up");
         private ToolStripMenuItem _cmenuMoveDown = new ToolStripMenuItem("Move Down");
-        private ToolStripSeparator _cmenuSep3 = new ToolStripSeparator();
-        private ToolStripMenuItem _cmenuItemInsert = new ToolStripMenuItem("Insert Item");
-        private ToolStripMenuItem _cmenuItemDelete = new ToolStripMenuItem("Delete Item");
+        private ToolStripSeparator _cmenuSep4 = new ToolStripSeparator();
+        private ToolStripMenuItem _cmenuItemInsert = new ToolStripMenuItem("Insert Line");
+        private ToolStripMenuItem _cmenuItemDelete = new ToolStripMenuItem("Delete Line");
         private ToolStripSeparator _cmenuTextSep2 = new ToolStripSeparator();
         private ToolStripMenuItem _cmenuClear = new ToolStripMenuItem("Clear");
 
@@ -67,10 +71,10 @@ namespace Shapoco.Calctus.UI.Sheets {
             _scrollBar.ValueChanged += (sender, e) => { _innerBox.Top = - _scrollBar.Value; Invalidate(); };
             Controls.Add(_scrollBar);
 
-            Sheet = new Sheet();
-            Sheet.Items.Add(new SheetItem());
             FocusedIndex = 0;
 
+            _cmenuUndo.ShortcutKeyDisplayString = "Ctrl+Z";
+            _cmenuRedo.ShortcutKeyDisplayString = "Ctrl+Y";
             _cmenuTextCut.ShortcutKeyDisplayString = "Ctrl+X";
             _cmenuTextCopy.ShortcutKeyDisplayString = "Ctrl+C";
             _cmenuTextPaste.ShortcutKeyDisplayString = "Ctrl+V";
@@ -82,6 +86,8 @@ namespace Shapoco.Calctus.UI.Sheets {
             _cmenuItemDelete.ShortcutKeyDisplayString = "Shift+Del";
             _cmenuClear.ShortcutKeyDisplayString = "Ctrl+Shift+Del";
 
+            _cmenuUndo.Click += (sender, e) => { Undo(); };
+            _cmenuRedo.Click += (sender, e) => { Redo(); };
             _cmenuTextCut.Click += (sender, e) => { getFocusedExprBox()?.Cut(); };
             _cmenuTextCopy.Click += (sender, e) => { Copy(); };
             _cmenuTextPaste.Click += (sender, e) => { Paste(); };
@@ -95,18 +101,21 @@ namespace Shapoco.Calctus.UI.Sheets {
             _cmenuClear.Click += (sender, e) => { Clear(); };
 
             _ctxMenu.Items.AddRange(new ToolStripItem[] {
+                _cmenuUndo,
+                _cmenuRedo,
+                _cmenuSep0,
                 _cmenuTextCut,
                 _cmenuTextCopy,
                 _cmenuTextPaste,
                 _cmenuTextDelete,
-                _cmenuSep0,
-                _cmenuCopyAll,
                 _cmenuSep1,
-                _cmenuInsertTime,
+                _cmenuCopyAll,
                 _cmenuSep2,
+                _cmenuInsertTime,
+                _cmenuSep3,
                 _cmenuMoveUp,
                 _cmenuMoveDown,
-                _cmenuSep3,
+                _cmenuSep4,
                 _cmenuItemInsert,
                 _cmenuItemDelete,
                 _cmenuTextSep2,
@@ -126,30 +135,45 @@ namespace Shapoco.Calctus.UI.Sheets {
                     foreach(var noteItem in _sheet.Items) {
                         unlinkSheetItem(noteItem);
                     }
+                    _operator.Dispose();
                 }
                 _sheet = value;
+                _operator = null;
                 if (_sheet != null) {
                     _sheet.Items.CollectionChanged += Items_CollectionChanged;
                     _sheet.PreviewExecute += Sheet_PreviewExecute;
                     foreach (var noteItem in _sheet.Items) {
                         linkSheetItem(noteItem);
                     }
+                    _operator = new SheetOperator(this);
+                    if (_sheet.Items.Count > 0) {
+                        FocusViewItem(_sheet.Items.Count - 1);
+                    }
+                }
+                else {
+                    _focusedIndex = -1;
                 }
                 Invalidate();
             }
         }
 
+        public SheetOperator Operator => _operator;
+
+        [Browsable(false)]
+        [DefaultValue(-1)]
         public int FocusedIndex {
             get => _focusedIndex;
             set {
                 if (value == _focusedIndex) return;
-                focusViewItem(value);
+                FocusViewItem(value);
             }
         }
 
+        [Browsable(false)]
+        [DefaultValue(null)]
         public SheetViewItem FocusedViewItem {
-            get => (_focusedIndex >= 0) ? getViewItem(_focusedIndex) : null;
-            set => FocusedIndex = indexOf(value);
+            get => (_focusedIndex >= 0) ? GetViewItem(_focusedIndex) : null;
+            set => FocusedIndex = IndexOf(value);
         }
 
         public RadixMode ActiveRadixMode {
@@ -178,64 +202,62 @@ namespace Shapoco.Calctus.UI.Sheets {
             Invalidate();
         }
 
-        public void InsertExpr(string expr) {
-            var insertPos = FocusedIndex;
-            if (insertPos < 0) insertPos = _sheet.Items.Count;
-            if (insertPos < _sheet.Items.Count && string.IsNullOrEmpty(_sheet.Items[insertPos].ExprText)) {
-                _sheet.Items[insertPos].ExprText = expr;
-            }
-            else {
-                _sheet.Items.Insert(insertPos, new SheetItem(expr));
-            }
-            _sheet.Items.Insert(insertPos + 1, new SheetItem());
-            focusViewItem(insertPos + 1);
-        }
-
         public void ItemMoveUp() {
+            if (_sheet == null) return;
+            CandidateHide();
             var selIndex = FocusedIndex;
             if (selIndex > 0) { 
-                _sheet.Items.Move(selIndex, selIndex - 1);
+                _operator.Move(selIndex, selIndex - 1);
                 FocusedIndex = selIndex - 1;
             }
         }
 
         public void ItemMoveDown() {
+            if (_sheet == null) return;
+            CandidateHide();
             var selIndex = FocusedIndex;
             if (selIndex < _sheet.Items.Count - 1) {
-                _sheet.Items.Move(selIndex, selIndex + 1);
+                _operator.Move(selIndex, selIndex + 1);
                 FocusedIndex = selIndex + 1;
             }
         }
 
         public void ItemInsert() {
+            if (_sheet == null) return;
+            CandidateHide();
             var insIndex = FocusedIndex;
             if (insIndex < 0) {
                 insIndex = _sheet.Items.Count;
             }
-            _sheet.Items.Insert(insIndex, new SheetItem());
-            focusViewItem(insIndex);
+            _operator.Insert(insIndex, "", ActiveRadixMode);
+            FocusViewItem(insIndex);
         }
 
         public void ItemDelete() {
+            if (_sheet == null) return;
+            CandidateHide();
             int selIndex = FocusedIndex;
-            _sheet.Items.RemoveAt(selIndex);
-            if (_sheet.Items.Count == 0) {
-                _sheet.Items.Add(new SheetItem());
-            }
+            _operator.Delete(selIndex);
             if (selIndex < _sheet.Items.Count) {
-                focusViewItem(selIndex);
+                FocusViewItem(selIndex);
             }
             else {
-                focusViewItem(selIndex - 1);
+                FocusViewItem(selIndex - 1);
             }
         }
 
-        public void Copy() => getFocusedExprBox()?.Copy();
+        public void Copy() {
+            if (_sheet == null) return;
+            CandidateHide();
+            getFocusedExprBox()?.Copy();
+        }
 
         public void CopyAll() {
+            if (_sheet == null) return;
+            CandidateHide();
             var sb = new StringBuilder();
             foreach (var item in _sheet.Items) {
-                sb.Append(item.ExprText).Append(" = ").AppendLine(item.AnsVal.ToString());
+                sb.Append(item.ExprText).Append(" = ").AppendLine(item.AnsText);
             }
             try {
                 Clipboard.Clear();
@@ -247,6 +269,8 @@ namespace Shapoco.Calctus.UI.Sheets {
         }
 
         public void Paste() {
+            if (_sheet == null) return;
+            CandidateHide();
             var viewItem = FocusedViewItem;
             if (viewItem == null) return;
             try {
@@ -261,36 +285,37 @@ namespace Shapoco.Calctus.UI.Sheets {
             catch { }
         }
 
-        public void MultilinePaste() {
-            int insertPos = FocusedIndex;
-            if (insertPos < 0) insertPos = _sheet.Items.Count;
+        public void Undo() {
+            if (_sheet == null) return;
+            CandidateHide();
+            _operator.Undo();
+        }
 
+        public void Redo() {
+            if (_sheet == null) return;
+            CandidateHide();
+            _operator.Redo();
+        }
+
+        public void MultilinePaste() {
+            if (_sheet == null) return;
             var dlg = new PasteOptionForm();
             DialogOpening?.Invoke(this, EventArgs.Empty);
             if (dlg.ShowDialog() == DialogResult.OK) {
-                var lines = dlg.TextWillBePasted.Split('\n');
-                for (int i = 0; i < lines.Length; i++) {
-                    var line = lines[i].Replace("\r", "");
-                    if (i == 0 && insertPos < _sheet.Items.Count && string.IsNullOrEmpty(_sheet.Items[insertPos].ExprText)) {
-                        // 先頭行については挿入先の行が空行の場合はそこを置き換える
-                        _sheet.Items[insertPos++].ExprText = line;
-                    }
-                    else {
-                        _sheet.Items.Insert(insertPos++, new SheetItem(line));
-                    }
-                }
-                focusViewItem(insertPos - 1);
+                int insertPos = FocusedIndex;
+                if (insertPos < 0) insertPos = _sheet.Items.Count;
+                var lines = dlg.TextWillBePasted.Split(new char[] { '\n', '\r' }, StringSplitOptions.RemoveEmptyEntries);
+                _operator.Insert(insertPos, lines, ActiveRadixMode, true, InsertOptions.Focus);
             }
             dlg.Dispose();
             DialogClosed?.Invoke(this, EventArgs.Empty);
         }
 
         public void Clear() {
+            if (_sheet == null) return;
             var ans = MessageBox.Show("Are you sure you want to delete all?", Application.ProductName, MessageBoxButtons.OKCancel, MessageBoxIcon.Exclamation);
             if (ans == DialogResult.OK) {
-                _sheet.Items.Clear();
-                _sheet.Items.Add(new SheetItem());
-                focusViewItem(0);
+                _operator.Clear();
             }
         }
 
@@ -315,14 +340,24 @@ namespace Shapoco.Calctus.UI.Sheets {
             Invalidate();
         }
 
+        public void RelayoutText() {
+            if (_sheet == null) return;
+            foreach (var noteItem in _sheet.Items) {
+                ((SheetViewItem)noteItem.Tag).RelayoutText();
+            }
+        }
+
+        public void CandidateHide() => FocusedViewItem?.ExprBox.CandidateHide();
+
         public IEnumerable<InputCandidate> Candidates => _inputCandidates;
 
         protected override void OnFocusedBoxChanged() {
             base.OnFocusedBoxChanged();
+            if (_sheet == null) return;
             // フォーカスされたボックスが所属するアイテムを選択状態にする
             var viewItem = getViewItem(FocusedBox);
             if (viewItem != null) {
-                FocusedIndex = indexOf(viewItem);
+                FocusedIndex = IndexOf(viewItem);
             }
             else {
                 FocusedIndex = -1;
@@ -347,6 +382,7 @@ namespace Shapoco.Calctus.UI.Sheets {
         }
 
         protected override void OnKeyDown(KeyEventArgs e) {
+            if (_sheet == null) return;
             int selIndex = FocusedIndex;
             if (selIndex < 0) return;
             var viewItem = (SheetViewItem)_sheet.Items[selIndex].Tag;
@@ -359,56 +395,53 @@ namespace Shapoco.Calctus.UI.Sheets {
                 e.Handled = true;
                 MultilinePaste();
             }
+            else if (e.Modifiers == Keys.Control && e.KeyCode == Keys.Z) {
+                e.Handled = true;
+                Undo();
+            }
+            else if (e.Modifiers == Keys.Control && e.KeyCode == Keys.Y) {
+                e.Handled = true;
+                Redo();
+            }
+
             if (e.Handled) return;
 
             base.OnKeyDown(e);
+
             if (e.Handled) return;
 
             if (e.Modifiers == Keys.None && e.KeyCode == Keys.Return) { 
-                var ans = viewItem.AnsBox.Text;
+                e.Handled = true;
+                CandidateHide();
 
                 // Return
                 var rpn = parseRpnOperation(selIndex);
                 if (rpn != null) {
                     // RPNコマンドの実行
-                    if (rpn.Error != null) {
-                        return;
-                    }
-
-                    for (int i = rpn.StartIndex; i < rpn.EndIndex; i++) {
-                        _sheet.Items.RemoveAt(rpn.StartIndex);
-                    }
-                    _sheet.Items[rpn.StartIndex].ExprText = rpn.Expression;
+                    _operator.ExecuteRpn(rpn);
                     selIndex = rpn.StartIndex;
                 }
-
-                e.Handled = true;
-                var newSheetItem = new SheetItem();
-                newSheetItem.RadixMode = viewItem.SheetItem.RadixMode;
-                _sheet.Items.Insert(selIndex + 1, newSheetItem);
-                var newViewItem = (SheetViewItem)newSheetItem.Tag;
-                newViewItem.ExprBox.Text = ans;
-                newViewItem.ExprBox.SelectAll();
-                newViewItem.IsFreshAnswer = true;
-                focusViewItem(selIndex + 1);
+                else {
+                    // 通常の計算結果の確定
+                    var ans = viewItem.AnsBox.Text;
+                    var radix = viewItem.SheetItem.RadixMode;
+                    _operator.Insert(selIndex + 1, ans, radix, false, InsertOptions.FreshAnswer | InsertOptions.Focus);
+                }
             }
             else if (e.Modifiers == Keys.Shift && e.KeyCode == Keys.Return) {
                 e.Handled = true;
-                var newItem = new SheetItem();
-                newItem.RadixMode = viewItem.SheetItem.RadixMode;
-                _sheet.Items.Insert(selIndex, newItem);
-                focusViewItem(selIndex);
+                ItemInsert();
             }
             else if (e.Modifiers == Keys.None && e.KeyCode == Keys.Up) {
                 if (selIndex > 0) {
                     e.Handled = true;
-                    focusViewItem(selIndex - 1);
+                    FocusViewItem(selIndex - 1);
                 }
             }
             else if (e.Modifiers == Keys.None && e.KeyCode == Keys.Down) {
                 if (selIndex < _sheet.Items.Count - 1) {
                     e.Handled = true;
-                    focusViewItem(selIndex + 1);
+                    FocusViewItem(selIndex + 1);
                 }
             }
             else if (e.Modifiers == (Keys.Control | Keys.Shift) && e.KeyCode == Keys.Up) {
@@ -443,10 +476,15 @@ namespace Shapoco.Calctus.UI.Sheets {
                 e.Handled = true;
                 _cmenuInsertTime.PerformClick();
             }
+
+            if (_focusedIndex >= 0) {
+                scrollTo(_focusedIndex);
+            }
         }
 
         protected override void OnKeyUp(KeyEventArgs e) {
             base.OnKeyUp(e);
+            if (_sheet == null) return;
             if (e.Modifiers == Keys.None && e.KeyCode == Keys.Apps) {
                 e.Handled = true;
                 var box = FocusedBox;
@@ -461,30 +499,47 @@ namespace Shapoco.Calctus.UI.Sheets {
 
         protected override void OnMouseUp(MouseEventArgs e) {
             base.OnMouseUp(e);
+            if (_sheet == null) return;
             if (e.Button == MouseButtons.Right) {
                 openContextMenu(Cursor.Position);
             }
         }
 
+        protected override void OnMouseWheel(MouseEventArgs e) {
+            base.OnMouseWheel(e);
+            if (_sheet == null) return;
+            if (_scrollBar.Visible && e.Delta != 0) {
+                int min = _scrollBar.Minimum;
+                int max = _scrollBar.Maximum - _scrollBar.LargeChange;
+                _scrollBar.Value = Math.Max(min, Math.Min(max, _scrollBar.Value - e.Delta));
+            }
+        }
+
         protected override void OnResize(EventArgs e) {
             base.OnResize(e);
+            if (_sheet == null) return;
+            if (_focusedIndex >= 0) {
+                scrollTo(_focusedIndex);
+            }
             InvalidateLayout();
         }
 
         protected override void OnPaint(PaintEventArgs e) {
+            if (_sheet == null) return;
+
             processRecalcRequest();
             validateLayout(e.Graphics);
 
+            var s = Settings.Instance;
+
             int n = _sheet.Items.Count;
             for (int i = 0; i < n; i++) {
-                var viewItem = getViewItem(i);
-                if (_focusedRpnOperation != null) {
-                    if (_focusedRpnOperation.StartIndex <= i && i < _focusedRpnOperation.EndIndex) {
-                        viewItem.BackColor = Color.FromArgb(0, 0, 64);
-                    }
-                }
-                else if (i == _focusedIndex) {
-                    viewItem.BackColor = Color.Black;
+                var viewItem = GetViewItem(i);
+                viewItem.IsRpnOperand =
+                    (_focusedRpnOperation != null) &&
+                    (_focusedRpnOperation.StartIndex <= i && i < _focusedRpnOperation.EndIndex);
+                if (i == _focusedIndex) {
+                    viewItem.BackColor = s.Appearance_Color_Active_Background;
                 }
                 else {
                     viewItem.BackColor = Color.Transparent;
@@ -497,9 +552,7 @@ namespace Shapoco.Calctus.UI.Sheets {
         protected override void OnFontChanged(EventArgs e) {
             base.OnFontChanged(e);
             if (_sheet == null) return;
-            foreach (var noteItem in _sheet.Items) {
-                ((SheetViewItem)noteItem.Tag).RelayoutText();
-            }
+            RelayoutText();
         }
 
         protected override void Dispose(bool disposing) {
@@ -540,6 +593,7 @@ namespace Shapoco.Calctus.UI.Sheets {
         }
 
         private RpnOperation parseRpnOperation(int index) {
+            if (_sheet == null) return null;
             if (index < 0 || _sheet.Items.Count <= index) return null;
             
             // 式が演算子のみで構成されている場合は RPN操作とみなす
@@ -622,8 +676,11 @@ namespace Shapoco.Calctus.UI.Sheets {
                     break;
             }
             
-            if (_focusedIndex >= _sheet.Items.Count) {
-                focusViewItem(_sheet.Items.Count - 1);
+            if (_focusedIndex < _sheet.Items.Count) {
+                FocusViewItem(_focusedIndex);
+            }
+            else {
+                FocusViewItem(_sheet.Items.Count - 1);
             }
 
             RequestRecalc();
@@ -648,7 +705,7 @@ namespace Shapoco.Calctus.UI.Sheets {
         private void SheetItem_ExpressionChanged(object sender, EventArgs e) {
             var senderItem = (SheetItem)sender;
             var focusedIndex = FocusedIndex;
-            if (focusedIndex >= 0 && getViewItem(focusedIndex).SheetItem == senderItem) {
+            if (focusedIndex >= 0 && GetViewItem(focusedIndex).SheetItem == senderItem) {
                 _focusedRpnOperation = parseRpnOperation(focusedIndex);
             }
             RequestRecalc();
@@ -659,8 +716,11 @@ namespace Shapoco.Calctus.UI.Sheets {
         }
 
         private void openContextMenu(Point screenPos) {
+            if (_sheet == null) return;
             var selIndex = FocusedIndex;
             var focusBox = getFocusedExprBox();
+            _cmenuUndo.Enabled = _operator.CanUndo;
+            _cmenuRedo.Enabled = _operator.CanRedo;
             _cmenuTextCut.Enabled = focusBox != null && !focusBox.ReadOnly && focusBox.SelectionLength > 0;
             _cmenuTextCopy.Enabled = focusBox != null;
             _cmenuTextPaste.Enabled = focusBox != null && !focusBox.ReadOnly;
@@ -671,7 +731,9 @@ namespace Shapoco.Calctus.UI.Sheets {
             _ctxMenu.Show(screenPos);
         }
 
-        private void focusViewItem(int index) {
+        public void FocusViewItem(int index) {
+            if (_sheet == null) return;
+
             if (_focusedRpnOperation != null) {
                 // RPN操作が確定されないままフォーカスが外されたら文法エラーにするために再計算を要求する
                 RequestRecalc();
@@ -680,7 +742,7 @@ namespace Shapoco.Calctus.UI.Sheets {
             _focusedIndex = index;
             if (_focusedIndex >= 0) {
                 // 選択されたアイテムに所属するボックスがフォーカスされてなければフォーカスする
-                var newViewItem = getViewItem(_focusedIndex);
+                var newViewItem = GetViewItem(_focusedIndex);
                 var oldViewItem = getViewItem(FocusedBox);
                 if (newViewItem != oldViewItem) {
                     newViewItem.ExprBox.Focus();
@@ -702,10 +764,11 @@ namespace Shapoco.Calctus.UI.Sheets {
         }
 
         // 指定の ViewItem のインデックスを返す
-        private int indexOf(SheetViewItem viewItem) => (viewItem != null) ? _sheet.Items.IndexOf(viewItem.SheetItem) : -1;
+        public int IndexOf(SheetViewItem viewItem) => (_sheet != null && viewItem != null) ? _sheet.Items.IndexOf(viewItem.SheetItem) : -1;
 
         // 指定のインデックスの ViewItem を返す
-        private SheetViewItem getViewItem(int index) {
+        public SheetViewItem GetViewItem(int index) {
+            if (_sheet == null) return null;
             return (SheetViewItem)_sheet.Items[index].Tag;
         }
 
@@ -723,10 +786,11 @@ namespace Shapoco.Calctus.UI.Sheets {
 
         // クライアントY座標からインデックスを返す
         private int indexFromY(int y) {
+            if (_sheet == null) return -1;
             if (_sheet.Items.Count == 0) return -1;
             int n = _sheet.Items.Count;
             for (int i = 0; i < n; i++) {
-                var viewItem = getViewItem(i);
+                var viewItem = GetViewItem(i);
                 if (y < _innerBox.Top + viewItem.Bottom) {
                     return i;
                 }
@@ -735,6 +799,7 @@ namespace Shapoco.Calctus.UI.Sheets {
         }
 
         private ExprBoxCore getFocusedExprBox() {
+            if (_sheet == null) return null;
             var viewItem = FocusedViewItem;
             if (viewItem == null) return null;
             if (viewItem.ExprBox.Focused) return viewItem.ExprBox;
@@ -743,10 +808,11 @@ namespace Shapoco.Calctus.UI.Sheets {
         }
 
         private void scrollTo(int index) {
+            if (_sheet == null) return;
             if (index < 0 || index >= _sheet.Items.Count) return;
             validateLayout();
             var client = ClientSize;
-            var viewItem = getViewItem(index);
+            var viewItem = GetViewItem(index);
 
             if (_innerBox.Top + viewItem.Top < 0) {
                 _scrollBar.Value = viewItem.Top;
@@ -757,6 +823,7 @@ namespace Shapoco.Calctus.UI.Sheets {
         }
 
         private void validateLayout() {
+            if (_sheet == null) return;
             if (_layoutValidated) return;
             using (var g = CreateGraphics()) {
                 validateLayout(g);
@@ -764,6 +831,7 @@ namespace Shapoco.Calctus.UI.Sheets {
         }
 
         private void validateLayout(Graphics g) {
+            if (_sheet == null) return;
             if (_layoutValidated) return;
 #if DEBUG
             Console.WriteLine("Relayout");
@@ -775,7 +843,7 @@ namespace Shapoco.Calctus.UI.Sheets {
             int w = client.Width - _scrollBar.Width;
             int y = 0;
             int n = _sheet.Items.Count;
-            _innerBox.SetBounds(0, 0, w, 0);
+            _innerBox.SetBounds(0, _innerBox.Top, w, 0);
             for (int i = 0; i < n; i++) {
                 var sheetItem = _sheet.Items[i];
                 var viewItem = (SheetViewItem)sheetItem.Tag;
@@ -787,6 +855,7 @@ namespace Shapoco.Calctus.UI.Sheets {
             _innerBox.Height = y;
 
             // スクロールバーの調整
+            bool scrollToBottom = _scrollBar.Value >= _scrollBar.Maximum - _scrollBar.LargeChange - 10;
             if (y > client.Height) {
                 _scrollBar.Visible = true;
                 _scrollBar.Maximum = y;
@@ -795,13 +864,18 @@ namespace Shapoco.Calctus.UI.Sheets {
             else {
                 _scrollBar.Visible = false;
             }
+            if (scrollToBottom) {
+                _scrollBar.Value = _scrollBar.Maximum - _scrollBar.LargeChange;
+            }
             _layoutValidated = true;
         }
 
         private void processRecalcRequest() {
+            if (_sheet == null) return;
             if (!_recalcRequested) return;
 #if DEBUG
-            Console.WriteLine("Recalc");
+            var sw = new System.Diagnostics.Stopwatch();
+            sw.Start();
 #endif
             var ctx = _sheet.Run();
             ctx.Undef(Sheet.LastAnsId, true);
@@ -824,8 +898,16 @@ namespace Shapoco.Calctus.UI.Sheets {
             list.Add(new InputCandidate(BoolVal.FalseKeyword, BoolVal.FalseKeyword, "false value", false));
             list.Add(new InputCandidate("def", "def", "user function definition", false));
             list.Add(new InputCandidate("solve", "solve(expr,var,a,b)", "Solves the equation using Newton's method.", true));
+            list.Add(new InputCandidate("plot", "plot(expr,var,name)", "Plots graph.", true));
             _inputCandidates = list.OrderBy(p => p.Id).ToArray();
             _recalcRequested = false;
+
+            // グラフ描画リクエストの処理
+            GraphForm.RequestPlot(_sheet, ctx.PlotCalls.ToArray());
+#if DEBUG
+            sw.Stop();
+            Console.WriteLine("Recalc " + sw.ElapsedMilliseconds + "ms");
+#endif
         }
 
     }

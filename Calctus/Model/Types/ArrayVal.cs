@@ -69,21 +69,24 @@ namespace Shapoco.Calctus.Model.Types {
         public override long AsLong => throw new InvalidCastException();
         public override int AsInt => throw new InvalidCastException();
         public override bool AsBool => throw new InvalidCastException();
+        public override string AsString {
+            get {
+                if (!_raw.All(p => p.IsInteger && char.MinValue <= p.AsReal && p.AsReal <= char.MaxValue)) {
+                    throw new CalctusError("Array contains non-character value.");
+                }
+                var sb = new StringBuilder();
+                foreach(var val in _raw) {
+                    sb.Append((char)val.AsReal);
+                }
+                return sb.ToString();
+            }
+        }
 
         public override real[] AsRealArray => _raw.Select(p => p.AsReal).ToArray();
         public override long[] AsLongArray => _raw.Select(p => p.AsLong).ToArray();
         public override int[] AsIntArray => _raw.Select(p => p.AsInt).ToArray();
 
-        public override string ToString(EvalContext e) {
-            var sb = new StringBuilder();
-            sb.Append("[");
-            for(int i = 0; i < _raw.Length; i++) {
-                if (i > 0) sb.Append(", ");
-                sb.Append(_raw[i].ToString(e));
-            }
-            sb.Append("]");
-            return sb.ToString();
-        }
+        public override string ToString(FormatSettingss fs) => FormatHint.Formatter.Format(this, fs);
 
         protected override RealVal OnAsRealVal() => throw new InvalidCastException();
 

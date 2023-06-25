@@ -13,8 +13,6 @@ using Shapoco.Calctus.Model.Expressions;
 
 namespace Shapoco.Calctus.UI.Sheets {
     class ExprBoxCore : GdiBox {
-        public static readonly Color SelectionColor = Color.FromArgb(128, 0, 128, 255);
-
         public event EventHandler TextChanged;
 
         private GdiControl _owner;
@@ -38,6 +36,7 @@ namespace Shapoco.Calctus.UI.Sheets {
             _edit.TextChanged += Edit_TextChanged;
             _edit.CursorStateChanged += Edit_CursorStateChanged;
             _edit.QueryScreenCursorLocation += Edit_QueryScreenCursorLocation;
+            _edit.QueryToken += _edit_QueryToken;
             _layout.Layout(Text);
         }
 
@@ -100,13 +99,16 @@ namespace Shapoco.Calctus.UI.Sheets {
         }
         public void InsertCurrentTime() {
             if (!ReadOnly) {
+                CandidateHide();
                 _edit.SelectedText = DateTimeFormatter.ToString(DateTime.Now);
             }
         }
 
+        public void CandidateHide() => _edit.CandidatesHide();
+
         public override Size GetPreferredSize() => _layout.PreferredSize;
 
-        public override Point GetCursorPosition() => getCursorRectangle().Location;
+        public override Point GetCursorPosition() => getCursorLocation();
 
         protected override void OnGotFocus() {
             base.OnGotFocus();
@@ -189,6 +191,10 @@ namespace Shapoco.Calctus.UI.Sheets {
             e.Result = PointToScreen(new Point(cursorPosToX(e.CursorPosition), _layout.CharHeight));
         }
 
+        private void _edit_QueryToken(object sender, QueryTokenEventArgs e) {
+            e.Result = _layout.GetTokenAt(e.CursorPosition, e.TokenType);
+        }
+
         public void RelayoutText() => _layout.Layout(Text);
 
         protected override void OnPaint(PaintEventArgs e) {
@@ -210,7 +216,7 @@ namespace Shapoco.Calctus.UI.Sheets {
 
             if (this.Focused && this.SelectionLength != 0) {
                 // 選択範囲の描画
-                using (var brush = new SolidBrush(SelectionColor)) {
+                using (var brush = new SolidBrush(Color.FromArgb(128, Settings.Instance.Appearance_Color_Selection))) {
                     g.FillRectangle(brush, getSelectionRectangle());
                 }
             }
@@ -228,10 +234,15 @@ namespace Shapoco.Calctus.UI.Sheets {
         private int xToCursorPos(int x) => _layout.XtoCursorPos(x - _scrollX);
         private int cursorPosToX(int cursorPos) => _scrollX + _layout.CursorPosToX(cursorPos);
 
+        /// <summary>現在のカーソルの位置を返す</summary>
+        private Point getCursorLocation() {
+            return new Point(cursorPosToX(_edit.CursorPos), 0);
+        }
+
         /// <summary>現在のカーソルの矩形を返す</summary>
         private Rectangle getCursorRectangle() {
-            var cursorX = cursorPosToX(_edit.CursorPos);
-            return new Rectangle(cursorX - 1, 0, 2, _layout.CharHeight);
+            var cursorLoc = getCursorLocation();
+            return new Rectangle(cursorLoc.X - 1, cursorLoc.Y, 2, _layout.CharHeight);
         }
 
         /// <summary>選択領域の矩形を返す</summary>

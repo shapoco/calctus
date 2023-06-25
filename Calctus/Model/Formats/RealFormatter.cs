@@ -9,18 +9,18 @@ using Shapoco.Calctus.Model.Evaluations;
 
 namespace Shapoco.Calctus.Model.Formats {
     class RealFormatter : NumberFormatter {
-        public RealFormatter() : base(new Regex(@"([1-9][0-9]*|0)\.[0-9]+([eE][+-]?[0-9]+)?"), FormatPriority.Neutral) { }
+        public RealFormatter() : base(new Regex(@"([1-9][0-9]*|0?)\.[0-9]+([eE][+-]?[0-9]+)?"), FormatPriority.Weak) { }
 
         public override Val Parse(Match m) {
             return new RealVal(real.Parse(m.Value), new FormatHint(this));
         }
 
-        protected override string OnFormat(Val val, EvalContext e) {
+        protected override string OnFormat(Val val, FormatSettingss fs) {
             if (val is RealVal) {
-                return RealToString(val.AsReal, e, true);
+                return RealToString(val.AsReal, fs, true);
             }
             else {
-                return base.OnFormat(val, e);
+                return base.OnFormat(val, fs);
             }
         }
     }

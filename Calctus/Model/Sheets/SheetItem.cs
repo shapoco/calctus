@@ -24,8 +24,9 @@ namespace Shapoco.Calctus.Model.Sheets {
         public Exception SyntaxError { get; private set; }
         public Exception EvalError { get; private set; }
 
-        public SheetItem(string expr = "") {
+        public SheetItem(string expr = "", RadixMode radix = RadixMode.Auto) {
             ExprText = expr;
+            RadixMode = radix;
         }
 
         public object Tag = null;
@@ -92,6 +93,9 @@ namespace Shapoco.Calctus.Model.Sheets {
                         case RadixMode.Hex: val = val.FormatHex(); break;
                         case RadixMode.Bin: val = val.FormatBin(); break;
                         case RadixMode.Oct: val = val.FormatOct(); break;
+                        case RadixMode.SiPrefix: val = val.FormatSiPrefix(); break;
+                        case RadixMode.BinaryPrefix: val = val.FormatBinaryPrefix(); break;
+                        case RadixMode.Char: val = val.FormatChar(); break;
                     }
                     SetStatus(val, null, null);
                 }

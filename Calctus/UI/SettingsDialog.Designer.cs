@@ -44,6 +44,10 @@
             this.Input_AutoInputAns = new System.Windows.Forms.CheckBox();
             this.Input_IdAutoCompletion = new System.Windows.Forms.CheckBox();
             this.Input_AutoCloseBrackets = new System.Windows.Forms.CheckBox();
+            this.tabPage1 = new System.Windows.Forms.TabPage();
+            this.groupBox2 = new System.Windows.Forms.GroupBox();
+            this.NumberFormat_Decimal_MaxLen = new System.Windows.Forms.NumericUpDown();
+            this.label6 = new System.Windows.Forms.Label();
             this.tabPage2 = new System.Windows.Forms.TabPage();
             this.fontGroup = new System.Windows.Forms.GroupBox();
             this.Appearance_Font_Size = new System.Windows.Forms.NumericUpDown();
@@ -77,11 +81,11 @@
             this.scriptFilterList = new System.Windows.Forms.ListView();
             this.columnHeader1 = ((System.Windows.Forms.ColumnHeader)(new System.Windows.Forms.ColumnHeader()));
             this.columnHeader5 = ((System.Windows.Forms.ColumnHeader)(new System.Windows.Forms.ColumnHeader()));
-            this.tabPage1 = new System.Windows.Forms.TabPage();
-            this.groupBox2 = new System.Windows.Forms.GroupBox();
-            this.NumberFormat_Decimal_MaxLen = new System.Windows.Forms.NumericUpDown();
-            this.label6 = new System.Windows.Forms.Label();
             this.columnHeader6 = ((System.Windows.Forms.ColumnHeader)(new System.Windows.Forms.ColumnHeader()));
+            this.label9 = new System.Windows.Forms.Label();
+            this.label10 = new System.Windows.Forms.Label();
+            this.colorGroup = new System.Windows.Forms.GroupBox();
+            this.toggleLightDarkModeButton = new System.Windows.Forms.Button();
             this.Hotkey_KeyCode = new Shapoco.Calctus.UI.KeyCodeBox();
             this.eNoteGroup.SuspendLayout();
             ((System.ComponentModel.ISupportInitialize)(this.NumberFormat_Exp_NegativeMax)).BeginInit();
@@ -91,15 +95,16 @@
             this.groupBox1.SuspendLayout();
             this.tabPage4.SuspendLayout();
             this.groupBox3.SuspendLayout();
+            this.tabPage1.SuspendLayout();
+            this.groupBox2.SuspendLayout();
+            ((System.ComponentModel.ISupportInitialize)(this.NumberFormat_Decimal_MaxLen)).BeginInit();
             this.tabPage2.SuspendLayout();
             this.fontGroup.SuspendLayout();
             ((System.ComponentModel.ISupportInitialize)(this.Appearance_Font_Size)).BeginInit();
             this.tabPage5.SuspendLayout();
             this.tabPage6.SuspendLayout();
             this.scriptGroup.SuspendLayout();
-            this.tabPage1.SuspendLayout();
-            this.groupBox2.SuspendLayout();
-            ((System.ComponentModel.ISupportInitialize)(this.NumberFormat_Decimal_MaxLen)).BeginInit();
+            this.colorGroup.SuspendLayout();
             this.SuspendLayout();
             // 
             // closeButton
@@ -340,8 +345,64 @@
             this.Input_AutoCloseBrackets.Text = "Auto close brackets";
             this.Input_AutoCloseBrackets.UseVisualStyleBackColor = true;
             // 
+            // tabPage1
+            // 
+            this.tabPage1.Controls.Add(this.NumberFormat_Exp_Enabled);
+            this.tabPage1.Controls.Add(this.groupBox2);
+            this.tabPage1.Controls.Add(this.eNoteGroup);
+            this.tabPage1.Location = new System.Drawing.Point(4, 22);
+            this.tabPage1.Name = "tabPage1";
+            this.tabPage1.Padding = new System.Windows.Forms.Padding(3);
+            this.tabPage1.Size = new System.Drawing.Size(390, 292);
+            this.tabPage1.TabIndex = 2;
+            this.tabPage1.Text = "Format";
+            this.tabPage1.UseVisualStyleBackColor = true;
+            // 
+            // groupBox2
+            // 
+            this.groupBox2.Controls.Add(this.NumberFormat_Decimal_MaxLen);
+            this.groupBox2.Controls.Add(this.label6);
+            this.groupBox2.Location = new System.Drawing.Point(6, 6);
+            this.groupBox2.Name = "groupBox2";
+            this.groupBox2.Size = new System.Drawing.Size(378, 48);
+            this.groupBox2.TabIndex = 0;
+            this.groupBox2.TabStop = false;
+            this.groupBox2.Text = "Decimal";
+            // 
+            // NumberFormat_Decimal_MaxLen
+            // 
+            this.NumberFormat_Decimal_MaxLen.Location = new System.Drawing.Point(222, 18);
+            this.NumberFormat_Decimal_MaxLen.Maximum = new decimal(new int[] {
+            28,
+            0,
+            0,
+            0});
+            this.NumberFormat_Decimal_MaxLen.Minimum = new decimal(new int[] {
+            1,
+            0,
+            0,
+            0});
+            this.NumberFormat_Decimal_MaxLen.Name = "NumberFormat_Decimal_MaxLen";
+            this.NumberFormat_Decimal_MaxLen.Size = new System.Drawing.Size(65, 19);
+            this.NumberFormat_Decimal_MaxLen.TabIndex = 1;
+            this.NumberFormat_Decimal_MaxLen.Value = new decimal(new int[] {
+            8,
+            0,
+            0,
+            0});
+            // 
+            // label6
+            // 
+            this.label6.AutoSize = true;
+            this.label6.Location = new System.Drawing.Point(11, 21);
+            this.label6.Name = "label6";
+            this.label6.Size = new System.Drawing.Size(205, 12);
+            this.label6.TabIndex = 0;
+            this.label6.Text = "Max length of decimal place to display:";
+            // 
             // tabPage2
             // 
+            this.tabPage2.Controls.Add(this.colorGroup);
             this.tabPage2.Controls.Add(this.fontGroup);
             this.tabPage2.Location = new System.Drawing.Point(4, 22);
             this.tabPage2.Name = "tabPage2";
@@ -356,27 +417,29 @@
             this.fontGroup.Controls.Add(this.Appearance_Font_Size);
             this.fontGroup.Controls.Add(this.label5);
             this.fontGroup.Controls.Add(this.label4);
+            this.fontGroup.Controls.Add(this.label10);
+            this.fontGroup.Controls.Add(this.label9);
             this.fontGroup.Controls.Add(this.label3);
             this.fontGroup.Controls.Add(this.Appearance_Font_Bold);
             this.fontGroup.Controls.Add(this.Appearance_Font_Expr_Name);
             this.fontGroup.Controls.Add(this.Appearance_Font_Button_Name);
             this.fontGroup.Location = new System.Drawing.Point(6, 6);
             this.fontGroup.Name = "fontGroup";
-            this.fontGroup.Size = new System.Drawing.Size(378, 104);
+            this.fontGroup.Size = new System.Drawing.Size(378, 87);
             this.fontGroup.TabIndex = 0;
             this.fontGroup.TabStop = false;
             this.fontGroup.Text = "Font";
             // 
             // Appearance_Font_Size
             // 
-            this.Appearance_Font_Size.Location = new System.Drawing.Point(81, 70);
+            this.Appearance_Font_Size.Location = new System.Drawing.Point(275, 30);
             this.Appearance_Font_Size.Minimum = new decimal(new int[] {
             1,
             0,
             0,
             0});
             this.Appearance_Font_Size.Name = "Appearance_Font_Size";
-            this.Appearance_Font_Size.Size = new System.Drawing.Size(65, 19);
+            this.Appearance_Font_Size.Size = new System.Drawing.Size(44, 19);
             this.Appearance_Font_Size.TabIndex = 5;
             this.Appearance_Font_Size.Value = new decimal(new int[] {
             9,
@@ -387,7 +450,7 @@
             // label5
             // 
             this.label5.AutoSize = true;
-            this.label5.Location = new System.Drawing.Point(6, 47);
+            this.label5.Location = new System.Drawing.Point(6, 58);
             this.label5.Name = "label5";
             this.label5.Size = new System.Drawing.Size(69, 12);
             this.label5.TabIndex = 2;
@@ -396,7 +459,7 @@
             // label4
             // 
             this.label4.AutoSize = true;
-            this.label4.Location = new System.Drawing.Point(6, 21);
+            this.label4.Location = new System.Drawing.Point(6, 32);
             this.label4.Name = "label4";
             this.label4.Size = new System.Drawing.Size(47, 12);
             this.label4.TabIndex = 0;
@@ -405,16 +468,16 @@
             // label3
             // 
             this.label3.AutoSize = true;
-            this.label3.Location = new System.Drawing.Point(6, 72);
+            this.label3.Location = new System.Drawing.Point(79, 15);
             this.label3.Name = "label3";
             this.label3.Size = new System.Drawing.Size(28, 12);
             this.label3.TabIndex = 4;
-            this.label3.Text = "Size:";
+            this.label3.Text = "Font";
             // 
             // Appearance_Font_Bold
             // 
             this.Appearance_Font_Bold.AutoSize = true;
-            this.Appearance_Font_Bold.Location = new System.Drawing.Point(324, 71);
+            this.Appearance_Font_Bold.Location = new System.Drawing.Point(325, 31);
             this.Appearance_Font_Bold.Name = "Appearance_Font_Bold";
             this.Appearance_Font_Bold.Size = new System.Drawing.Size(47, 16);
             this.Appearance_Font_Bold.TabIndex = 6;
@@ -426,9 +489,9 @@
             this.Appearance_Font_Expr_Name.AutoCompleteMode = System.Windows.Forms.AutoCompleteMode.Suggest;
             this.Appearance_Font_Expr_Name.AutoCompleteSource = System.Windows.Forms.AutoCompleteSource.ListItems;
             this.Appearance_Font_Expr_Name.FormattingEnabled = true;
-            this.Appearance_Font_Expr_Name.Location = new System.Drawing.Point(81, 44);
+            this.Appearance_Font_Expr_Name.Location = new System.Drawing.Point(81, 55);
             this.Appearance_Font_Expr_Name.Name = "Appearance_Font_Expr_Name";
-            this.Appearance_Font_Expr_Name.Size = new System.Drawing.Size(290, 20);
+            this.Appearance_Font_Expr_Name.Size = new System.Drawing.Size(188, 20);
             this.Appearance_Font_Expr_Name.TabIndex = 3;
             // 
             // Appearance_Font_Button_Name
@@ -436,9 +499,9 @@
             this.Appearance_Font_Button_Name.AutoCompleteMode = System.Windows.Forms.AutoCompleteMode.Suggest;
             this.Appearance_Font_Button_Name.AutoCompleteSource = System.Windows.Forms.AutoCompleteSource.ListItems;
             this.Appearance_Font_Button_Name.FormattingEnabled = true;
-            this.Appearance_Font_Button_Name.Location = new System.Drawing.Point(81, 18);
+            this.Appearance_Font_Button_Name.Location = new System.Drawing.Point(81, 29);
             this.Appearance_Font_Button_Name.Name = "Appearance_Font_Button_Name";
-            this.Appearance_Font_Button_Name.Size = new System.Drawing.Size(290, 20);
+            this.Appearance_Font_Button_Name.Size = new System.Drawing.Size(188, 20);
             this.Appearance_Font_Button_Name.TabIndex = 1;
             // 
             // tabPage5
@@ -666,65 +729,47 @@
             this.columnHeader5.Text = "Command";
             this.columnHeader5.Width = 128;
             // 
-            // tabPage1
-            // 
-            this.tabPage1.Controls.Add(this.NumberFormat_Exp_Enabled);
-            this.tabPage1.Controls.Add(this.groupBox2);
-            this.tabPage1.Controls.Add(this.eNoteGroup);
-            this.tabPage1.Location = new System.Drawing.Point(4, 22);
-            this.tabPage1.Name = "tabPage1";
-            this.tabPage1.Padding = new System.Windows.Forms.Padding(3);
-            this.tabPage1.Size = new System.Drawing.Size(390, 292);
-            this.tabPage1.TabIndex = 2;
-            this.tabPage1.Text = "Format";
-            this.tabPage1.UseVisualStyleBackColor = true;
-            // 
-            // groupBox2
-            // 
-            this.groupBox2.Controls.Add(this.NumberFormat_Decimal_MaxLen);
-            this.groupBox2.Controls.Add(this.label6);
-            this.groupBox2.Location = new System.Drawing.Point(6, 6);
-            this.groupBox2.Name = "groupBox2";
-            this.groupBox2.Size = new System.Drawing.Size(378, 48);
-            this.groupBox2.TabIndex = 0;
-            this.groupBox2.TabStop = false;
-            this.groupBox2.Text = "Decimal";
-            // 
-            // NumberFormat_Decimal_MaxLen
-            // 
-            this.NumberFormat_Decimal_MaxLen.Location = new System.Drawing.Point(222, 18);
-            this.NumberFormat_Decimal_MaxLen.Maximum = new decimal(new int[] {
-            28,
-            0,
-            0,
-            0});
-            this.NumberFormat_Decimal_MaxLen.Minimum = new decimal(new int[] {
-            1,
-            0,
-            0,
-            0});
-            this.NumberFormat_Decimal_MaxLen.Name = "NumberFormat_Decimal_MaxLen";
-            this.NumberFormat_Decimal_MaxLen.Size = new System.Drawing.Size(65, 19);
-            this.NumberFormat_Decimal_MaxLen.TabIndex = 1;
-            this.NumberFormat_Decimal_MaxLen.Value = new decimal(new int[] {
-            8,
-            0,
-            0,
-            0});
-            // 
-            // label6
-            // 
-            this.label6.AutoSize = true;
-            this.label6.Location = new System.Drawing.Point(11, 21);
-            this.label6.Name = "label6";
-            this.label6.Size = new System.Drawing.Size(205, 12);
-            this.label6.TabIndex = 0;
-            this.label6.Text = "Max length of decimal place to display:";
-            // 
             // columnHeader6
             // 
             this.columnHeader6.Text = "Parameter";
             this.columnHeader6.Width = 143;
+            // 
+            // label9
+            // 
+            this.label9.AutoSize = true;
+            this.label9.Location = new System.Drawing.Point(273, 15);
+            this.label9.Name = "label9";
+            this.label9.Size = new System.Drawing.Size(26, 12);
+            this.label9.TabIndex = 4;
+            this.label9.Text = "Size";
+            // 
+            // label10
+            // 
+            this.label10.AutoSize = true;
+            this.label10.Location = new System.Drawing.Point(323, 15);
+            this.label10.Name = "label10";
+            this.label10.Size = new System.Drawing.Size(31, 12);
+            this.label10.TabIndex = 4;
+            this.label10.Text = "Style";
+            // 
+            // colorGroup
+            // 
+            this.colorGroup.Controls.Add(this.toggleLightDarkModeButton);
+            this.colorGroup.Location = new System.Drawing.Point(6, 99);
+            this.colorGroup.Name = "colorGroup";
+            this.colorGroup.Size = new System.Drawing.Size(378, 187);
+            this.colorGroup.TabIndex = 1;
+            this.colorGroup.TabStop = false;
+            this.colorGroup.Text = "Color";
+            // 
+            // toggleLightDarkModeButton
+            // 
+            this.toggleLightDarkModeButton.Location = new System.Drawing.Point(215, 158);
+            this.toggleLightDarkModeButton.Name = "toggleLightDarkModeButton";
+            this.toggleLightDarkModeButton.Size = new System.Drawing.Size(157, 23);
+            this.toggleLightDarkModeButton.TabIndex = 0;
+            this.toggleLightDarkModeButton.Text = "Toggle Light / Dark Mode";
+            this.toggleLightDarkModeButton.UseVisualStyleBackColor = true;
             // 
             // Hotkey_KeyCode
             // 
@@ -767,6 +812,11 @@
             this.tabPage4.ResumeLayout(false);
             this.groupBox3.ResumeLayout(false);
             this.groupBox3.PerformLayout();
+            this.tabPage1.ResumeLayout(false);
+            this.tabPage1.PerformLayout();
+            this.groupBox2.ResumeLayout(false);
+            this.groupBox2.PerformLayout();
+            ((System.ComponentModel.ISupportInitialize)(this.NumberFormat_Decimal_MaxLen)).EndInit();
             this.tabPage2.ResumeLayout(false);
             this.fontGroup.ResumeLayout(false);
             this.fontGroup.PerformLayout();
@@ -776,11 +826,7 @@
             this.tabPage6.PerformLayout();
             this.scriptGroup.ResumeLayout(false);
             this.scriptGroup.PerformLayout();
-            this.tabPage1.ResumeLayout(false);
-            this.tabPage1.PerformLayout();
-            this.groupBox2.ResumeLayout(false);
-            this.groupBox2.PerformLayout();
-            ((System.ComponentModel.ISupportInitialize)(this.NumberFormat_Decimal_MaxLen)).EndInit();
+            this.colorGroup.ResumeLayout(false);
             this.ResumeLayout(false);
 
         }
@@ -846,5 +892,9 @@
         private System.Windows.Forms.Button scriptFilterMoveDown;
         private System.Windows.Forms.Button scriptFilterMoveUp;
         private System.Windows.Forms.ColumnHeader columnHeader6;
+        private System.Windows.Forms.GroupBox colorGroup;
+        private System.Windows.Forms.Label label10;
+        private System.Windows.Forms.Label label9;
+        private System.Windows.Forms.Button toggleLightDarkModeButton;
     }
 }

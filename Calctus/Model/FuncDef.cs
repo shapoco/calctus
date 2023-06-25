@@ -55,6 +55,8 @@ namespace Shapoco.Calctus.Model {
         public static readonly FuncDef bi = new FuncDef("bi", (e, a) => a[0].FormatBinaryPrefix(), "Converts the value to binary prefixed representation.");
         public static readonly FuncDef char_1 = new FuncDef("char", (e, a) => a[0].FormatChar(), "Converts the value to character representation.");
         public static readonly FuncDef datetime = new FuncDef("datetime", (e, a) => a[0].FormatDateTime(), "Converts the value to datetime representation.");
+        public static readonly FuncDef array = new FuncDef("array", (e, a) => a[0].FormatDefault(), "Converts the string value to array representation.");
+        public static readonly FuncDef str = new FuncDef("str", (e, a) => a[0].FormatString(), "Converts the array value to string representation.");
 
         public static readonly FuncDef real = new FuncDef("real", (e, a) => a[0].AsRealVal().FormatReal(), "Converts the value to a real number.");
         public static readonly FuncDef rat = new FuncDef("rat", (e, a) => new FracVal(RMath.FindFrac(a[0].AsReal)), "Rational fraction approximation.");
@@ -63,9 +65,9 @@ namespace Shapoco.Calctus.Model {
         public static readonly FuncDef pow = new FuncDef("pow", 2, (e, a) => new RealVal(RMath.Pow(a[0].AsReal, a[1].AsReal), a[0].FormatHint), "Power");
         public static readonly FuncDef sqrt = new FuncDef("sqrt", (e, a) => new RealVal(RMath.Sqrt(a[0].AsReal)), "Square root");
         public static readonly FuncDef log = new FuncDef("log", (e, a) => new RealVal(RMath.Log(a[0].AsReal)), "Logarithm");
-        public static readonly FuncDef log2 = new FuncDef("log2", (e, a) => new RealVal(RMath.Log2(a[0].AsReal)), "Binary logarithm");
+        public static readonly FuncDef log2 = new FuncDef("log2", (e, a) => new RealVal(RMath.Log2(a[0].AsReal, e.Settings.AccuracyPriority)), "Binary logarithm");
         public static readonly FuncDef log10 = new FuncDef("log10", (e, a) => new RealVal(RMath.Log10(a[0].AsReal)), "Common logarithm");
-        public static readonly FuncDef clog2 = new FuncDef("clog2", (e, a) => new RealVal(RMath.Ceiling(RMath.Log2(a[0].AsReal))).FormatInt(), "Ceiling of binary logarithm");
+        public static readonly FuncDef clog2 = new FuncDef("clog2", (e, a) => new RealVal(RMath.Ceiling(RMath.Log2(a[0].AsReal, e.Settings.AccuracyPriority))).FormatInt(), "Ceiling of binary logarithm");
         public static readonly FuncDef clog10 = new FuncDef("clog10", (e, a) => new RealVal(RMath.Ceiling(RMath.Log10(a[0].AsReal))).FormatInt(), "Ceiling of common logarithm");
 
         public static readonly FuncDef sin = new FuncDef("sin", (e, a) => new RealVal(RMath.Sin(a[0].AsReal)), "Sine");

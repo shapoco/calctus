@@ -387,6 +387,7 @@ namespace Shapoco.Calctus.UI.Sheets {
             var g = e.Graphics;
             var bkp = g.Save();
             g.TranslateTransform(parent.Left, parent.Top);
+            g.IntersectClip(parent.ClientBounds);
             var clipRect = e.ClipRectangle;
             clipRect.Offset(-parent.Left, -parent.Top);
             var args = new PaintEventArgs(e.Graphics, clipRect);

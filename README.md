@@ -1,6 +1,6 @@
 # Calctus
 
-A calculator for Windows.
+Calctus (カルクタス) is a calculator application for Windows developed for engineers.
 
 ![Screen Shot](img/ss.png)
 
@@ -37,10 +37,11 @@ A calculator for Windows.
 |Binary Prefixed|`123ki`, `456Mi`|
 |Fraction|~~`2:3`~~ → `2$3`|
 |Character|`'A'`|
+|String:new:|`"ABC"`|
 |Date Time|`#2022/34/56 12:34:56#`|
 |Web Color|`#123`, `#112233`|
 |Boolean|`true`, `false`|
-|Array:new:|`[1, 2, 3]`|
+|Array|`[1, 2, 3]`|
 
 ### Operators
 
@@ -56,12 +57,12 @@ A calculator for Windows.
 |XOR|`+\|`|`Int64`|
 |Logical Shift|`<<`, `>>`|`Int64`|
 |Arithmetic Shift|`<<<`, `>>>`|`Int64`|
-|Bit/Part Select:new:|`[ ]`, `[ : ]`|`Int64`|
+|Bit/Part Select|`[ ]`, `[ : ]`|`Int64`|
 |Compare|`>`, `>=`, `<`, `<=`, `==`, `!=`|`Decimal`|
 |Logical NOT|`!`|`Boolean`|
 |Logical AND|`&&`|`Boolean`|
 |Logical OR|`\|\|`|`Boolean`|
-|Conditional Operator:new:|`? :`|`Boolean`|
+|Conditional Operator|`? :`|`Boolean`|
 
 ### Variables
 
@@ -109,14 +110,14 @@ User-defined constants can also be used.
 |Fractions|`rat(x)`, `rat(x,a)`, `real(x)`|`Decimal`|
 |Representation|`dec(x)`, `hex(x)`, `bin(x)`, `oct(x)`, `char(x)`, `si(x)`, `bi(x)`, `datetime(x)`|`Decimal`|
 |Date Time|`now()`, ~~`fromyears(x)`~~, `fromdays(x)`, `fromhours(x)`, `fromminutes(x)`, `fromseconds(x)`, ~~`toyears(x)`~~, `todays(x)`, `tohours(x)`, `tominutes(x)`, `toseconds(x)`|`Double`|
-|Color|`rgb(r,g,b)`, `rgb(rgb)`, `hsv2rgb(h,s,v)`, `rgb2hsv(rgb)`, `hsl2rgb(h,s,l)`, `rgb2hsl(rgb)`, `yuv2rgb(y,u,v)`, `yuv2rgb(yuv)`, `rgb2yuv(r,g,b)`, `rgb2yuv(rgb)`, `rgbto565(rgb)`:new:, `rgbfrom565(rgb565)`:new:, `pack565(r5,g6,b5)`:new:, `unpack565(rgb565)`:new:|`Decimal`|
+|Color|`rgb(r,g,b)`, `rgb(rgb)`, `hsv2rgb(h,s,v)`, `rgb2hsv(rgb)`, `hsl2rgb(h,s,l)`, `rgb2hsl(rgb)`, `yuv2rgb(y,u,v)`, `yuv2rgb(yuv)`, `rgb2yuv(r,g,b)`, `rgb2yuv(rgb)`, `rgbto565(rgb)`, `rgbfrom565(rgb565)`, `pack565(r5,g6,b5)`, `unpack565(rgb565)`|`Decimal`|
 |E-series|Rounding to the E-series value: `eXfloor(x)`, `eXceil(x)`, `eXround(x)`<br>Calculation of voltage divider resistance: `eXratiol(x)`, `eXratioh(x)`<br> (`X`=`3`, `6`, `12`, `24`, `48`, `96`, `192`)|`Decimal`|
-|Prime Number|`isprime(x)`, `prime(n)`, `primefact(x)`:new:|`Int64`|
+|Prime Number|`isprime(x)`, `prime(n)`, `primefact(x)`|`Int64`|
 |Random|`rand()`, `rand(min,max)`, `rand32()`, `rand64()`|`Decimal`, `Int64`|
 |Assertion|`assert(expr)`|`Boolean`|
 |~~Special~~|~~`poll(x)`, `alarm(x)`~~|~~any~~|
 
-### User Defined Function :new:
+### User Defined Function 
 
 User functions can be defined using the `def` keyword.
 
@@ -146,7 +147,7 @@ Function arguments are passed to the script as command line arguments, and the s
 
 If you wish to use a scripting language other than Python, please register the extension and interpreter in the `Scripts` tab of the Settings dialog.
 
-### Solve Function (Newton-Raphson method) :new:
+### Solve Function (Newton-Raphson method) 
 
 Use the `solve` keyword to solve equations numerically by Newton's method.
 
@@ -154,7 +155,7 @@ Use the `solve` keyword to solve equations numerically by Newton's method.
 solve(x^2=2,x) // --> Calctus answers [-1.414213562, 1.414213562].
 ```
 
-By default, the Newton's method is applied with an initial value of 101 values between -10 and 10. Therefore, if the solution is concentrated in a narrow range or exists outside the range of -10 to 10, the expected results will not be obtained.
+By default, the Newton's method is performed based on automatically generated initial values. Therefore, it may produce inaccurate results if the solution is concentrated in a small area or exists far from the origin.
 
 In such cases, the 3rd argument can be given an initial value.
 
@@ -176,7 +177,7 @@ solve(sin(x),x,-5,5) // --> Calctus answers [-3.141592654, 0, 3.141592654].
 
 :warning: Note that the solution obtained using the `solve` keyword is an approximation and does not necessarily correspond to the analytical solution.
 
-### Part-selection :new:
+### Part-selection 
 
 Verilog-style part selection is available for arrays and scalar values.
 
@@ -192,7 +193,7 @@ x[11:4]      // --> Calctus answers 0x23.
 x[11:4]=0xab // --> Calctus answers 0x1ab4.
 ```
 
-### Omission of Opening Parentheses :new:
+### Omission of Opening Parentheses 
 
 The opening parenthesis at the beginning of a line can be omitted.
 
@@ -203,6 +204,12 @@ The opening parenthesis at the beginning of a line can be omitted.
 ### Auto-Completion
 
 ![](img/auto_completion.gif)
+
+### Exponent Adjustment:new:
+
+Exponent-part of E-notation and SI prefix can be adjusted using Alt + Arrow keys.
+
+![](img/exp_adj.gif)
 
 ### Assertion
 
@@ -225,9 +232,13 @@ If you use RPN operation, it is recommended to turn off the automatic input of "
 
 ![](img/rpn_ops.gif)
 
-### ~~Timer~~
+### Graph Plotting :new:
 
-The timer function has been eliminated.
+The plot keyword can be used to draw a graph.
+
+:warning: This feature is experimental and may be removed in future versions.
+
+![](img/graph.png)
 
 ### Keyboard Shortcut
 
@@ -235,6 +246,8 @@ The timer function has been eliminated.
 |:--|:--|
 |`Shift` + `Return`|Insert a new line before current expression|
 |`Shift` + `Delete`|Delete current expression|
+|`Ctrl` + `Z`|Undo|
+|`Ctrl` + `Y`:new:|Redo|
 |`Ctrl` + `X`|Cut|
 |`Ctrl` + `C`|Copy|
 |`Ctrl` + `Shift` + `C`|Copy all expressions and answers|
@@ -242,15 +255,16 @@ The timer function has been eliminated.
 |`Ctrl` + `Shift` + `V`|Paste with formatting|
 |`Ctrl` + `Shift` + `N`|Insert current time|
 |`Ctrl` + `Shift` + `Del`|Delete all expressions|
-|`Ctrl` + `Shift` + `Up`|Item move up|
-|`Ctrl` + `Shift` + `Down`|Item move down|
+|`Ctrl` + `Shift` + `Up`/`Down`|Item move up/down|
+|`Alt` ( + `Shift` ) + `Left`/`Right`:new:|Move decimal point|
+|`Alt` + `Up`/`Down`:new:|Change SI prefix|
 |`F1`|Help|
 |`F5`|Recalculation|
 |`F8`|Radix Mode = Auto|
 |`F9`|Radix Mode = Dec|
 |`F10`|Radix Mode = Hex|
 |`F11`|Radix Mode = Bin|
-|`F12`|Radix Mode = Oct|
+|`F12`|Radix Mode = ~~Oct~~ → SI Prefixed|
 
 ----
 
@@ -265,5 +279,7 @@ The timer function has been eliminated.
 ![](img/settings_constants.png)
 
 ![](img/settings_details.png)
+
+![](img/settings_scripts.png)
 
 ----

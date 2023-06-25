@@ -15,6 +15,9 @@ using Shapoco.Calctus.UI.Sheets;
 
 namespace Shapoco.Calctus.UI {
     internal partial class MainForm : Form {
+        private static MainForm _instance = null;
+        public static MainForm Instance => _instance;
+
         [DllImport("user32.dll")]
         public static extern IntPtr GetForegroundWindow();
 
@@ -25,15 +28,11 @@ namespace Shapoco.Calctus.UI {
         private Point _startupWindowPos;
         private Size _startupWindowSize;
         private bool _topMost = false;
-
-        class CustomProfessionalColors : ProfessionalColorTable {
-            public override Color ToolStripGradientBegin { get { return Color.FromArgb(64, 64, 64); } }
-            public override Color ToolStripGradientMiddle { get { return Color.FromArgb(56, 56, 56); } }
-            public override Color ToolStripGradientEnd { get { return Color.FromArgb(48, 48, 48); } }
-            public override Color ToolStripBorder { get { return Color.FromArgb(64, 64, 64); } }
-        }
+        private FormWindowState _lastWindowState = FormWindowState.Normal;
 
         public MainForm() {
+            _instance = this;
+
             // フォントの設定が反映されたときにウィンドウサイズも変わってしまうので
             // 起動時のウィンドウサイズ設定値は先に保持しておいて最後に反映する
             var s = Settings.Instance;
@@ -43,13 +42,16 @@ namespace Shapoco.Calctus.UI {
             InitializeComponent();
             if (this.DesignMode) return;
 
-            ToolStripManager.Renderer = new ToolStripProfessionalRenderer(new CustomProfessionalColors());
+            var sheet = new Sheet();
+            sheet.Items.Add(new SheetItem());
+            sheetView.Sheet = sheet;
 
             this.Text = Application.ProductName + " (v" + System.Reflection.Assembly.GetExecutingAssembly().GetName().Version + ")";
             this.KeyPreview = true; 
             this.KeyDown += MainForm_KeyDown;
             this.Load += MainForm_Load;
             this.Activated += MainForm_Activated;
+            this.Deactivate += MainForm_Deactivate;
             this.Shown += MainForm_Shown;
             this.VisibleChanged += MainForm_VisibleChanged;
             this.FormClosing += MainForm_FormClosing;
@@ -65,22 +67,30 @@ namespace Shapoco.Calctus.UI {
             notifyIcon.MouseClick += NotifyIcon_MouseClick;
 
             sheetView.RadixModeChanged += (sender, e) => { RadixMode = ((SheetView)sender).ActiveRadixMode; };
-            sheetView.DialogOpening += (sender, e) => { TopMost = false; };
-            sheetView.DialogClosed += (sender, e) => { TopMost = _topMost; };
+            sheetView.DialogOpening += (sender, e) => { suspendTopMost(); };
+            sheetView.DialogClosed += (sender, e) => { resumeTopMost(); };
 
             radixAutoButton.CheckedChanged += (sender, e) => { RadixCheckedChanged((RadioButton)sender, RadixMode.Auto); };
             radixDecButton.CheckedChanged += (sender, e) => { RadixCheckedChanged((RadioButton)sender, RadixMode.Dec); };
             radixHexButton.CheckedChanged += (sender, e) => { RadixCheckedChanged((RadioButton)sender, RadixMode.Hex); };
             radixBinButton.CheckedChanged += (sender, e) => { RadixCheckedChanged((RadioButton)sender, RadixMode.Bin); };
             radixOctButton.CheckedChanged += (sender, e) => { RadixCheckedChanged((RadioButton)sender, RadixMode.Oct); };
+            radixSiButton.CheckedChanged += (sender, e) => { RadixCheckedChanged((RadioButton)sender, RadixMode.SiPrefix); };
+            radixKibiButton.CheckedChanged += (sender, e) => { RadixCheckedChanged((RadioButton)sender, RadixMode.BinaryPrefix); };
+            radixCharButton.CheckedChanged += (sender, e) => { RadixCheckedChanged((RadioButton)sender, RadixMode.Char); };
             radixAutoButton.Checked = true;
 
             toolTip.SetToolTip(radixAutoButton, "Automatic (F8)");
             toolTip.SetToolTip(radixDecButton, "Decimal (F9)");
             toolTip.SetToolTip(radixHexButton, "Hexadecimal (F10)");
             toolTip.SetToolTip(radixBinButton, "Binary (F11)");
-            toolTip.SetToolTip(radixOctButton, "Octal (F12)");
+            toolTip.SetToolTip(radixOctButton, "Octal");
+            toolTip.SetToolTip(radixSiButton, "SI Prefix (F12)");
+            toolTip.SetToolTip(radixKibiButton, "Binary Prefix");
+            toolTip.SetToolTip(radixCharButton, "Character");
 
+            undoButton.Click += (sender, e) => { sheetView.Undo(); };
+            redoButton.Click += (sender, e) => { sheetView.Redo(); };
             copyButton.Click += (sender, e) => { sheetView.Copy(); };
             pasteButton.Click += (sender, e) => { sheetView.Paste(); };
             insertButton.Click += (sender, e) => { sheetView.ItemInsert(); };
@@ -93,7 +103,7 @@ namespace Shapoco.Calctus.UI {
             helpButton.Click += (sender, e) => { System.Diagnostics.Process.Start(@"https://github.com/shapoco/calctus"); };
 
             contextOpen.Click += (sender, e) => { showForeground(); };
-            contextExit.Click += (sender, e) => { Application.Exit(); };
+            contextExit.Click += (sender, e) => { appExit(); };
 
             _focusTimer.Tick += _focusTimer_Tick;
         }
@@ -119,6 +129,12 @@ namespace Shapoco.Calctus.UI {
 
         private void MainForm_Activated(object sender, EventArgs e) {
             ExtFuncDef.ScanScripts();
+            //GraphForm.ReshowAll();
+            GraphForm.SetTopMostAll(true);
+        }
+
+        private void MainForm_Deactivate(object sender, EventArgs e) {
+            GraphForm.SetTopMostAll(_topMost);
         }
 
         private void MainForm_Shown(object sender, EventArgs e) {
@@ -141,9 +157,10 @@ namespace Shapoco.Calctus.UI {
 
         private void MainForm_FormClosing(object sender, FormClosingEventArgs e) {
             var s = Settings.Instance;
-            if (e.CloseReason == CloseReason.UserClosing && s.Startup_TrayIcon) {
+            if (e.CloseReason == CloseReason.UserClosing && notifyIcon.Visible) {
                 e.Cancel = true;
                 this.Visible = false;
+                GraphForm.HideAll();
             }
         }
 
@@ -158,6 +175,15 @@ namespace Shapoco.Calctus.UI {
                 s.Window_Width = this.Width;
                 s.Window_Height = this.Height;
             }
+            if (WindowState != _lastWindowState) {
+                if (WindowState == FormWindowState.Minimized) {
+                    GraphForm.SetWindowStatusAll(FormWindowState.Minimized);
+                }
+                else {
+                    GraphForm.SetWindowStatusAll(FormWindowState.Normal);
+                }
+            }
+            _lastWindowState = WindowState;
         }
 
         private void MainForm_LocationChanged(object sender, EventArgs e) {
@@ -184,9 +210,34 @@ namespace Shapoco.Calctus.UI {
                 var font_mono_large = new Font(s.Appearance_Font_Expr_Name, s.Appearance_Font_Size * font_large_coeff, font_style);
                 this.Font = font_ui_normal;
                 sheetView.Font = font_mono_large;
+
+                ToolStripManager.Renderer = new ToolStripProfessionalRenderer(new CustomProfessionalColors());
+
+                sheetView.BackColor = s.Appearance_Color_Background;
+                sheetView.ForeColor = s.Appearance_Color_Text;
+                bottomPanel.BackColor = s.Appearance_Color_Background;
+                radixAutoButton.BackColor = s.Appearance_Color_Button_Face;
+                radixDecButton.BackColor = s.Appearance_Color_Button_Face;
+                radixHexButton.BackColor = s.Appearance_Color_Button_Face;
+                radixBinButton.BackColor = s.Appearance_Color_Button_Face;
+                radixOctButton.BackColor = s.Appearance_Color_Button_Face;
+                radixSiButton.BackColor = s.Appearance_Color_Button_Face;
+                radixKibiButton.BackColor = s.Appearance_Color_Button_Face;
+                radixCharButton.BackColor = s.Appearance_Color_Button_Face;
+                radixAutoButton.ForeColor = s.Appearance_Color_Text;
+                radixDecButton.ForeColor = s.Appearance_Color_Text;
+                radixHexButton.ForeColor = s.Appearance_Color_Text;
+                radixBinButton.ForeColor = s.Appearance_Color_Text;
+                radixOctButton.ForeColor = s.Appearance_Color_Text;
+                radixSiButton.ForeColor = s.Appearance_Color_Text;
+                radixKibiButton.ForeColor = s.Appearance_Color_Text;
+                radixCharButton.ForeColor = s.Appearance_Color_Text;
+                
+                sheetView.RelayoutText();
             }
             catch { }
             sheetView.RequestRecalc();
+            GraphForm.ReloadSettingsAll();
         }
 
         private void enableHotkey() {
@@ -211,18 +262,17 @@ namespace Shapoco.Calctus.UI {
         }
 
         private void SettingsButton_Click(object sender, EventArgs e) {
-            this.TopMost = false;
+            suspendTopMost();
             var dlg = new SettingsDialog();
             dlg.ShowDialog();
             dlg.Dispose();
             reloadSettings();
-            this.TopMost = _topMost;
+            resumeTopMost();
         }
 
         private void TopMostButton_Click(object sender, EventArgs e) {
             var btn = (ToolStripButton)sender;
-            _topMost = !_topMost;
-            this.TopMost = _topMost;
+            setTopMost(!_topMost);
             if (_topMost) {
                 btn.Image = Properties.Resources.ToolIcon_TopMostOn;
             }
@@ -254,6 +304,26 @@ namespace Shapoco.Calctus.UI {
             }
         }
         
+        private void setTopMost(bool value) {
+            _topMost = value;
+            GraphForm.SetTopMostAll(value);
+            TopMost = value;
+        }
+
+        private void suspendTopMost() {
+            if (_topMost) {
+                GraphForm.SetTopMostAll(false);
+                TopMost = false;
+            }
+        }
+
+        private void resumeTopMost() {
+            if (_topMost) {
+                GraphForm.SetTopMostAll(true);
+                TopMost = true;
+            }
+        }
+
         private void showForeground() {
             this.Visible = true;
             if (this.WindowState == FormWindowState.Minimized) {
@@ -270,9 +340,19 @@ namespace Shapoco.Calctus.UI {
             _focusTimer.Start();
         }
 
+        private void appExit() {
+            GraphForm.CloseAll();
+
+            // 通知アイコン使用時、Application.Exit() ではなぜか MainForm が閉じてくれないので明示的に Close する
+            // タスクトレイに格納されないように通知アイコンを非表示にする
+            notifyIcon.Visible = false; 
+            Close();
+
+            Application.Exit();
+        }
+
         private void _focusTimer_Tick(object sender, EventArgs e) {
             _focusTimer.Stop();
-            //calcListBox.Refocus();
             sheetView.Focus();
         }
 
@@ -298,7 +378,7 @@ namespace Shapoco.Calctus.UI {
                 this.RadixMode = RadixMode.Bin;
             }
             else if (e.KeyCode == Keys.F12) {
-                this.RadixMode = RadixMode.Oct;
+                this.RadixMode = RadixMode.SiPrefix;
             }
             else {
                 e.SuppressKeyPress = false;
@@ -316,6 +396,9 @@ namespace Shapoco.Calctus.UI {
                     case RadixMode.Hex: radixHexButton.Checked = true; break;
                     case RadixMode.Bin: radixBinButton.Checked = true; break;
                     case RadixMode.Oct: radixOctButton.Checked = true; break;
+                    case RadixMode.SiPrefix: radixSiButton.Checked = true; break;
+                    case RadixMode.BinaryPrefix: radixKibiButton.Checked = true; break;
+                    case RadixMode.Char: radixCharButton.Checked = true; break;
                 }
                 sheetView.ActiveRadixMode = value;
             }

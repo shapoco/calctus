@@ -31,22 +31,21 @@ namespace Shapoco.Calctus.Model.Formats {
             }
         }
 
-        protected override string OnFormat(Val val, EvalContext e) {
+        protected override string OnFormat(Val val, FormatSettingss fs) {
             if (val is RealVal) {
                 var fval = val.AsReal;
                 var ival = RMath.Truncate(fval);
 
                 // 10進表記、かつ指数表記対象に該当する場合はデフォルトの数値表現を使う
                 int exp = RMath.FLog10(val.AsReal);
-                var s = e.Settings;
                 bool enotation =
                     Radix == 10 &&
-                    s.ENotationEnabled &&
-                    (exp >= s.ENotationExpPositiveMin || exp <= s.ENotationExpNegativeMax);
+                    fs.ENotationEnabled &&
+                    (exp >= fs.ENotationExpPositiveMin || exp <= fs.ENotationExpNegativeMax);
 
                 if (fval != ival || ival < long.MinValue || long.MaxValue < ival || enotation) {
                     // デフォルトの数値表現
-                    return base.OnFormat(val, e);
+                    return base.OnFormat(val, fs);
                 }
                 else if (Radix == 10) {
                     // 10進表現
@@ -62,7 +61,7 @@ namespace Shapoco.Calctus.Model.Formats {
                 }
             }
             else {
-                return base.OnFormat(val, e);
+                return base.OnFormat(val, fs);
             }
         }
     }

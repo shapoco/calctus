@@ -30,7 +30,14 @@ namespace Shapoco.Calctus.Model.Mathematics {
             return ret + (real)Math.Log10((double)a);
         }
 
-        public static real Log2(real a) => (decimal)QMath.Log2((quad)(decimal)a);
+        public static real Log2(real a, bool highAccuracy = true) {
+            if (highAccuracy) {
+                return (real)(decimal)QMath.Log2((quad)(decimal)a);
+            }
+            else {
+                return Log(a) / Log(2);
+            }
+        } 
 
         /// <summary>
         /// a が 0 の場合は 0 を返し、それ以外の場合は floor(log10(abs(a))) を返す。

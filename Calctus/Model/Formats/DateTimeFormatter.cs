@@ -11,7 +11,7 @@ using Shapoco.Calctus.Model.Evaluations;
 
 namespace Shapoco.Calctus.Model.Formats {
     class DateTimeFormatter : NumberFormatter {
-        public DateTimeFormatter() : base(new Regex(@"#(\d+/\d+/\d+|\d+:\d+:\d+(\.\d+)?|\d+/\d+/\d+ \d+:\d+:\d+(\.\d+)?)#"), FormatPriority.LeftPriority) { }
+        public DateTimeFormatter() : base(new Regex(@"#(\d+/\d+/\d+|\d+:\d+:\d+(\.\d+)?|\d+/\d+/\d+ \d+:\d+:\d+(\.\d+)?)#"), FormatPriority.AlwaysLeft) { }
 
         public override Val Parse(Match m) {
             var tok = m.Groups[1].Value;
@@ -19,15 +19,15 @@ namespace Shapoco.Calctus.Model.Formats {
             return new RealVal(unixTime, new FormatHint(this));
         }
 
-        protected override string OnFormat(Val val, EvalContext e) {
+        protected override string OnFormat(Val val, FormatSettingss fs) {
             if (!(val is RealVal)) {
-                return base.OnFormat(val, e);
+                return base.OnFormat(val, fs);
             }
 
             var fval = val.AsReal;
             if (fval < ulong.MinValue || ulong.MaxValue < fval) {
                 // ulongの範囲外の値はデフォルトの数値表現を使用
-                return base.OnFormat(val, e);
+                return base.OnFormat(val, fs);
             }
             else {
                 // Unix Time からローカル時刻に変換

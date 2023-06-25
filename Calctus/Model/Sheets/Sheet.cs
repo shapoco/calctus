@@ -36,12 +36,7 @@ namespace Shapoco.Calctus.Model.Sheets {
                 e.DefConst(name, vars[name], "plot variant");
             }
 
-            // 設定を評価コンテキストに反映する
-            e.Settings.DecimalLengthToDisplay = s.NumberFormat_Decimal_MaxLen;
-            e.Settings.ENotationEnabled = s.NumberFormat_Exp_Enabled;
-            e.Settings.ENotationExpPositiveMin = s.NumberFormat_Exp_PositiveMin;
-            e.Settings.ENotationExpNegativeMax = s.NumberFormat_Exp_NegativeMax;
-            e.Settings.ENotationAlignment = s.NumberFormat_Exp_Alignment;
+            // 外部関数の呼び出しを許可する
             e.Settings.AllowExternalFunctions = true;
 
             int step = 0;

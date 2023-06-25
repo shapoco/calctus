@@ -47,7 +47,7 @@ namespace Shapoco.Calctus.UI {
                 g.Clear(this.BackColor);
             }
 
-            using (var brush = new SolidBrush(this.Checked ? Color.FromArgb(192, 255, 128) : this.ForeColor))
+            using (var brush = new SolidBrush(this.ForeColor))
             using (var format = new StringFormat()) {
                 format.LineAlignment = StringAlignment.Center;
                 format.Alignment = StringAlignment.Center;

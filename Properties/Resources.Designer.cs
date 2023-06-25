@@ -103,6 +103,16 @@ namespace Shapoco.Properties {
         /// <summary>
         ///   型 System.Drawing.Bitmap のローカライズされたリソースを検索します。
         /// </summary>
+        internal static System.Drawing.Bitmap ToolIcon_InvertBrightness {
+            get {
+                object obj = ResourceManager.GetObject("ToolIcon_InvertBrightness", resourceCulture);
+                return ((System.Drawing.Bitmap)(obj));
+            }
+        }
+        
+        /// <summary>
+        ///   型 System.Drawing.Bitmap のローカライズされたリソースを検索します。
+        /// </summary>
         internal static System.Drawing.Bitmap ToolIcon_MoveDown {
             get {
                 object obj = ResourceManager.GetObject("ToolIcon_MoveDown", resourceCulture);
@@ -133,6 +143,16 @@ namespace Shapoco.Properties {
         /// <summary>
         ///   型 System.Drawing.Bitmap のローカライズされたリソースを検索します。
         /// </summary>
+        internal static System.Drawing.Bitmap ToolIcon_Redo {
+            get {
+                object obj = ResourceManager.GetObject("ToolIcon_Redo", resourceCulture);
+                return ((System.Drawing.Bitmap)(obj));
+            }
+        }
+        
+        /// <summary>
+        ///   型 System.Drawing.Bitmap のローカライズされたリソースを検索します。
+        /// </summary>
         internal static System.Drawing.Bitmap ToolIcon_Settings {
             get {
                 object obj = ResourceManager.GetObject("ToolIcon_Settings", resourceCulture);
@@ -156,6 +176,16 @@ namespace Shapoco.Properties {
         internal static System.Drawing.Bitmap ToolIcon_TopMostOn {
             get {
                 object obj = ResourceManager.GetObject("ToolIcon_TopMostOn", resourceCulture);
+                return ((System.Drawing.Bitmap)(obj));
+            }
+        }
+        
+        /// <summary>
+        ///   型 System.Drawing.Bitmap のローカライズされたリソースを検索します。
+        /// </summary>
+        internal static System.Drawing.Bitmap ToolIcon_Undo {
+            get {
+                object obj = ResourceManager.GetObject("ToolIcon_Undo", resourceCulture);
                 return ((System.Drawing.Bitmap)(obj));
             }
         }

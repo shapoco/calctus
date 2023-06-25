@@ -12,10 +12,51 @@ using Shapoco.Calctus.Model.Evaluations;
 
 namespace Shapoco.Calctus.UI {
     public partial class SettingsDialog : Form {
+        private const string ColorSettingNamePrefix = "Appearance_Color_";
+
         private FolderBrowserDialog _folderBrowserDialog = new FolderBrowserDialog();
+        private ColorDialog _colorDialog = new ColorDialog();
+        private Label[] _colorLabels;
 
         public SettingsDialog() {
             InitializeComponent();
+
+            {
+                var colorLabels = new List<Label>();
+                var xPadding = 10;
+                var yPadding = 15;
+                var x = xPadding;
+                var y = yPadding;
+                var wColor = 60;
+                var wName = (colorGroup.ClientSize.Width - xPadding * 3) / 2 - wColor;
+                var hLabel = 15;
+                foreach (var prop in typeof(Settings).GetProperties()) {
+                    if (prop.Name.StartsWith(ColorSettingNamePrefix)) {
+                        var colorName = prop.Name.Substring(ColorSettingNamePrefix.Length);
+                        var nameLabel = new Label();
+                        nameLabel.Text = colorName.Replace('_', ' ');
+                        nameLabel.AutoSize = false;
+                        nameLabel.TextAlign = ContentAlignment.MiddleLeft;
+                        nameLabel.SetBounds(x, y, wName, hLabel);
+                        colorGroup.Controls.Add(nameLabel);
+                        var colorLabel = new Label();
+                        colorLabel.Tag = prop.Name;
+                        colorLabel.AutoSize = false;
+                        colorLabel.TextAlign = ContentAlignment.MiddleCenter;
+                        colorLabel.BorderStyle = BorderStyle.Fixed3D;
+                        colorLabel.SetBounds(x + wName, y, wColor, hLabel);                        
+                        colorLabel.Click += ColorBox_Click;
+                        colorGroup.Controls.Add(colorLabel);
+                        colorLabels.Add(colorLabel);
+                        y += hLabel + 2;
+                        if (y + hLabel > toggleLightDarkModeButton.Top) {
+                            x += wName + wColor + xPadding;
+                            y = yPadding;
+                        }
+                    }
+                }
+                _colorLabels = colorLabels.ToArray();
+            }
 
             try {
                 this.Font = new Font("Arial", SystemFonts.DefaultFont.Size);
@@ -71,6 +112,7 @@ namespace Shapoco.Calctus.UI {
             Appearance_Font_Expr_Name.TextChanged += (sender, e) => { s.Appearance_Font_Expr_Name = ((ComboBox)sender).Text; };
             Appearance_Font_Size.ValueChanged += (sender, e) => { s.Appearance_Font_Size = (int)((NumericUpDown)sender).Value; };
             Appearance_Font_Bold.CheckedChanged += (sender, e) => { s.Appearance_Font_Bold = ((CheckBox)sender).Checked; };
+            toggleLightDarkModeButton.Click += ToggleLightDarkModeButton_Click;
 
             constList.SelectedIndexChanged += ConstList_SelectedIndexChanged;
             constList.DoubleClick += ConstList_DoubleClick;
@@ -122,7 +164,13 @@ namespace Shapoco.Calctus.UI {
                 Appearance_Font_Size.Value = s.Appearance_Font_Size;
                 Appearance_Font_Bold.Checked = s.Appearance_Font_Bold;
 
-                foreach(var c in s.GetUserConstants()) {
+                foreach (var colorLabel in _colorLabels) {
+                    var prop = typeof(Settings).GetProperty((string)colorLabel.Tag);
+                    colorLabel.BackColor = Color.FromArgb(255, (Color)prop.GetValue(s));
+                    backColorToText(colorLabel);
+                }
+
+                foreach (var c in s.GetUserConstants()) {
                     addConst(c);
                 }
                 constDelButton.Enabled = false;
@@ -144,6 +192,33 @@ namespace Shapoco.Calctus.UI {
 
         private void Startup_AutoStart_CheckedChanged(object sender, EventArgs e) {
             Shapoco.Windows.StartupShortcut.SetStartupRegistration(((CheckBox)sender).Checked);
+        }
+
+        private void ColorBox_Click(object sender, EventArgs e) {
+            var colorLabel = (Label)sender;
+            _colorDialog.Color = colorLabel.BackColor;
+            if (_colorDialog.ShowDialog() == DialogResult.OK) {
+                colorLabel.BackColor = _colorDialog.Color;
+                backColorToText(colorLabel);
+                backColorToSetting(colorLabel);
+            }
+        }
+        private void ToggleLightDarkModeButton_Click(object sender, EventArgs e) {
+            foreach(var colorLabel in _colorLabels) {
+                colorLabel.BackColor = ColorUtils.InvertHsvValue(colorLabel.BackColor);
+                backColorToText(colorLabel);
+                backColorToSetting(colorLabel);
+            }
+        }
+        private void backColorToText(Label colorLabel) {
+            var color = colorLabel.BackColor;
+            var hexStr = "000000" + Convert.ToString(color.ToArgb(), 16);
+            colorLabel.Text ="#" + hexStr.Substring(hexStr.Length - 6).ToUpper();
+            var gray = ColorUtils.GrayScale(color);
+            colorLabel.ForeColor = gray.R < 128 ? Color.White : Color.Black;
+        }
+        private void backColorToSetting(Label colorLabel) {
+            typeof(Settings).GetProperty((string)colorLabel.Tag).SetValue(Settings.Instance, colorLabel.BackColor);
         }
 
         private void ConstList_SelectedIndexChanged(object sender, EventArgs e) {
