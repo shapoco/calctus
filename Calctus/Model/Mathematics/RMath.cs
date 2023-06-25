@@ -8,6 +8,9 @@ using Shapoco.Calctus.Model.Types;
 namespace Shapoco.Calctus.Model.Mathematics {
     /// <summary>real に対する数学関数の定義</summary>
     static class RMath {
+        public const decimal PI = 3.1415926535897932384626433833m;
+        public const decimal E = 2.7182818284590452353602874714m;
+
         public const decimal FindFracMaxDeno = 1000000000000m;
 
         // 指数関数

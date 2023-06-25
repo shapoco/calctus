@@ -5,6 +5,7 @@ using System.Text;
 using System.Threading.Tasks;
 using Shapoco.Calctus.Model.Types;
 using Shapoco.Calctus.Model.Parsers;
+using Shapoco.Calctus.Model.Mathematics;
 using Shapoco.Calctus.Model.Graphs;
 
 namespace Shapoco.Calctus.Model.Evaluations {
@@ -27,8 +28,8 @@ namespace Shapoco.Calctus.Model.Evaluations {
 
         public EvalContext() {
             Settings = new EvalSettings();
-            this.AddConstantReal("PI", 3.1415926535897932384626433833m, "circle ratio");
-            this.AddConstantReal("E", 2.7182818284590452353602874714m, "base of natural logarithm");
+            this.AddConstantReal("PI", RMath.PI, "circle ratio");
+            this.AddConstantReal("E", RMath.E, "base of natural logarithm");
             this.AddConstantHex("INT_MIN", Int32.MinValue, "minimum value of 32 bit signed integer");
             this.AddConstantHex("INT_MAX", Int32.MaxValue, "maximum value of 32 bit signed integer");
             this.AddConstantHex("UINT_MIN", UInt32.MinValue, "minimum value of 32 bit unsigned integer");
