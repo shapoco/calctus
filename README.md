@@ -35,9 +35,9 @@ Calctus (カルクタス) is a calculator application for Windows developed for 
 |Binary|`0b1111011`|
 |SI Prefixed|`123k`, `456u`|
 |Binary Prefixed|`123ki`, `456Mi`|
-|Fraction|~~`2:3`~~ → `2$3`|
+|Fraction|`2$3`|
 |Character|`'A'`|
-|String:new:|`"ABC"`|
+|String|`"ABC"`|
 |Date Time|`#2022/34/56 12:34:56#`|
 |Web Color|`#123`, `#112233`|
 |Boolean|`true`, `false`|
@@ -97,7 +97,7 @@ User-defined constants can also be used.
 
 |Category|Functions|Precision|
 |:--|:--|:--|
-|Exponential|`pow(x,y)`, `sqrt(x)`, `log(x)`, `log2(x)`, `log10(x)`, `clog2(x)`, `clog10(x)`|`Double`|
+|Exponential|`pow(x,y)`, `exp(x)`:new:, `sqrt(x)`, `log(x)`, `log2(x)`, `log10(x)`, `clog2(x)`, `clog10(x)`|`Double`|
 |Trigonometric|`sin(x)`, `cos(x)`, `tan(x)`,`asin(x)`, `acos(x)`, `atan(x)`, `atan2(y, x)`,`sinh(x)`, `cosh(x)`, `tanh(x)`|`Double`|
 |Round|`floor(x)`, `ceil(x)`, `trunc(x)`, `round(x)`|`Decimal`|
 |Absolute/Sign|`abs(x)`, `sign(x)`|`Decimal`|
@@ -109,13 +109,12 @@ User-defined constants can also be used.
 |Gray-code|`togray(x)`, `fromgray(x)`|`Int64`|
 |Fractions|`rat(x)`, `rat(x,a)`, `real(x)`|`Decimal`|
 |Representation|`dec(x)`, `hex(x)`, `bin(x)`, `oct(x)`, `char(x)`, `si(x)`, `bi(x)`, `datetime(x)`|`Decimal`|
-|Date Time|`now()`, ~~`fromyears(x)`~~, `fromdays(x)`, `fromhours(x)`, `fromminutes(x)`, `fromseconds(x)`, ~~`toyears(x)`~~, `todays(x)`, `tohours(x)`, `tominutes(x)`, `toseconds(x)`|`Double`|
+|Date Time|`now()`, `fromdays(x)`, `fromhours(x)`, `fromminutes(x)`, `fromseconds(x)`, `todays(x)`, `tohours(x)`, `tominutes(x)`, `toseconds(x)`|`Double`|
 |Color|`rgb(r,g,b)`, `rgb(rgb)`, `hsv2rgb(h,s,v)`, `rgb2hsv(rgb)`, `hsl2rgb(h,s,l)`, `rgb2hsl(rgb)`, `yuv2rgb(y,u,v)`, `yuv2rgb(yuv)`, `rgb2yuv(r,g,b)`, `rgb2yuv(rgb)`, `rgbto565(rgb)`, `rgbfrom565(rgb565)`, `pack565(r5,g6,b5)`, `unpack565(rgb565)`|`Decimal`|
 |E-series|Rounding to the E-series value: `eXfloor(x)`, `eXceil(x)`, `eXround(x)`<br>Calculation of voltage divider resistance: `eXratiol(x)`, `eXratioh(x)`<br> (`X`=`3`, `6`, `12`, `24`, `48`, `96`, `192`)|`Decimal`|
 |Prime Number|`isprime(x)`, `prime(n)`, `primefact(x)`|`Int64`|
 |Random|`rand()`, `rand(min,max)`, `rand32()`, `rand64()`|`Decimal`, `Int64`|
 |Assertion|`assert(expr)`|`Boolean`|
-|~~Special~~|~~`poll(x)`, `alarm(x)`~~|~~any~~|
 
 ### User Defined Function 
 
@@ -205,7 +204,7 @@ The opening parenthesis at the beginning of a line can be omitted.
 
 ![](img/auto_completion.gif)
 
-### Exponent Adjustment:new:
+### Exponent Adjustment
 
 Exponent-part of E-notation and SI prefix can be adjusted using Alt + Arrow keys.
 
@@ -232,7 +231,7 @@ If you use RPN operation, it is recommended to turn off the automatic input of "
 
 ![](img/rpn_ops.gif)
 
-### Graph Plotting :new:
+### Graph Plotting
 
 The plot keyword can be used to draw a graph.
 
@@ -247,7 +246,7 @@ The plot keyword can be used to draw a graph.
 |`Shift` + `Return`|Insert a new line before current expression|
 |`Shift` + `Delete`|Delete current expression|
 |`Ctrl` + `Z`|Undo|
-|`Ctrl` + `Y`:new:|Redo|
+|`Ctrl` + `Y`|Redo|
 |`Ctrl` + `X`|Cut|
 |`Ctrl` + `C`|Copy|
 |`Ctrl` + `Shift` + `C`|Copy all expressions and answers|
@@ -256,15 +255,15 @@ The plot keyword can be used to draw a graph.
 |`Ctrl` + `Shift` + `N`|Insert current time|
 |`Ctrl` + `Shift` + `Del`|Delete all expressions|
 |`Ctrl` + `Shift` + `Up`/`Down`|Item move up/down|
-|`Alt` ( + `Shift` ) + `Left`/`Right`:new:|Move decimal point|
-|`Alt` + `Up`/`Down`:new:|Change SI prefix|
+|`Alt` ( + `Shift` ) + `Left`/`Right`|Move decimal point|
+|`Alt` + `Up`/`Down`|Change SI prefix|
 |`F1`|Help|
 |`F5`|Recalculation|
 |`F8`|Radix Mode = Auto|
 |`F9`|Radix Mode = Dec|
 |`F10`|Radix Mode = Hex|
 |`F11`|Radix Mode = Bin|
-|`F12`|Radix Mode = ~~Oct~~ → SI Prefixed|
+|`F12`|Radix Mode = SI Prefixed|
 
 ----
 
