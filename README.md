@@ -246,6 +246,8 @@ The plot keyword can be used to draw a graph.
 |:--|:--|
 |`Shift` + `Return`|Insert a new line before current expression|
 |`Shift` + `Delete`|Delete current expression|
+|`Ctrl` + `Z`|Undo|
+|`Ctrl` + `Y`:new:|Redo|
 |`Ctrl` + `X`|Cut|
 |`Ctrl` + `C`|Copy|
 |`Ctrl` + `Shift` + `C`|Copy all expressions and answers|
