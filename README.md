@@ -205,6 +205,12 @@ The opening parenthesis at the beginning of a line can be omitted.
 
 ![](img/auto_completion.gif)
 
+### Exponent Adjustment:new:
+
+Exponent-part of E-notation and SI prefix can be adjusted using Alt + Arrow keys.
+
+![](img/exp_adj.gif)
+
 ### Assertion
 
 ![](img/assertion.gif)
@@ -256,7 +262,7 @@ The plot keyword can be used to draw a graph.
 |`F9`|Radix Mode = Dec|
 |`F10`|Radix Mode = Hex|
 |`F11`|Radix Mode = Bin|
-|`F12`|Radix Mode = Oct|
+|`F12`|Radix Mode = ~~Oct~~ → SI Prefixed|
 
 ----
 
