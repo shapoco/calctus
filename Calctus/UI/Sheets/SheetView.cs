@@ -459,6 +459,10 @@ namespace Shapoco.Calctus.UI.Sheets {
                 e.Handled = true;
                 _cmenuInsertTime.PerformClick();
             }
+
+            if (_focusedIndex >= 0) {
+                scrollTo(_focusedIndex);
+            }
         }
 
         protected override void OnKeyUp(KeyEventArgs e) {
@@ -493,6 +497,9 @@ namespace Shapoco.Calctus.UI.Sheets {
 
         protected override void OnResize(EventArgs e) {
             base.OnResize(e);
+            if (_focusedIndex >= 0) {
+                scrollTo(_focusedIndex);
+            }
             InvalidateLayout();
         }
 
@@ -803,7 +810,7 @@ namespace Shapoco.Calctus.UI.Sheets {
             int w = client.Width - _scrollBar.Width;
             int y = 0;
             int n = _sheet.Items.Count;
-            _innerBox.SetBounds(0, 0, w, 0);
+            _innerBox.SetBounds(0, _innerBox.Top, w, 0);
             for (int i = 0; i < n; i++) {
                 var sheetItem = _sheet.Items[i];
                 var viewItem = (SheetViewItem)sheetItem.Tag;
@@ -815,6 +822,7 @@ namespace Shapoco.Calctus.UI.Sheets {
             _innerBox.Height = y;
 
             // スクロールバーの調整
+            bool scrollToBottom = _scrollBar.Value >= _scrollBar.Maximum - _scrollBar.LargeChange - 10;
             if (y > client.Height) {
                 _scrollBar.Visible = true;
                 _scrollBar.Maximum = y;
@@ -822,6 +830,9 @@ namespace Shapoco.Calctus.UI.Sheets {
             }
             else {
                 _scrollBar.Visible = false;
+            }
+            if (scrollToBottom) {
+                _scrollBar.Value = _scrollBar.Maximum - _scrollBar.LargeChange;
             }
             _layoutValidated = true;
         }
