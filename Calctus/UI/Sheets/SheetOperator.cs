@@ -7,7 +7,7 @@ using Shapoco.Calctus.Model.Sheets;
 
 namespace Shapoco.Calctus.UI.Sheets {
     class SheetOperator : IDisposable {
-        public const int UndoBufferDepth = 100;
+        public const int UndoBufferDepth = 1000;
 
         private SheetView _view;
         private List<UndoEntry> _undoBuffer = new List<UndoEntry>();
