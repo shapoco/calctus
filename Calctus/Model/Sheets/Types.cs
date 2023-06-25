@@ -26,6 +26,7 @@ namespace Shapoco.Calctus.Model.Sheets {
     }
 
     public enum RadixMode {
-        Auto, Dec, Hex, Bin, Oct
+        Auto, Dec, Hex, Bin, Oct,
+        SiPrefix, BinaryPrefix, Char,
     }
 }

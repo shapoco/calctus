@@ -93,6 +93,9 @@ namespace Shapoco.Calctus.Model.Sheets {
                         case RadixMode.Hex: val = val.FormatHex(); break;
                         case RadixMode.Bin: val = val.FormatBin(); break;
                         case RadixMode.Oct: val = val.FormatOct(); break;
+                        case RadixMode.SiPrefix: val = val.FormatSiPrefix(); break;
+                        case RadixMode.BinaryPrefix: val = val.FormatBinaryPrefix(); break;
+                        case RadixMode.Char: val = val.FormatChar(); break;
                     }
                     SetStatus(val, null, null);
                 }

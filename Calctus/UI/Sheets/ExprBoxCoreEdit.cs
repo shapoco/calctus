@@ -471,6 +471,12 @@ namespace Shapoco.Calctus.UI.Sheets {
                 else if (BinaryPrefixFormatter.TryParse(token.Text, out frac, out prefixIndex)) {
                     isBinaryPrefix = true;
                 }
+                else if (real.TryParse(token.Text, out frac, out _, out int exp)) {
+                    prefixIndex = exp / 3;
+                    int alignedExp = prefixIndex * 3;
+                    frac *= RMath.Pow10(exp - alignedExp);
+                    isBinaryPrefix = false;
+                }
                 else {
                     frac = Parser.Parse(token.Text).Eval(new EvalContext()).AsReal;
                     prefixIndex = 0;

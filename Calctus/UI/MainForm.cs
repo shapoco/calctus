@@ -42,6 +42,10 @@ namespace Shapoco.Calctus.UI {
             InitializeComponent();
             if (this.DesignMode) return;
 
+            var sheet = new Sheet();
+            sheet.Items.Add(new SheetItem());
+            sheetView.Sheet = sheet;
+
             this.Text = Application.ProductName + " (v" + System.Reflection.Assembly.GetExecutingAssembly().GetName().Version + ")";
             this.KeyPreview = true; 
             this.KeyDown += MainForm_KeyDown;
@@ -71,13 +75,19 @@ namespace Shapoco.Calctus.UI {
             radixHexButton.CheckedChanged += (sender, e) => { RadixCheckedChanged((RadioButton)sender, RadixMode.Hex); };
             radixBinButton.CheckedChanged += (sender, e) => { RadixCheckedChanged((RadioButton)sender, RadixMode.Bin); };
             radixOctButton.CheckedChanged += (sender, e) => { RadixCheckedChanged((RadioButton)sender, RadixMode.Oct); };
+            radixSiButton.CheckedChanged += (sender, e) => { RadixCheckedChanged((RadioButton)sender, RadixMode.SiPrefix); };
+            radixKibiButton.CheckedChanged += (sender, e) => { RadixCheckedChanged((RadioButton)sender, RadixMode.BinaryPrefix); };
+            radixCharButton.CheckedChanged += (sender, e) => { RadixCheckedChanged((RadioButton)sender, RadixMode.Char); };
             radixAutoButton.Checked = true;
 
             toolTip.SetToolTip(radixAutoButton, "Automatic (F8)");
             toolTip.SetToolTip(radixDecButton, "Decimal (F9)");
             toolTip.SetToolTip(radixHexButton, "Hexadecimal (F10)");
             toolTip.SetToolTip(radixBinButton, "Binary (F11)");
-            toolTip.SetToolTip(radixOctButton, "Octal (F12)");
+            toolTip.SetToolTip(radixOctButton, "Octal");
+            toolTip.SetToolTip(radixSiButton, "SI Prefix (F12)");
+            toolTip.SetToolTip(radixKibiButton, "Binary Prefix");
+            toolTip.SetToolTip(radixCharButton, "Character");
 
             undoButton.Click += (sender, e) => { sheetView.Undo(); };
             redoButton.Click += (sender, e) => { sheetView.Redo(); };
@@ -211,11 +221,17 @@ namespace Shapoco.Calctus.UI {
                 radixHexButton.BackColor = s.Appearance_Color_Button_Face;
                 radixBinButton.BackColor = s.Appearance_Color_Button_Face;
                 radixOctButton.BackColor = s.Appearance_Color_Button_Face;
+                radixSiButton.BackColor = s.Appearance_Color_Button_Face;
+                radixKibiButton.BackColor = s.Appearance_Color_Button_Face;
+                radixCharButton.BackColor = s.Appearance_Color_Button_Face;
                 radixAutoButton.ForeColor = s.Appearance_Color_Text;
                 radixDecButton.ForeColor = s.Appearance_Color_Text;
                 radixHexButton.ForeColor = s.Appearance_Color_Text;
                 radixBinButton.ForeColor = s.Appearance_Color_Text;
                 radixOctButton.ForeColor = s.Appearance_Color_Text;
+                radixSiButton.ForeColor = s.Appearance_Color_Text;
+                radixKibiButton.ForeColor = s.Appearance_Color_Text;
+                radixCharButton.ForeColor = s.Appearance_Color_Text;
                 
                 sheetView.RelayoutText();
             }
@@ -362,7 +378,7 @@ namespace Shapoco.Calctus.UI {
                 this.RadixMode = RadixMode.Bin;
             }
             else if (e.KeyCode == Keys.F12) {
-                this.RadixMode = RadixMode.Oct;
+                this.RadixMode = RadixMode.SiPrefix;
             }
             else {
                 e.SuppressKeyPress = false;
@@ -380,6 +396,9 @@ namespace Shapoco.Calctus.UI {
                     case RadixMode.Hex: radixHexButton.Checked = true; break;
                     case RadixMode.Bin: radixBinButton.Checked = true; break;
                     case RadixMode.Oct: radixOctButton.Checked = true; break;
+                    case RadixMode.SiPrefix: radixSiButton.Checked = true; break;
+                    case RadixMode.BinaryPrefix: radixKibiButton.Checked = true; break;
+                    case RadixMode.Char: radixCharButton.Checked = true; break;
                 }
                 sheetView.ActiveRadixMode = value;
             }

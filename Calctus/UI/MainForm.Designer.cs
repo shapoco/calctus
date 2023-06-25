@@ -35,6 +35,8 @@ namespace Shapoco.Calctus.UI
             this.helpButton = new System.Windows.Forms.ToolStripButton();
             this.topMostButton = new System.Windows.Forms.ToolStripButton();
             this.settingsButton = new System.Windows.Forms.ToolStripButton();
+            this.undoButton = new System.Windows.Forms.ToolStripButton();
+            this.redoButton = new System.Windows.Forms.ToolStripButton();
             this.copyButton = new System.Windows.Forms.ToolStripButton();
             this.pasteButton = new System.Windows.Forms.ToolStripButton();
             this.insertButton = new System.Windows.Forms.ToolStripButton();
@@ -47,6 +49,9 @@ namespace Shapoco.Calctus.UI
             this.toolStripMenuItem1 = new System.Windows.Forms.ToolStripSeparator();
             this.contextExit = new System.Windows.Forms.ToolStripMenuItem();
             this.bottomPanel = new System.Windows.Forms.Panel();
+            this.radixCharButton = new Shapoco.Calctus.UI.FlatRadioButton();
+            this.radixKibiButton = new Shapoco.Calctus.UI.FlatRadioButton();
+            this.radixSiButton = new Shapoco.Calctus.UI.FlatRadioButton();
             this.radixOctButton = new Shapoco.Calctus.UI.FlatRadioButton();
             this.radixBinButton = new Shapoco.Calctus.UI.FlatRadioButton();
             this.radixHexButton = new Shapoco.Calctus.UI.FlatRadioButton();
@@ -54,8 +59,9 @@ namespace Shapoco.Calctus.UI
             this.radixAutoButton = new Shapoco.Calctus.UI.FlatRadioButton();
             this.toolTip = new System.Windows.Forms.ToolTip(this.components);
             this.sheetView = new Shapoco.Calctus.UI.Sheets.SheetView();
-            this.undoButton = new System.Windows.Forms.ToolStripButton();
-            this.redoButton = new System.Windows.Forms.ToolStripButton();
+            this.toolStripSeparator1 = new System.Windows.Forms.ToolStripSeparator();
+            this.toolStripSeparator2 = new System.Windows.Forms.ToolStripSeparator();
+            this.toolStripSeparator3 = new System.Windows.Forms.ToolStripSeparator();
             this.toolStrip.SuspendLayout();
             this.trayMenuStrip.SuspendLayout();
             this.bottomPanel.SuspendLayout();
@@ -69,10 +75,13 @@ namespace Shapoco.Calctus.UI
             this.settingsButton,
             this.undoButton,
             this.redoButton,
+            this.toolStripSeparator1,
             this.copyButton,
             this.pasteButton,
+            this.toolStripSeparator2,
             this.insertButton,
             this.deleteButton,
+            this.toolStripSeparator3,
             this.moveUpButton,
             this.moveDownButton});
             this.toolStrip.Location = new System.Drawing.Point(0, 0);
@@ -110,6 +119,26 @@ namespace Shapoco.Calctus.UI
             this.settingsButton.Name = "settingsButton";
             this.settingsButton.Size = new System.Drawing.Size(23, 22);
             this.settingsButton.Text = "Settings";
+            // 
+            // undoButton
+            // 
+            this.undoButton.DisplayStyle = System.Windows.Forms.ToolStripItemDisplayStyle.Image;
+            this.undoButton.Image = global::Shapoco.Properties.Resources.ToolIcon_Undo;
+            this.undoButton.ImageTransparentColor = System.Drawing.Color.Magenta;
+            this.undoButton.Name = "undoButton";
+            this.undoButton.Size = new System.Drawing.Size(23, 22);
+            this.undoButton.Text = "toolStripButton1";
+            this.undoButton.ToolTipText = "Undo";
+            // 
+            // redoButton
+            // 
+            this.redoButton.DisplayStyle = System.Windows.Forms.ToolStripItemDisplayStyle.Image;
+            this.redoButton.Image = global::Shapoco.Properties.Resources.ToolIcon_Redo;
+            this.redoButton.ImageTransparentColor = System.Drawing.Color.Magenta;
+            this.redoButton.Name = "redoButton";
+            this.redoButton.Size = new System.Drawing.Size(23, 22);
+            this.redoButton.Text = "toolStripButton2";
+            this.redoButton.ToolTipText = "Redo";
             // 
             // copyButton
             // 
@@ -205,6 +234,9 @@ namespace Shapoco.Calctus.UI
             // 
             // bottomPanel
             // 
+            this.bottomPanel.Controls.Add(this.radixCharButton);
+            this.bottomPanel.Controls.Add(this.radixKibiButton);
+            this.bottomPanel.Controls.Add(this.radixSiButton);
             this.bottomPanel.Controls.Add(this.radixOctButton);
             this.bottomPanel.Controls.Add(this.radixBinButton);
             this.bottomPanel.Controls.Add(this.radixHexButton);
@@ -215,6 +247,45 @@ namespace Shapoco.Calctus.UI
             this.bottomPanel.Name = "bottomPanel";
             this.bottomPanel.Size = new System.Drawing.Size(402, 15);
             this.bottomPanel.TabIndex = 5;
+            // 
+            // radixCharButton
+            // 
+            this.radixCharButton.BackColor = System.Drawing.Color.FromArgb(((int)(((byte)(76)))), ((int)(((byte)(88)))), ((int)(((byte)(72)))));
+            this.radixCharButton.Dock = System.Windows.Forms.DockStyle.Left;
+            this.radixCharButton.ForeColor = System.Drawing.Color.White;
+            this.radixCharButton.Location = new System.Drawing.Point(210, 0);
+            this.radixCharButton.Name = "radixCharButton";
+            this.radixCharButton.Size = new System.Drawing.Size(30, 15);
+            this.radixCharButton.TabIndex = 10;
+            this.radixCharButton.TabStop = true;
+            this.radixCharButton.Text = "Char";
+            this.radixCharButton.UseVisualStyleBackColor = false;
+            // 
+            // radixKibiButton
+            // 
+            this.radixKibiButton.BackColor = System.Drawing.Color.FromArgb(((int)(((byte)(76)))), ((int)(((byte)(88)))), ((int)(((byte)(72)))));
+            this.radixKibiButton.Dock = System.Windows.Forms.DockStyle.Left;
+            this.radixKibiButton.ForeColor = System.Drawing.Color.White;
+            this.radixKibiButton.Location = new System.Drawing.Point(180, 0);
+            this.radixKibiButton.Name = "radixKibiButton";
+            this.radixKibiButton.Size = new System.Drawing.Size(30, 15);
+            this.radixKibiButton.TabIndex = 9;
+            this.radixKibiButton.TabStop = true;
+            this.radixKibiButton.Text = "Kibi";
+            this.radixKibiButton.UseVisualStyleBackColor = false;
+            // 
+            // radixSiButton
+            // 
+            this.radixSiButton.BackColor = System.Drawing.Color.FromArgb(((int)(((byte)(76)))), ((int)(((byte)(88)))), ((int)(((byte)(72)))));
+            this.radixSiButton.Dock = System.Windows.Forms.DockStyle.Left;
+            this.radixSiButton.ForeColor = System.Drawing.Color.White;
+            this.radixSiButton.Location = new System.Drawing.Point(150, 0);
+            this.radixSiButton.Name = "radixSiButton";
+            this.radixSiButton.Size = new System.Drawing.Size(30, 15);
+            this.radixSiButton.TabIndex = 8;
+            this.radixSiButton.TabStop = true;
+            this.radixSiButton.Text = "SI";
+            this.radixSiButton.UseVisualStyleBackColor = false;
             // 
             // radixOctButton
             // 
@@ -287,32 +358,27 @@ namespace Shapoco.Calctus.UI
             this.sheetView.ActiveRadixMode = Shapoco.Calctus.Model.Sheets.RadixMode.Auto;
             this.sheetView.BackColor = System.Drawing.Color.FromArgb(((int)(((byte)(32)))), ((int)(((byte)(32)))), ((int)(((byte)(32)))));
             this.sheetView.Dock = System.Windows.Forms.DockStyle.Fill;
-            this.sheetView.FocusedIndex = 0;
+            this.sheetView.FocusedBox = null;
             this.sheetView.Location = new System.Drawing.Point(0, 25);
             this.sheetView.Name = "sheetView";
             this.sheetView.Size = new System.Drawing.Size(402, 206);
             this.sheetView.TabIndex = 0;
             this.sheetView.Text = "bookView1";
             // 
-            // undoButton
+            // toolStripSeparator1
             // 
-            this.undoButton.DisplayStyle = System.Windows.Forms.ToolStripItemDisplayStyle.Image;
-            this.undoButton.Image = global::Shapoco.Properties.Resources.ToolIcon_Undo;
-            this.undoButton.ImageTransparentColor = System.Drawing.Color.Magenta;
-            this.undoButton.Name = "undoButton";
-            this.undoButton.Size = new System.Drawing.Size(23, 22);
-            this.undoButton.Text = "toolStripButton1";
-            this.undoButton.ToolTipText = "Undo";
+            this.toolStripSeparator1.Name = "toolStripSeparator1";
+            this.toolStripSeparator1.Size = new System.Drawing.Size(6, 25);
             // 
-            // redoButton
+            // toolStripSeparator2
             // 
-            this.redoButton.DisplayStyle = System.Windows.Forms.ToolStripItemDisplayStyle.Image;
-            this.redoButton.Image = global::Shapoco.Properties.Resources.ToolIcon_Redo;
-            this.redoButton.ImageTransparentColor = System.Drawing.Color.Magenta;
-            this.redoButton.Name = "redoButton";
-            this.redoButton.Size = new System.Drawing.Size(23, 22);
-            this.redoButton.Text = "toolStripButton2";
-            this.redoButton.ToolTipText = "Redo";
+            this.toolStripSeparator2.Name = "toolStripSeparator2";
+            this.toolStripSeparator2.Size = new System.Drawing.Size(6, 25);
+            // 
+            // toolStripSeparator3
+            // 
+            this.toolStripSeparator3.Name = "toolStripSeparator3";
+            this.toolStripSeparator3.Size = new System.Drawing.Size(6, 25);
             // 
             // MainForm
             // 
@@ -362,6 +428,12 @@ namespace Shapoco.Calctus.UI
         private UI.Sheets.SheetView sheetView;
         private System.Windows.Forms.ToolStripButton undoButton;
         private System.Windows.Forms.ToolStripButton redoButton;
+        private FlatRadioButton radixCharButton;
+        private FlatRadioButton radixKibiButton;
+        private FlatRadioButton radixSiButton;
+        private System.Windows.Forms.ToolStripSeparator toolStripSeparator1;
+        private System.Windows.Forms.ToolStripSeparator toolStripSeparator2;
+        private System.Windows.Forms.ToolStripSeparator toolStripSeparator3;
     }
 }
 
