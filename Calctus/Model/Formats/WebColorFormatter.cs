@@ -11,10 +11,10 @@ using Shapoco.Calctus.Model.Evaluations;
 
 namespace Shapoco.Calctus.Model.Formats {
     class WebColorFormatter : NumberFormatter {
-        public WebColorFormatter() : base(new Regex(@"#([0-9a-fA-F]+)"), FormatPriority.AlwaysLeft) { }
+        public WebColorFormatter() : base(new Regex(@"#(?<hex>[0-9a-fA-F]+)"), FormatPriority.AlwaysLeft) { }
 
         public override Val Parse(Match m) {
-            var tok = m.Groups[1].Value;
+            var tok = m.Groups["hex"].Value;
             if (tok.Length == 3) {
                 var rgb = ColorSpace.Rgb444ToRgb888(Convert.ToInt32(tok, 16));
                 return new RealVal(rgb, new FormatHint(this));

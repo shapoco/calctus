@@ -41,11 +41,11 @@ namespace Shapoco.Calctus.Model.Formats {
             }
         }
 
-        public static readonly IntFormatter CStyleInt = new IntFormatter(10, "", new Regex(@"([1-9][0-9]*|0)([eE][+-]?[0-9]+)?"), 0, FormatPriority.Weak);
+        public static readonly IntFormatter CStyleInt = new IntFormatter(10, "", new Regex(@"(?<digits>([1-9][0-9]*(_[0-9]+)*|0)([eE][+-]?[0-9]+(_[0-9]+)*)?)"), FormatPriority.Weak);
         public static readonly RealFormatter CStyleReal = new RealFormatter();
-        public static readonly IntFormatter CStyleHex = new IntFormatter(16, "0x", new Regex(@"0[xX]([0-9a-fA-F]+)"), 1, FormatPriority.AlwaysLeft);
-        public static readonly IntFormatter CStyleOct = new IntFormatter(8, "0", new Regex(@"0([0-7]+)"), 1, FormatPriority.AlwaysLeft);
-        public static readonly IntFormatter CStyleBin = new IntFormatter(2, "0b", new Regex(@"0[bB]([01]+)"), 1, FormatPriority.AlwaysLeft);
+        public static readonly IntFormatter CStyleHex = new IntFormatter(16, "0x", new Regex(@"0[xX](?<digits>[0-9a-fA-F]+(_[0-9a-fA-F]+)*)"), FormatPriority.AlwaysLeft);
+        public static readonly IntFormatter CStyleOct = new IntFormatter(8, "0", new Regex(@"0(?<digits>[0-7]+(_[0-7]+)*)"), FormatPriority.AlwaysLeft);
+        public static readonly IntFormatter CStyleBin = new IntFormatter(2, "0b", new Regex(@"0[bB](?<digits>[01]+(_[01]+)*)"), FormatPriority.AlwaysLeft);
         public static readonly CharFormatter CStyleChar = new CharFormatter();
         public static readonly StringFormatter CStyleString = new StringFormatter();
         public static readonly SiPrefixFormatter SiPrefixed = new SiPrefixFormatter();

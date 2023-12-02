@@ -12,15 +12,16 @@ using Shapoco.Calctus.Model.Evaluations;
 namespace Shapoco.Calctus.Model.Formats {
     class BinaryPrefixFormatter : NumberFormatter {
         private static readonly string Prefixes = "_kMGTPEZYR";
-        private static readonly Regex patternRegex = new Regex(@"(([1-9][0-9]*|0)(\.[0-9]+)?|(\.[0-9]+))([" + Prefixes + "])i");
+        private static readonly Regex patternRegex = new Regex(@"(?<frac>([1-9][0-9]*(_[0-9]+)*|0)(\.[0-9]+(_[0-9]+)*)?|(\.[0-9]+(_[0-9]+)*))(?<prefix>[" + Prefixes + "])i");
         public const int MinPrefixIndex = 0;
         public const int MaxPrefixIndex = 9;
 
         public BinaryPrefixFormatter() : base(patternRegex, FormatPriority.Strong) { }
 
         private static void extractMatch(Match m, out decimal frac, out int prefixIndex) {
-            frac = decimal.Parse(m.Groups[1].Value, CultureInfo.InvariantCulture);
-            prefixIndex = Prefixes.IndexOf(m.Groups[5].Value);
+            frac = real.Parse(m.Groups["frac"].Value);
+            prefixIndex = Prefixes.IndexOf(m.Groups["prefix"].Value);
+            System.Diagnostics.Debug.Assert(prefixIndex >= 0);
         }
 
         public static bool TryParse(string str, out decimal frac, out int prefixIndex) {

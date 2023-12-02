@@ -12,7 +12,7 @@ using Shapoco.Calctus.Model.Evaluations;
 namespace Shapoco.Calctus.Model.Formats {
     class SiPrefixFormatter : NumberFormatter {
         private static readonly string Prefixes = "ryzafpnum_kMGTPEZYR";
-        private static readonly Regex patternRegex = new Regex(@"(([1-9][0-9]*|0)(\.[0-9]+)?|(\.[0-9]+))([" + Prefixes + "])");
+        private static readonly Regex patternRegex = new Regex(@"(?<frac>([1-9][0-9]*(_[0-9]+)*|0)(\.[0-9]+(_[0-9]+)*)?|(\.[0-9]+(_[0-9]+)*))(?<prefix>[" + Prefixes + "])");
         private const int PrefixIndexOffset = 9;
         public const int MinPrefixIndex = -PrefixIndexOffset;
         public const int MaxPrefixIndex = PrefixIndexOffset;
@@ -20,8 +20,10 @@ namespace Shapoco.Calctus.Model.Formats {
         public SiPrefixFormatter() : base(patternRegex, FormatPriority.Strong) { }
 
         private static void extractMatch(Match m, out decimal frac, out int prefixIndex) {
-            frac = decimal.Parse(m.Groups[1].Value, CultureInfo.InvariantCulture);
-            prefixIndex = Prefixes.IndexOf(m.Groups[5].Value) - PrefixIndexOffset;
+            frac = real.Parse(m.Groups["frac"].Value);
+            int i = Prefixes.IndexOf(m.Groups["prefix"].Value);
+            System.Diagnostics.Debug.Assert(i >= 0);
+            prefixIndex = i - PrefixIndexOffset;
         }
 
         public static bool TryParse(string str, out decimal frac, out int prefixIndex) {

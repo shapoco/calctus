@@ -11,10 +11,10 @@ using Shapoco.Calctus.Model.Evaluations;
 
 namespace Shapoco.Calctus.Model.Formats {
     class DateTimeFormatter : NumberFormatter {
-        public DateTimeFormatter() : base(new Regex(@"#(\d+/\d+/\d+|\d+:\d+:\d+(\.\d+)?|\d+/\d+/\d+ \d+:\d+:\d+(\.\d+)?)#"), FormatPriority.AlwaysLeft) { }
+        public DateTimeFormatter() : base(new Regex(@"#(?<datetime>\d+/\d+/\d+|\d+:\d+:\d+(\.\d+)?|\d+/\d+/\d+ \d+:\d+:\d+(\.\d+)?)#"), FormatPriority.AlwaysLeft) { }
 
         public override Val Parse(Match m) {
-            var tok = m.Groups[1].Value;
+            var tok = m.Groups["datetime"].Value;
             var unixTime = UnixTime.FromLocalTime(System.DateTime.Parse(tok));
             return new RealVal(unixTime, new FormatHint(this));
         }

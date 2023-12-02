@@ -2,6 +2,7 @@
 using System.Collections.Generic;
 using System.Linq;
 using System.Text;
+using System.Text.RegularExpressions;
 using System.Threading.Tasks;
 using System.Windows.Forms;
 using System.Drawing;
@@ -16,6 +17,9 @@ namespace Shapoco.Calctus.UI.Sheets {
     /// 数式の文字の配置と描画を担うクラス
     /// </summary>
     class ExprBoxCoreLayout {
+        private static readonly Regex RegexPlainDecimal = new Regex(@"^(?<int>0|[1-9][0-9]*(_[0-9]+)*)(\.(?<frac>[0-9]+(_[0-9]+)*))?");
+        private static readonly Regex RegexPlainHexBinOct = new Regex(@"^(0[xX](?<hex>[0-9a-fA-F]+(_[0-9a-fA-F]+)*)|0[bB](?<bin>[01]+(_[01]+)*)|0(?<oct>[0-7]+(_[0-7]+)*))");
+
         public event EventHandler PreferredSizeChanged;
 
         private readonly Control _owner;
@@ -87,6 +91,22 @@ namespace Shapoco.Calctus.UI.Sheets {
 
             _chars = new ExprCharInfo[text.Length];
 
+            // 自動桁区切り
+            foreach (var t in _tokens) {
+                if (t.Type == TokenType.NumericLiteral) {
+                    Match m;
+                    if ((m = RegexPlainHexBinOct.Match(t.Text)).Success && !m.Value.Contains("_")) {
+                        insertSeparators(t, m.Groups["hex"], 4, false);
+                        insertSeparators(t, m.Groups["bin"], 4, false);
+                        insertSeparators(t, m.Groups["oct"], 4, false);
+                    }
+                    else if ((m = RegexPlainDecimal.Match(t.Text)).Success && !m.Value.Contains("_")) {
+                        insertSeparators(t, m.Groups["int"], 3, false); // 整数部
+                        insertSeparators(t, m.Groups["frac"], 3, true); // 小数部
+                    }
+                }
+            }
+
             int xShift = 0;
             using (var g = _owner.CreateGraphics()) {
                 // 欧文フォントで日本語の文字の位置を知るのに AntiAlias に設定する必要がある
@@ -95,10 +115,15 @@ namespace Shapoco.Calctus.UI.Sheets {
                 // 文字の高さ
                 _charHeight = (int)g.MeasureString("|", font).Height;
 
+                // 桁区切りの幅
+                int numericSepWidth = (int)g.MeasureString("0", font).Width / 3;
+
                 // 各文字の位置を割り出す
                 // クリック座標からカーソル位置を割り出したりするのに使う
                 for (int i = 0; i < text.Length; i++) {
                     using (var sf = new StringFormat()) {
+                        if (_chars[i].Shifted) xShift += numericSepWidth;
+
                         // 両端の空白も含めて位置を知るのに MeasureTrailingSpaces が必要
                         sf.FormatFlags = StringFormatFlags.MeasureTrailingSpaces;
                         sf.SetMeasurableCharacterRanges(new CharacterRange[] { new CharacterRange(i, 1) });
@@ -220,7 +245,7 @@ namespace Shapoco.Calctus.UI.Sheets {
                 // 同じスタイルが適用されている文字の集合を検出する
                 var style = _chars[from].Style;
                 int to = from + 1;
-                while (to < text.Length && _chars[to].Style.Equals(style)) {
+                while (to < text.Length && _chars[to].Style.Equals(style) && !_chars[to].Shifted) {
                     to++;
                 }
 
@@ -332,6 +357,17 @@ namespace Shapoco.Calctus.UI.Sheets {
 
             g.Restore(bkp);
         }
+
+        private void insertSeparators(Token t, Group g, int interval, bool fraction) {
+            if (!g.Success) return;
+            int len = g.Value.Length;
+            int firstSepPos = fraction ? 0 : interval - (len % interval);
+            for (int i = 1; i < len; i++) {
+                if ((i + firstSepPos) % interval == 0) {
+                    _chars[t.Position.Index + g.Index + i].Shifted = true;
+                }
+            }
+        }
     }
 
     struct ExprCharStyle {
@@ -353,6 +389,7 @@ namespace Shapoco.Calctus.UI.Sheets {
     struct ExprCharInfo {
         public float X;
         public float Width;
+        public bool Shifted;
         public ExprCharStyle Style;
     }
 
