@@ -509,9 +509,7 @@ namespace Shapoco.Calctus.UI.Sheets {
             base.OnMouseWheel(e);
             if (_sheet == null) return;
             if (_scrollBar.Visible && e.Delta != 0) {
-                int min = _scrollBar.Minimum;
-                int max = _scrollBar.Maximum - _scrollBar.LargeChange;
-                _scrollBar.Value = Math.Max(min, Math.Min(max, _scrollBar.Value - e.Delta));
+                setScrollBarValue(_scrollBar.Value - e.Delta);
             }
         }
 
@@ -815,11 +813,17 @@ namespace Shapoco.Calctus.UI.Sheets {
             var viewItem = GetViewItem(index);
 
             if (_innerBox.Top + viewItem.Top < 0) {
-                _scrollBar.Value = viewItem.Top;
+                setScrollBarValue(viewItem.Top);
             }
             else if (_innerBox.Top + viewItem.Bottom > client.Height) {
-                _scrollBar.Value = viewItem.Bottom - client.Height;
+                setScrollBarValue(viewItem.Bottom - client.Height);
             }
+        }
+
+        private void setScrollBarValue(int value) {
+            int min = _scrollBar.Minimum;
+            int max = _scrollBar.Maximum - _scrollBar.LargeChange;
+            _scrollBar.Value = Math.Max(min, Math.Min(max, value));
         }
 
         private void validateLayout() {
@@ -865,7 +869,7 @@ namespace Shapoco.Calctus.UI.Sheets {
                 _scrollBar.Visible = false;
             }
             if (scrollToBottom) {
-                _scrollBar.Value = _scrollBar.Maximum - _scrollBar.LargeChange;
+                setScrollBarValue(_scrollBar.Maximum - _scrollBar.LargeChange);
             }
             _layoutValidated = true;
         }
