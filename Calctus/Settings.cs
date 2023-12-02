@@ -45,6 +45,9 @@ namespace Shapoco.Calctus {
         public int NumberFormat_Exp_PositiveMin { get; set; } = 15;
         public int NumberFormat_Exp_NegativeMax { get; set; } = -5;
 
+        public bool NumberFormat_Separator_Thousands { get; set; } = true;
+        public bool NumberFormat_Separator_Hexadecimal { get; set; } = true;
+
         public string Appearance_Font_Button_Name { get; set; } = "Arial";
         public string Appearance_Font_Expr_Name { get; set; } = "Consolas";
         public int Appearance_Font_Size { get; set; } = 9;

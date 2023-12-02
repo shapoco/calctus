@@ -34,7 +34,12 @@ namespace Shapoco.Calctus.UI {
                     if (prop.Name.StartsWith(ColorSettingNamePrefix)) {
                         var colorName = prop.Name.Substring(ColorSettingNamePrefix.Length);
                         var nameLabel = new Label();
-                        nameLabel.Text = colorName.Replace('_', ' ');
+                        if (colorName == "SI_Prefix") {
+                            nameLabel.Text = "Exponent / SI Prefix";
+                        }
+                        else {
+                            nameLabel.Text = colorName.Replace('_', ' ');
+                        }
                         nameLabel.AutoSize = false;
                         nameLabel.TextAlign = ContentAlignment.MiddleLeft;
                         nameLabel.SetBounds(x, y, wName, hLabel);
@@ -100,6 +105,9 @@ namespace Shapoco.Calctus.UI {
             NumberFormat_Exp_PositiveMin.ValueChanged += (sender, e) => { s.NumberFormat_Exp_PositiveMin = (int)((NumericUpDown)sender).Value; };
             NumberFormat_Exp_Alignment.CheckedChanged += (sender, e) => { s.NumberFormat_Exp_Alignment = ((CheckBox)sender).Checked; };
 
+            NumberFormat_Separator_Thousands.CheckedChanged += (sender, e) => { s.NumberFormat_Separator_Thousands = ((CheckBox)sender).Checked; };
+            NumberFormat_Separator_Hexadecimal.CheckedChanged += (sender, e) => { s.NumberFormat_Separator_Hexadecimal = ((CheckBox)sender).Checked; };
+
             Appearance_Font_Button_Name.Items.Clear();
             Appearance_Font_Expr_Name.Items.Clear();
             foreach (var ff in new System.Drawing.Text.InstalledFontCollection().Families) {
@@ -158,6 +166,9 @@ namespace Shapoco.Calctus.UI {
                 NumberFormat_Exp_NegativeMax.Value = s.NumberFormat_Exp_NegativeMax;
                 NumberFormat_Exp_PositiveMin.Value = s.NumberFormat_Exp_PositiveMin;
                 NumberFormat_Exp_Alignment.Checked = s.NumberFormat_Exp_Alignment;
+
+                NumberFormat_Separator_Thousands.Checked = s.NumberFormat_Separator_Thousands;
+                NumberFormat_Separator_Hexadecimal.Checked = s.NumberFormat_Separator_Hexadecimal;
 
                 Appearance_Font_Button_Name.Text = s.Appearance_Font_Button_Name;
                 Appearance_Font_Expr_Name.Text = s.Appearance_Font_Expr_Name;

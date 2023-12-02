@@ -17,8 +17,9 @@ namespace Shapoco.Calctus.UI.Sheets {
     /// 数式の文字の配置と描画を担うクラス
     /// </summary>
     class ExprBoxCoreLayout {
-        private static readonly Regex RegexPlainDecimal = new Regex(@"^(?<int>0|[1-9][0-9]*(_[0-9]+)*)(\.(?<frac>[0-9]+(_[0-9]+)*))?");
-        private static readonly Regex RegexPlainHexBinOct = new Regex(@"^(0[xX](?<hex>[0-9a-fA-F]+(_[0-9a-fA-F]+)*)|0[bB](?<bin>[01]+(_[01]+)*)|0(?<oct>[0-7]+(_[0-7]+)*))");
+        private static readonly Regex ExponentPattern = new Regex("[eE]([1-9][0-9]*(_[0-9]+)*)$");
+        private static readonly Regex DecimalPattern = new Regex(@"^(?<int>0|[1-9][0-9]*(_[0-9]+)*)(\.(?<frac>[0-9]+(_[0-9]+)*))?");
+        private static readonly Regex HexBinOctPattern = new Regex(@"^(0[xX](?<hex>[0-9a-fA-F]+(_[0-9a-fA-F]+)*)|0[bB](?<bin>[01]+(_[01]+)*)|0(?<oct>[0-7]+(_[0-7]+)*))");
 
         public event EventHandler PreferredSizeChanged;
 
@@ -95,12 +96,12 @@ namespace Shapoco.Calctus.UI.Sheets {
             foreach (var t in _tokens) {
                 if (t.Type == TokenType.NumericLiteral) {
                     Match m;
-                    if ((m = RegexPlainHexBinOct.Match(t.Text)).Success && !m.Value.Contains("_")) {
+                    if (s.NumberFormat_Separator_Hexadecimal && (m = HexBinOctPattern.Match(t.Text)).Success && !m.Value.Contains("_")) {
                         insertSeparators(t, m.Groups["hex"], 4, false);
                         insertSeparators(t, m.Groups["bin"], 4, false);
                         insertSeparators(t, m.Groups["oct"], 4, false);
                     }
-                    else if ((m = RegexPlainDecimal.Match(t.Text)).Success && !m.Value.Contains("_")) {
+                    else if (s.NumberFormat_Separator_Thousands && (m = DecimalPattern.Match(t.Text)).Success && !m.Value.Contains("_")) {
                         insertSeparators(t, m.Groups["int"], 3, false); // 整数部
                         insertSeparators(t, m.Groups["frac"], 3, true); // 小数部
                     }
@@ -180,6 +181,7 @@ namespace Shapoco.Calctus.UI.Sheets {
 
                     case TokenType.NumericLiteral:
                         if (t.Hint is NumberTokenHint nth) {
+                            Match m;
                             if (nth.Value.FormatHint.Formatter == NumberFormatter.SiPrefixed) {
                                 // SI接頭語の強調表示
                                 _chars[t.Position.Index + t.Text.Length - 1].Style.ForeColor = s.Appearance_Color_SI_Prefix;
@@ -188,6 +190,12 @@ namespace Shapoco.Calctus.UI.Sheets {
                                 // 二進接頭語の強調表示
                                 _chars[t.Position.Index + t.Text.Length - 2].Style.ForeColor = s.Appearance_Color_SI_Prefix;
                                 _chars[t.Position.Index + t.Text.Length - 1].Style.ForeColor = s.Appearance_Color_SI_Prefix;
+                            }
+                            else if ((m = ExponentPattern.Match(t.Text)).Success) {
+                                // 指数
+                                for (int i = 0; i < m.Length; i++) {
+                                    _chars[t.Position.Index + m.Index + i].Style.ForeColor = s.Appearance_Color_SI_Prefix;
+                                }
                             }
                             else if (nth.Value.FormatHint.Formatter == NumberFormatter.WebColor) {
                                 // WebColorの強調表示

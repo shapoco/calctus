@@ -49,10 +49,14 @@
             this.NumberFormat_Decimal_MaxLen = new System.Windows.Forms.NumericUpDown();
             this.label6 = new System.Windows.Forms.Label();
             this.tabPage2 = new System.Windows.Forms.TabPage();
+            this.colorGroup = new System.Windows.Forms.GroupBox();
+            this.toggleLightDarkModeButton = new System.Windows.Forms.Button();
             this.fontGroup = new System.Windows.Forms.GroupBox();
             this.Appearance_Font_Size = new System.Windows.Forms.NumericUpDown();
             this.label5 = new System.Windows.Forms.Label();
             this.label4 = new System.Windows.Forms.Label();
+            this.label10 = new System.Windows.Forms.Label();
+            this.label9 = new System.Windows.Forms.Label();
             this.label3 = new System.Windows.Forms.Label();
             this.Appearance_Font_Bold = new System.Windows.Forms.CheckBox();
             this.Appearance_Font_Expr_Name = new System.Windows.Forms.ComboBox();
@@ -82,11 +86,10 @@
             this.columnHeader1 = ((System.Windows.Forms.ColumnHeader)(new System.Windows.Forms.ColumnHeader()));
             this.columnHeader5 = ((System.Windows.Forms.ColumnHeader)(new System.Windows.Forms.ColumnHeader()));
             this.columnHeader6 = ((System.Windows.Forms.ColumnHeader)(new System.Windows.Forms.ColumnHeader()));
-            this.label9 = new System.Windows.Forms.Label();
-            this.label10 = new System.Windows.Forms.Label();
-            this.colorGroup = new System.Windows.Forms.GroupBox();
-            this.toggleLightDarkModeButton = new System.Windows.Forms.Button();
             this.Hotkey_KeyCode = new Shapoco.Calctus.UI.KeyCodeBox();
+            this.groupBox4 = new System.Windows.Forms.GroupBox();
+            this.NumberFormat_Separator_Thousands = new System.Windows.Forms.CheckBox();
+            this.NumberFormat_Separator_Hexadecimal = new System.Windows.Forms.CheckBox();
             this.eNoteGroup.SuspendLayout();
             ((System.ComponentModel.ISupportInitialize)(this.NumberFormat_Exp_NegativeMax)).BeginInit();
             ((System.ComponentModel.ISupportInitialize)(this.NumberFormat_Exp_PositiveMin)).BeginInit();
@@ -99,12 +102,13 @@
             this.groupBox2.SuspendLayout();
             ((System.ComponentModel.ISupportInitialize)(this.NumberFormat_Decimal_MaxLen)).BeginInit();
             this.tabPage2.SuspendLayout();
+            this.colorGroup.SuspendLayout();
             this.fontGroup.SuspendLayout();
             ((System.ComponentModel.ISupportInitialize)(this.Appearance_Font_Size)).BeginInit();
             this.tabPage5.SuspendLayout();
             this.tabPage6.SuspendLayout();
             this.scriptGroup.SuspendLayout();
-            this.colorGroup.SuspendLayout();
+            this.groupBox4.SuspendLayout();
             this.SuspendLayout();
             // 
             // closeButton
@@ -347,6 +351,7 @@
             // 
             // tabPage1
             // 
+            this.tabPage1.Controls.Add(this.groupBox4);
             this.tabPage1.Controls.Add(this.NumberFormat_Exp_Enabled);
             this.tabPage1.Controls.Add(this.groupBox2);
             this.tabPage1.Controls.Add(this.eNoteGroup);
@@ -412,6 +417,25 @@
             this.tabPage2.Text = "Appearance";
             this.tabPage2.UseVisualStyleBackColor = true;
             // 
+            // colorGroup
+            // 
+            this.colorGroup.Controls.Add(this.toggleLightDarkModeButton);
+            this.colorGroup.Location = new System.Drawing.Point(6, 99);
+            this.colorGroup.Name = "colorGroup";
+            this.colorGroup.Size = new System.Drawing.Size(378, 187);
+            this.colorGroup.TabIndex = 1;
+            this.colorGroup.TabStop = false;
+            this.colorGroup.Text = "Color";
+            // 
+            // toggleLightDarkModeButton
+            // 
+            this.toggleLightDarkModeButton.Location = new System.Drawing.Point(215, 158);
+            this.toggleLightDarkModeButton.Name = "toggleLightDarkModeButton";
+            this.toggleLightDarkModeButton.Size = new System.Drawing.Size(157, 23);
+            this.toggleLightDarkModeButton.TabIndex = 0;
+            this.toggleLightDarkModeButton.Text = "Toggle Light / Dark Mode";
+            this.toggleLightDarkModeButton.UseVisualStyleBackColor = true;
+            // 
             // fontGroup
             // 
             this.fontGroup.Controls.Add(this.Appearance_Font_Size);
@@ -464,6 +488,24 @@
             this.label4.Size = new System.Drawing.Size(47, 12);
             this.label4.TabIndex = 0;
             this.label4.Text = "Buttons:";
+            // 
+            // label10
+            // 
+            this.label10.AutoSize = true;
+            this.label10.Location = new System.Drawing.Point(323, 15);
+            this.label10.Name = "label10";
+            this.label10.Size = new System.Drawing.Size(31, 12);
+            this.label10.TabIndex = 4;
+            this.label10.Text = "Style";
+            // 
+            // label9
+            // 
+            this.label9.AutoSize = true;
+            this.label9.Location = new System.Drawing.Point(273, 15);
+            this.label9.Name = "label9";
+            this.label9.Size = new System.Drawing.Size(26, 12);
+            this.label9.TabIndex = 4;
+            this.label9.Text = "Size";
             // 
             // label3
             // 
@@ -734,43 +776,6 @@
             this.columnHeader6.Text = "Parameter";
             this.columnHeader6.Width = 143;
             // 
-            // label9
-            // 
-            this.label9.AutoSize = true;
-            this.label9.Location = new System.Drawing.Point(273, 15);
-            this.label9.Name = "label9";
-            this.label9.Size = new System.Drawing.Size(26, 12);
-            this.label9.TabIndex = 4;
-            this.label9.Text = "Size";
-            // 
-            // label10
-            // 
-            this.label10.AutoSize = true;
-            this.label10.Location = new System.Drawing.Point(323, 15);
-            this.label10.Name = "label10";
-            this.label10.Size = new System.Drawing.Size(31, 12);
-            this.label10.TabIndex = 4;
-            this.label10.Text = "Style";
-            // 
-            // colorGroup
-            // 
-            this.colorGroup.Controls.Add(this.toggleLightDarkModeButton);
-            this.colorGroup.Location = new System.Drawing.Point(6, 99);
-            this.colorGroup.Name = "colorGroup";
-            this.colorGroup.Size = new System.Drawing.Size(378, 187);
-            this.colorGroup.TabIndex = 1;
-            this.colorGroup.TabStop = false;
-            this.colorGroup.Text = "Color";
-            // 
-            // toggleLightDarkModeButton
-            // 
-            this.toggleLightDarkModeButton.Location = new System.Drawing.Point(215, 158);
-            this.toggleLightDarkModeButton.Name = "toggleLightDarkModeButton";
-            this.toggleLightDarkModeButton.Size = new System.Drawing.Size(157, 23);
-            this.toggleLightDarkModeButton.TabIndex = 0;
-            this.toggleLightDarkModeButton.Text = "Toggle Light / Dark Mode";
-            this.toggleLightDarkModeButton.UseVisualStyleBackColor = true;
-            // 
             // Hotkey_KeyCode
             // 
             this.Hotkey_KeyCode.Alt = false;
@@ -783,6 +788,37 @@
             this.Hotkey_KeyCode.Size = new System.Drawing.Size(249, 19);
             this.Hotkey_KeyCode.TabIndex = 3;
             this.Hotkey_KeyCode.Win = false;
+            // 
+            // groupBox4
+            // 
+            this.groupBox4.Controls.Add(this.NumberFormat_Separator_Hexadecimal);
+            this.groupBox4.Controls.Add(this.NumberFormat_Separator_Thousands);
+            this.groupBox4.Location = new System.Drawing.Point(6, 172);
+            this.groupBox4.Name = "groupBox4";
+            this.groupBox4.Size = new System.Drawing.Size(378, 74);
+            this.groupBox4.TabIndex = 2;
+            this.groupBox4.TabStop = false;
+            this.groupBox4.Text = "Numeric Separators";
+            // 
+            // NumberFormat_Separator_Thousands
+            // 
+            this.NumberFormat_Separator_Thousands.AutoSize = true;
+            this.NumberFormat_Separator_Thousands.Location = new System.Drawing.Point(18, 23);
+            this.NumberFormat_Separator_Thousands.Name = "NumberFormat_Separator_Thousands";
+            this.NumberFormat_Separator_Thousands.Size = new System.Drawing.Size(233, 16);
+            this.NumberFormat_Separator_Thousands.TabIndex = 0;
+            this.NumberFormat_Separator_Thousands.Text = "Separate decimal numbers every 3 digits";
+            this.NumberFormat_Separator_Thousands.UseVisualStyleBackColor = true;
+            // 
+            // NumberFormat_Separator_Hexadecimal
+            // 
+            this.NumberFormat_Separator_Hexadecimal.AutoSize = true;
+            this.NumberFormat_Separator_Hexadecimal.Location = new System.Drawing.Point(18, 45);
+            this.NumberFormat_Separator_Hexadecimal.Name = "NumberFormat_Separator_Hexadecimal";
+            this.NumberFormat_Separator_Hexadecimal.Size = new System.Drawing.Size(325, 16);
+            this.NumberFormat_Separator_Hexadecimal.TabIndex = 0;
+            this.NumberFormat_Separator_Hexadecimal.Text = "Separate hexadecimal/binary/octal numbers every 4 digits";
+            this.NumberFormat_Separator_Hexadecimal.UseVisualStyleBackColor = true;
             // 
             // SettingsDialog
             // 
@@ -818,6 +854,7 @@
             this.groupBox2.PerformLayout();
             ((System.ComponentModel.ISupportInitialize)(this.NumberFormat_Decimal_MaxLen)).EndInit();
             this.tabPage2.ResumeLayout(false);
+            this.colorGroup.ResumeLayout(false);
             this.fontGroup.ResumeLayout(false);
             this.fontGroup.PerformLayout();
             ((System.ComponentModel.ISupportInitialize)(this.Appearance_Font_Size)).EndInit();
@@ -826,7 +863,8 @@
             this.tabPage6.PerformLayout();
             this.scriptGroup.ResumeLayout(false);
             this.scriptGroup.PerformLayout();
-            this.colorGroup.ResumeLayout(false);
+            this.groupBox4.ResumeLayout(false);
+            this.groupBox4.PerformLayout();
             this.ResumeLayout(false);
 
         }
@@ -896,5 +934,8 @@
         private System.Windows.Forms.Label label10;
         private System.Windows.Forms.Label label9;
         private System.Windows.Forms.Button toggleLightDarkModeButton;
+        private System.Windows.Forms.GroupBox groupBox4;
+        private System.Windows.Forms.CheckBox NumberFormat_Separator_Thousands;
+        private System.Windows.Forms.CheckBox NumberFormat_Separator_Hexadecimal;
     }
 }
