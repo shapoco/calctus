@@ -191,7 +191,7 @@ namespace Shapoco.Calctus.UI.Sheets {
                                 _chars[t.Position.Index + t.Text.Length - 2].Style.ForeColor = s.Appearance_Color_SI_Prefix;
                                 _chars[t.Position.Index + t.Text.Length - 1].Style.ForeColor = s.Appearance_Color_SI_Prefix;
                             }
-                            else if ((m = ExponentPattern.Match(t.Text)).Success) {
+                            else if (nth.Value.FormatHint.Formatter != NumberFormatter.CStyleHex && (m = ExponentPattern.Match(t.Text)).Success) {
                                 // 指数
                                 for (int i = 0; i < m.Length; i++) {
                                     _chars[t.Position.Index + m.Index + i].Style.ForeColor = s.Appearance_Color_SI_Prefix;

@@ -35,6 +35,16 @@ namespace Shapoco.Calctus.Model.Types {
             }
             this._raw = array;
         }
+        public ArrayVal(byte[] val) {
+            var array = new Val[val.Length];
+            for (int i = 0; i < val.Length; i++) {
+                array[i] = new RealVal(val[i]).FormatHex();
+            }
+            this._raw = array;
+        }
+        public ArrayVal(string val) : base(new FormatHint(NumberFormatter.CStyleString)) {
+            this._raw = val.Select(p => new RealVal(p).FormatHex()).ToArray();
+        }
 
         public Val this[int index] => _raw[index];
 
@@ -58,6 +68,8 @@ namespace Shapoco.Calctus.Model.Types {
             return new ArrayVal(array, FormatHint);
         }
 
+        public int Length => _raw.Length;
+
         public override object Raw => _raw;
 
         public override bool IsScalar => false;
@@ -68,6 +80,7 @@ namespace Shapoco.Calctus.Model.Types {
         public override double AsDouble => throw new InvalidCastException();
         public override long AsLong => throw new InvalidCastException();
         public override int AsInt => throw new InvalidCastException();
+        public override byte AsByte => throw new InvalidCastException();
         public override bool AsBool => throw new InvalidCastException();
         public override string AsString {
             get {
@@ -85,6 +98,7 @@ namespace Shapoco.Calctus.Model.Types {
         public override real[] AsRealArray => _raw.Select(p => p.AsReal).ToArray();
         public override long[] AsLongArray => _raw.Select(p => p.AsLong).ToArray();
         public override int[] AsIntArray => _raw.Select(p => p.AsInt).ToArray();
+        public override byte[] AsByteArray => _raw.Select(p => p.AsByte).ToArray();
 
         public override string ToString(FormatSettingss fs) => FormatHint.Formatter.Format(this, fs);
 

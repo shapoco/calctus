@@ -13,11 +13,11 @@ namespace Shapoco.Calctus.Model.Formats {
         public StringFormatter() : base(new Regex("\"(?<char>[^\"\\\\]|\\\\[abfnrtv\"\\\\0]|\\\\o[0-7]{3}|\\\\x[0-9a-fA-F]{2}|\\\\u[0-9a-fA-F]{4})*\""), FormatPriority.Strong) { }
 
         public override Val Parse(Match m) {
-            var list = new List<int>();
-            foreach(Capture cap in m.Groups["char"].Captures) {
-                list.Add(CharFormatter.Unescape(cap.Value));
+            var sb = new StringBuilder();
+            foreach (Capture cap in m.Groups["char"].Captures) {
+                sb.Append(CharFormatter.Unescape(cap.Value));
             }
-            return new ArrayVal(list.ToArray(), new FormatHint(this));
+            return new ArrayVal(sb.ToString());
         }
 
         protected override string OnFormat(Val val, FormatSettingss fs) {

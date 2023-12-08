@@ -36,12 +36,14 @@ namespace Shapoco.Calctus.Model.Types {
         public abstract double AsDouble { get; }
         public abstract long AsLong { get; }
         public abstract int AsInt { get; }
+        public abstract byte AsByte { get; }
         public abstract bool AsBool { get; }
         public abstract string AsString { get; }
 
         public abstract real[] AsRealArray { get; }
         public abstract long[] AsLongArray { get; }
         public abstract int[] AsIntArray { get; }
+        public abstract byte[] AsByteArray { get; }
 
         //public static implicit operator Val(double val) => new RealVal(val);
         //public static implicit operator double(Val val) => val.AsDouble();

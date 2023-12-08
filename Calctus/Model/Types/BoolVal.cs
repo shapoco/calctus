@@ -26,12 +26,14 @@ namespace Shapoco.Calctus.Model.Types {
         public override double AsDouble => throw new InvalidCastException();
         public override long AsLong => throw new InvalidCastException();
         public override int AsInt => throw new InvalidCastException();
+        public override byte AsByte => throw new InvalidCastException();
         public override bool AsBool => _raw;
         public override string AsString => throw new InvalidCastException();
 
         public override real[] AsRealArray => throw new InvalidCastException();
         public override long[] AsLongArray => throw new InvalidCastException();
         public override int[] AsIntArray => throw new InvalidCastException();
+        public override byte[] AsByteArray => throw new InvalidCastException();
 
         public override string ToString(FormatSettingss e) => _raw ? TrueKeyword : FalseKeyword;
 

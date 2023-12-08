@@ -96,6 +96,7 @@ namespace Shapoco.Calctus.Model {
         public static readonly FuncDef max = new FuncDef("max", Variadic, (e, a) => new RealVal(a.Max(p => p.AsReal), a[0].FormatHint), "Maximum value of the arguments");
         public static readonly FuncDef min = new FuncDef("min", Variadic, (e, a) => new RealVal(a.Min(p => p.AsReal), a[0].FormatHint), "Minimum value of the arguments");
 
+        public static readonly FuncDef len = new FuncDef("len", 1, (e, a) => new RealVal(((ArrayVal)a[0]).Length), "Sum of the arguments");
         public static readonly FuncDef sum = new FuncDef("sum", Variadic, (e, a) => new RealVal(a.Sum(p => p.AsReal), a[0].FormatHint), "Sum of the arguments");
         public static readonly FuncDef ave = new FuncDef("ave", Variadic, (e, a) => new RealVal(a.Average(p => p.AsReal), a[0].FormatHint), "Arithmetic mean of the arguments");
         public static readonly FuncDef invsum = new FuncDef("invsum", Variadic, (e, a) => new RealVal(1m / a.Sum(p => 1m / p.AsReal), a[0].FormatHint), "Inverse of the sum of the inverses");
@@ -209,6 +210,17 @@ namespace Shapoco.Calctus.Model {
         }, "Generates a random value between min and max.");
         public static readonly FuncDef rand32 = new FuncDef("rand32", 0, (e, a) => new RealVal(rng.Next()), "Generates a 32bit random integer.");
         public static readonly FuncDef rand64 = new FuncDef("rand64", 0, (e, a) => new RealVal((((long)rng.Next()) << 32) | ((long)rng.Next())), "Generates a 64bit random integer.");
+
+        public static readonly FuncDef utf8Enc = new FuncDef("utf8Enc", 1, (e, a) => new ArrayVal(Encoding.UTF8.GetBytes(a[0].AsString)), "Encode string to UTF8 byte sequence.");
+        public static readonly FuncDef utf8Dec = new FuncDef("utf8Dec", 1, (e, a) => new ArrayVal(Encoding.UTF8.GetString(a[0].AsByteArray)), "Decode UTF8 byte sequence.");
+
+        public static readonly FuncDef base64Enc = new FuncDef("base64Enc", 1, (e, a) => new ArrayVal(Convert.ToBase64String(Encoding.UTF8.GetBytes(a[0].AsString))), "Encode string to Base64.");
+        public static readonly FuncDef base64Dec = new FuncDef("base64Dec", 1, (e, a) => new ArrayVal(Encoding.UTF8.GetString(Convert.FromBase64String(a[0].AsString))), "Decode Base64 to string.");
+        public static readonly FuncDef base64EncBytes = new FuncDef("base64EncBytes", 1, (e, a) => new ArrayVal(Convert.ToBase64String(a[0].AsByteArray)), "Encode byte-array to Base64.");
+        public static readonly FuncDef base64DecBytes = new FuncDef("base64DecBytes", 1, (e, a) => new ArrayVal(Convert.FromBase64String(a[0].AsString)), "Decode Base64 to byte-array.");
+
+        public static readonly FuncDef urlEnc = new FuncDef("urlEnc", 1, (e, a) => new ArrayVal(System.Web.HttpUtility.UrlEncode(a[0].AsString)), "Escape URL string.");
+        public static readonly FuncDef urlDec = new FuncDef("urlDec", 1, (e, a) => new ArrayVal(System.Web.HttpUtility.UrlDecode(a[0].AsString)), "Decode URL string.");
 
         public static readonly FuncDef assert = new FuncDef("assert", (e, a) => {
             if (!a[0].AsBool) {

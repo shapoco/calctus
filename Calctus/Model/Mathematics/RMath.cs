@@ -285,6 +285,8 @@ namespace Shapoco.Calctus.Model.Mathematics {
         public static real Max(real a, real b) => a > b ? a : b;
         public static real Min(real a, real b) => a < b ? a : b;
 
+        public static bool IsInteger(decimal a) => a == Floor(a);
+
         /// <summary>素数判定</summary>
         public static bool IsPrime(real a) {
             if (a >= (1L << 52)) throw new ArgumentOutOfRangeException();
