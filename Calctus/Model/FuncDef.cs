@@ -99,9 +99,9 @@ namespace Shapoco.Calctus.Model {
         public static readonly FuncDef len = new FuncDef("len", 1, (e, a) => new RealVal(((ArrayVal)a[0]).Length), "Sum of the arguments");
         public static readonly FuncDef sum = new FuncDef("sum", Variadic, (e, a) => new RealVal(a.Sum(p => p.AsReal), a[0].FormatHint), "Sum of the arguments");
         public static readonly FuncDef ave = new FuncDef("ave", Variadic, (e, a) => new RealVal(a.Average(p => p.AsReal), a[0].FormatHint), "Arithmetic mean of the arguments");
-        public static readonly FuncDef invsum = new FuncDef("invsum", Variadic, (e, a) => new RealVal(1m / a.Sum(p => 1m / p.AsReal), a[0].FormatHint), "Inverse of the sum of the inverses");
-        public static readonly FuncDef harmean = new FuncDef("harmean", Variadic, (e, a) => new RealVal((real)a.Length / a.Sum(p => 1m / p.AsReal), a[0].FormatHint), "Harmonic mean of the arguments");
-        public static readonly FuncDef geomean = new FuncDef("geomean", Variadic, (e, a) => {
+        public static readonly FuncDef invSum = new FuncDef("invSum", Variadic, (e, a) => new RealVal(1m / a.Sum(p => 1m / p.AsReal), a[0].FormatHint), "Inverse of the sum of the inverses");
+        public static readonly FuncDef harMean = new FuncDef("harMean", Variadic, (e, a) => new RealVal((real)a.Length / a.Sum(p => 1m / p.AsReal), a[0].FormatHint), "Harmonic mean of the arguments");
+        public static readonly FuncDef geoMean = new FuncDef("geoMean", Variadic, (e, a) => {
             var prod = (real)1;
             foreach (var p in a) prod *= p.AsReal;
             return new RealVal(RMath.Pow(prod, 1m / a.Length), a[0].FormatHint);
@@ -110,72 +110,72 @@ namespace Shapoco.Calctus.Model {
         public static readonly FuncDef pack = new FuncDef("pack", 2, (e, a) => new RealVal(LMath.Pack(a[0].AsInt, a[1].AsLongArray)).FormatHex(), "Packs the array elements to a value.");
         public static readonly FuncDef unpack = new FuncDef("unpack", 2, (e, a) => new ArrayVal(LMath.Unpack(a[0].AsInt, a[1].AsLong)).FormatInt(), "Unpacks the value to an array.");
 
-        public static readonly FuncDef swapnib = new FuncDef("swapnib", (e, a) => new RealVal(LMath.SwapNibbles(a[0].AsLong), a[0].FormatHint), "Swaps the nibble of each byte.");
+        public static readonly FuncDef swapNib = new FuncDef("swapNib", (e, a) => new RealVal(LMath.SwapNibbles(a[0].AsLong), a[0].FormatHint), "Swaps the nibble of each byte.");
         public static readonly FuncDef swap2 = new FuncDef("swap2", (e, a) => new RealVal(LMath.Swap2(a[0].AsLong), a[0].FormatHint), "Swaps even and odd bytes.");
         public static readonly FuncDef swap4 = new FuncDef("swap4", (e, a) => new RealVal(LMath.Swap4(a[0].AsLong), a[0].FormatHint), "Reverses the order of each 4 bytes.");
         public static readonly FuncDef swap8 = new FuncDef("swap8", (e, a) => new RealVal(LMath.Swap8(a[0].AsLong), a[0].FormatHint), "Reverses the order of each 8 bytes.");
         public static readonly FuncDef reverse = new FuncDef("reverse", 2, (e, a) => new RealVal(LMath.Reverse(a[0].AsLong, a[1].AsInt), a[0].FormatHint), "Reverses the lower b bits of a.");
-        public static readonly FuncDef reverseb = new FuncDef("reverseb", (e, a) => new RealVal(LMath.ReverseBytes(a[0].AsLong), a[0].FormatHint), "Reverses the order of bits of each byte.");
-        public static readonly FuncDef rotatel = new FuncDef("rotatel", 2, (e, a) => new RealVal(LMath.RotateLeft(a[0].AsLong, a[1].AsInt), a[0].FormatHint), "Rotates left the lower b bits of a.");
-        public static readonly FuncDef rotater = new FuncDef("rotater", 2, (e, a) => new RealVal(LMath.RotateRight(a[0].AsLong, a[1].AsInt), a[0].FormatHint), "Rotates right the lower b bits of a.");
+        public static readonly FuncDef reverseB = new FuncDef("reverseB", (e, a) => new RealVal(LMath.ReverseBytes(a[0].AsLong), a[0].FormatHint), "Reverses the order of bits of each byte.");
+        public static readonly FuncDef rotateL = new FuncDef("rotateL", 2, (e, a) => new RealVal(LMath.RotateLeft(a[0].AsLong, a[1].AsInt), a[0].FormatHint), "Rotates left the lower b bits of a.");
+        public static readonly FuncDef rotateR = new FuncDef("rotateR", 2, (e, a) => new RealVal(LMath.RotateRight(a[0].AsLong, a[1].AsInt), a[0].FormatHint), "Rotates right the lower b bits of a.");
         public static readonly FuncDef count1 = new FuncDef("count1", (e, a) => new RealVal(LMath.CountOnes(a[0].AsLong)).FormatInt(), "Number of bits that have the value 1.");
 
-        public static readonly FuncDef xorreduce = new FuncDef("xorreduce", (e, a) => new RealVal(LMath.XorReduce(a[0].AsLong)).FormatInt(), "Reduction XOR (Same as even parity).");
+        public static readonly FuncDef xorReduce = new FuncDef("xorReduce", (e, a) => new RealVal(LMath.XorReduce(a[0].AsLong)).FormatInt(), "Reduction XOR (Same as even parity).");
         public static readonly FuncDef parity = new FuncDef("parity", (e, a) => new RealVal(LMath.OddParity(a[0].AsLong)).FormatInt(), "Odd parity.");
 
-        public static readonly FuncDef eccwidth = new FuncDef("eccwidth", (e, a) => new RealVal(LMath.EccWidth(a[0].AsInt)).FormatInt(), "Width of ECC for a-bit data.");
-        public static readonly FuncDef eccenc = new FuncDef("eccenc", 2, (e, a) => new RealVal(LMath.EccEncode(a[0].AsLong, a[1].AsInt)).FormatHex(), "Generate ECC code (a: data, b: data width)");
-        public static readonly FuncDef eccdec = new FuncDef("eccdec", 3, (e, a) => new RealVal(LMath.EccDecode(a[0].AsInt, a[1].AsLong, a[2].AsInt)).FormatInt(), "Check ECC code (a: ECC code, b: data, c: data width)");
+        public static readonly FuncDef eccWidth = new FuncDef("eccWidth", (e, a) => new RealVal(LMath.EccWidth(a[0].AsInt)).FormatInt(), "Width of ECC for a-bit data.");
+        public static readonly FuncDef eccEnc = new FuncDef("eccEnc", 2, (e, a) => new RealVal(LMath.EccEncode(a[0].AsLong, a[1].AsInt)).FormatHex(), "Generate ECC code (a: data, b: data width)");
+        public static readonly FuncDef eccDec = new FuncDef("eccDec", 3, (e, a) => new RealVal(LMath.EccDecode(a[0].AsInt, a[1].AsLong, a[2].AsInt)).FormatInt(), "Check ECC code (a: ECC code, b: data, c: data width)");
 
-        public static readonly FuncDef togray = new FuncDef("togray", (e, a) => new RealVal(LMath.ToGray(a[0].AsLong), a[0].FormatHint), "Converts the value from binary to gray-code.");
-        public static readonly FuncDef fromgray = new FuncDef("fromgray", (e, a) => new RealVal(LMath.FromGray(a[0].AsLong), a[0].FormatHint), "Converts the value from gray-code to binary.");
+        public static readonly FuncDef toGray = new FuncDef("toGray", (e, a) => new RealVal(LMath.ToGray(a[0].AsLong), a[0].FormatHint), "Converts the value from binary to gray-code.");
+        public static readonly FuncDef fromGray = new FuncDef("fromGray", (e, a) => new RealVal(LMath.FromGray(a[0].AsLong), a[0].FormatHint), "Converts the value from gray-code to binary.");
 
         public static readonly FuncDef now = new FuncDef("now", 0, (e, a) => new RealVal(UnixTime.FromLocalTime(DateTime.Now)).FormatDateTime(), "Current epoch time");
 
-        public static readonly FuncDef todays = new FuncDef("todays", (e, a) => a[0].Div(e, new RealVal(24 * 60 * 60)).FormatReal(), "Converts from epoch time to days.");
-        public static readonly FuncDef tohours = new FuncDef("tohours", (e, a) => a[0].Div(e, new RealVal(60 * 60)).FormatReal(), "Converts from epoch time to hours.");
-        public static readonly FuncDef tominutes = new FuncDef("tominutes", (e, a) => a[0].Div(e, new RealVal(60)).FormatReal(), "Converts from epoch time to minutes.");
-        public static readonly FuncDef toseconds = new FuncDef("toseconds", (e, a) => a[0].FormatReal(), "Converts from epoch time to seconds.");
+        public static readonly FuncDef toDays = new FuncDef("toDays", (e, a) => a[0].Div(e, new RealVal(24 * 60 * 60)).FormatReal(), "Converts from epoch time to days.");
+        public static readonly FuncDef toHours = new FuncDef("toHours", (e, a) => a[0].Div(e, new RealVal(60 * 60)).FormatReal(), "Converts from epoch time to hours.");
+        public static readonly FuncDef toMinutes = new FuncDef("toMinutes", (e, a) => a[0].Div(e, new RealVal(60)).FormatReal(), "Converts from epoch time to minutes.");
+        public static readonly FuncDef toSeconds = new FuncDef("toSeconds", (e, a) => a[0].FormatReal(), "Converts from epoch time to seconds.");
 
-        public static readonly FuncDef fromdays = new FuncDef("fromdays", (e, a) => a[0].Mul(e, new RealVal(24 * 60 * 60)).FormatDateTime(), "Converts from days to epoch time.");
-        public static readonly FuncDef fromhours = new FuncDef("fromhours", (e, a) => a[0].Mul(e, new RealVal(60 * 60)).FormatDateTime(), "Converts from hours to epoch time.");
-        public static readonly FuncDef fromminutes = new FuncDef("fromminutes", (e, a) => a[0].Mul(e, new RealVal(60)).FormatDateTime(), "Converts from minutes to epoch time.");
-        public static readonly FuncDef fromseconds = new FuncDef("fromseconds", (e, a) => a[0].FormatDateTime(), "Converts from seconds to epoch time.");
+        public static readonly FuncDef fromDays = new FuncDef("fromDays", (e, a) => a[0].Mul(e, new RealVal(24 * 60 * 60)).FormatDateTime(), "Converts from days to epoch time.");
+        public static readonly FuncDef fromHours = new FuncDef("fromHours", (e, a) => a[0].Mul(e, new RealVal(60 * 60)).FormatDateTime(), "Converts from hours to epoch time.");
+        public static readonly FuncDef fromMinutes = new FuncDef("fromMinutes", (e, a) => a[0].Mul(e, new RealVal(60)).FormatDateTime(), "Converts from minutes to epoch time.");
+        public static readonly FuncDef fromSeconds = new FuncDef("fromSeconds", (e, a) => a[0].FormatDateTime(), "Converts from seconds to epoch time.");
 
-        public static readonly FuncDef e3floor = new FuncDef("e3floor", (e, a) => new RealVal(PreferredNumbers.Floor(Eseries.E3, a[0].AsReal), a[0].FormatHint), "E3 series floor");
-        public static readonly FuncDef e3ceil = new FuncDef("e3ceil", (e, a) => new RealVal(PreferredNumbers.Ceiling(Eseries.E3, a[0].AsReal), a[0].FormatHint), "E3 series ceiling");
-        public static readonly FuncDef e3round = new FuncDef("e3round", (e, a) => new RealVal(PreferredNumbers.Round(Eseries.E3, a[0].AsReal), a[0].FormatHint), "E3 series round");
-        public static readonly FuncDef e3ratio = new FuncDef("e3ratio", (e, a) => new ArrayVal(PreferredNumbers.FindSplitPair(Eseries.E3, a[0].AsReal)), "E3 series value of divider resistor");
+        public static readonly FuncDef e3Floor = new FuncDef("e3Floor", (e, a) => new RealVal(PreferredNumbers.Floor(Eseries.E3, a[0].AsReal), a[0].FormatHint), "E3 series floor");
+        public static readonly FuncDef e3Ceil = new FuncDef("e3Ceil", (e, a) => new RealVal(PreferredNumbers.Ceiling(Eseries.E3, a[0].AsReal), a[0].FormatHint), "E3 series ceiling");
+        public static readonly FuncDef e3Round = new FuncDef("e3Round", (e, a) => new RealVal(PreferredNumbers.Round(Eseries.E3, a[0].AsReal), a[0].FormatHint), "E3 series round");
+        public static readonly FuncDef e3Ratio = new FuncDef("e3Ratio", (e, a) => new ArrayVal(PreferredNumbers.FindSplitPair(Eseries.E3, a[0].AsReal)), "E3 series value of divider resistor");
 
-        public static readonly FuncDef e6floor = new FuncDef("e6floor", (e, a) => new RealVal(PreferredNumbers.Floor(Eseries.E6, a[0].AsReal), a[0].FormatHint), "E6 series floor");
-        public static readonly FuncDef e6ceil = new FuncDef("e6ceil", (e, a) => new RealVal(PreferredNumbers.Ceiling(Eseries.E6, a[0].AsReal), a[0].FormatHint), "E6 series ceiling");
-        public static readonly FuncDef e6round = new FuncDef("e6round", (e, a) => new RealVal(PreferredNumbers.Round(Eseries.E6, a[0].AsReal), a[0].FormatHint), "E6 series round");
-        public static readonly FuncDef e6ratio = new FuncDef("e6ratio", (e, a) => new ArrayVal(PreferredNumbers.FindSplitPair(Eseries.E6, a[0].AsReal)), "E6 series value of divider resistor");
+        public static readonly FuncDef e6Floor = new FuncDef("e6Floor", (e, a) => new RealVal(PreferredNumbers.Floor(Eseries.E6, a[0].AsReal), a[0].FormatHint), "E6 series floor");
+        public static readonly FuncDef e6Ceil = new FuncDef("e6Ceil", (e, a) => new RealVal(PreferredNumbers.Ceiling(Eseries.E6, a[0].AsReal), a[0].FormatHint), "E6 series ceiling");
+        public static readonly FuncDef e6Round = new FuncDef("e6Round", (e, a) => new RealVal(PreferredNumbers.Round(Eseries.E6, a[0].AsReal), a[0].FormatHint), "E6 series round");
+        public static readonly FuncDef e6Ratio = new FuncDef("e6Ratio", (e, a) => new ArrayVal(PreferredNumbers.FindSplitPair(Eseries.E6, a[0].AsReal)), "E6 series value of divider resistor");
 
-        public static readonly FuncDef e12floor = new FuncDef("e12floor", (e, a) => new RealVal(PreferredNumbers.Floor(Eseries.E12, a[0].AsReal), a[0].FormatHint), "E12 series floor");
-        public static readonly FuncDef e12ceil = new FuncDef("e12ceil", (e, a) => new RealVal(PreferredNumbers.Ceiling(Eseries.E12, a[0].AsReal), a[0].FormatHint), "E12 series ceiling");
-        public static readonly FuncDef e12round = new FuncDef("e12round", (e, a) => new RealVal(PreferredNumbers.Round(Eseries.E12, a[0].AsReal), a[0].FormatHint), "E12 series round");
-        public static readonly FuncDef e12ratio = new FuncDef("e12ratio", (e, a) => new ArrayVal(PreferredNumbers.FindSplitPair(Eseries.E12, a[0].AsReal)), "E12 series value of divider resistor");
+        public static readonly FuncDef e12Floor = new FuncDef("e12Floor", (e, a) => new RealVal(PreferredNumbers.Floor(Eseries.E12, a[0].AsReal), a[0].FormatHint), "E12 series floor");
+        public static readonly FuncDef e12Ceil = new FuncDef("e12Ceil", (e, a) => new RealVal(PreferredNumbers.Ceiling(Eseries.E12, a[0].AsReal), a[0].FormatHint), "E12 series ceiling");
+        public static readonly FuncDef e12Round = new FuncDef("e12Round", (e, a) => new RealVal(PreferredNumbers.Round(Eseries.E12, a[0].AsReal), a[0].FormatHint), "E12 series round");
+        public static readonly FuncDef e12Ratio = new FuncDef("e12Ratio", (e, a) => new ArrayVal(PreferredNumbers.FindSplitPair(Eseries.E12, a[0].AsReal)), "E12 series value of divider resistor");
 
-        public static readonly FuncDef e24floor = new FuncDef("e24floor", (e, a) => new RealVal(PreferredNumbers.Floor(Eseries.E24, a[0].AsReal), a[0].FormatHint), "E24 series floor");
-        public static readonly FuncDef e24ceil = new FuncDef("e24ceil", (e, a) => new RealVal(PreferredNumbers.Ceiling(Eseries.E24, a[0].AsReal), a[0].FormatHint), "E24 series ceiling");
-        public static readonly FuncDef e24round = new FuncDef("e24round", (e, a) => new RealVal(PreferredNumbers.Round(Eseries.E24, a[0].AsReal), a[0].FormatHint), "E24 series round");
-        public static readonly FuncDef e24ratio = new FuncDef("e24ratio", (e, a) => new ArrayVal(PreferredNumbers.FindSplitPair(Eseries.E24, a[0].AsReal)), "E24 series value of divider resistor");
+        public static readonly FuncDef e24Floor = new FuncDef("e24Floor", (e, a) => new RealVal(PreferredNumbers.Floor(Eseries.E24, a[0].AsReal), a[0].FormatHint), "E24 series floor");
+        public static readonly FuncDef e24Ceil = new FuncDef("e24Ceil", (e, a) => new RealVal(PreferredNumbers.Ceiling(Eseries.E24, a[0].AsReal), a[0].FormatHint), "E24 series ceiling");
+        public static readonly FuncDef e24Round = new FuncDef("e24Round", (e, a) => new RealVal(PreferredNumbers.Round(Eseries.E24, a[0].AsReal), a[0].FormatHint), "E24 series round");
+        public static readonly FuncDef e24Ratio = new FuncDef("e24Ratio", (e, a) => new ArrayVal(PreferredNumbers.FindSplitPair(Eseries.E24, a[0].AsReal)), "E24 series value of divider resistor");
 
-        public static readonly FuncDef e48floor = new FuncDef("e48floor", (e, a) => new RealVal(PreferredNumbers.Floor(Eseries.E48, a[0].AsReal), a[0].FormatHint), "E48 series floor");
-        public static readonly FuncDef e48ceil = new FuncDef("e48ceil", (e, a) => new RealVal(PreferredNumbers.Ceiling(Eseries.E48, a[0].AsReal), a[0].FormatHint), "E48 series ceiling");
-        public static readonly FuncDef e48round = new FuncDef("e48round", (e, a) => new RealVal(PreferredNumbers.Round(Eseries.E48, a[0].AsReal), a[0].FormatHint), "E48 series round");
-        public static readonly FuncDef e48ratio = new FuncDef("e48ratio", (e, a) => new ArrayVal(PreferredNumbers.FindSplitPair(Eseries.E48, a[0].AsReal)), "E48 series value of divider resistor");
+        public static readonly FuncDef e48Floor = new FuncDef("e48Floor", (e, a) => new RealVal(PreferredNumbers.Floor(Eseries.E48, a[0].AsReal), a[0].FormatHint), "E48 series floor");
+        public static readonly FuncDef e48Ceil = new FuncDef("e48Ceil", (e, a) => new RealVal(PreferredNumbers.Ceiling(Eseries.E48, a[0].AsReal), a[0].FormatHint), "E48 series ceiling");
+        public static readonly FuncDef e48Round = new FuncDef("e48Round", (e, a) => new RealVal(PreferredNumbers.Round(Eseries.E48, a[0].AsReal), a[0].FormatHint), "E48 series round");
+        public static readonly FuncDef e48Ratio = new FuncDef("e48Ratio", (e, a) => new ArrayVal(PreferredNumbers.FindSplitPair(Eseries.E48, a[0].AsReal)), "E48 series value of divider resistor");
 
-        public static readonly FuncDef e96floor = new FuncDef("e96floor", (e, a) => new RealVal(PreferredNumbers.Floor(Eseries.E96, a[0].AsReal), a[0].FormatHint), "E96 series floor");
-        public static readonly FuncDef e96ceil = new FuncDef("e96ceil", (e, a) => new RealVal(PreferredNumbers.Ceiling(Eseries.E96, a[0].AsReal), a[0].FormatHint), "E96 series ceiling");
-        public static readonly FuncDef e96round = new FuncDef("e96round", (e, a) => new RealVal(PreferredNumbers.Round(Eseries.E96, a[0].AsReal), a[0].FormatHint), "E96 series round");
-        public static readonly FuncDef e96ratio = new FuncDef("e96ratio", (e, a) => new ArrayVal(PreferredNumbers.FindSplitPair(Eseries.E96, a[0].AsReal)), "E96 series value of divider resistor");
+        public static readonly FuncDef e96Floor = new FuncDef("e96Floor", (e, a) => new RealVal(PreferredNumbers.Floor(Eseries.E96, a[0].AsReal), a[0].FormatHint), "E96 series floor");
+        public static readonly FuncDef e96Ceil = new FuncDef("e96Ceil", (e, a) => new RealVal(PreferredNumbers.Ceiling(Eseries.E96, a[0].AsReal), a[0].FormatHint), "E96 series ceiling");
+        public static readonly FuncDef e96Round = new FuncDef("e96Round", (e, a) => new RealVal(PreferredNumbers.Round(Eseries.E96, a[0].AsReal), a[0].FormatHint), "E96 series round");
+        public static readonly FuncDef e96Ratio = new FuncDef("e96Ratio", (e, a) => new ArrayVal(PreferredNumbers.FindSplitPair(Eseries.E96, a[0].AsReal)), "E96 series value of divider resistor");
 
-        public static readonly FuncDef e192floor = new FuncDef("e192floor", (e, a) => new RealVal(PreferredNumbers.Floor(Eseries.E192, a[0].AsReal), a[0].FormatHint), "E192 series floor");
-        public static readonly FuncDef e192ceil = new FuncDef("e192ceil", (e, a) => new RealVal(PreferredNumbers.Ceiling(Eseries.E192, a[0].AsReal), a[0].FormatHint), "E192 series ceiling");
-        public static readonly FuncDef e192round = new FuncDef("e192round", (e, a) => new RealVal(PreferredNumbers.Round(Eseries.E192, a[0].AsReal), a[0].FormatHint), "E192 series round");
-        public static readonly FuncDef e192ratio = new FuncDef("e192ratio", (e, a) => new ArrayVal(PreferredNumbers.FindSplitPair(Eseries.E192, a[0].AsReal)), "E192 series value of divider resistor");
+        public static readonly FuncDef e192Floor = new FuncDef("e192Floor", (e, a) => new RealVal(PreferredNumbers.Floor(Eseries.E192, a[0].AsReal), a[0].FormatHint), "E192 series floor");
+        public static readonly FuncDef e192Ceil = new FuncDef("e192Ceil", (e, a) => new RealVal(PreferredNumbers.Ceiling(Eseries.E192, a[0].AsReal), a[0].FormatHint), "E192 series ceiling");
+        public static readonly FuncDef e192Round = new FuncDef("e192Round", (e, a) => new RealVal(PreferredNumbers.Round(Eseries.E192, a[0].AsReal), a[0].FormatHint), "E192 series round");
+        public static readonly FuncDef e192Ratio = new FuncDef("e192Ratio", (e, a) => new ArrayVal(PreferredNumbers.FindSplitPair(Eseries.E192, a[0].AsReal)), "E192 series value of divider resistor");
 
         public static readonly FuncDef rgb_3 = new FuncDef("rgb", 3, (e, a) => new RealVal(ColorSpace.SatPack(a[0].AsReal, a[1].AsReal, a[2].AsReal)).FormatWebColor(), "Generates 24 bit color value from R, G, B.");
         public static readonly FuncDef rgb_1 = new FuncDef("rgb", (e, a) => a[0].FormatWebColor(), "Converts the value to web-color representation.");
@@ -199,8 +199,8 @@ namespace Shapoco.Calctus.Model {
         public static readonly FuncDef unpack565 = new FuncDef("unpack565", (e, a) => new ArrayVal(ColorSpace.Unpack565(a[0].AsInt)), "Unpacks the RGB565 color to 3 values.");
 
         public static readonly FuncDef prime = new FuncDef("prime", (e, a) => new RealVal(RMath.Prime(a[0].AsInt)), "Returns a-th prime number.");
-        public static readonly FuncDef isprime = new FuncDef("isprime", (e, a) => new BoolVal(RMath.IsPrime(a[0].AsReal)), "Returns whether the value is prime or not.");
-        public static readonly FuncDef primefact = new FuncDef("primefact", (e, a) => new ArrayVal(RMath.PrimeFactors(a[0].AsReal), a[0].FormatHint), "Returns prime factors.");
+        public static readonly FuncDef isPrime = new FuncDef("isPrime", (e, a) => new BoolVal(RMath.IsPrime(a[0].AsReal)), "Returns whether the value is prime or not.");
+        public static readonly FuncDef primeFact = new FuncDef("primeFact", (e, a) => new ArrayVal(RMath.PrimeFactors(a[0].AsReal), a[0].FormatHint), "Returns prime factors.");
 
         public static readonly FuncDef rand = new FuncDef("rand", 0, (e, a) => new RealVal((real)rng.NextDouble()), "Generates a random value between 0.0 and 1.0.");
         public static readonly FuncDef rand_2 = new FuncDef("rand", 2, (e, a) => {
@@ -214,13 +214,13 @@ namespace Shapoco.Calctus.Model {
         public static readonly FuncDef utf8Enc = new FuncDef("utf8Enc", 1, (e, a) => new ArrayVal(Encoding.UTF8.GetBytes(a[0].AsString)), "Encode string to UTF8 byte sequence.");
         public static readonly FuncDef utf8Dec = new FuncDef("utf8Dec", 1, (e, a) => new ArrayVal(Encoding.UTF8.GetString(a[0].AsByteArray)), "Decode UTF8 byte sequence.");
 
+        public static readonly FuncDef urlEnc = new FuncDef("urlEnc", 1, (e, a) => new ArrayVal(System.Web.HttpUtility.UrlEncode(a[0].AsString)), "Escape URL string.");
+        public static readonly FuncDef urlDec = new FuncDef("urlDec", 1, (e, a) => new ArrayVal(System.Web.HttpUtility.UrlDecode(a[0].AsString)), "Decode URL string.");
+
         public static readonly FuncDef base64Enc = new FuncDef("base64Enc", 1, (e, a) => new ArrayVal(Convert.ToBase64String(Encoding.UTF8.GetBytes(a[0].AsString))), "Encode string to Base64.");
         public static readonly FuncDef base64Dec = new FuncDef("base64Dec", 1, (e, a) => new ArrayVal(Encoding.UTF8.GetString(Convert.FromBase64String(a[0].AsString))), "Decode Base64 to string.");
         public static readonly FuncDef base64EncBytes = new FuncDef("base64EncBytes", 1, (e, a) => new ArrayVal(Convert.ToBase64String(a[0].AsByteArray)), "Encode byte-array to Base64.");
         public static readonly FuncDef base64DecBytes = new FuncDef("base64DecBytes", 1, (e, a) => new ArrayVal(Convert.FromBase64String(a[0].AsString)), "Decode Base64 to byte-array.");
-
-        public static readonly FuncDef urlEnc = new FuncDef("urlEnc", 1, (e, a) => new ArrayVal(System.Web.HttpUtility.UrlEncode(a[0].AsString)), "Escape URL string.");
-        public static readonly FuncDef urlDec = new FuncDef("urlDec", 1, (e, a) => new ArrayVal(System.Web.HttpUtility.UrlDecode(a[0].AsString)), "Decode URL string.");
 
         public static readonly FuncDef assert = new FuncDef("assert", (e, a) => {
             if (!a[0].AsBool) {

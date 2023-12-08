@@ -97,23 +97,25 @@ User-defined constants can also be used.
 
 |Category|Functions|Precision|
 |:--|:--|:--|
-|Exponential|`pow(x,y)`, `exp(x)`:new:, `sqrt(x)`, `log(x)`, `log2(x)`, `log10(x)`, `clog2(x)`, `clog10(x)`|`Double`|
+|Exponential|`pow(x,y)`, `exp(x)`:new:, `sqrt(x)`, `log(x)`, `log2(x)`, `log10(x)`, `clog2(x)`, `clog10(x)`|`Decimal`|
 |Trigonometric|`sin(x)`, `cos(x)`, `tan(x)`,`asin(x)`, `acos(x)`, `atan(x)`, `atan2(y, x)`,`sinh(x)`, `cosh(x)`, `tanh(x)`|`Double`|
 |Round|`floor(x)`, `ceil(x)`, `trunc(x)`, `round(x)`|`Decimal`|
 |Absolute/Sign|`abs(x)`, `sign(x)`|`Decimal`|
 |Max/Min|`max(...)`, `min(...)`|`Decimal`|
-|Sum/Average|`sum(...)`, `ave(...)`, `harmean(...)`, `invsum(...)`, `geomean(...)`|`Decimal`|
+|Sum/Average|`sum(...)`, `ave(...)`, `harMean(...)`, `invSum(...)`, `geoMean(...)`|`Decimal`|
 |GCD, LCM|`gcd(a, b)`, `lcm(a, b)`|`Decimal`|
-|Bit/Byte Operations|`swapnib(x)`, `swap2(x)`, `swap4(x)`, `swap8(x)`, `reverse(x,w)`, `reverseb(x)`, `rotatel(x,w)`, `rotater(x,w)`, `count1(x,w)`|`Int64`|
-|Parity/ECC|`xorreduce(x)`, `parity(x)`, `eccwidth(x)`, `eccenc(x,w)`, `eccdec(e,x,w)`|`Int64`|
-|Gray-code|`togray(x)`, `fromgray(x)`|`Int64`|
+|Bit/Byte Operations|`swapNib(x)`, `swap2(x)`, `swap4(x)`, `swap8(x)`, `reverse(x,w)`, `reverseB(x)`, `rotatel(x,w)`, `rotater(x,w)`, `count1(x,w)`|`Int64`|
+|Parity/ECC|`xorReduce(x)`, `parity(x)`, `eccWidth(x)`, `eccEnc(x,w)`, `eccDec(e,x,w)`|`Int64`|
+|Gray-code|`toGray(x)`, `fromGray(x)`|`Int64`|
 |Fractions|`rat(x)`, `rat(x,a)`, `real(x)`|`Decimal`|
 |Representation|`dec(x)`, `hex(x)`, `bin(x)`, `oct(x)`, `char(x)`, `si(x)`, `bi(x)`, `datetime(x)`|`Decimal`|
-|Date Time|`now()`, `fromdays(x)`, `fromhours(x)`, `fromminutes(x)`, `fromseconds(x)`, `todays(x)`, `tohours(x)`, `tominutes(x)`, `toseconds(x)`|`Double`|
+|Date Time|`now()`, `fromDays(x)`, `fromHours(x)`, `fromMinutes(x)`, `fromSeconds(x)`, `toDays(x)`, `toHours(x)`, `toMinutes(x)`, `toSeconds(x)`|`Double`|
 |Color|`rgb(r,g,b)`, `rgb(rgb)`, `hsv2rgb(h,s,v)`, `rgb2hsv(rgb)`, `hsl2rgb(h,s,l)`, `rgb2hsl(rgb)`, `yuv2rgb(y,u,v)`, `yuv2rgb(yuv)`, `rgb2yuv(r,g,b)`, `rgb2yuv(rgb)`, `rgbto565(rgb)`, `rgbfrom565(rgb565)`, `pack565(r5,g6,b5)`, `unpack565(rgb565)`|`Decimal`|
-|E-series|Rounding to the E-series value: `eXfloor(x)`, `eXceil(x)`, `eXround(x)`<br>Calculation of voltage divider resistance: `eXratiol(x)`, `eXratioh(x)`<br> (`X`=`3`, `6`, `12`, `24`, `48`, `96`, `192`)|`Decimal`|
-|Prime Number|`isprime(x)`, `prime(n)`, `primefact(x)`|`Int64`|
+|E-series|Rounding to the E-series value: `eXFloor(x)`, `eXCeil(x)`, `eXRound(x)`<br>Calculation of voltage divider resistance: `eXRatio(x)`<br> (`X`=`3`, `6`, `12`, `24`, `48`, `96`, `192`)|`Decimal`|
+|Prime Number|`isPrime(x)`, `prime(n)`, `primeFact(x)`|`Int64`|
 |Random|`rand()`, `rand(min,max)`, `rand32()`, `rand64()`|`Decimal`, `Int64`|
+|Array:new:|`len()`|Array/String|
+|Encoding:new:|`utf8Enc`, `utf8Dec`, `urlEnc`, `urlDec`, `base64Enc`, `base64Dec`, `base64EncBytes`, `base64DecBytes`|Array/String|
 |Assertion|`assert(expr)`|`Boolean`|
 
 ### User Defined Function 
