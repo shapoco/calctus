@@ -114,8 +114,8 @@ User-defined constants can also be used.
 |E-series|Rounding to the E-series value: `eXFloor(x)`, `eXCeil(x)`, `eXRound(x)`<br>Calculation of voltage divider resistance: `eXRatio(x)`<br> (`X`=`3`, `6`, `12`, `24`, `48`, `96`, `192`)|`Decimal`|
 |Prime Number|`isPrime(x)`, `prime(n)`, `primeFact(x)`|`Int64`|
 |Random|`rand()`, `rand(min,max)`, `rand32()`, `rand64()`|`Decimal`, `Int64`|
-|Array :new:|`len()`|Array/String|
-|Encoding :new:|`utf8Enc`, `utf8Dec`, `urlEnc`, `urlDec`, `base64Enc`, `base64Dec`, `base64EncBytes`, `base64DecBytes`|Array/String|
+|Array :new:|`len(array)`|`Array`/`String`|
+|Encoding :new:|`utf8Enc(str)`, `utf8Dec(array)`, `urlEnc(str)`, `urlDec(str)`, `base64Enc(str)`, `base64Dec(str)`, `base64EncBytes(array)`, `base64DecBytes(str)`|`Array`/`String`|
 |Assertion|`assert(expr)`|`Boolean`|
 
 ### User Defined Function 
