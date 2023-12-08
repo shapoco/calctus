@@ -97,7 +97,7 @@ User-defined constants can also be used.
 
 |Category|Functions|Precision|
 |:--|:--|:--|
-|Exponential|`pow(x,y)`, `exp(x)`:new:, `sqrt(x)`, `log(x)`, `log2(x)`, `log10(x)`, `clog2(x)`, `clog10(x)`|`Decimal`|
+|Exponential|`pow(x,y)`, `exp(x)` :new:, `sqrt(x)`, `log(x)`, `log2(x)`, `log10(x)`, `clog2(x)`, `clog10(x)`|`Decimal`|
 |Trigonometric|`sin(x)`, `cos(x)`, `tan(x)`,`asin(x)`, `acos(x)`, `atan(x)`, `atan2(y, x)`,`sinh(x)`, `cosh(x)`, `tanh(x)`|`Double`|
 |Round|`floor(x)`, `ceil(x)`, `trunc(x)`, `round(x)`|`Decimal`|
 |Absolute/Sign|`abs(x)`, `sign(x)`|`Decimal`|
@@ -114,8 +114,8 @@ User-defined constants can also be used.
 |E-series|Rounding to the E-series value: `eXFloor(x)`, `eXCeil(x)`, `eXRound(x)`<br>Calculation of voltage divider resistance: `eXRatio(x)`<br> (`X`=`3`, `6`, `12`, `24`, `48`, `96`, `192`)|`Decimal`|
 |Prime Number|`isPrime(x)`, `prime(n)`, `primeFact(x)`|`Int64`|
 |Random|`rand()`, `rand(min,max)`, `rand32()`, `rand64()`|`Decimal`, `Int64`|
-|Array:new:|`len()`|Array/String|
-|Encoding:new:|`utf8Enc`, `utf8Dec`, `urlEnc`, `urlDec`, `base64Enc`, `base64Dec`, `base64EncBytes`, `base64DecBytes`|Array/String|
+|Array :new:|`len()`|Array/String|
+|Encoding :new:|`utf8Enc`, `utf8Dec`, `urlEnc`, `urlDec`, `base64Enc`, `base64Dec`, `base64EncBytes`, `base64DecBytes`|Array/String|
 |Assertion|`assert(expr)`|`Boolean`|
 
 ### User Defined Function 
