@@ -35,7 +35,7 @@ namespace Shapoco.Calctus.Model.Formats {
                 var ival = RMath.Truncate(fval);
 
                 // 10進表記、かつ指数表記対象に該当する場合はデフォルトの数値表現を使う
-                int exp = RMath.FLog10(val.AsReal);
+                int exp = RMath.FLog10Abs(val.AsReal);
                 bool enotation =
                     Radix == 10 &&
                     fs.ENotationEnabled &&

@@ -63,7 +63,7 @@ namespace Shapoco.Calctus.Model {
         public static readonly FuncDef rat_2 = new FuncDef("rat", 2, (e, a) => new FracVal(RMath.FindFrac(a[0].AsReal, a[1].AsReal, a[1].AsReal), a[0].FormatHint), "Rational fraction approximation.");
 
         public static readonly FuncDef pow = new FuncDef("pow", 2, (e, a) => new RealVal(RMath.Pow(a[0].AsReal, a[1].AsReal), a[0].FormatHint), "Power");
-        public static readonly FuncDef exp = new FuncDef("exp", (e, a) => new RealVal(RMath.Pow(RMath.E, a[0].AsReal)), "Exponential");
+        public static readonly FuncDef exp = new FuncDef("exp", (e, a) => new RealVal(RMath.Exp(a[0].AsReal)), "Exponential");
         public static readonly FuncDef sqrt = new FuncDef("sqrt", (e, a) => new RealVal(RMath.Sqrt(a[0].AsReal)), "Square root");
         public static readonly FuncDef log = new FuncDef("log", (e, a) => new RealVal(RMath.Log(a[0].AsReal)), "Logarithm");
         public static readonly FuncDef log2 = new FuncDef("log2", (e, a) => new RealVal(RMath.Log2(a[0].AsReal, e.Settings.AccuracyPriority)), "Binary logarithm");

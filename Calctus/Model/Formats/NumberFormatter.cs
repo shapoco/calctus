@@ -76,7 +76,7 @@ namespace Shapoco.Calctus.Model.Formats {
             }
             var decFormat = sbDecFormat.ToString();
 
-            int exp = RMath.FLog10(val);
+            int exp = RMath.FLog10Abs(val);
             if (allowENotation && fs.ENotationEnabled && exp >= fs.ENotationExpPositiveMin) {
                 if (fs.ENotationAlignment) {
                     exp = (int)Math.Floor((double)exp / 3) * 3;

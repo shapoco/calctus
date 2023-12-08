@@ -10,14 +10,92 @@ namespace Shapoco.Calctus.Model.Mathematics {
     static class RMath {
         public const decimal PI = 3.1415926535897932384626433833m;
         public const decimal E = 2.7182818284590452353602874714m;
+        public const decimal LogE2 = 0.6931471805599453094172321215m;
+        public const decimal LogE10 = 2.3025850929940456840179914547m;
 
         public const decimal FindFracMaxDeno = 1000000000000m;
 
         // 指数関数
         // 暫定的に System.Math の関数を使用する
-        public static real Pow(real a, real b) => (real)Math.Pow((double)a.Raw, (double)b.Raw);
-        public static real Sqrt(real a) => (real)Math.Sqrt((double)a.Raw);
-        public static real Log(real a) => (real)Math.Log((double)a.Raw);
+        public static decimal Pow(decimal a, decimal b) {
+            if (Floor(b) == b && int.MinValue <= b && b <= int.MaxValue) {
+                return PowN(a, (int)b);
+            }
+            else {
+                //return (decimal)Math.Pow((double)a, (double)b);
+                return Exp(Log(a) * b);
+            }
+        }
+
+        public static decimal PowN(decimal x, int y) {
+            decimal ret = 1;
+            if (y > 0) {
+                while (true) {
+                    if ((y & 1) != 0) ret *= x;
+                    y >>= 1;
+                    if (y == 0) break;
+                    x *= x;
+                }
+            }
+            else if (y < 0) {
+                y = -y;
+                while (true) {
+                    if ((y & 1) != 0) ret /= x;
+                    y >>= 1;
+                    if (y == 0) break;
+                    x *= x;
+                }
+            }
+            return ret;
+        }
+
+        //public static real Sqrt(real a) => (real)Math.Sqrt((double)a.Raw);
+        //public static real Sqrt(real a) => Pow(a, 0.5m);
+        public static decimal Sqrt(decimal x) {
+            var p = (decimal)Math.Sqrt((double)x);
+            for (int i = 0; i < 100; i++) {
+                decimal tmp = (p * p + x) / (2 * p);
+                if (tmp == p) break;
+                p = tmp;
+            }
+            return p;
+        }
+        
+        public static decimal Exp(decimal x) {
+            var s = Round(x);
+            if (s < int.MinValue || int.MaxValue < s) throw new OverflowException();
+            var t = x - s;
+            var p = 1m;
+            var oldExpT = 1m;
+            for (int i = 1; i < 100; i++) {
+                p *= t / i;
+                var newExpT = oldExpT + p;
+                if (newExpT == oldExpT) break;
+                oldExpT = newExpT;
+            }
+            return PowN(E, (int)s) * oldExpT;
+        }
+
+        //public static real Log(real a) => (real)Math.Log((double)a.Raw);
+        public static decimal Log(decimal x) {
+            var flog2x = Floor(Log2(x));
+            if (flog2x < int.MinValue || int.MaxValue < flog2x) throw new OverflowException();
+            var s = PowN(2, (int)flog2x);
+            var t = x / s;
+            var a = (t - 1m) / (t + 1m);
+            var aa = a * a;
+            var dend = a;
+            var dsor = 1;
+            var logT = 0m;
+            for (int i = 1; i < 100; i++) {
+                var tmp = logT + dend / dsor;
+                if (tmp == logT) break;
+                logT = tmp;
+                dend *= aa;
+                dsor += 2;
+            }
+            return flog2x * LogE2 + logT * 2;
+        }
 
         public static real Log10(real a) {
             if (a <= 0) throw new ArgumentOutOfRangeException();
@@ -38,14 +116,14 @@ namespace Shapoco.Calctus.Model.Mathematics {
                 return (real)(decimal)QMath.Log2((quad)(decimal)a);
             }
             else {
-                return Log(a) / Log(2);
+                return (real)(Math.Log((double)a) / Math.Log(2));
             }
-        } 
+        }
 
         /// <summary>
         /// a が 0 の場合は 0 を返し、それ以外の場合は floor(log10(abs(a))) を返す。
         /// </summary>
-        public static int FLog10(real a) {
+        public static int FLog10Abs(real a) {
             if (a == 0) {
                 return 0;
             }
