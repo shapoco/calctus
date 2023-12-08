@@ -16,13 +16,11 @@ namespace Shapoco.Calctus.Model.Mathematics {
         public const decimal FindFracMaxDeno = 1000000000000m;
 
         // 指数関数
-        // 暫定的に System.Math の関数を使用する
         public static decimal Pow(decimal a, decimal b) {
             if (Floor(b) == b && int.MinValue <= b && b <= int.MaxValue) {
                 return PowN(a, (int)b);
             }
             else {
-                //return (decimal)Math.Pow((double)a, (double)b);
                 return Exp(Log(a) * b);
             }
         }
@@ -49,8 +47,6 @@ namespace Shapoco.Calctus.Model.Mathematics {
             return ret;
         }
 
-        //public static real Sqrt(real a) => (real)Math.Sqrt((double)a.Raw);
-        //public static real Sqrt(real a) => Pow(a, 0.5m);
         public static decimal Sqrt(decimal x) {
             var p = (decimal)Math.Sqrt((double)x);
             for (int i = 0; i < 100; i++) {
@@ -76,7 +72,6 @@ namespace Shapoco.Calctus.Model.Mathematics {
             return PowN(E, (int)s) * oldExpT;
         }
 
-        //public static real Log(real a) => (real)Math.Log((double)a.Raw);
         public static decimal Log(decimal x) {
             var flog2x = Floor(Log2(x));
             if (flog2x < int.MinValue || int.MaxValue < flog2x) throw new OverflowException();
