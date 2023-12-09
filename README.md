@@ -63,6 +63,7 @@ Calctus (カルクタス) is a calculator application for Windows developed for 
 |Logical AND|`&&`|`Boolean`|
 |Logical OR|`\|\|`|`Boolean`|
 |Conditional Operator|`? :`|`Boolean`|
+|Range Operator|`..`, `..=`|`Array`/`String`|
 
 ### Variables
 
@@ -114,7 +115,7 @@ User-defined constants can also be used.
 |E-series|Rounding to the E-series value: `eXFloor(x)`, `eXCeil(x)`, `eXRound(x)`<br>Calculation of voltage divider resistance: `eXRatio(x)`<br> (`X`=`3`, `6`, `12`, `24`, `48`, `96`, `192`)|`Decimal`|
 |Prime Number|`isPrime(x)`, `prime(n)`, `primeFact(x)`|`Int64`|
 |Random|`rand()`, `rand(min,max)`, `rand32()`, `rand64()`|`Decimal`, `Int64`|
-|Array :new:|`len(array)`|`Array`/`String`|
+|Array :new:|`len(array)`,`range(start,end)`,`range(start,end,step)`,`rangeInclusive(start,end)`,`rangeInclusive(start,end,step)`|`Array`/`String`|
 |Encoding :new:|`utf8Enc(str)`, `utf8Dec(array)`, `urlEnc(str)`, `urlDec(str)`, `base64Enc(str)`, `base64Dec(str)`, `base64EncBytes(array)`, `base64DecBytes(str)`|`Array`/`String`|
 |Assertion|`assert(expr)`|`Boolean`|
 
@@ -126,27 +127,6 @@ User functions can be defined using the `def` keyword.
 def f(x) = x^2
 f(3) // --> Calctus answers 9.
 ```
-
-### External Script Call as Functions
-
-Calctus can call scripts such as Python as functions.
-
-Function arguments are passed to the script as command line arguments, and the standard output of the script is returned to Calctus.
-
-1. Open the `Scripts` tab in the Calctus Settings dialog.
-2. Check `Enable External Script Functions`.
-3. If you want to specify the folder where you want to place the scripts, click the `Change` button to specify the folder.
-4. Click the `Open` button. If asked if you want to create the folder, click `Yes`.
-5. Place a python script `add.py` like the following in the folder.
-    ```python
-    import sys
-    a = float(sys.argv[1])
-    b = float(sys.argv[2])
-    print(a + b)
-    ```
-6. After closing the settings dialog, the `add` function is now available.
-
-If you wish to use a scripting language other than Python, please register the extension and interpreter in the `Scripts` tab of the Settings dialog.
 
 ### Solve Function (Newton-Raphson method) 
 
@@ -194,6 +174,43 @@ x[11:4]      // --> Calctus answers 0x23.
 x[11:4]=0xab // --> Calctus answers 0x1ab4.
 ```
 
+Negative indexes represents distance from the end of the array. :new:
+
+```c++
+array=[1,2,3,4,5]
+array[-2]    // --> Calctus answers 4.
+array[-3:-1] // --> Calctus answers [3, 4, 5].
+```
+
+### Range operator and range function :new:
+
+Rust-style range operators can be used to generate sequences of numbers.
+
+```c++
+1..5  // --> Calctus answers [1, 2, 3, 4]
+1..=5 // --> Calctus answers [1, 2, 3, 4, 5]
+```
+
+Python-style range functions can also be used.
+
+```c++
+range(1,5)              // --> Calctus answers [1, 2, 3, 4]
+range(1,5,0.5)          // --> Calctus answers [1, 1.5, 2, 2.5, 3, 3.5, 4, 4.5]
+rangeInclusive(1,5)     // --> Calctus answers [1, 2, 3, 4, 5]
+rangeInclusive(1,5,0.5) // --> Calctus answers [1, 1.5, 2, 2.5, 3, 3.5, 4, 4.5, 5]
+```
+
+### Number sequence generation :new:
+
+The `generate` keyword can be used to generate a sequence of numbers using an recursive formula.
+
+The following example defines an array of two elements at the beginning and appends the sum of the last two elements as a new element ten times.
+
+```c++
+generate(a=[1,1], a[-2]+a[-1], 10)
+    // --> Calctus answers [1, 1, 2, 3, 5, 8, 13, 21, 34, 55, 89, 144]
+```
+
 ### Omission of Opening Parentheses 
 
 The opening parenthesis at the beginning of a line can be omitted.
@@ -232,6 +249,27 @@ If you use RPN operation, it is recommended to turn off the automatic input of "
 ```
 
 ![](img/rpn_ops.gif)
+
+### External Script Call as Functions
+
+Calctus can call scripts such as Python as functions.
+
+Function arguments are passed to the script as command line arguments, and the standard output of the script is returned to Calctus.
+
+1. Open the `Scripts` tab in the Calctus Settings dialog.
+2. Check `Enable External Script Functions`.
+3. If you want to specify the folder where you want to place the scripts, click the `Change` button to specify the folder.
+4. Click the `Open` button. If asked if you want to create the folder, click `Yes`.
+5. Place a python script `add.py` like the following in the folder.
+    ```python
+    import sys
+    a = float(sys.argv[1])
+    b = float(sys.argv[2])
+    print(a + b)
+    ```
+6. After closing the settings dialog, the `add` function is now available.
+
+If you wish to use a scripting language other than Python, please register the extension and interpreter in the `Scripts` tab of the Settings dialog.
 
 ### Graph Plotting
 
