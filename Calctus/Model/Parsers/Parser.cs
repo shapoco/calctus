@@ -159,17 +159,22 @@ namespace Shapoco.Calctus.Model.Parsers {
         public Expr Def(Token first) {
             Expect(TokenType.Word, out Token name);
             Expect("(");
-            var args = new List<Token>();
+            var args = new List<ArgDef>();
+            var vecArgIndex = -1;
             if (!ReadIf(")")) {
                 do {
                     Expect(TokenType.Word, out Token arg);
-                    args.Add(arg);
+                    if (ReadIf("*", out Token aster)) {
+                        if (vecArgIndex >= 0) throw new ParserError(aster, "Only one argument is vectorizable.");
+                        vecArgIndex = args.Count;
+                    }
+                    args.Add(new ArgDef(arg));
                 } while (ReadIf(","));
                 Expect(")");
             }
             Expect("=");
             var body = Expr(true);
-            return new UserFuncExpr(first, name, args.ToArray(), body);
+            return new UserFuncExpr(first, name, args.ToArray(), vecArgIndex, body);
         }
 
         public Expr Solve(Token first) {

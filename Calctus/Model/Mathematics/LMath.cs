@@ -50,7 +50,7 @@ namespace Shapoco.Calctus.Model.Mathematics {
                 ((val >> 56) & 0x00000000000000ff);
         }
 
-        public static long Reverse(long val, int nbits) {
+        public static long Reverse(int nbits, long val) {
             if (nbits < 1 || 64 < nbits) throw new ArgumentOutOfRangeException();
             long ret = 0;
             for (int i = 0; i < nbits; i++) {
@@ -73,7 +73,7 @@ namespace Shapoco.Calctus.Model.Mathematics {
                 ((val >> 7) & 0x0101010101010101);
         }
 
-        public static long RotateLeft(long val, int nbits) {
+        public static long RotateLeft(int nbits, long val) {
             if (nbits < 1 || 64 < nbits) throw new ArgumentOutOfRangeException();
             var carry = (val >> (nbits - 1)) & 1L;
             val &= (1L << (nbits - 1)) - 1L;
@@ -82,7 +82,7 @@ namespace Shapoco.Calctus.Model.Mathematics {
             return val;
         }
 
-        public static long RotateRight(long val, int nbits) {
+        public static long RotateRight(int nbits, long val) {
             if (nbits < 1 || 64 < nbits) throw new ArgumentOutOfRangeException();
             var carry = (val & 1L) << (nbits - 1);
             val >>= 1;
@@ -140,7 +140,7 @@ namespace Shapoco.Calctus.Model.Mathematics {
             return eccWidth + 1;
         }
 
-        public static int EccEncode(long data, int dataWidth) {
+        public static int EccEncode(int dataWidth, long data) {
             if (dataWidth < 1 || 64 < dataWidth) throw new ArgumentOutOfRangeException();
             var eccWidth = EccWidth(dataWidth);
             var ecc = 0;
@@ -152,10 +152,10 @@ namespace Shapoco.Calctus.Model.Mathematics {
             return ecc;
         }
 
-        public static int EccDecode(int ecc, long data, int dataWidth) {
+        public static int EccDecode(int dataWidth, int ecc, long data) {
             var parity = OddParity(ecc) ^ OddParity(data);
             var eccWidth = EccWidth(dataWidth);
-            var syndrome = ecc ^ EccEncode(data, dataWidth);
+            var syndrome = ecc ^ EccEncode(dataWidth, data);
             syndrome &= (1 << (eccWidth - 1)) - 1;
             var errPos = EccCorrectionTable[syndrome];
             if (parity == 0) {

@@ -97,15 +97,15 @@ User-defined constants can also be used.
 
 |Category|Functions|Precision|
 |:--|:--|:--|
-|Exponential|`pow(x,y)`, `exp(x)` :new:, `sqrt(x)`, `log(x)`, `log2(x)`, `log10(x)`, `clog2(x)`, `clog10(x)`|`Decimal`|
-|Trigonometric|`sin(x)`, `cos(x)`, `tan(x)`,`asin(x)`, `acos(x)`, `atan(x)`, `atan2(y, x)`,`sinh(x)`, `cosh(x)`, `tanh(x)`|`Double`|
-|Round|`floor(x)`, `ceil(x)`, `trunc(x)`, `round(x)`|`Decimal`|
-|Absolute/Sign|`abs(x)`, `sign(x)`|`Decimal`|
-|Max/Min|`max(...)`, `min(...)`|`Decimal`|
-|Sum/Average|`sum(...)`, `ave(...)`, `harMean(...)`, `invSum(...)`, `geoMean(...)`|`Decimal`|
+|Exponential|`pow(x*,y)`, `exp(x*)` :new:, `sqrt(x*)`, `log(x*)`, `log2(x*)`, `log10(x*)`, `clog2(x*)`, `clog10(x*)`|`Decimal`|
+|Trigonometric|`sin(x*)`, `cos(x*)`, `tan(x*)`,`asin(x*)`, `acos(x*)`, `atan(x*)`, `atan2(y, x)`,`sinh(x*)`, `cosh(x*)`, `tanh(x*)`|`Double`|
+|Round|`floor(x*)`, `ceil(x*)`, `trunc(x*)`, `round(x*)`|`Decimal`|
+|Absolute/Sign|`abs(x*)`, `sign(x*)`|`Decimal`|
+|Max/Min|`max(x...)`, `min(x...)`|`Decimal`|
+|Sum/Average|`sum(x...)`, `ave(x...)`, `harMean(x...)`, `invSum(x...)`, `geoMean(x...)`|`Decimal`|
 |GCD, LCM|`gcd(a, b)`, `lcm(a, b)`|`Decimal`|
 |Bit/Byte Operations|`swapNib(x)`, `swap2(x)`, `swap4(x)`, `swap8(x)`, `reverseBits(x,w)`, `reverseBytewise(x)`, `rotatel(x,w)`, `rotater(x,w)`, `count1(x,w)`|`Int64`|
-|Parity/ECC|`xorReduce(x)`, `parity(x)`, `eccWidth(x)`, `eccEnc(x,w)`, `eccDec(e,x,w)`|`Int64`|
+|Parity/ECC|`xorReduce(x)`, `oddParity(x)`, `eccWidth(x)`, `eccEnc(x,w)`, `eccDec(e,x,w)`|`Int64`|
 |Gray-code|`toGray(x)`, `fromGray(x)`|`Int64`|
 |Fractions|`rat(x)`, `rat(x,a)`, `real(x)`|`Decimal`|
 |Representation|`dec(x)`, `hex(x)`, `bin(x)`, `oct(x)`, `char(x)`, `si(x)`, `bi(x)`, `datetime(x)`|`Decimal`|

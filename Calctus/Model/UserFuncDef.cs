@@ -14,19 +14,18 @@ using Shapoco.Calctus.Model.Expressions;
 namespace Shapoco.Calctus.Model {
     class UserFuncDef : FuncDef {
         private Expr _expr;
-        private string[] _argNames;
 
-        public UserFuncDef(string name, string[] args, Expr expr) : base(name, args.Length, null, "User-defined function") {
+        public UserFuncDef(string name, ArgDef[] argDefs, int vecArgIndex, Expr expr)
+            : base(name, argDefs, null, VariadicAragumentMode.None, vecArgIndex, "User-defined function") {
             _expr = expr;
-            _argNames = args;
-            Call = (e, a) => Exec(e, a);
+            Method = (e, a) => Exec(e, a);
         }
 
         public Val Exec(EvalContext e, Val[] args) {
             var scope = new EvalContext(e);
             scope.Undef(Name, true); // 再帰呼び出しを防ぐために自分自身の定義をスコープから抹消する
-            for(int i = 0; i < _argNames.Length; i++) {
-                scope.Ref(_argNames[i], true).Value = args[i];
+            for(int i = 0; i < ArgDefs.Length; i++) {
+                scope.Ref(ArgDefs[i].Name, true).Value = args[i];
             }
             return _expr.Eval(scope);
         }

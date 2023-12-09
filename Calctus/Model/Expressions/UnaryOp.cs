@@ -13,10 +13,25 @@ namespace Shapoco.Calctus.Model.Expressions {
         }
 
         protected override Val OnEval(EvalContext e) {
-            if (Method == OpDef.Plus) return A.Eval(e);
-            if (Method == OpDef.ArithInv) return A.Eval(e).ArithInv(e);
-            if (Method == OpDef.BitNot) return A.Eval(e).BitNot(e);
-            if (Method == OpDef.LogicNot) return A.Eval(e).LogicNot(e);
+            var a = A.Eval(e);
+            if (a is ArrayVal aArray) {
+                var aVals = (Val[])aArray.Raw;
+                var results = new Val[aVals.Length];
+                for (int i = 0; i < aVals.Length; i++) {
+                    results[i] = scalarOperation(e, aVals[i]);
+                }
+                return new ArrayVal(results).Format(a.FormatHint);
+            }
+            else {
+                return scalarOperation(e, a);
+            }
+        }
+
+        private Val scalarOperation(EvalContext e, Val a) {
+            if (Method == OpDef.Plus) return a;
+            if (Method == OpDef.ArithInv) return a.ArithInv(e);
+            if (Method == OpDef.BitNot) return a.BitNot(e);
+            if (Method == OpDef.LogicNot) return a.LogicNot(e);
             throw new NotImplementedException();
         }
 

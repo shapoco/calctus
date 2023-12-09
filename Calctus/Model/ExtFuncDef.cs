@@ -18,10 +18,11 @@ namespace Shapoco.Calctus.Model {
         public readonly string Path;
 
         public ExtFuncDef(string path) : base(
-                System.IO.Path.GetFileNameWithoutExtension(path), Variadic, null,
+                System.IO.Path.GetFileNameWithoutExtension(path),
+                new ArgDef[] { new ArgDef("args") }, null, VariadicAragumentMode.Flatten, -1,
                 "External Function \"" + System.IO.Path.GetFileName(path) + "\"") {
             Path = path;
-            Call = (e,a) => Exec(a);
+            Method = (e, a) => Exec(a);
         }
 
         public Val Exec(Val[] a) {

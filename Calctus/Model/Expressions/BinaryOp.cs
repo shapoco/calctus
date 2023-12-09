@@ -62,7 +62,7 @@ namespace Shapoco.Calctus.Model.Expressions {
                     throw new InvalidOperationException("Left hand of " + Token + " must be variant");
                 }
             }
-            if (Method == OpDef.Frac) {
+            else if (Method == OpDef.Frac) {
                 var a = A.Eval(e);
                 var b = B.Eval(e);
                 if (!e.Settings.FractionEnabled) {
@@ -75,28 +75,66 @@ namespace Shapoco.Calctus.Model.Expressions {
                     return FracVal.Normalize(new frac(a.AsReal, b.AsReal), a.FormatHint);
                 }
             }
-            if (Method == OpDef.Pow) return FuncDef.pow.Call(e, new Val[] { A.Eval(e), B.Eval(e) });
-            if (Method == OpDef.Mul) return A.Eval(e).Mul(e, B.Eval(e));
-            if (Method == OpDef.Div) return A.Eval(e).Div(e, B.Eval(e));
-            if (Method == OpDef.IDiv) return A.Eval(e).IDiv(e, B.Eval(e));
-            if (Method == OpDef.Mod) return A.Eval(e).Mod(e, B.Eval(e));
-            if (Method == OpDef.Add) return A.Eval(e).Add(e, B.Eval(e));
-            if (Method == OpDef.Sub) return A.Eval(e).Sub(e, B.Eval(e));
-            if (Method == OpDef.LogicShiftL) return A.Eval(e).LogicShiftL(e, B.Eval(e));
-            if (Method == OpDef.LogicShiftR) return A.Eval(e).LogicShiftR(e, B.Eval(e));
-            if (Method == OpDef.ArithShiftL) return A.Eval(e).ArithShiftL(e, B.Eval(e));
-            if (Method == OpDef.ArithShiftR) return A.Eval(e).ArithShiftR(e, B.Eval(e));
-            if (Method == OpDef.Grater) return A.Eval(e).Grater(e, B.Eval(e));
-            if (Method == OpDef.GraterEqual) return A.Eval(e).GraterEqual(e, B.Eval(e));
-            if (Method == OpDef.Less) return A.Eval(e).Less(e, B.Eval(e));
-            if (Method == OpDef.LessEqual) return A.Eval(e).LessEqual(e, B.Eval(e));
-            if (Method == OpDef.Equal) return A.Eval(e).Equal(e, B.Eval(e));
-            if (Method == OpDef.NotEqual) return A.Eval(e).NotEqual(e, B.Eval(e));
-            if (Method == OpDef.BitAnd) return A.Eval(e).BitAnd(e, B.Eval(e));
-            if (Method == OpDef.BitXor) return A.Eval(e).BitXor(e, B.Eval(e));
-            if (Method == OpDef.BitOr) return A.Eval(e).BitOr(e, B.Eval(e));
-            if (Method == OpDef.LogicAnd) return A.Eval(e).LogicAnd(e, B.Eval(e));
-            if (Method == OpDef.LogicOr) return A.Eval(e).LogicOr(e, B.Eval(e));
+            else if (Method == OpDef.Pow) {
+                return FuncDef.pow.Call(e, new Val[] { A.Eval(e), B.Eval(e) });
+            }
+            else {
+                var a = A.Eval(e);
+                var b = B.Eval(e);
+                if (a is ArrayVal aArray && !(b is ArrayVal)) {
+                    var aVals = (Val[])aArray.Raw;
+                    var results = new Val[aVals.Length];
+                    for (int i = 0; i < aVals.Length; i++) {
+                        results[i] = scalarOperation(e, aVals[i], b);
+                    }
+                    return new ArrayVal(results).Format(a.FormatHint);
+                }
+                else if (!(a is ArrayVal) && b is ArrayVal bArray) {
+                    var bVals = (Val[])bArray.Raw;
+                    var results = new Val[bVals.Length];
+                    for (int i = 0; i < bVals.Length; i++) {
+                        results[i] = scalarOperation(e, a, bVals[i]);
+                    }
+                    return new ArrayVal(results).Format(b.FormatHint);
+                }
+                else if (a is ArrayVal aArray1 && b is ArrayVal bArray1) {
+                    var aVals = (Val[])aArray1.Raw;
+                    var bVals = (Val[])bArray1.Raw;
+                    if (aVals.Length != bVals.Length) throw new CalctusError("Array size mismatch.");
+                    var results = new Val[aVals.Length];
+                    for (int i = 0; i < aVals.Length; i++) {
+                        results[i] = scalarOperation(e, aVals[i], bVals[i]);
+                    }
+                    return new ArrayVal(results).Format(a.FormatHint);
+                }
+                else {
+                    return scalarOperation(e, a, b);
+                }
+            }
+        }
+
+        private Val scalarOperation(EvalContext e, Val a, Val b) {
+            if (Method == OpDef.Mul) return a.Mul(e, b);
+            if (Method == OpDef.Div) return a.Div(e, b);
+            if (Method == OpDef.IDiv) return a.IDiv(e, b);
+            if (Method == OpDef.Mod) return a.Mod(e, b);
+            if (Method == OpDef.Add) return a.Add(e, b);
+            if (Method == OpDef.Sub) return a.Sub(e, b);
+            if (Method == OpDef.LogicShiftL) return a.LogicShiftL(e, b);
+            if (Method == OpDef.LogicShiftR) return a.LogicShiftR(e, b);
+            if (Method == OpDef.ArithShiftL) return a.ArithShiftL(e, b);
+            if (Method == OpDef.ArithShiftR) return a.ArithShiftR(e, b);
+            if (Method == OpDef.Grater) return a.Grater(e, b);
+            if (Method == OpDef.GraterEqual) return a.GraterEqual(e, b);
+            if (Method == OpDef.Less) return a.Less(e, b);
+            if (Method == OpDef.LessEqual) return a.LessEqual(e, b);
+            if (Method == OpDef.Equal) return a.Equal(e, b);
+            if (Method == OpDef.NotEqual) return a.NotEqual(e, b);
+            if (Method == OpDef.BitAnd) return a.BitAnd(e, b);
+            if (Method == OpDef.BitXor) return a.BitXor(e, b);
+            if (Method == OpDef.BitOr) return a.BitOr(e, b);
+            if (Method == OpDef.LogicAnd) return a.LogicAnd(e, b);
+            if (Method == OpDef.LogicOr) return a.LogicOr(e, b);
             throw new NotImplementedException();
         }
 

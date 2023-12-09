@@ -54,6 +54,7 @@
   <ItemGroup>
     <Compile Include="AppDataManager.cs" />
     <Compile Include="Calctus\Assert.cs" />
+    <Compile Include="Calctus\Model\ArgDef.cs" />
     <Compile Include="Calctus\Model\Evaluations\EvalError.cs" />
     <Compile Include="Calctus\Model\Expressions\PlotExpr.cs" />
     <Compile Include="Calctus\Model\Formats\FormatSettingss.cs" />
@@ -66,6 +67,7 @@
     <Compile Include="Calctus\Model\Graphs\PlotRequest.cs" />
     <Compile Include="Calctus\Model\Graphs\Types.cs" />
     <Compile Include="Calctus\Model\Parsers\Types.cs" />
+    <Compile Include="Calctus\Model\Types.cs" />
     <Compile Include="Calctus\Model\Types\ArrayVal.cs" />
     <Compile Include="Calctus\Model\Sheets\Types.cs" />
     <Compile Include="Calctus\Model\Types\BoolVal.cs" />

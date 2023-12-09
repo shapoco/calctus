@@ -17,7 +17,7 @@ namespace Shapoco.Calctus.UI.Sheets {
     /// 数式の文字の配置と描画を担うクラス
     /// </summary>
     class ExprBoxCoreLayout {
-        private static readonly Regex ExponentPattern = new Regex("[eE]([1-9][0-9]*(_[0-9]+)*)$");
+        private static readonly Regex ExponentPattern = new Regex("[eE]-?[1-9][0-9]*(_[0-9]+)*$");
         private static readonly Regex DecimalPattern = new Regex(@"^(?<int>0|[1-9][0-9]*(_[0-9]+)*)(\.(?<frac>[0-9]+(_[0-9]+)*))?");
         private static readonly Regex HexBinOctPattern = new Regex(@"^(0[xX](?<hex>[0-9a-fA-F]+(_[0-9a-fA-F]+)*)|0[bB](?<bin>[01]+(_[01]+)*)|0(?<oct>[0-7]+(_[0-7]+)*))");
 

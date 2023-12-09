@@ -56,7 +56,7 @@ namespace Shapoco.Calctus.Model.Mathematics {
             }
             return p;
         }
-        
+
         public static decimal Exp(decimal x) {
             var s = Round(x);
             if (s < int.MinValue || int.MaxValue < s) throw new OverflowException();
@@ -153,10 +153,11 @@ namespace Shapoco.Calctus.Model.Mathematics {
             return pow;
         }
 
+
         /// <summary>a と b の最大公約数</summary>
         public static decimal Gcd(decimal a, decimal b) {
-            if (a != Floor(a)) throw new ArgumentException("Arguments must be integers");
-            if (b != Floor(b)) throw new ArgumentException("Arguments must be integers");
+            if (!IsInteger(a)) throw new ArgumentException("Arguments must be integers");
+            if (!IsInteger(b)) throw new ArgumentException("Arguments must be integers");
             a = Abs(a);
             b = Abs(b);
             while (b != 0) {
@@ -167,9 +168,39 @@ namespace Shapoco.Calctus.Model.Mathematics {
             return a;
         }
 
+        /// <summary>配列の全要素の最大公約数</summary>
+        public static decimal Gcd(decimal[] x) {
+            if (x.Length == 0) throw new ArgumentException("Empty array");
+            return gcdRecursive(x, 0, x.Length - 1);
+        }
+        private static decimal gcdRecursive(decimal[] x, int il, int ir) {
+            if (il == ir) {
+                return x[il];
+            }
+            else {
+                int im = il + (ir - il) / 2;
+                return Gcd(gcdRecursive(x, il, im), gcdRecursive(x, im + 1, ir));
+            }
+        }
+
         /// <summary>a と b の最小公倍数。a * b が非常に大きくなる場合、この関数は例外を投げる。</summary>
         public static decimal Lcm(decimal a, decimal b) {
             return a * b / Gcd(a, b);
+        }
+
+        /// <summary>配列の全要素の最小公倍数</summary>
+        public static decimal Lcm(decimal[] x) {
+            if (x.Length == 0) throw new ArgumentException("Empty array");
+            return lcmRecursive(x, 0, x.Length - 1);
+        }
+        private static decimal lcmRecursive(decimal[] x, int il, int ir) {
+            if (il == ir) {
+                return x[il];
+            }
+            else {
+                int im = il + (ir - il) / 2;
+                return Lcm(lcmRecursive(x, il, im), lcmRecursive(x, im + 1, ir));
+            }
         }
 
         /// <summary>通分</summary>
