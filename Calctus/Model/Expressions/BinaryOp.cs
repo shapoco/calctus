@@ -4,6 +4,7 @@ using System.Linq;
 using Shapoco.Calctus.Model.Types;
 using Shapoco.Calctus.Model.Parsers;
 using Shapoco.Calctus.Model.Evaluations;
+using Shapoco.Calctus.Model.Mathematics;
 
 namespace Shapoco.Calctus.Model.Expressions {
     /// <summary>二項演算</summary>
@@ -61,6 +62,15 @@ namespace Shapoco.Calctus.Model.Expressions {
                 else {
                     throw new InvalidOperationException("Left hand of " + Token + " must be variant");
                 }
+            }
+            else if (Method == OpDef.InclusiveRange || Method == OpDef.ExclusiveRange) {
+                bool inclusive = (Method == OpDef.InclusiveRange);
+                var aVal = A.Eval(e);
+                var bVal = B.Eval(e);
+                if (!aVal.IsInteger || !bVal.IsInteger) throw new CalctusError("Operand must be integer.");
+                var a = aVal.AsReal;
+                var b = bVal.AsReal;
+                return new ArrayVal(RMath.Range(a, b, a < b ? 1 : -1, inclusive));
             }
             else if (Method == OpDef.Frac) {
                 var a = A.Eval(e);

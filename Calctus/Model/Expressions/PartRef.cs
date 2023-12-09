@@ -21,6 +21,8 @@ namespace Shapoco.Calctus.Model.Expressions {
             var to = IndexTo.Eval(ctx).AsInt;
             var obj = Target.Eval(ctx);
             if (obj is ArrayVal array) {
+                if (from < 0) from = array.Length + from;
+                if (to < 0) to = array.Length + to;
                 if (from == to) {
                     return array[from];
                 }

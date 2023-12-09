@@ -59,6 +59,10 @@ namespace Shapoco.Calctus.Model {
 
         public static OpDef LogicAnd = new OpDef(OpType.Binary, 31, "&&");
         public static OpDef LogicOr = new OpDef(OpType.Binary, 30, "||");
+
+        public static OpDef ExclusiveRange = new OpDef(OpType.Binary, 20, "..");
+        public static OpDef InclusiveRange = new OpDef(OpType.Binary, 20, "..=");
+
         // ここに 3項演算子
         public static OpDef Assign = new OpDef(OpType.Binary, OpPriorityDir.Right, 0, "=");
 

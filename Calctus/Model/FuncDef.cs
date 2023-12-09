@@ -317,6 +317,10 @@ namespace Shapoco.Calctus.Model {
         public static readonly FuncDef rand64 = new FuncDef("rand64()", (e, a) => new RealVal((((long)rng.Next()) << 32) | ((long)rng.Next())), "Generates a 64bit random integer.");
 
         public static readonly FuncDef len = new FuncDef("len(array)", (e, a) => new RealVal(((ArrayVal)a[0]).Length), "Length of array");
+        public static readonly FuncDef range_2 = new FuncDef("range(start, stop)", (e, a) => new ArrayVal(RMath.Range(a[0].AsReal, a[1].AsReal, 0, false)), "Generate number sequence.");
+        public static readonly FuncDef range_3 = new FuncDef("range(start, stop, step)", (e, a) => new ArrayVal(RMath.Range(a[0].AsReal, a[1].AsReal, a[2].AsReal, false)), "Generate number sequence.");
+        public static readonly FuncDef rangeInclusive_2 = new FuncDef("rangeInclusive(start, stop)", (e, a) => new ArrayVal(RMath.Range(a[0].AsReal, a[1].AsReal, 0, true)), "Generate number sequence.");
+        public static readonly FuncDef rangeInclusive_3 = new FuncDef("rangeInclusive(start, stop, step)", (e, a) => new ArrayVal(RMath.Range(a[0].AsReal, a[1].AsReal, a[2].AsReal, true)), "Generate number sequence.");
         public static readonly FuncDef reverseArray = new FuncDef("reverseArray(array)", (e, a) => {
             var array = (Val[])((ArrayVal)a[0]).Raw;
             Array.Reverse(array);
