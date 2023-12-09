@@ -104,7 +104,7 @@ User-defined constants can also be used.
 |Max/Min|`max(...)`, `min(...)`|`Decimal`|
 |Sum/Average|`sum(...)`, `ave(...)`, `harMean(...)`, `invSum(...)`, `geoMean(...)`|`Decimal`|
 |GCD, LCM|`gcd(a, b)`, `lcm(a, b)`|`Decimal`|
-|Bit/Byte Operations|`swapNib(x)`, `swap2(x)`, `swap4(x)`, `swap8(x)`, `reverse(x,w)`, `reverseB(x)`, `rotatel(x,w)`, `rotater(x,w)`, `count1(x,w)`|`Int64`|
+|Bit/Byte Operations|`swapNib(x)`, `swap2(x)`, `swap4(x)`, `swap8(x)`, `reverseBits(x,w)`, `reverseBytewise(x)`, `rotatel(x,w)`, `rotater(x,w)`, `count1(x,w)`|`Int64`|
 |Parity/ECC|`xorReduce(x)`, `parity(x)`, `eccWidth(x)`, `eccEnc(x,w)`, `eccDec(e,x,w)`|`Int64`|
 |Gray-code|`toGray(x)`, `fromGray(x)`|`Int64`|
 |Fractions|`rat(x)`, `rat(x,a)`, `real(x)`|`Decimal`|

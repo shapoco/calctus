@@ -96,7 +96,6 @@ namespace Shapoco.Calctus.Model {
         public static readonly FuncDef max = new FuncDef("max", Variadic, (e, a) => new RealVal(a.Max(p => p.AsReal), a[0].FormatHint), "Maximum value of the arguments");
         public static readonly FuncDef min = new FuncDef("min", Variadic, (e, a) => new RealVal(a.Min(p => p.AsReal), a[0].FormatHint), "Minimum value of the arguments");
 
-        public static readonly FuncDef len = new FuncDef("len", 1, (e, a) => new RealVal(((ArrayVal)a[0]).Length), "Sum of the arguments");
         public static readonly FuncDef sum = new FuncDef("sum", Variadic, (e, a) => new RealVal(a.Sum(p => p.AsReal), a[0].FormatHint), "Sum of the arguments");
         public static readonly FuncDef ave = new FuncDef("ave", Variadic, (e, a) => new RealVal(a.Average(p => p.AsReal), a[0].FormatHint), "Arithmetic mean of the arguments");
         public static readonly FuncDef invSum = new FuncDef("invSum", Variadic, (e, a) => new RealVal(1m / a.Sum(p => 1m / p.AsReal), a[0].FormatHint), "Inverse of the sum of the inverses");
@@ -114,8 +113,8 @@ namespace Shapoco.Calctus.Model {
         public static readonly FuncDef swap2 = new FuncDef("swap2", (e, a) => new RealVal(LMath.Swap2(a[0].AsLong), a[0].FormatHint), "Swaps even and odd bytes.");
         public static readonly FuncDef swap4 = new FuncDef("swap4", (e, a) => new RealVal(LMath.Swap4(a[0].AsLong), a[0].FormatHint), "Reverses the order of each 4 bytes.");
         public static readonly FuncDef swap8 = new FuncDef("swap8", (e, a) => new RealVal(LMath.Swap8(a[0].AsLong), a[0].FormatHint), "Reverses the order of each 8 bytes.");
-        public static readonly FuncDef reverse = new FuncDef("reverse", 2, (e, a) => new RealVal(LMath.Reverse(a[0].AsLong, a[1].AsInt), a[0].FormatHint), "Reverses the lower b bits of a.");
-        public static readonly FuncDef reverseB = new FuncDef("reverseB", (e, a) => new RealVal(LMath.ReverseBytes(a[0].AsLong), a[0].FormatHint), "Reverses the order of bits of each byte.");
+        public static readonly FuncDef reverseBits = new FuncDef("reverseBits", 2, (e, a) => new RealVal(LMath.Reverse(a[0].AsLong, a[1].AsInt), a[0].FormatHint), "Reverses the lower b bits of a.");
+        public static readonly FuncDef reverseBytewise = new FuncDef("reverseBytewise", (e, a) => new RealVal(LMath.ReverseBytes(a[0].AsLong), a[0].FormatHint), "Reverses the order of bits of each byte.");
         public static readonly FuncDef rotateL = new FuncDef("rotateL", 2, (e, a) => new RealVal(LMath.RotateLeft(a[0].AsLong, a[1].AsInt), a[0].FormatHint), "Rotates left the lower b bits of a.");
         public static readonly FuncDef rotateR = new FuncDef("rotateR", 2, (e, a) => new RealVal(LMath.RotateRight(a[0].AsLong, a[1].AsInt), a[0].FormatHint), "Rotates right the lower b bits of a.");
         public static readonly FuncDef count1 = new FuncDef("count1", (e, a) => new RealVal(LMath.CountOnes(a[0].AsLong)).FormatInt(), "Number of bits that have the value 1.");
@@ -210,6 +209,13 @@ namespace Shapoco.Calctus.Model {
         }, "Generates a random value between min and max.");
         public static readonly FuncDef rand32 = new FuncDef("rand32", 0, (e, a) => new RealVal(rng.Next()), "Generates a 32bit random integer.");
         public static readonly FuncDef rand64 = new FuncDef("rand64", 0, (e, a) => new RealVal((((long)rng.Next()) << 32) | ((long)rng.Next())), "Generates a 64bit random integer.");
+
+        public static readonly FuncDef len = new FuncDef("len", 1, (e, a) => new RealVal(((ArrayVal)a[0]).Length), "Length of array");
+        public static readonly FuncDef reverseArray = new FuncDef("reverseArray", 1, (e, a) => {
+            var array = (Val[])((ArrayVal)a[0]).Raw;
+            Array.Reverse(array);
+            return new ArrayVal(array, a[0].FormatHint);
+        }, "Reverses the order of array elements");
 
         public static readonly FuncDef utf8Enc = new FuncDef("utf8Enc", 1, (e, a) => new ArrayVal(Encoding.UTF8.GetBytes(a[0].AsString)), "Encode string to UTF8 byte sequence.");
         public static readonly FuncDef utf8Dec = new FuncDef("utf8Dec", 1, (e, a) => new ArrayVal(Encoding.UTF8.GetString(a[0].AsByteArray)), "Decode UTF8 byte sequence.");
