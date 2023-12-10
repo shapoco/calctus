@@ -72,7 +72,7 @@ Variables can be assigned using the equal sign.
 ```c++
 a = 2 [Return]
 b = 3 [Return]
-a * b [Return] // --> Calctus answers 6.
+a * b [Return] // --> 6.
 ```
 
 ### Constants
@@ -125,7 +125,7 @@ User functions can be defined using the `def` keyword.
 
 ```c++
 def f(x) = x^2
-f(3) // --> Calctus answers 9.
+f(3) // --> 9.
 ```
 
 ### Solve Function (Newton-Raphson method) 
@@ -133,7 +133,7 @@ f(3) // --> Calctus answers 9.
 Use the `solve` keyword to solve equations numerically by Newton's method.
 
 ```c++
-solve(x^2=2,x) // --> Calctus answers [-1.414213562, 1.414213562].
+solve(x^2=2,x) // --> [-1.414213562, 1.414213562].
 ```
 
 By default, the Newton's method is performed based on automatically generated initial values. Therefore, it may produce inaccurate results if the solution is concentrated in a small area or exists far from the origin.
@@ -141,19 +141,19 @@ By default, the Newton's method is performed based on automatically generated in
 In such cases, the 3rd argument can be given an initial value.
 
 ```c++
-solve(sin(x),x,314) // --> Calctus answers 314.159265359.
+solve(sin(x),x,314) // --> 314.159265359.
 ```
 
 That initial value can also be given as an array.
 
 ```c++
-solve(sin(x),x,[-314,314]) // --> Calctus answers [-314.159265359, 314.159265359].
+solve(sin(x),x,[-314,314]) // --> [-314.159265359, 314.159265359].
 ```
 
 By providing the 3rd and 4th arguments at the same time, a range of initial values can be specified. In this case, 101 values between these ranges are used as initial values.
 
 ```c++
-solve(sin(x),x,-5,5) // --> Calctus answers [-3.141592654, 0, 3.141592654].
+solve(sin(x),x,-5,5) // --> [-3.141592654, 0, 3.141592654].
 ```
 
 :warning: Note that the solution obtained using the `solve` keyword is an approximation and does not necessarily correspond to the analytical solution.
@@ -164,22 +164,22 @@ Verilog-style part selection is available for arrays and scalar values.
 
 ```c++
 array=[1,2,3]
-array[1]   // --> Calctus answers 2.
-array[1]=5 // --> Calctus answers [1, 5, 3].
+array[1]   // --> 2.
+array[1]=5 // --> [1, 5, 3].
 ```
 
 ```c++
 x=0x1234
-x[11:4]      // --> Calctus answers 0x23.
-x[11:4]=0xab // --> Calctus answers 0x1ab4.
+x[11:4]      // --> 0x23.
+x[11:4]=0xab // --> 0x1ab4.
 ```
 
 Negative indexes represents distance from the end of the array. :new:
 
 ```c++
 array=[1,2,3,4,5]
-array[-2]    // --> Calctus answers 4.
-array[-3:-1] // --> Calctus answers [3, 4, 5].
+array[-2]    // --> 4.
+array[-3:-1] // --> [3, 4, 5].
 ```
 
 ### Range operator and range function :new:
@@ -187,28 +187,48 @@ array[-3:-1] // --> Calctus answers [3, 4, 5].
 Rust-style range operators can be used to generate sequences of numbers.
 
 ```c++
-1..5  // --> Calctus answers [1, 2, 3, 4]
-1..=5 // --> Calctus answers [1, 2, 3, 4, 5]
+1..5  // --> [1, 2, 3, 4]
+1..=5 // --> [1, 2, 3, 4, 5]
 ```
 
 Python-style range functions can also be used.
 
 ```c++
-range(1,5)              // --> Calctus answers [1, 2, 3, 4]
-range(1,5,0.5)          // --> Calctus answers [1, 1.5, 2, 2.5, 3, 3.5, 4, 4.5]
-rangeInclusive(1,5)     // --> Calctus answers [1, 2, 3, 4, 5]
-rangeInclusive(1,5,0.5) // --> Calctus answers [1, 1.5, 2, 2.5, 3, 3.5, 4, 4.5, 5]
+range(1,5)              // --> [1, 2, 3, 4]
+range(1,5,0.5)          // --> [1, 1.5, 2, 2.5, 3, 3.5, 4, 4.5]
+rangeInclusive(1,5)     // --> [1, 2, 3, 4, 5]
+rangeInclusive(1,5,0.5) // --> [1, 1.5, 2, 2.5, 3, 3.5, 4, 4.5, 5]
 ```
 
 ### Number sequence generation :new:
 
-The `generate` keyword can be used to generate a sequence of numbers using an recursive formula.
+The `extend` keyword can be used to generate a sequence of numbers using an recursive formula.
 
 The following example defines an array of two elements at the beginning and appends the sum of the last two elements as a new element ten times.
 
 ```c++
-generate(a=[1,1], a[-2]+a[-1], 10)
-    // --> Calctus answers [1, 1, 2, 3, 5, 8, 13, 21, 34, 55, 89, 144]
+extend(a, [1,1], a[-2]+a[-1], 10)
+    // --> [1, 1, 2, 3, 5, 8, 13, 21, 34, 55, 89, 144]
+```
+
+### Vectorization :new:
+
+Many unary and binary operators can be applied to arrays to perform operations on its individual elements.
+
+```
+-[1,2,3]        // --> [-1, -2, -3]
+[1,2,3]*4       // --> [4, 8, 12]
+[1,2,3]+[4,5,6] // --> [5, 7, 9]
+```
+
+Also functions with arguments marked with an asterisk can be vectorized by supplying an array for the argument.
+
+For example, the power function `pow(x*, y)` can take an array as its `x` argument. `pow([1,2,3],3)` is equivalent to `[pow(1,3),pow(2,3),pow(3,3)]`.
+
+```
+pow(2,3)        // --> 8
+pow([1,2,3],3)  // --> [1, 8, 27]
+prime(0..5)     // --> [2, 3, 5, 7, 11]
 ```
 
 ### Omission of Opening Parentheses 
@@ -216,7 +236,7 @@ generate(a=[1,1], a[-2]+a[-1], 10)
 The opening parenthesis at the beginning of a line can be omitted.
 
 ```c++
-1+2)*3 // --> Calctus answers 9.
+1+2)*3 // --> 9.
 ```
 
 ### Auto-Completion

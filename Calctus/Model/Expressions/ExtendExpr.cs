@@ -10,13 +10,13 @@ using Shapoco.Calctus.Model.Types;
 using Shapoco.Calctus.Model.Formats;
 
 namespace Shapoco.Calctus.Model.Expressions {
-    class GenerateExpr : Expr {
+    class ExtendExpr : Expr {
         public readonly Expr SeedArray;
         public readonly Token ArrayName;
         public readonly Expr Generator;
         public readonly Expr Count;
 
-        public GenerateExpr(Token keyword, Token arrayName, Expr seed, Expr generator, Expr count) : base(keyword) {
+        public ExtendExpr(Token keyword, Token arrayName, Expr seed, Expr generator, Expr count) : base(keyword) {
             this.ArrayName = arrayName;
             this.SeedArray = seed;
             this.Generator = generator;

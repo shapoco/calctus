@@ -25,7 +25,7 @@ namespace Shapoco.Calctus.Model.Parsers {
         private readonly Regex GeneralSymbolRule = new Regex(@"[()\[\],:?]");
 
         // キーワード
-        private readonly Regex KeywordRule = new Regex(@"(def|solve|generate|plot)\b");
+        private readonly Regex KeywordRule = new Regex(@"(def|solve|extend|plot)\b");
 
         // 数値リテラル
         private readonly NumberFormatter[] _numberFormatters;

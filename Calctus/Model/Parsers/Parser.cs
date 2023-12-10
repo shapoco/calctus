@@ -122,8 +122,8 @@ namespace Shapoco.Calctus.Model.Parsers {
             else if (ReadIf("solve", out tok)) {
                 return Solve(tok);
             }
-            else if (ReadIf("generate", out tok)) {
-                return Generate(tok);
+            else if (ReadIf("extend", out tok)) {
+                return Extend(tok);
             }
             else if (ReadIf("plot", out tok)) {
                 return Plot(tok);
@@ -197,17 +197,17 @@ namespace Shapoco.Calctus.Model.Parsers {
             return new SolveExpr(first, equation, variant, param0, param1);
         }
 
-        public Expr Generate(Token first) {
+        public Expr Extend(Token first) {
             Expect("(");
             Expect(TokenType.Word, out Token arrayName);
-            Expect("=");
+            Expect(",");
             var seed = Expr(false);
             Expect(",");
             var generator = Expr(false);
             Expect(",");
             var count = Expr(false);
             Expect(")");
-            return new GenerateExpr(first, arrayName, seed, generator, count);
+            return new ExtendExpr(first, arrayName, seed, generator, count);
         }
 
         public Expr Plot(Token first) {
