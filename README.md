@@ -333,11 +333,11 @@ If you wish to use a scripting language other than Python, please register the e
 
 ![](img/settings_input.png)
 
+![](img/settings_format.png)
+
 ![](img/settings_appearance.png)
 
 ![](img/settings_constants.png)
-
-![](img/settings_details.png)
 
 ![](img/settings_scripts.png)
 
