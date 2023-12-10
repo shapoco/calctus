@@ -283,9 +283,9 @@
             this.SaveSettingsInInstallDirectoryCheckBox.AutoSize = true;
             this.SaveSettingsInInstallDirectoryCheckBox.Location = new System.Drawing.Point(10, 26);
             this.SaveSettingsInInstallDirectoryCheckBox.Name = "SaveSettingsInInstallDirectoryCheckBox";
-            this.SaveSettingsInInstallDirectoryCheckBox.Size = new System.Drawing.Size(245, 16);
+            this.SaveSettingsInInstallDirectoryCheckBox.Size = new System.Drawing.Size(248, 16);
             this.SaveSettingsInInstallDirectoryCheckBox.TabIndex = 0;
-            this.SaveSettingsInInstallDirectoryCheckBox.Text = "Save the setting file in the install directory";
+            this.SaveSettingsInInstallDirectoryCheckBox.Text = "Place the setting file in the install directory";
             this.SaveSettingsInInstallDirectoryCheckBox.UseVisualStyleBackColor = true;
             // 
             // groupBox1
