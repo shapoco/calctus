@@ -6,6 +6,7 @@ using System.Drawing;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
+using System.IO;
 using System.Windows.Forms;
 using Shapoco.Calctus.Model;
 using Shapoco.Calctus.Model.Evaluations;
@@ -75,6 +76,8 @@ namespace Shapoco.Calctus.UI {
             Startup_TrayIcon.CheckedChanged += (sender, e) => { s.Startup_TrayIcon = ((CheckBox)sender).Checked; };
             Startup_AutoStart.CheckedChanged += Startup_AutoStart_CheckedChanged;
             Window_RememberPosition.CheckedChanged += (sender, e) => { s.Window_RememberPosition = ((CheckBox)sender).Checked; };
+            SaveSettingsInInstallDirectoryCheckBox.CheckedChanged += SaveSettingsInInstallDirectoryCheckBox_CheckedChanged;
+            openSettingFolderButton.Click += OpenSettingFolderButton_Click;
 
             Hotkey_Enabled.CheckedChanged += (sender, e) => {
                 s.Hotkey_Enabled = ((CheckBox)sender).Checked;
@@ -152,6 +155,7 @@ namespace Shapoco.Calctus.UI {
 
                 Startup_TrayIcon.Checked = s.Startup_TrayIcon;
                 Window_RememberPosition.Checked = s.Window_RememberPosition;
+                loadSettingLocation();
 
                 Hotkey_Enabled.Checked = s.Hotkey_Enabled;
                 Hotkey_KeyCode.SetKeyCode(s.HotKey_Win, s.HotKey_Alt, s.HotKey_Ctrl, s.HotKey_Shift, s.HotKey_KeyCode);
@@ -203,6 +207,80 @@ namespace Shapoco.Calctus.UI {
 
         private void Startup_AutoStart_CheckedChanged(object sender, EventArgs e) {
             Shapoco.Windows.StartupShortcut.SetStartupRegistration(((CheckBox)sender).Checked);
+        }
+
+        private bool _settingDirectoryChanging = false;
+        private void SaveSettingsInInstallDirectoryCheckBox_CheckedChanged(object sender, EventArgs e) {
+            var chkSender = (CheckBox)sender;
+
+            if (_settingDirectoryChanging) return;
+            if (chkSender.Checked == AppDataManager.UseAssemblyPath) return;
+            _settingDirectoryChanging = true;
+            
+            string pathFrom, pathTo;
+            if (chkSender.Checked) {
+                pathFrom = Settings.PathInRoamingDirectory;
+                pathTo = Settings.PathInInstallDirectory;
+            }
+            else {
+                pathTo = Settings.PathInRoamingDirectory;
+                pathFrom = Settings.PathInInstallDirectory;
+            }
+
+            try {
+                bool go = true;
+                if (File.Exists(pathTo)) {
+                    if (DialogResult.OK != MessageBox.Show("The destination file already exists. Are you sure you want to overwrite it?\r\n\r\n  \"" + pathTo + "\"", 
+                        Application.ProductName, MessageBoxButtons.OKCancel, MessageBoxIcon.Exclamation)) {
+                        go = false;
+                    }
+                }
+                if (go) { 
+                    if (!Directory.Exists(Path.GetDirectoryName(pathTo))) {
+                        Directory.CreateDirectory(Path.GetDirectoryName(pathTo));
+                    }
+                    if (File.Exists(pathTo)) {
+                        File.Delete(pathTo);
+                    }
+                    if (File.Exists(pathFrom)) {
+                        File.Move(pathFrom, pathTo);
+                    }
+                    AppDataManager.UseAssemblyPath = chkSender.Checked;
+                    Settings.Instance.Save();
+                }
+            }
+            catch (Exception ex) {
+                MessageBox.Show(ex.Message, Application.ProductName, MessageBoxButtons.OK, MessageBoxIcon.Error);
+            }
+
+            loadSettingLocation();
+            _settingDirectoryChanging = false;
+        }
+
+        void loadSettingLocation() {
+            SaveSettingsInInstallDirectoryCheckBox.Checked = AppDataManager.UseAssemblyPath;
+            txtSettingDirectoryPath.Text = AppDataManager.UseAssemblyPath ?
+                Settings.PathInInstallDirectory : Settings.PathInRoamingDirectory;
+        }
+
+        private void OpenSettingFolderButton_Click(object sender, EventArgs e) {
+            var path = Path.GetDirectoryName(txtSettingDirectoryPath.Text);
+            try {
+                if (!Directory.Exists(path)) {
+                    if (DialogResult.Yes == MessageBox.Show(
+                            "The folder does not exist. Do you want to create it?",
+                            Application.ProductName, MessageBoxButtons.YesNo, MessageBoxIcon.Question)) {
+                        Directory.CreateDirectory(path);
+                    }
+                    else {
+                        return;
+                    }
+                }
+                System.Diagnostics.Process.Start(path);
+            }
+            catch (Exception ex) {
+                MessageBox.Show(ex.Message, Application.ProductName, MessageBoxButtons.OK, MessageBoxIcon.Error);
+            }
         }
 
         private void ColorBox_Click(object sender, EventArgs e) {
@@ -284,11 +362,11 @@ namespace Shapoco.Calctus.UI {
 
         private void ScriptFolderOpenButton_Click(object sender, EventArgs e) {
             try {
-                if (!System.IO.Directory.Exists(Script_FolderPath.Text)) {
+                if (!Directory.Exists(Script_FolderPath.Text)) {
                     if (DialogResult.Yes == MessageBox.Show(
                             "The folder does not exist. Do you want to create it?", 
                             Application.ProductName, MessageBoxButtons.YesNo, MessageBoxIcon.Question) ) {
-                        System.IO.Directory.CreateDirectory(Script_FolderPath.Text);
+                        Directory.CreateDirectory(Script_FolderPath.Text);
                     }
                     else {
                         return;

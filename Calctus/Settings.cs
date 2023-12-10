@@ -5,19 +5,32 @@ using System.Text;
 using System.Threading.Tasks;
 using System.Windows.Forms;
 using System.Drawing;
+using System.IO;
 using Shapoco.Calctus.Model;
 using Shapoco.Calctus.Model.Evaluations;
 
 namespace Shapoco.Calctus {
     internal class Settings {
+        public static readonly string PathInInstallDirectory = Path.Combine(AppDataManager.AssemblyPath, Filename);
+        public static readonly string PathInRoamingDirectory = Path.Combine(AppDataManager.RoamingUserDataPath, Filename);
         public static readonly Settings Instance = new Settings();
 #if DEBUG
-        private const string Filename = "Settings.Debug.cfg";
+        public const string Filename = "Settings.Debug.cfg";
 #else
-        private const string Filename = "Settings.cfg";
+        public const string Filename = "Settings.cfg";
 #endif
 
         private Settings() {
+            try {
+                AppDataManager.UseAssemblyPath = File.Exists(PathInInstallDirectory);
+#if DEBUG
+                Console.WriteLine("Setting file found in install directory: \"" + PathInInstallDirectory + "\"");
+#endif
+            }
+            catch { }
+#if DEBUG
+            Console.WriteLine("Setting file path: \"" + AppDataManager.ActiveDataPath + "\"");
+#endif
             AppDataManager.LoadPropertiesFromRoamingAppData(this, Filename);
         }
 

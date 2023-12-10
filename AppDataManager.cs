@@ -7,9 +7,14 @@ using System.IO;
 using System.Text;
 using System.Threading.Tasks;
 using System.Drawing;
+using System.Reflection;
 
 namespace Shapoco {
     internal static class AppDataManager {
+        public static bool UseAssemblyPath = false;
+
+        public static readonly string AssemblyPath = Path.GetDirectoryName(Assembly.GetEntryAssembly().Location);
+
         public static string RoamingUserDataPath {
             get {
                 return Path.Combine(
@@ -27,6 +32,9 @@ namespace Shapoco {
                     + Application.ProductName + Path.DirectorySeparatorChar);
             }
         }
+
+        public static string ActiveDataPath
+            => UseAssemblyPath ? AssemblyPath : RoamingUserDataPath;
 
         public static void SavePropertiesToRoamingAppData(object targetObject, string fileName) {
             StringBuilder sb = new StringBuilder();
@@ -49,7 +57,7 @@ namespace Shapoco {
                 }
             }
 
-            var filePath = Path.Combine(RoamingUserDataPath, fileName);
+            var filePath = Path.Combine(ActiveDataPath, fileName);
             Directory.CreateDirectory(Path.GetDirectoryName(filePath));
             using (var writer = new StreamWriter(filePath)) {
                 writer.Write(sb.ToString());
@@ -58,7 +66,7 @@ namespace Shapoco {
 
         public static void LoadPropertiesFromRoamingAppData(object targetObject, string fileName) {
             var dictionary = new Dictionary<string, string>();
-            var filePath = Path.Combine(RoamingUserDataPath, fileName);
+            var filePath = Path.Combine(ActiveDataPath, fileName);
             if (!File.Exists(filePath)) return;
 
             // まず全部読み込む

@@ -34,6 +34,10 @@
             this.NumberFormat_Exp_PositiveMin = new System.Windows.Forms.NumericUpDown();
             this.tabControl = new System.Windows.Forms.TabControl();
             this.tabPage3 = new System.Windows.Forms.TabPage();
+            this.groupBox5 = new System.Windows.Forms.GroupBox();
+            this.txtSettingDirectoryPath = new System.Windows.Forms.TextBox();
+            this.openSettingFolderButton = new System.Windows.Forms.Button();
+            this.SaveSettingsInInstallDirectoryCheckBox = new System.Windows.Forms.CheckBox();
             this.groupBox1 = new System.Windows.Forms.GroupBox();
             this.Startup_AutoStart = new System.Windows.Forms.CheckBox();
             this.Startup_TrayIcon = new System.Windows.Forms.CheckBox();
@@ -45,6 +49,9 @@
             this.Input_IdAutoCompletion = new System.Windows.Forms.CheckBox();
             this.Input_AutoCloseBrackets = new System.Windows.Forms.CheckBox();
             this.tabPage1 = new System.Windows.Forms.TabPage();
+            this.groupBox4 = new System.Windows.Forms.GroupBox();
+            this.NumberFormat_Separator_Hexadecimal = new System.Windows.Forms.CheckBox();
+            this.NumberFormat_Separator_Thousands = new System.Windows.Forms.CheckBox();
             this.groupBox2 = new System.Windows.Forms.GroupBox();
             this.NumberFormat_Decimal_MaxLen = new System.Windows.Forms.NumericUpDown();
             this.label6 = new System.Windows.Forms.Label();
@@ -87,18 +94,17 @@
             this.columnHeader5 = ((System.Windows.Forms.ColumnHeader)(new System.Windows.Forms.ColumnHeader()));
             this.columnHeader6 = ((System.Windows.Forms.ColumnHeader)(new System.Windows.Forms.ColumnHeader()));
             this.Hotkey_KeyCode = new Shapoco.Calctus.UI.KeyCodeBox();
-            this.groupBox4 = new System.Windows.Forms.GroupBox();
-            this.NumberFormat_Separator_Thousands = new System.Windows.Forms.CheckBox();
-            this.NumberFormat_Separator_Hexadecimal = new System.Windows.Forms.CheckBox();
             this.eNoteGroup.SuspendLayout();
             ((System.ComponentModel.ISupportInitialize)(this.NumberFormat_Exp_NegativeMax)).BeginInit();
             ((System.ComponentModel.ISupportInitialize)(this.NumberFormat_Exp_PositiveMin)).BeginInit();
             this.tabControl.SuspendLayout();
             this.tabPage3.SuspendLayout();
+            this.groupBox5.SuspendLayout();
             this.groupBox1.SuspendLayout();
             this.tabPage4.SuspendLayout();
             this.groupBox3.SuspendLayout();
             this.tabPage1.SuspendLayout();
+            this.groupBox4.SuspendLayout();
             this.groupBox2.SuspendLayout();
             ((System.ComponentModel.ISupportInitialize)(this.NumberFormat_Decimal_MaxLen)).BeginInit();
             this.tabPage2.SuspendLayout();
@@ -108,7 +114,6 @@
             this.tabPage5.SuspendLayout();
             this.tabPage6.SuspendLayout();
             this.scriptGroup.SuspendLayout();
-            this.groupBox4.SuspendLayout();
             this.SuspendLayout();
             // 
             // closeButton
@@ -234,6 +239,7 @@
             // 
             // tabPage3
             // 
+            this.tabPage3.Controls.Add(this.groupBox5);
             this.tabPage3.Controls.Add(this.groupBox1);
             this.tabPage3.Location = new System.Drawing.Point(4, 22);
             this.tabPage3.Name = "tabPage3";
@@ -241,6 +247,46 @@
             this.tabPage3.TabIndex = 0;
             this.tabPage3.Text = "General";
             this.tabPage3.UseVisualStyleBackColor = true;
+            // 
+            // groupBox5
+            // 
+            this.groupBox5.Controls.Add(this.txtSettingDirectoryPath);
+            this.groupBox5.Controls.Add(this.openSettingFolderButton);
+            this.groupBox5.Controls.Add(this.SaveSettingsInInstallDirectoryCheckBox);
+            this.groupBox5.Location = new System.Drawing.Point(6, 147);
+            this.groupBox5.Name = "groupBox5";
+            this.groupBox5.Size = new System.Drawing.Size(378, 87);
+            this.groupBox5.TabIndex = 1;
+            this.groupBox5.TabStop = false;
+            this.groupBox5.Text = "Setting File Location";
+            // 
+            // txtSettingDirectoryPath
+            // 
+            this.txtSettingDirectoryPath.BackColor = System.Drawing.SystemColors.ButtonFace;
+            this.txtSettingDirectoryPath.Location = new System.Drawing.Point(31, 50);
+            this.txtSettingDirectoryPath.Name = "txtSettingDirectoryPath";
+            this.txtSettingDirectoryPath.ReadOnly = true;
+            this.txtSettingDirectoryPath.Size = new System.Drawing.Size(241, 19);
+            this.txtSettingDirectoryPath.TabIndex = 2;
+            // 
+            // openSettingFolderButton
+            // 
+            this.openSettingFolderButton.Location = new System.Drawing.Point(278, 48);
+            this.openSettingFolderButton.Name = "openSettingFolderButton";
+            this.openSettingFolderButton.Size = new System.Drawing.Size(85, 23);
+            this.openSettingFolderButton.TabIndex = 1;
+            this.openSettingFolderButton.Text = "Open Folder";
+            this.openSettingFolderButton.UseVisualStyleBackColor = true;
+            // 
+            // SaveSettingsInInstallDirectoryCheckBox
+            // 
+            this.SaveSettingsInInstallDirectoryCheckBox.AutoSize = true;
+            this.SaveSettingsInInstallDirectoryCheckBox.Location = new System.Drawing.Point(10, 26);
+            this.SaveSettingsInInstallDirectoryCheckBox.Name = "SaveSettingsInInstallDirectoryCheckBox";
+            this.SaveSettingsInInstallDirectoryCheckBox.Size = new System.Drawing.Size(245, 16);
+            this.SaveSettingsInInstallDirectoryCheckBox.TabIndex = 0;
+            this.SaveSettingsInInstallDirectoryCheckBox.Text = "Save the setting file in the install directory";
+            this.SaveSettingsInInstallDirectoryCheckBox.UseVisualStyleBackColor = true;
             // 
             // groupBox1
             // 
@@ -251,7 +297,7 @@
             this.groupBox1.Controls.Add(this.Hotkey_Enabled);
             this.groupBox1.Location = new System.Drawing.Point(6, 6);
             this.groupBox1.Name = "groupBox1";
-            this.groupBox1.Size = new System.Drawing.Size(378, 140);
+            this.groupBox1.Size = new System.Drawing.Size(378, 135);
             this.groupBox1.TabIndex = 0;
             this.groupBox1.TabStop = false;
             this.groupBox1.Text = "Start";
@@ -362,6 +408,37 @@
             this.tabPage1.TabIndex = 2;
             this.tabPage1.Text = "Format";
             this.tabPage1.UseVisualStyleBackColor = true;
+            // 
+            // groupBox4
+            // 
+            this.groupBox4.Controls.Add(this.NumberFormat_Separator_Hexadecimal);
+            this.groupBox4.Controls.Add(this.NumberFormat_Separator_Thousands);
+            this.groupBox4.Location = new System.Drawing.Point(6, 172);
+            this.groupBox4.Name = "groupBox4";
+            this.groupBox4.Size = new System.Drawing.Size(378, 74);
+            this.groupBox4.TabIndex = 2;
+            this.groupBox4.TabStop = false;
+            this.groupBox4.Text = "Numeric Separators";
+            // 
+            // NumberFormat_Separator_Hexadecimal
+            // 
+            this.NumberFormat_Separator_Hexadecimal.AutoSize = true;
+            this.NumberFormat_Separator_Hexadecimal.Location = new System.Drawing.Point(18, 45);
+            this.NumberFormat_Separator_Hexadecimal.Name = "NumberFormat_Separator_Hexadecimal";
+            this.NumberFormat_Separator_Hexadecimal.Size = new System.Drawing.Size(325, 16);
+            this.NumberFormat_Separator_Hexadecimal.TabIndex = 0;
+            this.NumberFormat_Separator_Hexadecimal.Text = "Separate hexadecimal/binary/octal numbers every 4 digits";
+            this.NumberFormat_Separator_Hexadecimal.UseVisualStyleBackColor = true;
+            // 
+            // NumberFormat_Separator_Thousands
+            // 
+            this.NumberFormat_Separator_Thousands.AutoSize = true;
+            this.NumberFormat_Separator_Thousands.Location = new System.Drawing.Point(18, 23);
+            this.NumberFormat_Separator_Thousands.Name = "NumberFormat_Separator_Thousands";
+            this.NumberFormat_Separator_Thousands.Size = new System.Drawing.Size(233, 16);
+            this.NumberFormat_Separator_Thousands.TabIndex = 0;
+            this.NumberFormat_Separator_Thousands.Text = "Separate decimal numbers every 3 digits";
+            this.NumberFormat_Separator_Thousands.UseVisualStyleBackColor = true;
             // 
             // groupBox2
             // 
@@ -789,37 +866,6 @@
             this.Hotkey_KeyCode.TabIndex = 3;
             this.Hotkey_KeyCode.Win = false;
             // 
-            // groupBox4
-            // 
-            this.groupBox4.Controls.Add(this.NumberFormat_Separator_Hexadecimal);
-            this.groupBox4.Controls.Add(this.NumberFormat_Separator_Thousands);
-            this.groupBox4.Location = new System.Drawing.Point(6, 172);
-            this.groupBox4.Name = "groupBox4";
-            this.groupBox4.Size = new System.Drawing.Size(378, 74);
-            this.groupBox4.TabIndex = 2;
-            this.groupBox4.TabStop = false;
-            this.groupBox4.Text = "Numeric Separators";
-            // 
-            // NumberFormat_Separator_Thousands
-            // 
-            this.NumberFormat_Separator_Thousands.AutoSize = true;
-            this.NumberFormat_Separator_Thousands.Location = new System.Drawing.Point(18, 23);
-            this.NumberFormat_Separator_Thousands.Name = "NumberFormat_Separator_Thousands";
-            this.NumberFormat_Separator_Thousands.Size = new System.Drawing.Size(233, 16);
-            this.NumberFormat_Separator_Thousands.TabIndex = 0;
-            this.NumberFormat_Separator_Thousands.Text = "Separate decimal numbers every 3 digits";
-            this.NumberFormat_Separator_Thousands.UseVisualStyleBackColor = true;
-            // 
-            // NumberFormat_Separator_Hexadecimal
-            // 
-            this.NumberFormat_Separator_Hexadecimal.AutoSize = true;
-            this.NumberFormat_Separator_Hexadecimal.Location = new System.Drawing.Point(18, 45);
-            this.NumberFormat_Separator_Hexadecimal.Name = "NumberFormat_Separator_Hexadecimal";
-            this.NumberFormat_Separator_Hexadecimal.Size = new System.Drawing.Size(325, 16);
-            this.NumberFormat_Separator_Hexadecimal.TabIndex = 0;
-            this.NumberFormat_Separator_Hexadecimal.Text = "Separate hexadecimal/binary/octal numbers every 4 digits";
-            this.NumberFormat_Separator_Hexadecimal.UseVisualStyleBackColor = true;
-            // 
             // SettingsDialog
             // 
             this.AcceptButton = this.closeButton;
@@ -843,6 +889,8 @@
             ((System.ComponentModel.ISupportInitialize)(this.NumberFormat_Exp_PositiveMin)).EndInit();
             this.tabControl.ResumeLayout(false);
             this.tabPage3.ResumeLayout(false);
+            this.groupBox5.ResumeLayout(false);
+            this.groupBox5.PerformLayout();
             this.groupBox1.ResumeLayout(false);
             this.groupBox1.PerformLayout();
             this.tabPage4.ResumeLayout(false);
@@ -850,6 +898,8 @@
             this.groupBox3.PerformLayout();
             this.tabPage1.ResumeLayout(false);
             this.tabPage1.PerformLayout();
+            this.groupBox4.ResumeLayout(false);
+            this.groupBox4.PerformLayout();
             this.groupBox2.ResumeLayout(false);
             this.groupBox2.PerformLayout();
             ((System.ComponentModel.ISupportInitialize)(this.NumberFormat_Decimal_MaxLen)).EndInit();
@@ -863,8 +913,6 @@
             this.tabPage6.PerformLayout();
             this.scriptGroup.ResumeLayout(false);
             this.scriptGroup.PerformLayout();
-            this.groupBox4.ResumeLayout(false);
-            this.groupBox4.PerformLayout();
             this.ResumeLayout(false);
 
         }
@@ -937,5 +985,9 @@
         private System.Windows.Forms.GroupBox groupBox4;
         private System.Windows.Forms.CheckBox NumberFormat_Separator_Thousands;
         private System.Windows.Forms.CheckBox NumberFormat_Separator_Hexadecimal;
+        private System.Windows.Forms.GroupBox groupBox5;
+        private System.Windows.Forms.Button openSettingFolderButton;
+        private System.Windows.Forms.CheckBox SaveSettingsInInstallDirectoryCheckBox;
+        private System.Windows.Forms.TextBox txtSettingDirectoryPath;
     }
 }
