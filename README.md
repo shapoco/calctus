@@ -236,7 +236,7 @@ prime(0..5)     // --> [2, 3, 5, 7, 11]
 The opening parenthesis at the beginning of a line can be omitted.
 
 ```c++
-1+2)*3 // --> 9.
+1+2)*3 // --> 9
 ```
 
 ### Auto-Completion
@@ -245,7 +245,7 @@ The opening parenthesis at the beginning of a line can be omitted.
 
 ### Exponent Adjustment
 
-Exponent-part of E-notation and SI prefix can be adjusted using Alt + Arrow keys.
+Exponent-part of E-notation and SI prefix can be adjusted using Alt + arrow keys.
 
 ![](img/exp_adj.gif)
 
@@ -293,7 +293,7 @@ If you wish to use a scripting language other than Python, please register the e
 
 ### Graph Plotting
 
-The `plot(var,expr)` keyword can be used to draw a graph.
+`plot(var,expr)` can be used to draw a graph. `var` is the variable on the horizontal axis and `expr` is the expression on the vertical axis.
 
 :warning: This feature is experimental and may be removed in future versions.
 
