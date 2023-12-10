@@ -80,7 +80,7 @@ namespace Shapoco.Calctus.UI {
 
         public static void ReshowAll() {
             foreach (var form in Forms.Values) {
-                if (!form.ClosedByUser) {
+                if (!form.HiddenByUser) {
                     form.Visible = true;
                 }
             }
@@ -104,7 +104,7 @@ namespace Shapoco.Calctus.UI {
 
         //------------------------------------------------------------
 
-        public bool ClosedByUser { get; private set; } = false;
+        public bool HiddenByUser { get; private set; } = false;
 
         protected override bool ShowWithoutActivation => true;
 
@@ -129,7 +129,7 @@ namespace Shapoco.Calctus.UI {
 
         protected override void OnShown(EventArgs e) {
             base.OnShown(e);
-            ClosedByUser = false;
+            HiddenByUser = false;
         }
 
         /// <summary>グラフ描画をリクエストする</summary>
@@ -157,9 +157,11 @@ namespace Shapoco.Calctus.UI {
         }
 
         private void GraphForm_FormClosing(object sender, FormClosingEventArgs e) {
-            e.Cancel = true;
-            Visible = false;
-            ClosedByUser = true;
+            if (e.CloseReason == CloseReason.UserClosing) {
+                e.Cancel = true;
+                Visible = false;
+                HiddenByUser = true;
+            }
         }
 
         private void CopyButton_Click(object sender, EventArgs e) {
