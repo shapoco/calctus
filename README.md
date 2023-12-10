@@ -207,7 +207,7 @@ The `extend` keyword can be used to generate a sequence of numbers using an recu
 The following example defines an array of two elements at the beginning and appends the sum of the last two elements as a new element ten times.
 
 ```c++
-extend(a, [1,1], a[-2]+a[-1], 10)
+extend(a=[1,1], a[-2]+a[-1], 10)
     // --> [1, 1, 2, 3, 5, 8, 13, 21, 34, 55, 89, 144]
 ```
 

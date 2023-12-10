@@ -200,7 +200,7 @@ namespace Shapoco.Calctus.Model.Parsers {
         public Expr Extend(Token first) {
             Expect("(");
             Expect(TokenType.Word, out Token arrayName);
-            Expect(",");
+            Expect("=");
             var seed = Expr(false);
             Expect(",");
             var generator = Expr(false);
