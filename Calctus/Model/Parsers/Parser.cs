@@ -212,15 +212,11 @@ namespace Shapoco.Calctus.Model.Parsers {
 
         public Expr Plot(Token first) {
             Expect("(");
-            Expr windowName = null;
-            var equation = Expr(false);
-            Expect(",");
             Expect(TokenType.Word, out Token variant);
-            if (ReadIf(",")) {
-                windowName = Expr(false);
-            }
+            Expect(",");
+            var equation = Expr(false);
             Expect(")");
-            return new PlotExpr(first, windowName, equation, variant);
+            return new PlotExpr(first, null, equation, variant);
         }
 
         public Token Peek() {

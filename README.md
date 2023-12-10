@@ -293,7 +293,7 @@ If you wish to use a scripting language other than Python, please register the e
 
 ### Graph Plotting
 
-The plot keyword can be used to draw a graph.
+The `plot(var,expr)` keyword can be used to draw a graph.
 
 :warning: This feature is experimental and may be removed in future versions.
 

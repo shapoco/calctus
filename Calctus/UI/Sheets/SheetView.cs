@@ -903,7 +903,7 @@ namespace Shapoco.Calctus.UI.Sheets {
             list.Add(new InputCandidate("def", "def", "user function definition", false));
             list.Add(new InputCandidate("solve", "solve(expr,var,a,b)", "Solves the equation using Newton's method.", true));
             list.Add(new InputCandidate("extend", "extend(array,seed,expr,count)", "Generate number sequence.", true));
-            list.Add(new InputCandidate("plot", "plot(expr,var,name)", "Plots graph.", true));
+            list.Add(new InputCandidate("plot", "plot(var,expr)", "Plots graph.", true));
             _inputCandidates = list.OrderBy(p => p.Id).ToArray();
             _recalcRequested = false;
 
