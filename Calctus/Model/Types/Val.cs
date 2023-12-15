@@ -20,6 +20,7 @@ namespace Shapoco.Calctus.Model.Types {
 
         public abstract bool IsScalar { get; }
         public abstract bool IsInteger { get; }
+        public abstract bool IsSerializable { get; }
 
         // RealVal への変換はフォーマットを確実に引き継ぐため
         // OnAsRealVal() で型変換したあとここで Format() する
@@ -117,7 +118,7 @@ namespace Shapoco.Calctus.Model.Types {
         // 比較演算
         public Val Grater(EvalContext ctx, Val b) => UpConvert(ctx, b).OnGrater(ctx, b);
         public Val Less(EvalContext ctx, Val b) => b.UpConvert(ctx, this).OnGrater(ctx, this);
-        public Val Equal(EvalContext ctx, Val b) => UpConvert(ctx, b).OnEqual(ctx, b);
+        public Val Equals(EvalContext ctx, Val b) => UpConvert(ctx, b).OnEqual(ctx, b);
         public Val GraterEqual(EvalContext ctx, Val b) {
             var a = UpConvert(ctx, b);
             return a.OnGrater(ctx, b).OnLogicOr(ctx, a.OnEqual(ctx, b));
@@ -146,5 +147,7 @@ namespace Shapoco.Calctus.Model.Types {
 
         public override string ToString() => this.ToString(new FormatSettingss());
         public abstract string ToString(FormatSettingss fs);
+
+        public override int GetHashCode() => Raw.GetHashCode();
     }
 }

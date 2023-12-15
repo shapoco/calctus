@@ -4,13 +4,14 @@ using Shapoco.Calctus.Model.Parsers;
 using Shapoco.Calctus.Model.Evaluations;
 
 namespace Shapoco.Calctus.Model.Expressions {
-    /// <summary>単項演算</summary>
     class UnaryOp : Operator {
         public Expr A { get; private set; }
 
         public UnaryOp(Expr a, Token t) : base(OpDef.Match(OpType.Unary, t), t) {
             this.A = a;
         }
+
+        public override bool CausesValueChange() => true;
 
         protected override Val OnEval(EvalContext e) {
             var a = A.Eval(e);

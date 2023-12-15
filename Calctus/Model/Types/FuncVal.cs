@@ -5,6 +5,7 @@ using System.Text;
 using System.Threading.Tasks;
 using Shapoco.Calctus.Model.Formats;
 using Shapoco.Calctus.Model.Evaluations;
+using Shapoco.Calctus.Model.Functions;
 
 namespace Shapoco.Calctus.Model.Types {
     class FuncVal : Val {
@@ -18,6 +19,8 @@ namespace Shapoco.Calctus.Model.Types {
 
         public override bool IsScalar => false;
         public override bool IsInteger => false;
+
+        public override bool IsSerializable => false;
 
         public override real AsReal => throw new InvalidCastException();
         public override frac AsFrac => throw new InvalidCastException();

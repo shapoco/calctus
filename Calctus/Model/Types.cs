@@ -5,7 +5,7 @@ using System.Text;
 using System.Threading.Tasks;
 
 namespace Shapoco.Calctus.Model {
-    enum VariadicAragumentMode {
+    enum VariadicMode {
         None,
         Array,
         Flatten,

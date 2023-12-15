@@ -8,6 +8,7 @@ using System.Windows.Forms;
 using Shapoco.Calctus.Model;
 using Shapoco.Calctus.Model.Sheets;
 using Shapoco.Calctus.Model.Expressions;
+using Shapoco.Calctus.Model.Types;
 
 namespace Shapoco.Calctus.UI.Sheets {
     class SheetViewItem : GdiBox, IDisposable {
@@ -146,14 +147,23 @@ namespace Shapoco.Calctus.UI.Sheets {
                 err = SheetItem.EvalError;
                 ExprBox.EvalError = SheetItem.EvalError;
             }
+            bool ansVisible;
             if (err == null) {
                 var ans = SheetItem.AnsText;
-                AnsBox.Text = ans == "null" ? "" : ans;
+                ans = ans == "null" ? "" : ans; ;
+                AnsBox.Text = ans;
                 AnsBox.PlaceHolder = "";
+                ansVisible = (SheetItem.ExprTree.CausesValueChange() || SheetItem.RadixMode != RadixMode.Auto) && !(SheetItem.AnsVal is NullVal);
             }
             else {
                 AnsBox.Text = "";
                 AnsBox.PlaceHolder = "? " + err.Message;
+                ansVisible = true;
+            }
+            if (AnsBox.Visible != ansVisible) {
+                AnsBox.Visible = Equal.Visible = ansVisible;
+                relayout();
+                _view.InvalidateLayout();
             }
         }
 
@@ -161,7 +171,7 @@ namespace Shapoco.Calctus.UI.Sheets {
             var exprSize = ExprBox.GetPreferredSize();
             var ansSize = AnsBox.GetPreferredSize();
             var indent = _view.Indent;
-            if (exprSize.Width < indent) {
+            if (exprSize.Width < indent || !AnsBox.Visible) {
                 return new Size(exprSize.Width + ansSize.Width, Math.Max(exprSize.Height, ansSize.Height));
             }
             else {
@@ -179,7 +189,10 @@ namespace Shapoco.Calctus.UI.Sheets {
             var indent = _view.Indent;
             var equalWidth = _view.EqualWidth;
             var ansLeft = indent + equalWidth;
-            if (Height < exprSize.Height * 3 / 2) {
+            if (!AnsBox.Visible) {
+                ExprBox.SetBounds(0, 0, Width, Height);
+            }
+            else if (Height < exprSize.Height * 3 / 2) {
                 ExprBox.SetBounds(0, 0, indent, Height);
                 Equal.SetBounds(indent, 0, equalWidth, Height);
                 AnsBox.SetBounds(ansLeft, 0, Width - ansLeft, Height);

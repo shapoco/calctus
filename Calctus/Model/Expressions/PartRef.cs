@@ -16,6 +16,8 @@ namespace Shapoco.Calctus.Model.Expressions {
             IndexTo = to;
         }
 
+        public override bool CausesValueChange() => true;
+
         protected override Val OnEval(EvalContext ctx) {
             var from = IndexFrom.Eval(ctx).AsInt;
             var to = IndexTo.Eval(ctx).AsInt;

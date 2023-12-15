@@ -88,6 +88,9 @@ namespace Shapoco.Calctus.Model.Sheets {
             else {
                 try {
                     var val = ExprTree.Eval(e);
+                    if (ExprTree.CausesValueChange() && !(val is NullVal) && !val.IsSerializable) {
+                        throw new EvalError(e, null, "Value cannot be stringified.");
+                    }
                     switch (RadixMode) {
                         case RadixMode.Dec: val = val.FormatInt(); break;
                         case RadixMode.Hex: val = val.FormatHex(); break;
@@ -106,8 +109,9 @@ namespace Shapoco.Calctus.Model.Sheets {
         }
 
         public void SetStatus(Val ans, Exception syntaxError, Exception evalError) {
-            string ansText = ans.ToString();
-            if (ans.Equals(AnsVal) && ansText != AnsText && syntaxError == SyntaxError && evalError == EvalError) return;
+            string ansText;
+            ansText = ans.ToString();
+            if (ans.Equals(AnsVal) && ansText == AnsText && syntaxError == SyntaxError && evalError == EvalError) return;
             AnsVal = ans;
             AnsText = ansText;
             SyntaxError = syntaxError;

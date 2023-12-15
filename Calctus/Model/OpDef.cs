@@ -63,8 +63,12 @@ namespace Shapoco.Calctus.Model {
         public static OpDef ExclusiveRange = new OpDef(OpType.Binary, 20, "..");
         public static OpDef InclusiveRange = new OpDef(OpType.Binary, 20, "..=");
 
-        // ここに 3項演算子
+        public static OpDef Arrow = new OpDef(OpType.Binary, 10, "->");
+        
         public static OpDef Assign = new OpDef(OpType.Binary, OpPriorityDir.Right, 0, "=");
+
+        // その他の演算子
+        public static OpDef Leader = new OpDef(OpType.None, -1, "...");
 
         /// <summary>ネイティブ演算子の一覧</summary>
         public static OpDef[] NativeOperators = EnumOperators().ToArray();

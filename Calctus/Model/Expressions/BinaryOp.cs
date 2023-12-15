@@ -5,6 +5,7 @@ using Shapoco.Calctus.Model.Types;
 using Shapoco.Calctus.Model.Parsers;
 using Shapoco.Calctus.Model.Evaluations;
 using Shapoco.Calctus.Model.Mathematics;
+using Shapoco.Calctus.Model.Functions;
 
 namespace Shapoco.Calctus.Model.Expressions {
     /// <summary>二項演算</summary>
@@ -16,6 +17,8 @@ namespace Shapoco.Calctus.Model.Expressions {
             this.A = a;
             this.B = b;
         }
+
+        public override bool CausesValueChange() => Method != OpDef.Assign || B.CausesValueChange();
 
         protected override Val OnEval(EvalContext e) {
             if (Method == OpDef.Assign) {
@@ -57,7 +60,7 @@ namespace Shapoco.Calctus.Model.Expressions {
                         varVal = new RealVal(buff, varVal.FormatHint);
                     }
                     varRef.Value = varVal;
-                    return varVal;
+                    return val;
                 }
                 else {
                     throw new InvalidOperationException("Left hand of " + Token + " must be variant");
@@ -75,7 +78,7 @@ namespace Shapoco.Calctus.Model.Expressions {
             else if (Method == OpDef.Frac) {
                 var a = A.Eval(e);
                 var b = B.Eval(e);
-                if (!e.Settings.FractionEnabled) {
+                if (!e.EvalSettings.FractionEnabled) {
                     return A.Eval(e).Div(e, B.Eval(e));
                 }
                 else if (b is FracVal) {
@@ -86,7 +89,7 @@ namespace Shapoco.Calctus.Model.Expressions {
                 }
             }
             else if (Method == OpDef.Pow) {
-                return FuncDef.pow.Call(e, new Val[] { A.Eval(e), B.Eval(e) });
+                return EmbeddedFuncDef.pow.Call(e, new Val[] { A.Eval(e), B.Eval(e) });
             }
             else {
                 var a = A.Eval(e);
@@ -138,7 +141,7 @@ namespace Shapoco.Calctus.Model.Expressions {
             if (Method == OpDef.GraterEqual) return a.GraterEqual(e, b);
             if (Method == OpDef.Less) return a.Less(e, b);
             if (Method == OpDef.LessEqual) return a.LessEqual(e, b);
-            if (Method == OpDef.Equal) return a.Equal(e, b);
+            if (Method == OpDef.Equal) return a.Equals(e, b);
             if (Method == OpDef.NotEqual) return a.NotEqual(e, b);
             if (Method == OpDef.BitAnd) return a.BitAnd(e, b);
             if (Method == OpDef.BitXor) return a.BitXor(e, b);

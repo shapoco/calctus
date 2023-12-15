@@ -6,21 +6,20 @@ using System.Threading.Tasks;
 using Shapoco.Calctus.Model.Evaluations;
 using Shapoco.Calctus.Model.Parsers;
 using Shapoco.Calctus.Model.Types;
+using Shapoco.Calctus.Model.Functions;
 
 namespace Shapoco.Calctus.Model.Expressions {
-    internal class UserFuncExpr : Expr {
+    internal class DefExpr : Expr {
         public readonly Token Name;
-        public readonly ArgDef[] ArgDefs;
-        public readonly int VectorizableArgIndex;
+        public readonly ArgDefList Args;
         public readonly Expr Body;
 
-        public UserFuncExpr(Token keyword, Token name, ArgDef[] args, int vecArgIndex, Expr body) : base(keyword) {
+        public DefExpr(Token keyword, Token name, ArgDefList args, Expr body) : base(keyword) {
             Name = name;
-            ArgDefs = args;
-            VectorizableArgIndex = vecArgIndex;
+            Args = args;
             Body = body;
-            for (int i = 0; i < args.Length - 1; i++) {
-                for (int j = i + 1; j < args.Length; j++) {
+            for (int i = 0; i < args.Count - 1; i++) {
+                for (int j = i + 1; j < args.Count; j++) {
                     if (args[i].Name.Text == args[j].Name.Text) {
                         throw new ParserError(args[j].Name, "Duplicate argument name");
                     }
@@ -28,9 +27,11 @@ namespace Shapoco.Calctus.Model.Expressions {
             }
         }
 
+        public override bool CausesValueChange() => false;
+
         protected override Val OnEval(EvalContext e) {
-            e.Ref(Name.Text, true).Value = new FuncVal(new UserFuncDef(Name.Text, ArgDefs, VectorizableArgIndex, Body));
-            return new BoolVal(true);
+            e.DefFunc(new UserFuncDef(Name, Args, Body));
+            return NullVal.Instance;
         }
     }
 }

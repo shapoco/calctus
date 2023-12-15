@@ -14,6 +14,7 @@ using Shapoco.Calctus.Model.Types;
 using Shapoco.Calctus.Model.Parsers;
 using Shapoco.Calctus.Model.Sheets;
 using Shapoco.Calctus.Model.Expressions;
+using Shapoco.Calctus.Model.Functions;
 
 namespace Shapoco.Calctus.UI.Sheets {
     class SheetView : GdiControl, IInputCandidateProvider {
@@ -886,24 +887,22 @@ namespace Shapoco.Calctus.UI.Sheets {
 
             // 入力補完候補の列挙
             var list = new List<InputCandidate>();
-            foreach (var f in FuncDef.EnumAllFunctions()) {
-                list.Add(new InputCandidate(f.Name, f.ToString(), f.Description, true));
+            foreach (var f in EmbeddedFuncDef.NativeFunctions) {
+                list.Add(new InputCandidate(f.Name.Text, f.ToString(), f.Description, true));
+            }
+            foreach (var f in ExternalFuncDef.ExternalFunctions) {
+                list.Add(new InputCandidate(f.Name.Text, f.ToString(), f.Description, true));
             }
             foreach (var v in ctx.EnumVars()) {
-                if (!(v.Value is FuncVal)) {
-                    list.Add(new InputCandidate(v.Name.Text, v.Name.Text, v.Description, false));
-                }
+                list.Add(new InputCandidate(v.Name.Text, v.Name.Text, v.Description, false));
             }
             foreach(var f in ctx.EnumUserFuncs()) {
-                list.Add(new InputCandidate(f.Name, f.ToString(), f.Description, true));
+                list.Add(new InputCandidate(f.Name.Text, f.ToString(), f.Description, true));
             }
             list.Add(new InputCandidate(Sheet.LastAnsId, Sheet.LastAnsId, "last answer", false));
             list.Add(new InputCandidate(BoolVal.TrueKeyword, BoolVal.TrueKeyword, "true value", false));
             list.Add(new InputCandidate(BoolVal.FalseKeyword, BoolVal.FalseKeyword, "false value", false));
             list.Add(new InputCandidate("def", "def", "user function definition", false));
-            list.Add(new InputCandidate("solve", "solve(expr,var,a,b)", "Solves the equation using Newton's method.", true));
-            list.Add(new InputCandidate("extend", "extend(var=seed,expr,count)", "Generate number sequence.", true));
-            list.Add(new InputCandidate("plot", "plot(var,expr)", "Plots graph.", true));
             _inputCandidates = list.OrderBy(p => p.Id).ToArray();
             _recalcRequested = false;
 

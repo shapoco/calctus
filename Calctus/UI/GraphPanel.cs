@@ -372,8 +372,7 @@ namespace Shapoco.Calctus.UI {
                         foreach(var graph in graphs) {
                             try {
                                 var e = new EvalContext(graph.Call.Context);
-                                e.Ref(graph.Call.Variants[0], true).Value = new RealVal(valX);
-                                var valY = graph.Call.Expression.Eval(e).AsReal;
+                                var valY = graph.Call.Function.Call(e, new RealVal(valX)).AsReal;
                                 if (project(ps.YAxis, valY, graphArea.Bottom, -graphArea.Height, out float py)) {
                                     var textY = siPrefix(valY, RMath.FLog10Abs(valY), 3);
                                     paintBalloon(g, textY, px, py, palette[colorIndex], backColor);

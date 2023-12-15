@@ -94,6 +94,12 @@
             this.columnHeader5 = ((System.Windows.Forms.ColumnHeader)(new System.Windows.Forms.ColumnHeader()));
             this.columnHeader6 = ((System.Windows.Forms.ColumnHeader)(new System.Windows.Forms.ColumnHeader()));
             this.Hotkey_KeyCode = new Shapoco.Calctus.UI.KeyCodeBox();
+            this.tabPage7 = new System.Windows.Forms.TabPage();
+            this.groupBox6 = new System.Windows.Forms.GroupBox();
+            this.Calculation_Limit_MaxArrayLength = new System.Windows.Forms.NumericUpDown();
+            this.label11 = new System.Windows.Forms.Label();
+            this.label12 = new System.Windows.Forms.Label();
+            this.Calculation_Limit_MaxCallRecursions = new System.Windows.Forms.NumericUpDown();
             this.eNoteGroup.SuspendLayout();
             ((System.ComponentModel.ISupportInitialize)(this.NumberFormat_Exp_NegativeMax)).BeginInit();
             ((System.ComponentModel.ISupportInitialize)(this.NumberFormat_Exp_PositiveMin)).BeginInit();
@@ -114,12 +120,16 @@
             this.tabPage5.SuspendLayout();
             this.tabPage6.SuspendLayout();
             this.scriptGroup.SuspendLayout();
+            this.tabPage7.SuspendLayout();
+            this.groupBox6.SuspendLayout();
+            ((System.ComponentModel.ISupportInitialize)(this.Calculation_Limit_MaxArrayLength)).BeginInit();
+            ((System.ComponentModel.ISupportInitialize)(this.Calculation_Limit_MaxCallRecursions)).BeginInit();
             this.SuspendLayout();
             // 
             // closeButton
             // 
             this.closeButton.DialogResult = System.Windows.Forms.DialogResult.Cancel;
-            this.closeButton.Location = new System.Drawing.Point(317, 336);
+            this.closeButton.Location = new System.Drawing.Point(366, 364);
             this.closeButton.Name = "closeButton";
             this.closeButton.Size = new System.Drawing.Size(89, 25);
             this.closeButton.TabIndex = 1;
@@ -147,7 +157,7 @@
             this.eNoteGroup.Controls.Add(this.NumberFormat_Exp_PositiveMin);
             this.eNoteGroup.Location = new System.Drawing.Point(6, 60);
             this.eNoteGroup.Name = "eNoteGroup";
-            this.eNoteGroup.Size = new System.Drawing.Size(378, 106);
+            this.eNoteGroup.Size = new System.Drawing.Size(423, 106);
             this.eNoteGroup.TabIndex = 1;
             this.eNoteGroup.TabStop = false;
             // 
@@ -226,15 +236,16 @@
             // tabControl
             // 
             this.tabControl.Controls.Add(this.tabPage3);
+            this.tabControl.Controls.Add(this.tabPage2);
             this.tabControl.Controls.Add(this.tabPage4);
             this.tabControl.Controls.Add(this.tabPage1);
-            this.tabControl.Controls.Add(this.tabPage2);
+            this.tabControl.Controls.Add(this.tabPage7);
             this.tabControl.Controls.Add(this.tabPage5);
             this.tabControl.Controls.Add(this.tabPage6);
             this.tabControl.Location = new System.Drawing.Point(12, 12);
             this.tabControl.Name = "tabControl";
             this.tabControl.SelectedIndex = 0;
-            this.tabControl.Size = new System.Drawing.Size(398, 318);
+            this.tabControl.Size = new System.Drawing.Size(443, 346);
             this.tabControl.TabIndex = 0;
             // 
             // tabPage3
@@ -243,7 +254,7 @@
             this.tabPage3.Controls.Add(this.groupBox1);
             this.tabPage3.Location = new System.Drawing.Point(4, 22);
             this.tabPage3.Name = "tabPage3";
-            this.tabPage3.Size = new System.Drawing.Size(390, 292);
+            this.tabPage3.Size = new System.Drawing.Size(435, 320);
             this.tabPage3.TabIndex = 0;
             this.tabPage3.Text = "General";
             this.tabPage3.UseVisualStyleBackColor = true;
@@ -255,7 +266,7 @@
             this.groupBox5.Controls.Add(this.SaveSettingsInInstallDirectoryCheckBox);
             this.groupBox5.Location = new System.Drawing.Point(6, 147);
             this.groupBox5.Name = "groupBox5";
-            this.groupBox5.Size = new System.Drawing.Size(378, 87);
+            this.groupBox5.Size = new System.Drawing.Size(422, 87);
             this.groupBox5.TabIndex = 1;
             this.groupBox5.TabStop = false;
             this.groupBox5.Text = "Setting File Location";
@@ -297,7 +308,7 @@
             this.groupBox1.Controls.Add(this.Hotkey_Enabled);
             this.groupBox1.Location = new System.Drawing.Point(6, 6);
             this.groupBox1.Name = "groupBox1";
-            this.groupBox1.Size = new System.Drawing.Size(378, 135);
+            this.groupBox1.Size = new System.Drawing.Size(422, 135);
             this.groupBox1.TabIndex = 0;
             this.groupBox1.TabStop = false;
             this.groupBox1.Text = "Start";
@@ -348,7 +359,7 @@
             this.tabPage4.Location = new System.Drawing.Point(4, 22);
             this.tabPage4.Name = "tabPage4";
             this.tabPage4.Padding = new System.Windows.Forms.Padding(3);
-            this.tabPage4.Size = new System.Drawing.Size(390, 292);
+            this.tabPage4.Size = new System.Drawing.Size(435, 320);
             this.tabPage4.TabIndex = 3;
             this.tabPage4.Text = "Input";
             this.tabPage4.UseVisualStyleBackColor = true;
@@ -360,7 +371,7 @@
             this.groupBox3.Controls.Add(this.Input_AutoCloseBrackets);
             this.groupBox3.Location = new System.Drawing.Point(6, 6);
             this.groupBox3.Name = "groupBox3";
-            this.groupBox3.Size = new System.Drawing.Size(378, 89);
+            this.groupBox3.Size = new System.Drawing.Size(423, 89);
             this.groupBox3.TabIndex = 0;
             this.groupBox3.TabStop = false;
             this.groupBox3.Text = "Auto Input";
@@ -404,7 +415,7 @@
             this.tabPage1.Location = new System.Drawing.Point(4, 22);
             this.tabPage1.Name = "tabPage1";
             this.tabPage1.Padding = new System.Windows.Forms.Padding(3);
-            this.tabPage1.Size = new System.Drawing.Size(390, 292);
+            this.tabPage1.Size = new System.Drawing.Size(435, 320);
             this.tabPage1.TabIndex = 2;
             this.tabPage1.Text = "Format";
             this.tabPage1.UseVisualStyleBackColor = true;
@@ -415,7 +426,7 @@
             this.groupBox4.Controls.Add(this.NumberFormat_Separator_Thousands);
             this.groupBox4.Location = new System.Drawing.Point(6, 172);
             this.groupBox4.Name = "groupBox4";
-            this.groupBox4.Size = new System.Drawing.Size(378, 74);
+            this.groupBox4.Size = new System.Drawing.Size(423, 74);
             this.groupBox4.TabIndex = 2;
             this.groupBox4.TabStop = false;
             this.groupBox4.Text = "Numeric Separators";
@@ -446,7 +457,7 @@
             this.groupBox2.Controls.Add(this.label6);
             this.groupBox2.Location = new System.Drawing.Point(6, 6);
             this.groupBox2.Name = "groupBox2";
-            this.groupBox2.Size = new System.Drawing.Size(378, 48);
+            this.groupBox2.Size = new System.Drawing.Size(423, 48);
             this.groupBox2.TabIndex = 0;
             this.groupBox2.TabStop = false;
             this.groupBox2.Text = "Decimal";
@@ -489,7 +500,7 @@
             this.tabPage2.Location = new System.Drawing.Point(4, 22);
             this.tabPage2.Name = "tabPage2";
             this.tabPage2.Padding = new System.Windows.Forms.Padding(3);
-            this.tabPage2.Size = new System.Drawing.Size(390, 292);
+            this.tabPage2.Size = new System.Drawing.Size(435, 320);
             this.tabPage2.TabIndex = 0;
             this.tabPage2.Text = "Appearance";
             this.tabPage2.UseVisualStyleBackColor = true;
@@ -499,14 +510,14 @@
             this.colorGroup.Controls.Add(this.toggleLightDarkModeButton);
             this.colorGroup.Location = new System.Drawing.Point(6, 99);
             this.colorGroup.Name = "colorGroup";
-            this.colorGroup.Size = new System.Drawing.Size(378, 187);
+            this.colorGroup.Size = new System.Drawing.Size(423, 215);
             this.colorGroup.TabIndex = 1;
             this.colorGroup.TabStop = false;
             this.colorGroup.Text = "Color";
             // 
             // toggleLightDarkModeButton
             // 
-            this.toggleLightDarkModeButton.Location = new System.Drawing.Point(215, 158);
+            this.toggleLightDarkModeButton.Location = new System.Drawing.Point(260, 186);
             this.toggleLightDarkModeButton.Name = "toggleLightDarkModeButton";
             this.toggleLightDarkModeButton.Size = new System.Drawing.Size(157, 23);
             this.toggleLightDarkModeButton.TabIndex = 0;
@@ -526,14 +537,14 @@
             this.fontGroup.Controls.Add(this.Appearance_Font_Button_Name);
             this.fontGroup.Location = new System.Drawing.Point(6, 6);
             this.fontGroup.Name = "fontGroup";
-            this.fontGroup.Size = new System.Drawing.Size(378, 87);
+            this.fontGroup.Size = new System.Drawing.Size(423, 87);
             this.fontGroup.TabIndex = 0;
             this.fontGroup.TabStop = false;
             this.fontGroup.Text = "Font";
             // 
             // Appearance_Font_Size
             // 
-            this.Appearance_Font_Size.Location = new System.Drawing.Point(275, 30);
+            this.Appearance_Font_Size.Location = new System.Drawing.Point(314, 30);
             this.Appearance_Font_Size.Minimum = new decimal(new int[] {
             1,
             0,
@@ -569,7 +580,7 @@
             // label10
             // 
             this.label10.AutoSize = true;
-            this.label10.Location = new System.Drawing.Point(323, 15);
+            this.label10.Location = new System.Drawing.Point(362, 15);
             this.label10.Name = "label10";
             this.label10.Size = new System.Drawing.Size(31, 12);
             this.label10.TabIndex = 4;
@@ -578,7 +589,7 @@
             // label9
             // 
             this.label9.AutoSize = true;
-            this.label9.Location = new System.Drawing.Point(273, 15);
+            this.label9.Location = new System.Drawing.Point(312, 15);
             this.label9.Name = "label9";
             this.label9.Size = new System.Drawing.Size(26, 12);
             this.label9.TabIndex = 4;
@@ -596,7 +607,7 @@
             // Appearance_Font_Bold
             // 
             this.Appearance_Font_Bold.AutoSize = true;
-            this.Appearance_Font_Bold.Location = new System.Drawing.Point(325, 31);
+            this.Appearance_Font_Bold.Location = new System.Drawing.Point(364, 31);
             this.Appearance_Font_Bold.Name = "Appearance_Font_Bold";
             this.Appearance_Font_Bold.Size = new System.Drawing.Size(47, 16);
             this.Appearance_Font_Bold.TabIndex = 6;
@@ -610,7 +621,7 @@
             this.Appearance_Font_Expr_Name.FormattingEnabled = true;
             this.Appearance_Font_Expr_Name.Location = new System.Drawing.Point(81, 55);
             this.Appearance_Font_Expr_Name.Name = "Appearance_Font_Expr_Name";
-            this.Appearance_Font_Expr_Name.Size = new System.Drawing.Size(188, 20);
+            this.Appearance_Font_Expr_Name.Size = new System.Drawing.Size(227, 20);
             this.Appearance_Font_Expr_Name.TabIndex = 3;
             // 
             // Appearance_Font_Button_Name
@@ -620,7 +631,7 @@
             this.Appearance_Font_Button_Name.FormattingEnabled = true;
             this.Appearance_Font_Button_Name.Location = new System.Drawing.Point(81, 29);
             this.Appearance_Font_Button_Name.Name = "Appearance_Font_Button_Name";
-            this.Appearance_Font_Button_Name.Size = new System.Drawing.Size(188, 20);
+            this.Appearance_Font_Button_Name.Size = new System.Drawing.Size(227, 20);
             this.Appearance_Font_Button_Name.TabIndex = 1;
             // 
             // tabPage5
@@ -632,14 +643,14 @@
             this.tabPage5.Location = new System.Drawing.Point(4, 22);
             this.tabPage5.Name = "tabPage5";
             this.tabPage5.Padding = new System.Windows.Forms.Padding(3);
-            this.tabPage5.Size = new System.Drawing.Size(390, 292);
+            this.tabPage5.Size = new System.Drawing.Size(435, 320);
             this.tabPage5.TabIndex = 4;
-            this.tabPage5.Text = "Constants";
+            this.tabPage5.Text = "Definitions";
             this.tabPage5.UseVisualStyleBackColor = true;
             // 
             // constEditButton
             // 
-            this.constEditButton.Location = new System.Drawing.Point(319, 263);
+            this.constEditButton.Location = new System.Drawing.Point(364, 291);
             this.constEditButton.Name = "constEditButton";
             this.constEditButton.Size = new System.Drawing.Size(65, 23);
             this.constEditButton.TabIndex = 1;
@@ -648,7 +659,7 @@
             // 
             // constDelButton
             // 
-            this.constDelButton.Location = new System.Drawing.Point(248, 263);
+            this.constDelButton.Location = new System.Drawing.Point(293, 291);
             this.constDelButton.Name = "constDelButton";
             this.constDelButton.Size = new System.Drawing.Size(65, 23);
             this.constDelButton.TabIndex = 1;
@@ -657,7 +668,7 @@
             // 
             // constAddButton
             // 
-            this.constAddButton.Location = new System.Drawing.Point(177, 263);
+            this.constAddButton.Location = new System.Drawing.Point(222, 291);
             this.constAddButton.Name = "constAddButton";
             this.constAddButton.Size = new System.Drawing.Size(65, 23);
             this.constAddButton.TabIndex = 1;
@@ -674,7 +685,7 @@
             this.constList.HideSelection = false;
             this.constList.Location = new System.Drawing.Point(6, 6);
             this.constList.Name = "constList";
-            this.constList.Size = new System.Drawing.Size(378, 251);
+            this.constList.Size = new System.Drawing.Size(423, 279);
             this.constList.TabIndex = 0;
             this.constList.UseCompatibleStateImageBehavior = false;
             this.constList.View = System.Windows.Forms.View.Details;
@@ -687,7 +698,7 @@
             // columnHeader3
             // 
             this.columnHeader3.Text = "Value";
-            this.columnHeader3.Width = 108;
+            this.columnHeader3.Width = 141;
             // 
             // columnHeader4
             // 
@@ -701,7 +712,7 @@
             this.tabPage6.Location = new System.Drawing.Point(4, 22);
             this.tabPage6.Name = "tabPage6";
             this.tabPage6.Padding = new System.Windows.Forms.Padding(3);
-            this.tabPage6.Size = new System.Drawing.Size(390, 292);
+            this.tabPage6.Size = new System.Drawing.Size(435, 320);
             this.tabPage6.TabIndex = 5;
             this.tabPage6.Text = "Scripts";
             this.tabPage6.UseVisualStyleBackColor = true;
@@ -731,13 +742,13 @@
             this.scriptGroup.Controls.Add(this.scriptFilterList);
             this.scriptGroup.Location = new System.Drawing.Point(6, 6);
             this.scriptGroup.Name = "scriptGroup";
-            this.scriptGroup.Size = new System.Drawing.Size(378, 280);
+            this.scriptGroup.Size = new System.Drawing.Size(423, 308);
             this.scriptGroup.TabIndex = 1;
             this.scriptGroup.TabStop = false;
             // 
             // scriptFilterMoveDown
             // 
-            this.scriptFilterMoveDown.Location = new System.Drawing.Point(341, 251);
+            this.scriptFilterMoveDown.Location = new System.Drawing.Point(386, 279);
             this.scriptFilterMoveDown.Name = "scriptFilterMoveDown";
             this.scriptFilterMoveDown.Size = new System.Drawing.Size(31, 23);
             this.scriptFilterMoveDown.TabIndex = 2;
@@ -746,7 +757,7 @@
             // 
             // scriptFilterMoveUp
             // 
-            this.scriptFilterMoveUp.Location = new System.Drawing.Point(304, 251);
+            this.scriptFilterMoveUp.Location = new System.Drawing.Point(349, 279);
             this.scriptFilterMoveUp.Name = "scriptFilterMoveUp";
             this.scriptFilterMoveUp.Size = new System.Drawing.Size(31, 23);
             this.scriptFilterMoveUp.TabIndex = 2;
@@ -755,7 +766,7 @@
             // 
             // scriptFilterEditButton
             // 
-            this.scriptFilterEditButton.Location = new System.Drawing.Point(233, 251);
+            this.scriptFilterEditButton.Location = new System.Drawing.Point(278, 279);
             this.scriptFilterEditButton.Name = "scriptFilterEditButton";
             this.scriptFilterEditButton.Size = new System.Drawing.Size(65, 23);
             this.scriptFilterEditButton.TabIndex = 2;
@@ -764,7 +775,7 @@
             // 
             // scriptFilterDelButton
             // 
-            this.scriptFilterDelButton.Location = new System.Drawing.Point(162, 251);
+            this.scriptFilterDelButton.Location = new System.Drawing.Point(207, 279);
             this.scriptFilterDelButton.Name = "scriptFilterDelButton";
             this.scriptFilterDelButton.Size = new System.Drawing.Size(65, 23);
             this.scriptFilterDelButton.TabIndex = 3;
@@ -773,7 +784,7 @@
             // 
             // scriptFolderOpenButton
             // 
-            this.scriptFolderOpenButton.Location = new System.Drawing.Point(307, 17);
+            this.scriptFolderOpenButton.Location = new System.Drawing.Point(352, 17);
             this.scriptFolderOpenButton.Name = "scriptFolderOpenButton";
             this.scriptFolderOpenButton.Size = new System.Drawing.Size(65, 23);
             this.scriptFolderOpenButton.TabIndex = 4;
@@ -782,7 +793,7 @@
             // 
             // scriptFolderChangeButton
             // 
-            this.scriptFolderChangeButton.Location = new System.Drawing.Point(236, 17);
+            this.scriptFolderChangeButton.Location = new System.Drawing.Point(281, 17);
             this.scriptFolderChangeButton.Name = "scriptFolderChangeButton";
             this.scriptFolderChangeButton.Size = new System.Drawing.Size(65, 23);
             this.scriptFolderChangeButton.TabIndex = 5;
@@ -791,7 +802,7 @@
             // 
             // scriptFilterAddButton
             // 
-            this.scriptFilterAddButton.Location = new System.Drawing.Point(91, 251);
+            this.scriptFilterAddButton.Location = new System.Drawing.Point(136, 279);
             this.scriptFilterAddButton.Name = "scriptFilterAddButton";
             this.scriptFilterAddButton.Size = new System.Drawing.Size(65, 23);
             this.scriptFilterAddButton.TabIndex = 4;
@@ -802,7 +813,7 @@
             // 
             this.Script_FolderPath.Location = new System.Drawing.Point(75, 19);
             this.Script_FolderPath.Name = "Script_FolderPath";
-            this.Script_FolderPath.Size = new System.Drawing.Size(155, 19);
+            this.Script_FolderPath.Size = new System.Drawing.Size(200, 19);
             this.Script_FolderPath.TabIndex = 3;
             // 
             // label8
@@ -833,7 +844,7 @@
             this.scriptFilterList.HideSelection = false;
             this.scriptFilterList.Location = new System.Drawing.Point(6, 58);
             this.scriptFilterList.Name = "scriptFilterList";
-            this.scriptFilterList.Size = new System.Drawing.Size(366, 187);
+            this.scriptFilterList.Size = new System.Drawing.Size(411, 215);
             this.scriptFilterList.TabIndex = 1;
             this.scriptFilterList.UseCompatibleStateImageBehavior = false;
             this.scriptFilterList.View = System.Windows.Forms.View.Details;
@@ -846,12 +857,12 @@
             // columnHeader5
             // 
             this.columnHeader5.Text = "Command";
-            this.columnHeader5.Width = 128;
+            this.columnHeader5.Width = 153;
             // 
             // columnHeader6
             // 
             this.columnHeader6.Text = "Parameter";
-            this.columnHeader6.Width = 143;
+            this.columnHeader6.Width = 164;
             // 
             // Hotkey_KeyCode
             // 
@@ -866,13 +877,99 @@
             this.Hotkey_KeyCode.TabIndex = 3;
             this.Hotkey_KeyCode.Win = false;
             // 
+            // tabPage7
+            // 
+            this.tabPage7.Controls.Add(this.groupBox6);
+            this.tabPage7.Location = new System.Drawing.Point(4, 22);
+            this.tabPage7.Name = "tabPage7";
+            this.tabPage7.Padding = new System.Windows.Forms.Padding(3);
+            this.tabPage7.Size = new System.Drawing.Size(435, 320);
+            this.tabPage7.TabIndex = 6;
+            this.tabPage7.Text = "Calculation";
+            this.tabPage7.UseVisualStyleBackColor = true;
+            // 
+            // groupBox6
+            // 
+            this.groupBox6.Controls.Add(this.Calculation_Limit_MaxCallRecursions);
+            this.groupBox6.Controls.Add(this.Calculation_Limit_MaxArrayLength);
+            this.groupBox6.Controls.Add(this.label12);
+            this.groupBox6.Controls.Add(this.label11);
+            this.groupBox6.Location = new System.Drawing.Point(6, 6);
+            this.groupBox6.Name = "groupBox6";
+            this.groupBox6.Size = new System.Drawing.Size(423, 74);
+            this.groupBox6.TabIndex = 0;
+            this.groupBox6.TabStop = false;
+            this.groupBox6.Text = "Limits";
+            // 
+            // Calculation_Limit_MaxArrayLength
+            // 
+            this.Calculation_Limit_MaxArrayLength.Location = new System.Drawing.Point(164, 18);
+            this.Calculation_Limit_MaxArrayLength.Maximum = new decimal(new int[] {
+            65536,
+            0,
+            0,
+            0});
+            this.Calculation_Limit_MaxArrayLength.Minimum = new decimal(new int[] {
+            10,
+            0,
+            0,
+            0});
+            this.Calculation_Limit_MaxArrayLength.Name = "Calculation_Limit_MaxArrayLength";
+            this.Calculation_Limit_MaxArrayLength.Size = new System.Drawing.Size(65, 19);
+            this.Calculation_Limit_MaxArrayLength.TabIndex = 3;
+            this.Calculation_Limit_MaxArrayLength.Value = new decimal(new int[] {
+            10,
+            0,
+            0,
+            0});
+            // 
+            // label11
+            // 
+            this.label11.AutoSize = true;
+            this.label11.Location = new System.Drawing.Point(6, 20);
+            this.label11.Name = "label11";
+            this.label11.Size = new System.Drawing.Size(93, 12);
+            this.label11.TabIndex = 2;
+            this.label11.Text = "Max array length:";
+            // 
+            // label12
+            // 
+            this.label12.AutoSize = true;
+            this.label12.Location = new System.Drawing.Point(6, 44);
+            this.label12.Name = "label12";
+            this.label12.Size = new System.Drawing.Size(152, 12);
+            this.label12.TabIndex = 2;
+            this.label12.Text = "Max function call recursions:";
+            // 
+            // Calculation_Limit_MaxCallRecursions
+            // 
+            this.Calculation_Limit_MaxCallRecursions.Location = new System.Drawing.Point(164, 42);
+            this.Calculation_Limit_MaxCallRecursions.Maximum = new decimal(new int[] {
+            1024,
+            0,
+            0,
+            0});
+            this.Calculation_Limit_MaxCallRecursions.Minimum = new decimal(new int[] {
+            10,
+            0,
+            0,
+            0});
+            this.Calculation_Limit_MaxCallRecursions.Name = "Calculation_Limit_MaxCallRecursions";
+            this.Calculation_Limit_MaxCallRecursions.Size = new System.Drawing.Size(65, 19);
+            this.Calculation_Limit_MaxCallRecursions.TabIndex = 3;
+            this.Calculation_Limit_MaxCallRecursions.Value = new decimal(new int[] {
+            10,
+            0,
+            0,
+            0});
+            // 
             // SettingsDialog
             // 
             this.AcceptButton = this.closeButton;
             this.AutoScaleDimensions = new System.Drawing.SizeF(6F, 12F);
             this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
             this.CancelButton = this.closeButton;
-            this.ClientSize = new System.Drawing.Size(422, 373);
+            this.ClientSize = new System.Drawing.Size(467, 401);
             this.Controls.Add(this.tabControl);
             this.Controls.Add(this.closeButton);
             this.FormBorderStyle = System.Windows.Forms.FormBorderStyle.FixedSingle;
@@ -913,6 +1010,11 @@
             this.tabPage6.PerformLayout();
             this.scriptGroup.ResumeLayout(false);
             this.scriptGroup.PerformLayout();
+            this.tabPage7.ResumeLayout(false);
+            this.groupBox6.ResumeLayout(false);
+            this.groupBox6.PerformLayout();
+            ((System.ComponentModel.ISupportInitialize)(this.Calculation_Limit_MaxArrayLength)).EndInit();
+            ((System.ComponentModel.ISupportInitialize)(this.Calculation_Limit_MaxCallRecursions)).EndInit();
             this.ResumeLayout(false);
 
         }
@@ -989,5 +1091,11 @@
         private System.Windows.Forms.Button openSettingFolderButton;
         private System.Windows.Forms.CheckBox SaveSettingsInInstallDirectoryCheckBox;
         private System.Windows.Forms.TextBox txtSettingDirectoryPath;
+        private System.Windows.Forms.TabPage tabPage7;
+        private System.Windows.Forms.GroupBox groupBox6;
+        private System.Windows.Forms.NumericUpDown Calculation_Limit_MaxCallRecursions;
+        private System.Windows.Forms.NumericUpDown Calculation_Limit_MaxArrayLength;
+        private System.Windows.Forms.Label label12;
+        private System.Windows.Forms.Label label11;
     }
 }

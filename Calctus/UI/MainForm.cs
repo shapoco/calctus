@@ -8,10 +8,10 @@ using System.Text;
 using System.Threading.Tasks;
 using System.Windows.Forms;
 using System.Runtime.InteropServices;
-
 using Shapoco.Calctus.Model;
 using Shapoco.Calctus.Model.Sheets;
 using Shapoco.Calctus.UI.Sheets;
+using Shapoco.Calctus.Model.Functions;
 
 namespace Shapoco.Calctus.UI {
     internal partial class MainForm : Form {
@@ -128,7 +128,7 @@ namespace Shapoco.Calctus.UI {
         }
 
         private void MainForm_Activated(object sender, EventArgs e) {
-            ExtFuncDef.ScanScripts();
+            ExternalFuncDef.ScanScripts();
             //GraphForm.ReshowAll();
             GraphForm.SetTopMostAll(true);
         }
@@ -362,7 +362,7 @@ namespace Shapoco.Calctus.UI {
                 helpButton.PerformClick();
             }
             else if (e.KeyCode == Keys.F5) {
-                ExtFuncDef.ScanScripts();
+                ExternalFuncDef.ScanScripts();
                 sheetView.RequestRecalc();
             }
             else if (e.KeyCode == Keys.F8) {

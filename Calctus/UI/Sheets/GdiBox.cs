@@ -20,6 +20,7 @@ namespace Shapoco.Calctus.UI.Sheets {
 
         private GdiControl _owner;
         private Rectangle _bounds;
+        private bool _visible = true;
         private Color _backColor = Color.Transparent;
         private bool _disposed = false;
         public Cursor Cursor = Cursors.Default;
@@ -105,6 +106,15 @@ namespace Shapoco.Calctus.UI.Sheets {
         public void SetBounds(int l, int t, int w, int h) => Bounds = new Rectangle(l, t, w, h);
         protected virtual void OnResize() { }
 
+        public bool Visible {
+            get => _visible;
+            set {
+                if (value == _visible) return;
+                _visible = value;
+                Invalidate();
+            }
+        }
+
         public Rectangle ClientBounds => new Rectangle(Point.Empty, Size);
 
         public Point PointToScreen(Point point) {
@@ -123,7 +133,7 @@ namespace Shapoco.Calctus.UI.Sheets {
 
         public bool HitTest(Point offset, Point testPos, out GdiBox hitBox, out Rectangle hitBounds) {
             var testBounds = new Rectangle(offset, Size);
-            if (testBounds.Contains(testPos)) {
+            if (_visible && testBounds.Contains(testPos)) {
                 foreach (var child in Children) {
                     var childOffset = offset;
                     childOffset.Offset(child.Location);
@@ -181,6 +191,7 @@ namespace Shapoco.Calctus.UI.Sheets {
         protected virtual void OnDoubleClick(EventArgs e) { }
 
         public void PerformPaint(PaintEventArgs e) {
+            if (!_visible) return;
             if (_backColor.A != 0) {
                 using (var brush = new SolidBrush(_backColor)) {
                     e.Graphics.FillRectangle(brush, ClientBounds);
@@ -213,7 +224,7 @@ namespace Shapoco.Calctus.UI.Sheets {
             if (forward) {
                 for (int i = start; i < n; i++) {
                     var cand = _tabOrderList[i];
-                    if (cand.Focusable) {
+                    if (cand.Focusable && cand.Visible) {
                         cand.Focus();
                         return true;
                     }
@@ -225,7 +236,7 @@ namespace Shapoco.Calctus.UI.Sheets {
             else {
                 for (int i = start; i >= 0; i--) {
                     var cand = _tabOrderList[i];
-                    if (cand.Focusable) {
+                    if (cand.Focusable && cand.Visible) {
                         cand.Focus();
                         return true;
                     }

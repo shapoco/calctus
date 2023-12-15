@@ -13,6 +13,9 @@ namespace Shapoco.Calctus.Model.Expressions {
             TrueVal = trueVal;
             FalseVal = falseVal;
         }
+
+        public override bool CausesValueChange() => true;
+
         protected override Val OnEval(EvalContext ctx) {
             if (Cond.Eval(ctx).AsBool) {
                 return TrueVal.Eval(ctx);

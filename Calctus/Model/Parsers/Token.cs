@@ -13,12 +13,14 @@ namespace Shapoco.Calctus.Model.Parsers {
         public readonly TextPosition Position;
         public readonly string Text;
         public readonly object Hint;
+
         public Token(TokenType t, TextPosition pos, string text, object hint = null) {
             this.Type = t;
             this.Position = pos;
             this.Text = text;
             this.Hint = hint;
         }
+
         public override string ToString() {
             if (Type == TokenType.Eos) {
                 return "[EOS]";
@@ -27,6 +29,9 @@ namespace Shapoco.Calctus.Model.Parsers {
                 return "'" + Text + "'";
             }
         }
+
+        public static Token FromWord(string s) => new Token(TokenType.Word, TextPosition.Nowhere, s);
+
     }
 
     class NumberTokenHint {

@@ -20,6 +20,8 @@ namespace Shapoco.Calctus.Model.Types {
         public override bool IsScalar => true;
         public override bool IsInteger => (_raw == (long)_raw);
 
+        public override bool IsSerializable => true;
+
         protected override Val OnUpConvert(EvalContext e, Val b) {
             if (b is RealVal) return this;
             if (b is FracVal) return new FracVal(new frac(_raw.Raw, 1));

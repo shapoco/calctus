@@ -9,15 +9,18 @@ using Shapoco.Calctus.Model.Evaluations;
 
 namespace Shapoco.Calctus.Model.Types {
     class ArrayVal : Val {
-        public const int MaxLength = 256;
-
         private Val[] _raw;
+
+        public static void CheckArrayLength(int length) {
+            if (length > Settings.Instance.Calculation_Limit_MaxArrayLength) throw new CalctusError("Array length exceeds limit.");
+        }
+
         public ArrayVal(Val[] val, FormatHint fmt = null) : base(fmt) {
-            if (val.Length > MaxLength) throw new CalctusError("Array too big.");
+            CheckArrayLength(val.Length);
             this._raw = val;
         }
         public ArrayVal(real[] val, FormatHint fmt = null) : base(fmt) {
-            if (val.Length > MaxLength) throw new CalctusError("Array too big.");
+            CheckArrayLength(val.Length);
             var array = new Val[val.Length];
             for (int i = 0; i < val.Length; i++) {
                 array[i] = new RealVal(val[i], fmt);
@@ -25,7 +28,7 @@ namespace Shapoco.Calctus.Model.Types {
             this._raw = array;
         }
         public ArrayVal(decimal[] val, FormatHint fmt = null) : base(fmt) {
-            if (val.Length > MaxLength) throw new CalctusError("Array too big.");
+            CheckArrayLength(val.Length);
             var array = new Val[val.Length];
             for (int i = 0; i < val.Length; i++) {
                 array[i] = new RealVal(val[i], fmt);
@@ -33,7 +36,7 @@ namespace Shapoco.Calctus.Model.Types {
             this._raw = array;
         }
         public ArrayVal(long[] val, FormatHint fmt = null) : base(fmt) {
-            if (val.Length > MaxLength) throw new CalctusError("Array too big.");
+            CheckArrayLength(val.Length);
             var array = new Val[val.Length];
             for (int i = 0; i < val.Length; i++) {
                 array[i] = new RealVal(val[i], fmt);
@@ -41,7 +44,7 @@ namespace Shapoco.Calctus.Model.Types {
             this._raw = array;
         }
         public ArrayVal(int[] val, FormatHint fmt = null) : base(fmt) {
-            if (val.Length > MaxLength) throw new CalctusError("Array too big.");
+            CheckArrayLength(val.Length);
             var array = new Val[val.Length];
             for (int i = 0; i < val.Length; i++) {
                 array[i] = new RealVal(val[i], fmt);
@@ -49,7 +52,7 @@ namespace Shapoco.Calctus.Model.Types {
             this._raw = array;
         }
         public ArrayVal(byte[] val) {
-            if (val.Length > MaxLength) throw new CalctusError("Array too big.");
+            CheckArrayLength(val.Length);
             var array = new Val[val.Length];
             for (int i = 0; i < val.Length; i++) {
                 array[i] = new RealVal(val[i]).FormatHex();
@@ -57,11 +60,13 @@ namespace Shapoco.Calctus.Model.Types {
             this._raw = array;
         }
         public ArrayVal(string val) : base(new FormatHint(NumberFormatter.CStyleString)) {
-            if (val.Length > MaxLength) throw new CalctusError("Array too big.");
+            CheckArrayLength(val.Length);
             this._raw = val.Select(p => new RealVal(p).FormatHex()).ToArray();
         }
 
         public Val this[int index] => _raw[index];
+
+        public override bool IsSerializable => _raw.All(p => p.IsSerializable);
 
         public ArrayVal Slice(int from, int to) {
             if (from > to) throw new ArgumentOutOfRangeException();

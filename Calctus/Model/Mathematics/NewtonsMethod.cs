@@ -3,45 +3,27 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
+using Shapoco.Calctus.Model.Expressions;
 using Shapoco.Calctus.Model.Evaluations;
-using Shapoco.Calctus.Model.Mathematics;
 using Shapoco.Calctus.Model.Parsers;
 using Shapoco.Calctus.Model.Types;
+using Shapoco.Calctus.Model.Functions;
 using Shapoco.Calctus.Model.Formats;
 
-namespace Shapoco.Calctus.Model.Expressions {
-    class SolveExpr : Expr {
+namespace Shapoco.Calctus.Model.Mathematics {
+    class NewtonsMethod {
         public const decimal HMin = 1e-18m;
         public const decimal TolMin = 1e-23m;
         public const decimal HTolRatio = 1e5m;
 
-        public readonly Expr Equation;
-        public readonly Token Variant;
-        public readonly Expr Param0;
-        public readonly Expr Param1;
-
-        public SolveExpr(Token keyword, Expr equation, Token variant, Expr paramMin, Expr paramMax) : base(keyword) {
-            // 等式が与えられた場合は減算にすり替える
-            if (equation is BinaryOp binOp && (binOp.Method == OpDef.Assign || binOp.Method == OpDef.Equal)) {
-                equation = new BinaryOp(new Token(TokenType.OperatorSymbol, TextPosition.Nowhere, "-"), binOp.A, binOp.B);
-            }
-
-            Equation = equation;
-            Variant = variant;
-            Param0 = paramMin;
-            Param1 = paramMax;
-        }
-
-        protected override Val OnEval(EvalContext e) {
+        public static Val Solve(EvalContext e, FuncDef f, Val paramVal0 = null, Val paramVal1 = null) {
             // パラメータの評価
-            var paramVal0 = Param0 != null ? Param0.Eval(e) : null;
-            var paramVal1 = Param1 != null ? Param1.Eval(e) : null;
             var formatHint = new FormatHint(NumberFormatter.CStyleReal);
 
             // スコープの生成
             var scope = new EvalContext(e);
-            scope.Settings.AccuracyPriority = false; // 速度優先の計算方法を適用
-            scope.Settings.FractionEnabled = false; // 分数は使用しない
+            scope.EvalSettings.AccuracyPriority = false; // 速度優先の計算方法を適用
+            scope.EvalSettings.FractionEnabled = false; // 分数は使用しない
 
             List<decimal> inits;
             decimal h;
@@ -51,12 +33,12 @@ namespace Shapoco.Calctus.Model.Expressions {
 
             if (paramVal0 == null && paramVal1 == null) {
                 // 初期値が与えられなかった場合
-                var cands = generateInitCandidates(scope, 0);
+                var cands = generateInitCandidates(scope, f, 0);
                 inits = filterInitCandidates(cands);
 
                 if (inits.Count > 50) {
                     // 初期値が大量に生成された場合は範囲を狭めてみる
-                    cands = generateInitCandidates(scope, -5, +5);
+                    cands = generateInitCandidates(scope, f, -5, +5);
                     inits = filterInitCandidates(cands);
                 }
 
@@ -66,7 +48,7 @@ namespace Shapoco.Calctus.Model.Expressions {
                 // 解の範囲が指定された場合
                 xMin = paramVal0.AsReal;
                 xMax = paramVal1.AsReal;
-                var cands = generateInitCandidates(scope, xMin, xMax);
+                var cands = generateInitCandidates(scope, f, xMin, xMax);
                 inits = filterInitCandidates(cands);
                 determineHTol(xMin, xMax, out h, out tol);
             }
@@ -103,7 +85,7 @@ namespace Shapoco.Calctus.Model.Expressions {
             var sols = new List<decimal>();
             int numMaxIter = 0;
             foreach (var init in inits) {
-                if (newtonMethod(scope, init, xMin, xMax, h, tol, out decimal sol, out int numIter)) {
+                if (newtonMethod(scope, f, init, xMin, xMax, h, tol, out decimal sol, out int numIter)) {
                     sols.Add(sol);
                     numMaxIter = Math.Max(numMaxIter, numIter);
                 }
@@ -126,7 +108,7 @@ namespace Shapoco.Calctus.Model.Expressions {
         }
 
         /// <summary>解が分布するX座標の中心を指定して初期値の候補を生成</summary>
-        private List<Sample> generateInitCandidates(EvalContext e, decimal center) {
+        private static List<Sample> generateInitCandidates(EvalContext e, FuncDef f, decimal center) {
             var cands = new List<Sample>();
             const int scaleFine = 4;
             const int scaleRange = 18 * scaleFine;
@@ -134,20 +116,20 @@ namespace Shapoco.Calctus.Model.Expressions {
             for (int i = -scaleRange; i < scaleRange; i++) {
                 try {
                     var x = center - (decimal)Math.Pow(10, (double)i / scaleFine);
-                    cands.Add(new Sample(x, evalEquation(e, x)));
+                    cands.Add(new Sample(x, evalEquation(e, f, x)));
                 }
                 catch { }
             }
             // center
             try {
-                cands.Add(new Sample(0, evalEquation(e, 0)));
+                cands.Add(new Sample(0, evalEquation(e, f, 0)));
             }
             catch { }
             // center の右側
             for (int i = -scaleRange; i < scaleRange; i++) {
                 try {
                     var x = center + (decimal)Math.Pow(10, (double)i / scaleFine);
-                    cands.Add(new Sample(x, evalEquation(e, x)));
+                    cands.Add(new Sample(x, evalEquation(e, f, x)));
                 }
                 catch { }
             }
@@ -156,14 +138,14 @@ namespace Shapoco.Calctus.Model.Expressions {
         }
 
         /// <summary>解が分布する範囲を指定して初期値の候補を生成</summary>
-        private List<Sample> generateInitCandidates(EvalContext e, decimal xMin, decimal xMax) {
+        private static List<Sample> generateInitCandidates(EvalContext e, FuncDef f, decimal xMin, decimal xMax) {
             if (xMin >= xMax) throw new ArgumentException();
             var cands = new List<Sample>();
             const int N = 100;
             for (int i = 0; i <= N; i++) {
                 try {
                     var x = xMin + (xMax - xMin) * i / N;
-                    cands.Add(new Sample(x, evalEquation(e, x)));
+                    cands.Add(new Sample(x, evalEquation(e, f, x)));
                 }
                 catch { }
             }
@@ -171,7 +153,7 @@ namespace Shapoco.Calctus.Model.Expressions {
         }
 
         /// <summary>解に繋がりそうな初期値を抽出する</summary>
-        private List<decimal> filterInitCandidates(List<Sample> cands) {
+        private static List<decimal> filterInitCandidates(List<Sample> cands) {
             var map = new Dictionary<int, decimal>();
             int n = cands.Count;
             for (int i = 0; i < n; i++) {
@@ -206,9 +188,9 @@ namespace Shapoco.Calctus.Model.Expressions {
             }
             return map.Values.ToList();
         }
-        
+
         /// <summary>H, TOL の値を決定する</summary>
-        private void determineHTol(List<decimal> inits, out decimal h, out decimal tol) {
+        private static void determineHTol(List<decimal> inits, out decimal h, out decimal tol) {
             if (inits.Count <= 0) {
                 h = 1e-6m;
                 tol = h / HTolRatio;
@@ -223,13 +205,13 @@ namespace Shapoco.Calctus.Model.Expressions {
         }
 
         /// <summary>H, TOL の値を決定する</summary>
-        private void determineHTol(decimal xMin, decimal xMax, out decimal h, out decimal tol) {
+        private static void determineHTol(decimal xMin, decimal xMax, out decimal h, out decimal tol) {
             h = Math.Max(HMin, (xMax - xMin) / 1e6m);
             tol = Math.Max(TolMin, h / HTolRatio);
         }
 
         /// <summary>ニュートン法</summary>
-        private bool newtonMethod(EvalContext e, decimal init, decimal pMin, decimal pMax, decimal h, decimal tol, out decimal result, out int numIter) {
+        private static bool newtonMethod(EvalContext e, FuncDef f, decimal init, decimal pMin, decimal pMax, decimal h, decimal tol, out decimal result, out int numIter) {
             result = 0;
             numIter = 0;
             try {
@@ -239,11 +221,11 @@ namespace Shapoco.Calctus.Model.Expressions {
                     numIter = i + 1;
 
                     // 傾き
-                    var s = (evalEquation(e, x + h) - evalEquation(e, x - h)) / (2 * h);
+                    var s = (evalEquation(e, f, x + h) - evalEquation(e, f, x - h)) / (2 * h);
                     if (s == 0) return false;
 
                     // X軸との交点
-                    var y = evalEquation(e, x);
+                    var y = evalEquation(e, f, x);
                     decimal nextX = x - y / s;
                     if (nextX < pMin || pMax < nextX) return false;
 
@@ -261,13 +243,12 @@ namespace Shapoco.Calctus.Model.Expressions {
         }
 
         /// <summary>方程式を評価する</summary>
-        private decimal evalEquation(EvalContext e, decimal x) {
-            e.Ref(Variant.Text, true).Value = new RealVal(x);
-            return Equation.Eval(e).AsReal;
+        private static decimal evalEquation(EvalContext e, FuncDef func, decimal x) {
+            return func.Call(e, new RealVal(x)).AsReal;
         }
 
         /// <summary>近接する解をまとめて平均をとる</summary>
-        private List<decimal> reduceSols(List<decimal> cands, decimal tol) {
+        private static List<decimal> reduceSols(List<decimal> cands, decimal tol) {
             var sols = new List<decimal>();
             var solSum = 0m;
             var numSol = 0;
@@ -278,7 +259,7 @@ namespace Shapoco.Calctus.Model.Expressions {
                     solSum = sol;
                     numSol = 1;
                 }
-                else { 
+                else {
                     if (sol - lastSol < tol * 10) {
                         solSum += sol;
                         numSol++;

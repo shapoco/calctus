@@ -37,7 +37,7 @@ namespace Shapoco.Calctus.Model.Sheets {
             }
 
             // 外部関数の呼び出しを許可する
-            e.Settings.AllowExternalFunctions = true;
+            e.EvalSettings.AllowExternalFunctions = true;
 
             int step = 0;
             int pc = 0;

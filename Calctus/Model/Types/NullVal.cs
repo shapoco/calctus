@@ -19,6 +19,8 @@ namespace Shapoco.Calctus.Model.Types {
         public override bool IsScalar => false;
         public override bool IsInteger => false;
 
+        public override bool IsSerializable => false;
+
         public override real AsReal => throw new InvalidCastException();
         public override frac AsFrac => throw new InvalidCastException();
         public override double AsDouble => throw new InvalidCastException();

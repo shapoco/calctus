@@ -25,11 +25,12 @@ namespace Shapoco.Calctus.UI {
             {
                 var colorLabels = new List<Label>();
                 var xPadding = 10;
+                var centerPadding = 30;
                 var yPadding = 15;
                 var x = xPadding;
                 var y = yPadding;
                 var wColor = 60;
-                var wName = (colorGroup.ClientSize.Width - xPadding * 3) / 2 - wColor;
+                var wName = (colorGroup.ClientSize.Width - centerPadding - xPadding * 2) / 2 - wColor;
                 var hLabel = 15;
                 foreach (var prop in typeof(Settings).GetProperties()) {
                     if (prop.Name.StartsWith(ColorSettingNamePrefix)) {
@@ -56,7 +57,7 @@ namespace Shapoco.Calctus.UI {
                         colorLabels.Add(colorLabel);
                         y += hLabel + 2;
                         if (y + hLabel > toggleLightDarkModeButton.Top) {
-                            x += wName + wColor + xPadding;
+                            x += wName + wColor + centerPadding;
                             y = yPadding;
                         }
                     }
@@ -111,6 +112,9 @@ namespace Shapoco.Calctus.UI {
             NumberFormat_Separator_Thousands.CheckedChanged += (sender, e) => { s.NumberFormat_Separator_Thousands = ((CheckBox)sender).Checked; };
             NumberFormat_Separator_Hexadecimal.CheckedChanged += (sender, e) => { s.NumberFormat_Separator_Hexadecimal = ((CheckBox)sender).Checked; };
 
+            Calculation_Limit_MaxArrayLength.ValueChanged += (sender, e) => { s.Calculation_Limit_MaxArrayLength = (int)((NumericUpDown)sender).Value; };
+            Calculation_Limit_MaxCallRecursions.ValueChanged += (sender, e) => { s.Calculation_Limit_MaxCallRecursions = (int)((NumericUpDown)sender).Value; };
+
             Appearance_Font_Button_Name.Items.Clear();
             Appearance_Font_Expr_Name.Items.Clear();
             foreach (var ff in new System.Drawing.Text.InstalledFontCollection().Families) {
@@ -164,19 +168,22 @@ namespace Shapoco.Calctus.UI {
                 Input_AutoCloseBrackets.Checked = s.Input_AutoCloseBrackets;
                 Input_AutoInputAns.Checked = s.Input_AutoInputAns;
 
-                NumberFormat_Decimal_MaxLen.Value = s.NumberFormat_Decimal_MaxLen;
+                setNudValue(NumberFormat_Decimal_MaxLen, s.NumberFormat_Decimal_MaxLen);
 
                 NumberFormat_Exp_Enabled.Checked = s.NumberFormat_Exp_Enabled;
-                NumberFormat_Exp_NegativeMax.Value = s.NumberFormat_Exp_NegativeMax;
-                NumberFormat_Exp_PositiveMin.Value = s.NumberFormat_Exp_PositiveMin;
+                setNudValue(NumberFormat_Exp_NegativeMax, s.NumberFormat_Exp_NegativeMax);
+                setNudValue(NumberFormat_Exp_PositiveMin, s.NumberFormat_Exp_PositiveMin);
                 NumberFormat_Exp_Alignment.Checked = s.NumberFormat_Exp_Alignment;
 
                 NumberFormat_Separator_Thousands.Checked = s.NumberFormat_Separator_Thousands;
                 NumberFormat_Separator_Hexadecimal.Checked = s.NumberFormat_Separator_Hexadecimal;
 
+                setNudValue(Calculation_Limit_MaxArrayLength, s.Calculation_Limit_MaxArrayLength);
+                setNudValue(Calculation_Limit_MaxCallRecursions, s.Calculation_Limit_MaxCallRecursions);
+
                 Appearance_Font_Button_Name.Text = s.Appearance_Font_Button_Name;
                 Appearance_Font_Expr_Name.Text = s.Appearance_Font_Expr_Name;
-                Appearance_Font_Size.Value = s.Appearance_Font_Size;
+                setNudValue(Appearance_Font_Size, s.Appearance_Font_Size);
                 Appearance_Font_Bold.Checked = s.Appearance_Font_Bold;
 
                 foreach (var colorLabel in _colorLabels) {
@@ -191,7 +198,7 @@ namespace Shapoco.Calctus.UI {
                 constDelButton.Enabled = false;
                 constEditButton.Enabled = false;
 
-                foreach(var sf in s.GetScriptFilters()) {
+                foreach (var sf in s.GetScriptFilters()) {
                     addScriptFilter(sf);
                 }
                 scriptFilterDelButton.Enabled = false;
@@ -203,6 +210,10 @@ namespace Shapoco.Calctus.UI {
                 Script_FolderPath.Text = s.Script_FolderPath;
             }
             catch { }
+        }
+
+        private void setNudValue(NumericUpDown nud, int value) {
+            nud.Value = Math.Max(nud.Minimum, Math.Min(nud.Maximum, value));
         }
 
         private void Startup_AutoStart_CheckedChanged(object sender, EventArgs e) {

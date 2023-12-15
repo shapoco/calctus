@@ -16,6 +16,11 @@ namespace Shapoco.Calctus.Model.Expressions {
             this.Token = t;
         }
 
+        /// <summary>
+        /// 式の評価が式の視覚的な変化を生じさせるか否か
+        /// </summary>
+        public abstract bool CausesValueChange();
+
         public Val Eval(EvalContext e) {
             try {
                 return OnEval(e);
@@ -28,7 +33,6 @@ namespace Shapoco.Calctus.Model.Expressions {
             }
         }
 
-        /// <summary>この式を評価して値を返す</summary>
         protected abstract Val OnEval(EvalContext e);
     }
 }

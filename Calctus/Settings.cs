@@ -47,6 +47,9 @@ namespace Shapoco.Calctus {
         public bool HotKey_Shift { get; set; } = false;
         public Keys HotKey_KeyCode { get; set; } = Keys.None;
 
+        public int Calculation_Limit_MaxArrayLength { get; set; } = 256;
+        public int Calculation_Limit_MaxCallRecursions { get; set; } = 64;
+
         public bool Input_IdAutoCompletion { get; set; } = true;
         public bool Input_AutoCloseBrackets { get; set; } = true;
         public bool Input_AutoInputAns { get; set; } = true;

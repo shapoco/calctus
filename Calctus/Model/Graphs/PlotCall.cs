@@ -5,6 +5,7 @@ using System.Text;
 using System.Threading.Tasks;
 using Shapoco.Calctus.Model.Evaluations;
 using Shapoco.Calctus.Model.Expressions;
+using Shapoco.Calctus.Model.Functions;
 
 namespace Shapoco.Calctus.Model.Graphs {
     class PlotCall {
@@ -12,14 +13,12 @@ namespace Shapoco.Calctus.Model.Graphs {
 
         public readonly EvalContext Context;
         public readonly string WindowName;
-        public readonly Expr Expression;
-        public readonly string[] Variants;
+        public readonly FuncDef Function;
 
-        public PlotCall(EvalContext e, string windowName, Expr expr, string[] vars) {
+        public PlotCall(EvalContext e, string windowName, FuncDef func) {
             Context = new EvalContext(e);
             WindowName = windowName;
-            Expression = expr;
-            Variants = vars;
+            Function = func;
         }
     }
 }

@@ -65,16 +65,6 @@ Calctus (カルクタス) is a calculator application for Windows developed for 
 |Conditional Operator|`? :`|`Boolean`|
 |Range Operator|`..`, `..=`|`Array`/`String`|
 
-### Variables
-
-Variables can be assigned using the equal sign.
-
-```c++
-a = 2 [Return]
-b = 3 [Return]
-a * b [Return] // --> 6.
-```
-
 ### Constants
 
 |Symbol|Value|
@@ -115,9 +105,21 @@ User-defined constants can also be used.
 |E-series|Rounding to the E-series value: `eXFloor(x)`, `eXCeil(x)`, `eXRound(x)`<br>Calculation of voltage divider resistance: `eXRatio(x)`<br> (`X`=`3`, `6`, `12`, `24`, `48`, `96`, `192`)|`Decimal`|
 |Prime Number|`isPrime(x)`, `prime(n)`, `primeFact(x)`|`Int64`|
 |Random|`rand()`, `rand(min,max)`, `rand32()`, `rand64()`|`Decimal`, `Int64`|
-|Array :new:|`len(array)`,`range(start,end)`,`range(start,end,step)`,`rangeInclusive(start,end)`,`rangeInclusive(start,end,step)`|`Array`/`String`|
+|Array :new:|`len(array)`, `range(start,end)`, `range(start,end,step)`, `rangeInclusive(start,end)`, `rangeInclusive(start,end,step)`, `map(array,func)`, `filter(array,func)`, `count(array,func)`, `sort(array)`, `sort(array,func)`, `extend(array,func,count)`, `aggregate(array,func)`, `all(array)`, `all(array,func)`, `any(array)`, `any(array,func)`, `unique(array)`, `unique(array,func)`, `except(array0,array1)`, `intesect(array0,array1)`, `union(array0,array1)`|`Array`/`String`|
 |Encoding :new:|`utf8Enc(str)`, `utf8Dec(array)`, `urlEnc(str)`, `urlDec(str)`, `base64Enc(str)`, `base64Dec(str)`, `base64EncBytes(array)`, `base64DecBytes(str)`|`Array`/`String`|
+|Solver|`solve(func)`, `solve(func,init)`, `solve(func,min,max)`|`Decimal`|
+|Graph|`plot(func)`|`Decimal`|
 |Assertion|`assert(expr)`|`Boolean`|
+
+### Variables
+
+Variables can be assigned using the equal sign.
+
+```c++
+a = 2 [Return]
+b = 3 [Return]
+a * b [Return] // --> 6.
+```
 
 ### User Defined Function 
 
@@ -128,35 +130,46 @@ def f(x) = x^2
 f(3) // --> 9.
 ```
 
-### Solve Function (Newton-Raphson method) 
+### Lambda Function :new:
 
-Use the `solve` keyword to solve equations numerically by Newton's method.
+Rust-style lambda function is available.
 
 ```c++
-solve(x^2=2,x) // --> [-1.414213562, 1.414213562].
+f=|x|->x^2
+f(3) // --> 9.
+```
+
+### Solve Function (Newton-Raphson method) 
+
+Use the `solve` function to solve equations numerically by Newton's method.
+
+```c++
+def f(x)=x^2-2
+solve(f) // --> [-1.414213562, 1.414213562].
+solve(|x|->x^2-2) // This gives the same result.
 ```
 
 By default, the Newton's method is performed based on automatically generated initial values. Therefore, it may produce inaccurate results if the solution is concentrated in a small area or exists far from the origin.
 
-In such cases, the 3rd argument can be given an initial value.
+In such cases, the 2nd argument can be given an initial value.
 
 ```c++
-solve(sin(x),x,314) // --> 314.159265359.
+solve(sin,314) // --> 314.159265359.
 ```
 
 That initial value can also be given as an array.
 
 ```c++
-solve(sin(x),x,[-314,314]) // --> [-314.159265359, 314.159265359].
+solve(sin,[-314,314]) // --> [-314.159265359, 314.159265359].
 ```
 
-By providing the 3rd and 4th arguments at the same time, a range of initial values can be specified. In this case, 101 values between these ranges are used as initial values.
+By providing the 2nd and 3rd arguments at the same time, a range of initial values can be specified. In this case, 101 values between these ranges are used as initial values.
 
 ```c++
-solve(sin(x),x,-5,5) // --> [-3.141592654, 0, 3.141592654].
+solve(sin,-5,5) // --> [-3.141592654, 0, 3.141592654].
 ```
 
-:warning: Note that the solution obtained using the `solve` keyword is an approximation and does not necessarily correspond to the analytical solution.
+:warning: Note that the solution obtained using the `solve` function is an approximation and does not necessarily correspond to the analytical solution.
 
 ### Part-selection 
 
@@ -198,17 +211,6 @@ range(1,5)              // --> [1, 2, 3, 4]
 range(1,5,0.5)          // --> [1, 1.5, 2, 2.5, 3, 3.5, 4, 4.5]
 rangeInclusive(1,5)     // --> [1, 2, 3, 4, 5]
 rangeInclusive(1,5,0.5) // --> [1, 1.5, 2, 2.5, 3, 3.5, 4, 4.5, 5]
-```
-
-### Number sequence generation :new:
-
-The `extend` keyword can be used to generate a sequence of numbers using an recursive formula.
-
-The following example defines an array of two elements at the beginning and appends the sum of the last two elements as a new element ten times.
-
-```c++
-extend(a=[1,1], a[-2]+a[-1], 10)
-    // --> [1, 1, 2, 3, 5, 8, 13, 21, 34, 55, 89, 144]
 ```
 
 ### Vectorization :new:
@@ -293,7 +295,7 @@ If you wish to use a scripting language other than Python, please register the e
 
 ### Graph Plotting
 
-`plot(var,expr)` can be used to draw a graph. `var` is the variable on the horizontal axis and `expr` is the expression on the vertical axis.
+`plot(func)` can be used to draw a graph. `func`` is a function that takes one argument. The value of the argument is plotted on the horizontal axis and the return value of the function on the vertical axis.
 
 :warning: This feature is experimental and may be removed in future versions.
 
