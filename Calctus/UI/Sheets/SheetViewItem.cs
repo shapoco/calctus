@@ -3,11 +3,12 @@ using System.Collections.Generic;
 using System.Drawing;
 using System.Linq;
 using System.Text;
+using System.Text.RegularExpressions;
 using System.Threading.Tasks;
 using System.Windows.Forms;
 using Shapoco.Calctus.Model;
 using Shapoco.Calctus.Model.Sheets;
-using Shapoco.Calctus.Model.Expressions;
+using Shapoco.Calctus.Model.Functions;
 using Shapoco.Calctus.Model.Types;
 
 namespace Shapoco.Calctus.UI.Sheets {
@@ -16,7 +17,7 @@ namespace Shapoco.Calctus.UI.Sheets {
                 .Select(p => p[0])
                 .Distinct()
                 .ToArray();
-        
+
         private SheetView _view;
         public readonly SheetItem SheetItem;
         public readonly ExprBoxCore ExprBox;
@@ -73,6 +74,37 @@ namespace Shapoco.Calctus.UI.Sheets {
         public void RelayoutText() {
             ExprBox.RelayoutText();
             AnsBox.RelayoutText();
+        }
+
+        public void ReplaceFormatterFunction(FuncDef newFunc) {
+            var funcs = EmbeddedFuncDef.FormatterFunctions.Select(p => p.Name.Text).ToArray();
+            var prefixPattern = new Regex(@"^ *(?<func>" + String.Join("|", funcs) + @") *\( *(?<body>.+)");
+            var suffixPattern = new Regex(@" *\)$");
+            var pm = prefixPattern.Match(ExprBox.Text);
+            var body = ExprBox.Text;
+            var selStart = ExprBox.SelectionStart;
+            var selLength = ExprBox.SelectionLength;
+            if (pm.Success) {
+                var oldFuncName = pm.Groups["func"].Value;
+                if (funcs.Contains(oldFuncName)) {
+                    body = pm.Groups["body"].Value;
+                    selStart -= pm.Groups["body"].Index;
+                    var sm = suffixPattern.Match(body);
+                    if (sm.Success) {
+                        body = body.Substring(0, body.Length - sm.Length);
+                    }
+                }
+            }
+            if (newFunc == null) {
+                ExprBox.Text = body;
+                ExprBox.SelectionStart = selStart;
+                ExprBox.SelectionLength = selLength;
+            }
+            else {
+                ExprBox.Text = newFunc.Name.Text + "(" + body + ")";
+                ExprBox.SelectionStart = newFunc.Name.Text.Length + 1 + selStart;
+                ExprBox.SelectionLength = selLength;
+            }
         }
 
         protected override void OnPaint(PaintEventArgs e) {
@@ -153,7 +185,7 @@ namespace Shapoco.Calctus.UI.Sheets {
                 ans = ans == "null" ? "" : ans; ;
                 AnsBox.Text = ans;
                 AnsBox.PlaceHolder = "";
-                ansVisible = (SheetItem.ExprTree.CausesValueChange() || SheetItem.RadixMode != RadixMode.Auto) && !(SheetItem.AnsVal is NullVal);
+                ansVisible = SheetItem.ExprTree.CausesValueChange() && !(SheetItem.AnsVal is NullVal);
             }
             else {
                 AnsBox.Text = "";

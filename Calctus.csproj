@@ -263,6 +263,7 @@
   </ItemGroup>
   <ItemGroup>
     <Content Include="icon.ico" />
+    <None Include="Resources\ToolIcon_Memo.png" />
     <None Include="Resources\ToolIcon_Undo.png" />
     <None Include="Resources\ToolIcon_Redo.png" />
     <None Include="Resources\ToolIcon_InvertBrightness.png" />

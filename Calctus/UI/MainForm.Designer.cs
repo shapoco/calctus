@@ -49,14 +49,14 @@ namespace Shapoco.Calctus.UI
             this.toolStripMenuItem1 = new System.Windows.Forms.ToolStripSeparator();
             this.contextExit = new System.Windows.Forms.ToolStripMenuItem();
             this.bottomPanel = new System.Windows.Forms.Panel();
-            this.radixCharButton = new Shapoco.Calctus.UI.FlatRadioButton();
-            this.radixKibiButton = new Shapoco.Calctus.UI.FlatRadioButton();
-            this.radixSiButton = new Shapoco.Calctus.UI.FlatRadioButton();
-            this.radixOctButton = new Shapoco.Calctus.UI.FlatRadioButton();
-            this.radixBinButton = new Shapoco.Calctus.UI.FlatRadioButton();
-            this.radixHexButton = new Shapoco.Calctus.UI.FlatRadioButton();
-            this.radixDecButton = new Shapoco.Calctus.UI.FlatRadioButton();
-            this.radixAutoButton = new Shapoco.Calctus.UI.FlatRadioButton();
+            this.radixCharButton = new Shapoco.Calctus.UI.FlatButton();
+            this.radixKibiButton = new Shapoco.Calctus.UI.FlatButton();
+            this.radixSiButton = new Shapoco.Calctus.UI.FlatButton();
+            this.radixOctButton = new Shapoco.Calctus.UI.FlatButton();
+            this.radixBinButton = new Shapoco.Calctus.UI.FlatButton();
+            this.radixHexButton = new Shapoco.Calctus.UI.FlatButton();
+            this.radixDecButton = new Shapoco.Calctus.UI.FlatButton();
+            this.radixAutoButton = new Shapoco.Calctus.UI.FlatButton();
             this.toolTip = new System.Windows.Forms.ToolTip(this.components);
             this.sheetView = new Shapoco.Calctus.UI.Sheets.SheetView();
             this.toolStripSeparator1 = new System.Windows.Forms.ToolStripSeparator();
@@ -342,7 +342,6 @@ namespace Shapoco.Calctus.UI
             // radixAutoButton
             // 
             this.radixAutoButton.BackColor = System.Drawing.Color.FromArgb(((int)(((byte)(76)))), ((int)(((byte)(88)))), ((int)(((byte)(72)))));
-            this.radixAutoButton.Checked = true;
             this.radixAutoButton.Dock = System.Windows.Forms.DockStyle.Left;
             this.radixAutoButton.ForeColor = System.Drawing.Color.White;
             this.radixAutoButton.Location = new System.Drawing.Point(0, 0);
@@ -355,7 +354,6 @@ namespace Shapoco.Calctus.UI
             // 
             // sheetView
             // 
-            this.sheetView.ActiveRadixMode = Shapoco.Calctus.Model.Sheets.RadixMode.Auto;
             this.sheetView.BackColor = System.Drawing.Color.FromArgb(((int)(((byte)(32)))), ((int)(((byte)(32)))), ((int)(((byte)(32)))));
             this.sheetView.Dock = System.Windows.Forms.DockStyle.Fill;
             this.sheetView.FocusedBox = null;
@@ -412,12 +410,12 @@ namespace Shapoco.Calctus.UI
         private System.Windows.Forms.ToolStripSeparator toolStripMenuItem1;
         private System.Windows.Forms.ToolStripMenuItem contextExit;
         private System.Windows.Forms.Panel bottomPanel;
-        private FlatRadioButton radixBinButton;
-        private FlatRadioButton radixHexButton;
-        private FlatRadioButton radixDecButton;
-        private FlatRadioButton radixAutoButton;
+        private FlatButton radixBinButton;
+        private FlatButton radixHexButton;
+        private FlatButton radixDecButton;
+        private FlatButton radixAutoButton;
         private System.Windows.Forms.ToolStripButton topMostButton;
-        private FlatRadioButton radixOctButton;
+        private FlatButton radixOctButton;
         private System.Windows.Forms.ToolTip toolTip;
         private System.Windows.Forms.ToolStripButton copyButton;
         private System.Windows.Forms.ToolStripButton pasteButton;
@@ -428,9 +426,9 @@ namespace Shapoco.Calctus.UI
         private UI.Sheets.SheetView sheetView;
         private System.Windows.Forms.ToolStripButton undoButton;
         private System.Windows.Forms.ToolStripButton redoButton;
-        private FlatRadioButton radixCharButton;
-        private FlatRadioButton radixKibiButton;
-        private FlatRadioButton radixSiButton;
+        private FlatButton radixCharButton;
+        private FlatButton radixKibiButton;
+        private FlatButton radixSiButton;
         private System.Windows.Forms.ToolStripSeparator toolStripSeparator1;
         private System.Windows.Forms.ToolStripSeparator toolStripSeparator2;
         private System.Windows.Forms.ToolStripSeparator toolStripSeparator3;

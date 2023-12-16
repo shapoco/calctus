@@ -21,7 +21,6 @@ namespace Shapoco.Calctus.UI {
         [DllImport("user32.dll")]
         public static extern IntPtr GetForegroundWindow();
 
-        private RadixMode _radixMode = RadixMode.Auto;
         private HotKey _hotkey = null;
         private bool _startup = true;
         private Timer _focusTimer = new Timer();
@@ -66,19 +65,17 @@ namespace Shapoco.Calctus.UI {
 #endif
             notifyIcon.MouseClick += NotifyIcon_MouseClick;
 
-            sheetView.RadixModeChanged += (sender, e) => { RadixMode = ((SheetView)sender).ActiveRadixMode; };
             sheetView.DialogOpening += (sender, e) => { suspendTopMost(); };
             sheetView.DialogClosed += (sender, e) => { resumeTopMost(); };
 
-            radixAutoButton.CheckedChanged += (sender, e) => { RadixCheckedChanged((RadioButton)sender, RadixMode.Auto); };
-            radixDecButton.CheckedChanged += (sender, e) => { RadixCheckedChanged((RadioButton)sender, RadixMode.Dec); };
-            radixHexButton.CheckedChanged += (sender, e) => { RadixCheckedChanged((RadioButton)sender, RadixMode.Hex); };
-            radixBinButton.CheckedChanged += (sender, e) => { RadixCheckedChanged((RadioButton)sender, RadixMode.Bin); };
-            radixOctButton.CheckedChanged += (sender, e) => { RadixCheckedChanged((RadioButton)sender, RadixMode.Oct); };
-            radixSiButton.CheckedChanged += (sender, e) => { RadixCheckedChanged((RadioButton)sender, RadixMode.SiPrefix); };
-            radixKibiButton.CheckedChanged += (sender, e) => { RadixCheckedChanged((RadioButton)sender, RadixMode.BinaryPrefix); };
-            radixCharButton.CheckedChanged += (sender, e) => { RadixCheckedChanged((RadioButton)sender, RadixMode.Char); };
-            radixAutoButton.Checked = true;
+            radixAutoButton.Click += (sender, e) => { sheetView.ReplaceFormatterFunction(null); sheetView.Focus(); }; 
+            radixDecButton.Click += (sender, e) => { sheetView.ReplaceFormatterFunction(EmbeddedFuncDef.dec); sheetView.Focus(); };
+            radixHexButton.Click += (sender, e) => { sheetView.ReplaceFormatterFunction(EmbeddedFuncDef.hex); sheetView.Focus(); };
+            radixBinButton.Click += (sender, e) => { sheetView.ReplaceFormatterFunction(EmbeddedFuncDef.bin); sheetView.Focus(); };
+            radixOctButton.Click += (sender, e) => { sheetView.ReplaceFormatterFunction(EmbeddedFuncDef.oct); sheetView.Focus(); };
+            radixSiButton.Click += (sender, e) => { sheetView.ReplaceFormatterFunction(EmbeddedFuncDef.si); sheetView.Focus(); };
+            radixKibiButton.Click += (sender, e) => { sheetView.ReplaceFormatterFunction(EmbeddedFuncDef.kibi); sheetView.Focus(); };
+            radixCharButton.Click += (sender, e) => { sheetView.ReplaceFormatterFunction(EmbeddedFuncDef.char_1); sheetView.Focus(); };
 
             toolTip.SetToolTip(radixAutoButton, "Automatic (F8)");
             toolTip.SetToolTip(radixDecButton, "Decimal (F9)");
@@ -366,47 +363,22 @@ namespace Shapoco.Calctus.UI {
                 sheetView.RequestRecalc();
             }
             else if (e.KeyCode == Keys.F8) {
-                this.RadixMode = RadixMode.Auto;
+                sheetView.ReplaceFormatterFunction(null);
             }
             else if (e.KeyCode == Keys.F9) {
-                this.RadixMode = RadixMode.Dec;
+                sheetView.ReplaceFormatterFunction(EmbeddedFuncDef.dec);
             }
             else if (e.KeyCode == Keys.F10) {
-                this.RadixMode = RadixMode.Hex;
+                sheetView.ReplaceFormatterFunction(EmbeddedFuncDef.hex);
             }
             else if (e.KeyCode == Keys.F11) {
-                this.RadixMode = RadixMode.Bin;
+                sheetView.ReplaceFormatterFunction(EmbeddedFuncDef.bin);
             }
             else if (e.KeyCode == Keys.F12) {
-                this.RadixMode = RadixMode.SiPrefix;
+                sheetView.ReplaceFormatterFunction(EmbeddedFuncDef.si);
             }
             else {
                 e.SuppressKeyPress = false;
-            }
-        }
-
-        public RadixMode RadixMode {
-            get => _radixMode;
-            set {
-                if (value == _radixMode) return;
-                _radixMode = value;
-                switch(value) {
-                    case RadixMode.Auto: radixAutoButton.Checked = true; break;
-                    case RadixMode.Dec: radixDecButton.Checked = true; break;
-                    case RadixMode.Hex: radixHexButton.Checked = true; break;
-                    case RadixMode.Bin: radixBinButton.Checked = true; break;
-                    case RadixMode.Oct: radixOctButton.Checked = true; break;
-                    case RadixMode.SiPrefix: radixSiButton.Checked = true; break;
-                    case RadixMode.BinaryPrefix: radixKibiButton.Checked = true; break;
-                    case RadixMode.Char: radixCharButton.Checked = true; break;
-                }
-                sheetView.ActiveRadixMode = value;
-            }
-        }
-
-        private void RadixCheckedChanged(RadioButton btn, RadixMode mode) {
-            if (btn.Checked) {
-                this.RadixMode = mode;
             }
         }
     }

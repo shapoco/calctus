@@ -18,7 +18,6 @@ using Shapoco.Calctus.Model.Functions;
 
 namespace Shapoco.Calctus.UI.Sheets {
     class SheetView : GdiControl, IInputCandidateProvider {
-        public event EventHandler RadixModeChanged;
         public event EventHandler DialogOpening;
         public event EventHandler DialogClosed;
 
@@ -34,8 +33,6 @@ namespace Shapoco.Calctus.UI.Sheets {
         
         private float _indentRatio = 0.3f;
         private int _equalWidth = 10;
-
-        private RadixMode _activeRadixMode = RadixMode.Auto;
 
         private ContextMenuStrip _ctxMenu = new ContextMenuStrip();
         private ToolStripMenuItem _cmenuUndo = new ToolStripMenuItem("Undo");
@@ -177,19 +174,6 @@ namespace Shapoco.Calctus.UI.Sheets {
             set => FocusedIndex = IndexOf(value);
         }
 
-        public RadixMode ActiveRadixMode {
-            get => _activeRadixMode;
-            set {
-                if (value == _activeRadixMode) return;
-                _activeRadixMode = value;
-                var viewItem = FocusedViewItem;
-                if (viewItem!= null) {
-                    viewItem.SheetItem.RadixMode = value;
-                }
-                RadixModeChanged?.Invoke(this, EventArgs.Empty);
-            }
-        }
-
         public int Indent {
             get => (int)(_indentRatio * (ClientSize.Width - _scrollBar.Width));
         }
@@ -230,7 +214,7 @@ namespace Shapoco.Calctus.UI.Sheets {
             if (insIndex < 0) {
                 insIndex = _sheet.Items.Count;
             }
-            _operator.Insert(insIndex, "", ActiveRadixMode);
+            _operator.Insert(insIndex, "");
             FocusViewItem(insIndex);
         }
 
@@ -306,7 +290,7 @@ namespace Shapoco.Calctus.UI.Sheets {
                 int insertPos = FocusedIndex;
                 if (insertPos < 0) insertPos = _sheet.Items.Count;
                 var lines = dlg.TextWillBePasted.Split(new char[] { '\n', '\r' }, StringSplitOptions.RemoveEmptyEntries);
-                _operator.Insert(insertPos, lines, ActiveRadixMode, true, InsertOptions.Focus);
+                _operator.Insert(insertPos, lines, true, InsertOptions.Focus);
             }
             dlg.Dispose();
             DialogClosed?.Invoke(this, EventArgs.Empty);
@@ -318,6 +302,10 @@ namespace Shapoco.Calctus.UI.Sheets {
             if (ans == DialogResult.OK) {
                 _operator.Clear();
             }
+        }
+
+        public void ReplaceFormatterFunction(FuncDef func) {
+            FocusedViewItem?.ReplaceFormatterFunction(func);
         }
 
         public void PageUp() {
@@ -425,8 +413,7 @@ namespace Shapoco.Calctus.UI.Sheets {
                 else {
                     // 通常の計算結果の確定
                     var ans = viewItem.AnsBox.Text;
-                    var radix = viewItem.SheetItem.RadixMode;
-                    _operator.Insert(selIndex + 1, ans, radix, false, InsertOptions.FreshAnswer | InsertOptions.Focus);
+                    _operator.Insert(selIndex + 1, ans, false, InsertOptions.FreshAnswer | InsertOptions.Focus);
                 }
             }
             else if (e.Modifiers == Keys.Shift && e.KeyCode == Keys.Return) {
@@ -752,8 +739,6 @@ namespace Shapoco.Calctus.UI.Sheets {
                     // 新たに選択されたアイテムが RPN操作として解釈される場合は再計算を要求する
                     RequestRecalc();
                 }
-
-                ActiveRadixMode = newViewItem.SheetItem.RadixMode;
 
                 scrollTo(_focusedIndex);
             }

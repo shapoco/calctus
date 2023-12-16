@@ -32,11 +32,13 @@ namespace Shapoco.Calctus.Model.Functions {
         public static readonly EmbeddedFuncDef bin = new EmbeddedFuncDef("bin(x*)", (e, a) => a[0].FormatBin(), "Converts the value to binary representation.");
         public static readonly EmbeddedFuncDef oct = new EmbeddedFuncDef("oct(x*)", (e, a) => a[0].FormatOct(), "Converts the value to octal representation.");
         public static readonly EmbeddedFuncDef si = new EmbeddedFuncDef("si(x*)", (e, a) => a[0].FormatSiPrefix(), "Converts the value to SI prefixed representation.");
-        public static readonly EmbeddedFuncDef bi = new EmbeddedFuncDef("bi(x*)", (e, a) => a[0].FormatBinaryPrefix(), "Converts the value to binary prefixed representation.");
+        public static readonly EmbeddedFuncDef kibi = new EmbeddedFuncDef("kibi(x*)", (e, a) => a[0].FormatBinaryPrefix(), "Converts the value to binary prefixed representation.");
         public static readonly EmbeddedFuncDef char_1 = new EmbeddedFuncDef("char(x*)", (e, a) => a[0].FormatChar(), "Converts the value to character representation.");
         public static readonly EmbeddedFuncDef datetime = new EmbeddedFuncDef("datetime(x*)", (e, a) => a[0].FormatDateTime(), "Converts the value to datetime representation.");
         public static readonly EmbeddedFuncDef array = new EmbeddedFuncDef("array(x[]...)", (e, a) => a[0].FormatDefault(), "Converts the string value to array representation.");
         public static readonly EmbeddedFuncDef str = new EmbeddedFuncDef("str(x[]...)", (e, a) => a[0].FormatString(), "Converts the array value to string representation.");
+
+        public static readonly FuncDef[] FormatterFunctions = new FuncDef[] { dec, hex, bin, oct, si, kibi, char_1, datetime, array, str };
 
         public static readonly EmbeddedFuncDef real = new EmbeddedFuncDef("real(x*)", (e, a) => a[0].AsRealVal().FormatReal(), "Converts the value to a real number.");
         public static readonly EmbeddedFuncDef rat = new EmbeddedFuncDef("rat(x*)", (e, a) => new FracVal(RMath.FindFrac(a[0].AsReal)), "Rational fraction approximation.");

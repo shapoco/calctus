@@ -16,17 +16,14 @@ namespace Shapoco.Calctus.Model.Sheets {
 
         private string _exprText = null;
         
-        private RadixMode _radixMode = RadixMode.Auto;
-        //public Token[] Tokens { get; private set; }
         public Expr ExprTree { get; private set; }
         public Val AnsVal { get; private set; }
         public string AnsText { get; private set; } = "";
         public Exception SyntaxError { get; private set; }
         public Exception EvalError { get; private set; }
 
-        public SheetItem(string expr = "", RadixMode radix = RadixMode.Auto) {
+        public SheetItem(string expr = "") {
             ExprText = expr;
-            RadixMode = radix;
         }
 
         public object Tag = null;
@@ -36,15 +33,6 @@ namespace Shapoco.Calctus.Model.Sheets {
             set {
                 if (value == _exprText) return;
                 parse(value);
-            }
-        }
-
-        public RadixMode RadixMode {
-            get => _radixMode;
-            set {
-                if (value == _radixMode) return;
-                _radixMode = value;
-                ExpressionChanged?.Invoke(this, EventArgs.Empty);
             }
         }
 
@@ -90,15 +78,6 @@ namespace Shapoco.Calctus.Model.Sheets {
                     var val = ExprTree.Eval(e);
                     if (ExprTree.CausesValueChange() && !(val is NullVal) && !val.IsSerializable) {
                         throw new EvalError(e, null, "Value cannot be stringified.");
-                    }
-                    switch (RadixMode) {
-                        case RadixMode.Dec: val = val.FormatInt(); break;
-                        case RadixMode.Hex: val = val.FormatHex(); break;
-                        case RadixMode.Bin: val = val.FormatBin(); break;
-                        case RadixMode.Oct: val = val.FormatOct(); break;
-                        case RadixMode.SiPrefix: val = val.FormatSiPrefix(); break;
-                        case RadixMode.BinaryPrefix: val = val.FormatBinaryPrefix(); break;
-                        case RadixMode.Char: val = val.FormatChar(); break;
                     }
                     SetStatus(val, null, null);
                 }

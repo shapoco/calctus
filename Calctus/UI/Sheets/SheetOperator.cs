@@ -53,12 +53,12 @@ namespace Shapoco.Calctus.UI.Sheets {
         }
 
         /// <summary>新しい行の挿入</summary>
-        public void Insert(int index, string expr, RadixMode radix, bool overwriteEmptyLine = false, InsertOptions opts = InsertOptions.None) {
-            Insert(index, new string[] { expr }, radix, overwriteEmptyLine, opts);
+        public void Insert(int index, string expr, bool overwriteEmptyLine = false, InsertOptions opts = InsertOptions.None) {
+            Insert(index, new string[] { expr }, overwriteEmptyLine, opts);
         }
 
         /// <summary>新しい行の挿入</summary>
-        public void Insert(int index, string[] expr, RadixMode radix, bool overwriteEmptyLine = false, InsertOptions opts = InsertOptions.None) {
+        public void Insert(int index, string[] expr, bool overwriteEmptyLine = false, InsertOptions opts = InsertOptions.None) {
             var b = new UndoEntryBuilder(_view);
             var sheet = _view.Sheet;
             for (int i = 0; i < expr.Length; i++) {
@@ -67,10 +67,9 @@ namespace Shapoco.Calctus.UI.Sheets {
                 if (i == 0 && insertPos < sheet.Items.Count && string.IsNullOrEmpty(sheet.Items[insertPos].ExprText) && overwriteEmptyLine) {
                     // overwriteEmptyLine が true かつ挿入箇所が空行の場合は上書き
                     b.ChangeExpression(insertPos, expr[i]);
-                    b.ChangeRadixMode(insertPos, radix);
                 }
                 else {
-                    b.Insert(insertPos, expr[i], radix,
+                    b.Insert(insertPos, expr[i],
                         (i == expr.Length - 1) ? opts : InsertOptions.None);
                 }
             }
@@ -86,7 +85,7 @@ namespace Shapoco.Calctus.UI.Sheets {
             }
             if (allDeleted) {
                 // リストが空になる場合は空行を1行追加する
-                b.Insert(0, "", _view.ActiveRadixMode, InsertOptions.Focus);
+                b.Insert(0, "", InsertOptions.Focus);
             }
             commitAction(b.Compile());
         }
@@ -101,7 +100,7 @@ namespace Shapoco.Calctus.UI.Sheets {
             var b = new UndoEntryBuilder(_view);
             var item = _view.GetViewItem(indexFrom).SheetItem;
             b.Delete(indexFrom);
-            b.Insert(indexTo, item.ExprText, item.RadixMode);
+            b.Insert(indexTo, item.ExprText);
             commitAction(b.Compile());
         }
 
@@ -112,18 +111,10 @@ namespace Shapoco.Calctus.UI.Sheets {
             commitAction(b.Compile());
         }
 
-        /// <summary>基数モードの変更</summary>
-        public void ChangeRadix(int index, RadixMode radix) {
-            var b = new UndoEntryBuilder(_view);
-            b.ChangeRadixMode(index, radix);
-            commitAction(b.Compile());
-        }
-
         /// <summary>RPNコマンドの実行</summary>
         public void ExecuteRpn(RpnOperation rpn) {
             var viewItem = _view.FocusedViewItem;
             var ans = viewItem.AnsBox.Text;
-            var radix = viewItem.SheetItem.RadixMode;
 
             if (rpn.Error != null) return;
             var b = new UndoEntryBuilder(_view);
@@ -131,7 +122,7 @@ namespace Shapoco.Calctus.UI.Sheets {
                 b.Delete(i);
             }
             b.ChangeExpression(rpn.StartIndex, rpn.Expression);
-            b.Insert(rpn.StartIndex + 1, ans, radix, InsertOptions.FreshAnswer | InsertOptions.Focus);
+            b.Insert(rpn.StartIndex + 1, ans, InsertOptions.FreshAnswer | InsertOptions.Focus);
             commitAction(b.Compile());
         }
 

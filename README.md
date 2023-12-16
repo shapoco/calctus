@@ -99,7 +99,7 @@ User-defined constants can also be used.
 |Parity/ECC|`xorReduce(x)`, `oddParity(x)`, `eccWidth(x)`, `eccEnc(x,w)`, `eccDec(e,x,w)`|`Int64`|
 |Gray-code|`toGray(x)`, `fromGray(x)`|`Int64`|
 |Fractions|`rat(x)`, `rat(x,a)`, `real(x)`|`Decimal`|
-|Representation|`dec(x)`, `hex(x)`, `bin(x)`, `oct(x)`, `char(x)`, `si(x)`, `bi(x)`, `datetime(x)`|`Decimal`|
+|Representation|`dec(x)`, `hex(x)`, `bin(x)`, `oct(x)`, `char(x)`, `si(x)`, `kibi(x)`, `datetime(x)`|`Decimal`|
 |Date Time|`now()`, `fromDays(x)`, `fromHours(x)`, `fromMinutes(x)`, `fromSeconds(x)`, `toDays(x)`, `toHours(x)`, `toMinutes(x)`, `toSeconds(x)`|`Double`|
 |Color|`rgb(r,g,b)`, `rgb(rgb)`, `hsv2rgb(h,s,v)`, `rgb2hsv(rgb)`, `hsl2rgb(h,s,l)`, `rgb2hsl(rgb)`, `yuv2rgb(y,u,v)`, `yuv2rgb(yuv)`, `rgb2yuv(r,g,b)`, `rgb2yuv(rgb)`, `rgbto565(rgb)`, `rgbfrom565(rgb565)`, `pack565(r5,g6,b5)`, `unpack565(rgb565)`|`Decimal`|
 |E-series|Rounding to the E-series value: `eXFloor(x)`, `eXCeil(x)`, `eXRound(x)`<br>Calculation of voltage divider resistance: `eXRatio(x)`<br> (`X`=`3`, `6`, `12`, `24`, `48`, `96`, `192`)|`Decimal`|
@@ -333,13 +333,15 @@ If you wish to use a scripting language other than Python, please register the e
 
 ![](img/settings_general.png)
 
+![](img/settings_appearance.png)
+
 ![](img/settings_input.png)
 
 ![](img/settings_format.png)
 
-![](img/settings_appearance.png)
+![](img/settings_calculation.png)
 
-![](img/settings_constants.png)
+![](img/settings_definitions.png)
 
 ![](img/settings_scripts.png)
 

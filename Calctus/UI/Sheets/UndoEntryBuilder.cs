@@ -14,25 +14,20 @@ namespace Shapoco.Calctus.UI.Sheets {
             _view = view;
         }
 
-        public void Insert(int index, string expr, RadixMode radix, InsertOptions opts = InsertOptions.None) {
+        public void Insert(int index, string expr, InsertOptions opts = InsertOptions.None) {
             _undoActions.Insert(0, new DeleteAction(index));
-            _redoActions.Add(new InsertAction(index, expr, radix, opts));
+            _redoActions.Add(new InsertAction(index, expr, opts));
         }
 
         public void Delete(int index) {
             var item = _view.GetViewItem(index).SheetItem;
-            _undoActions.Insert(0, new InsertAction(index, item.ExprText, item.RadixMode));
+            _undoActions.Insert(0, new InsertAction(index, item.ExprText));
             _redoActions.Add(new DeleteAction(index));
         }
 
         public void ChangeExpression(int index, string expr) {
             _undoActions.Insert(0, new ExpressionChangeAction(index, _view.Sheet.Items[index].ExprText));
             _redoActions.Add(new ExpressionChangeAction(index, expr));
-        }
-
-        public void ChangeRadixMode(int index, RadixMode radix) {
-            _undoActions.Insert(0, new RadixChangeAction(index, _view.Sheet.Items[index].RadixMode));
-            _redoActions.Add(new RadixChangeAction(index, radix));
         }
 
         public UndoEntry Compile() {
