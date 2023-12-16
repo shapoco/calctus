@@ -29,6 +29,10 @@ namespace Shapoco.Calctus.UI {
         private bool _topMost = false;
         private FormWindowState _lastWindowState = FormWindowState.Normal;
 
+        private TreeNode tnMain = new TreeNode("Main");
+        private TreeNode tnMemo = new TreeNode("Memo");
+        private TreeNode tnHistory = new TreeNode("History");
+
         public MainForm() {
             _instance = this;
 
@@ -40,6 +44,8 @@ namespace Shapoco.Calctus.UI {
 
             InitializeComponent();
             if (this.DesignMode) return;
+
+            sidePaneBodyPanel.Visible = false;
 
             var sheet = new Sheet();
             sheet.Items.Add(new SheetItem());
@@ -94,6 +100,11 @@ namespace Shapoco.Calctus.UI {
             deleteButton.Click += (sender, e) => { sheetView.ItemDelete(); };
             moveUpButton.Click += (sender, e) => { sheetView.ItemMoveUp(); };
             moveDownButton.Click += (sender, e) => { sheetView.ItemMoveDown(); };
+
+            sidePaneOpenButton.Click += SidePaneOpenButton_Click;
+            sideTreeView.Nodes.Add(tnMain);
+            sideTreeView.Nodes.Add(tnMemo);
+            sideTreeView.Nodes.Add(tnHistory);
 
             settingsButton.Click += SettingsButton_Click;
             topMostButton.Click += TopMostButton_Click;
@@ -213,6 +224,8 @@ namespace Shapoco.Calctus.UI {
                 sheetView.BackColor = s.Appearance_Color_Background;
                 sheetView.ForeColor = s.Appearance_Color_Text;
                 bottomPanel.BackColor = s.Appearance_Color_Background;
+                sideTreeView.BackColor = s.Appearance_Color_Background;
+                sideTreeView.ForeColor = s.Appearance_Color_Text;
                 radixAutoButton.BackColor = s.Appearance_Color_Button_Face;
                 radixDecButton.BackColor = s.Appearance_Color_Button_Face;
                 radixHexButton.BackColor = s.Appearance_Color_Button_Face;
@@ -229,7 +242,9 @@ namespace Shapoco.Calctus.UI {
                 radixSiButton.ForeColor = s.Appearance_Color_Text;
                 radixKibiButton.ForeColor = s.Appearance_Color_Text;
                 radixCharButton.ForeColor = s.Appearance_Color_Text;
-                
+
+                sidePaneBodyPanel.Width = 200;
+
                 sheetView.RelayoutText();
             }
             catch { }
@@ -255,6 +270,16 @@ namespace Shapoco.Calctus.UI {
                 _hotkey.HotKeyPush -= _hotkey_HotKeyPush;
                 _hotkey.Dispose();
                 _hotkey = null;
+            }
+        }
+
+        private void SidePaneOpenButton_Click(object sender, EventArgs e) {
+            sidePaneBodyPanel.Visible = !sidePaneBodyPanel.Visible;
+            if (sidePaneBodyPanel.Visible) {
+                sidePaneOpenButton.Text = "<";
+            }
+            else {
+                sidePaneOpenButton.Text = ">";
             }
         }
 
