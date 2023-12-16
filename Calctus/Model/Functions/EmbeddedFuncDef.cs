@@ -221,7 +221,7 @@ namespace Shapoco.Calctus.Model.Functions {
         public static readonly EmbeddedFuncDef filter = new EmbeddedFuncDef("filter(array,func)", (e, a) => {
             var array = (Val[])a[0].Raw;
             var func = (FuncDef)a[1].Raw;
-            return new ArrayVal(array.Where(p => func.Call(e, p).AsBool).ToArray());
+            return new ArrayVal(array.Where(p => func.Call(e, p).AsBool).ToArray(), a[0].FormatHint);
         }, "Filter an array using a tester function.");
 
         public static readonly EmbeddedFuncDef count = new EmbeddedFuncDef("count(array,func)", (e, a) => {
@@ -232,13 +232,13 @@ namespace Shapoco.Calctus.Model.Functions {
 
         public static readonly EmbeddedFuncDef sort_1 = new EmbeddedFuncDef("sort(array)", (e, a) => {
             var array = (Val[])a[0].Raw;
-            return new ArrayVal(array.OrderBy(p => p, new ValComparer(e)).ToArray());
+            return new ArrayVal(array.OrderBy(p => p, new ValComparer(e)).ToArray(), a[0].FormatHint);
         }, "Sort the array.");
 
         public static readonly EmbeddedFuncDef sort_2 = new EmbeddedFuncDef("sort(array,func)", (e, a) => {
             var array = (Val[])a[0].Raw;
             var func = (FuncDef)a[1].Raw;
-            return new ArrayVal(array.OrderBy(p => func.Call(e, p).AsReal).ToArray());
+            return new ArrayVal(array.OrderBy(p => func.Call(e, p).AsReal).ToArray(), a[0].FormatHint);
         }, "Sort the array using a converter function.");
 
         public static readonly EmbeddedFuncDef extend = new EmbeddedFuncDef("extend(array,func,count)", (e, a) => {
@@ -285,31 +285,31 @@ namespace Shapoco.Calctus.Model.Functions {
 
         public static readonly EmbeddedFuncDef unique_1 = new EmbeddedFuncDef("unique(array)", (e, a) => {
             var array = (Val[])a[0].Raw;
-            return new ArrayVal(array.Distinct(new ValEqualityComparer(e)).ToArray());
+            return new ArrayVal(array.Distinct(new ValEqualityComparer(e)).ToArray(), a[0].FormatHint);
         }, "Return unique elements.");
 
         public static readonly EmbeddedFuncDef unique_2 = new EmbeddedFuncDef("unique(array,func)", (e, a) => {
             var array = (Val[])a[0].Raw;
             var func = (FuncDef)a[1].Raw;
-            return new ArrayVal(array.Distinct(new EqualityComparerFunc(e, func)).ToArray());
+            return new ArrayVal(array.Distinct(new EqualityComparerFunc(e, func)).ToArray(), a[0].FormatHint);
         }, "Return unique elements using comparer function.");
 
         public static readonly EmbeddedFuncDef except = new EmbeddedFuncDef("except(array0,array1)", (e, a) => {
             var array0 = (Val[])a[0].Raw;
             var array1 = (Val[])a[1].Raw;
-            return new ArrayVal(array0.Except(array1, new ValEqualityComparer(e)).ToArray());
+            return new ArrayVal(array0.Except(array1, new ValEqualityComparer(e)).ToArray(), a[0].FormatHint);
         }, "Returns the difference set of two arrays.");
 
         public static readonly EmbeddedFuncDef intersect = new EmbeddedFuncDef("intersect(array0,array1)", (e, a) => {
             var array0 = (Val[])a[0].Raw;
             var array1 = (Val[])a[1].Raw;
-            return new ArrayVal(array0.Intersect(array1, new ValEqualityComparer(e)).ToArray());
+            return new ArrayVal(array0.Intersect(array1, new ValEqualityComparer(e)).ToArray(), a[0].FormatHint);
         }, "Returns the product set of two arrays.");
 
         public static readonly EmbeddedFuncDef union = new EmbeddedFuncDef("union(array0,array1)", (e, a) => {
             var array0 = (Val[])a[0].Raw;
             var array1 = (Val[])a[1].Raw;
-            return new ArrayVal(array0.Union(array1, new ValEqualityComparer(e)).ToArray());
+            return new ArrayVal(array0.Union(array1, new ValEqualityComparer(e)).ToArray(), a[0].FormatHint);
         }, "Returns the union of two arrays.");
 
         public static readonly EmbeddedFuncDef assert = new EmbeddedFuncDef("assert(x)", (e, a) => {
