@@ -9,6 +9,8 @@ using Shapoco.Calctus.Model.Evaluations;
 
 namespace Shapoco.Calctus.Model.Types {
     class RealVal : Val {
+        public static readonly RealVal Zero = new RealVal(0);
+        public static readonly RealVal One = new RealVal(1);
 
         private real _raw;
         public RealVal(real val, FormatHint fmt = null) : base(fmt) {
@@ -39,8 +41,8 @@ namespace Shapoco.Calctus.Model.Types {
         protected override Val OnIDiv(EvalContext e, Val b) => new RealVal(RMath.Truncate(_raw / b.AsReal), FormatHint);
         protected override Val OnMod(EvalContext e, Val b) => new RealVal(_raw % b.AsReal, FormatHint);
 
-        protected override Val OnGrater(EvalContext ctx, Val b) => new BoolVal(AsReal > b.AsReal);
-        protected override Val OnEqual(EvalContext ctx, Val b) => new BoolVal(AsReal == b.AsReal);
+        protected override Val OnGrater(EvalContext ctx, Val b) => BoolVal.FromBool(AsReal > b.AsReal);
+        protected override Val OnEqual(EvalContext ctx, Val b) => BoolVal.FromBool(AsReal == b.AsReal);
 
         protected override Val OnLogicShiftL(EvalContext e, Val b) => new RealVal(this.AsLong << b.AsInt, FormatHint);
         protected override Val OnLogicShiftR(EvalContext e, Val b) => new RealVal((UInt64)this.AsLong >> b.AsInt, FormatHint);

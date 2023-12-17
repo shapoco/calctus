@@ -11,8 +11,13 @@ namespace Shapoco.Calctus.Model.Types {
         public const string TrueKeyword = "true";
         public const string FalseKeyword = "false";
 
+        public static readonly BoolVal True  = new BoolVal(true);
+        public static readonly BoolVal False = new BoolVal(false);
+
+        public static BoolVal FromBool(bool val) => val ? True : False;
+
         private bool _raw;
-        public BoolVal(bool val, FormatHint fmt = null) : base(fmt) {
+        private BoolVal(bool val, FormatHint fmt = null) : base(fmt) {
             this._raw = val;
         }
 

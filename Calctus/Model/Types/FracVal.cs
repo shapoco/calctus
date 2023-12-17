@@ -60,8 +60,8 @@ namespace Shapoco.Calctus.Model.Types {
         protected override Val OnUnaryPlus(EvalContext ctx) => this;
         protected override Val OnAtirhInv(EvalContext ctx) => Normalize(-_raw, FormatHint);
 
-        protected override Val OnGrater(EvalContext ctx, Val b) => new BoolVal(AsReal > b.AsReal);
-        protected override Val OnEqual(EvalContext ctx, Val b) => new BoolVal(AsReal == b.AsReal);
+        protected override Val OnGrater(EvalContext ctx, Val b) => BoolVal.FromBool(AsReal > b.AsReal);
+        protected override Val OnEqual(EvalContext ctx, Val b) => BoolVal.FromBool(AsReal == b.AsReal);
 
         protected override Val OnBitNot(EvalContext ctx) => new RealVal(~this.AsLong, FormatHint);
         protected override Val OnBitAnd(EvalContext ctx, Val b) => new RealVal(this.AsLong & b.AsLong, FormatHint);

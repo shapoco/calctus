@@ -138,7 +138,7 @@ namespace Shapoco.Calctus.Model.Types {
         protected override Val OnGrater(EvalContext ctx, Val b) => throw new InvalidOperationException();
         protected override Val OnEqual(EvalContext ctx, Val b) {
             if (b is ArrayVal bArray) {
-                return new BoolVal(_raw.Equals(bArray._raw));
+                return BoolVal.FromBool(_raw.Equals(bArray._raw));
             }
             else {
                 throw new InvalidOperationException();

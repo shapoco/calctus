@@ -180,7 +180,7 @@ namespace Shapoco.Calctus.Model.Functions {
         public static readonly EmbeddedFuncDef unpack565 = new EmbeddedFuncDef("unpack565(x*)", (e, a) => new ArrayVal(ColorSpace.Unpack565(a[0].AsInt)), "Unpacks the RGB565 color to 3 values.");
 
         public static readonly EmbeddedFuncDef prime = new EmbeddedFuncDef("prime(x*)", (e, a) => new RealVal(RMath.Prime(a[0].AsInt)), "Returns x-th prime number.");
-        public static readonly EmbeddedFuncDef isPrime = new EmbeddedFuncDef("isPrime(x*)", (e, a) => new BoolVal(RMath.IsPrime(a[0].AsReal)), "Returns whether the value is prime or not.");
+        public static readonly EmbeddedFuncDef isPrime = new EmbeddedFuncDef("isPrime(x*)", (e, a) => BoolVal.FromBool(RMath.IsPrime(a[0].AsReal)), "Returns whether the value is prime or not.");
         public static readonly EmbeddedFuncDef primeFact = new EmbeddedFuncDef("primeFact(x*)", (e, a) => new ArrayVal(RMath.PrimeFactors(a[0].AsReal), a[0].FormatHint), "Returns prime factors.");
 
         public static readonly EmbeddedFuncDef rand = new EmbeddedFuncDef("rand()", (e, a) => new RealVal((real)rng.NextDouble()), "Generates a random value between 0.0 and 1.0.");
@@ -265,24 +265,24 @@ namespace Shapoco.Calctus.Model.Functions {
 
         public static readonly EmbeddedFuncDef all_1 = new EmbeddedFuncDef("all(array)", (e, a) => {
             var array = (Val[])a[0].Raw;
-            return new BoolVal(array.All(p => p.AsBool));
+            return BoolVal.FromBool(array.All(p => p.AsBool));
         }, "Returns true if all array elements are true.");
 
         public static readonly EmbeddedFuncDef all_2 = new EmbeddedFuncDef("all(array,func)", (e, a) => {
             var array = (Val[])a[0].Raw;
             var func = (FuncDef)a[1].Raw;
-            return new BoolVal(array.All(p => func.Call(e, p).AsBool));
+            return BoolVal.FromBool(array.All(p => func.Call(e, p).AsBool));
         }, "Returns true if func returns true for all elements of the array.");
 
         public static readonly EmbeddedFuncDef any_1 = new EmbeddedFuncDef("any(array)", (e, a) => {
             var array = (Val[])a[0].Raw;
-            return new BoolVal(array.Any(p => p.AsBool));
+            return BoolVal.FromBool(array.Any(p => p.AsBool));
         }, "Returns true if at least one element is true.");
 
         public static readonly EmbeddedFuncDef any_2 = new EmbeddedFuncDef("any(array,func)", (e, a) => {
             var array = (Val[])a[0].Raw;
             var func = (FuncDef)a[1].Raw;
-            return new BoolVal(array.Any(p => func.Call(e, p).AsBool));
+            return BoolVal.FromBool(array.Any(p => func.Call(e, p).AsBool));
         }, "Return true if func returns true for at least one element of the array.");
 
         public static readonly EmbeddedFuncDef unique_1 = new EmbeddedFuncDef("unique(array)", (e, a) => {
@@ -329,6 +329,10 @@ namespace Shapoco.Calctus.Model.Functions {
             }
             return new RealVal(-1);
         }, "Returns the index of the first element whose value matches val.");
+
+        public static readonly EmbeddedFuncDef contains = new EmbeddedFuncDef("contains(array,val*)", (e, a) => {
+            return indexOf.Call(e, a[0], a[1]).GraterEqual(e, new RealVal(0));
+        }, "Returns whether the array contains val.");
 
         public static readonly EmbeddedFuncDef assert = new EmbeddedFuncDef("assert(x)", (e, a) => {
             if (!a[0].AsBool) {

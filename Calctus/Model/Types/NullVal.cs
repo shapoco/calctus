@@ -51,7 +51,7 @@ namespace Shapoco.Calctus.Model.Types {
         protected override Val OnAtirhInv(EvalContext ctx) => throw new InvalidOperationException();
 
         protected override Val OnGrater(EvalContext ctx, Val b) => throw new InvalidOperationException();
-        protected override Val OnEqual(EvalContext ctx, Val b) => new BoolVal(b is NullVal);
+        protected override Val OnEqual(EvalContext ctx, Val b) => BoolVal.FromBool(b is NullVal);
 
         protected override Val OnBitNot(EvalContext ctx) => throw new InvalidOperationException();
         protected override Val OnBitAnd(EvalContext ctx, Val b) => throw new InvalidOperationException();
