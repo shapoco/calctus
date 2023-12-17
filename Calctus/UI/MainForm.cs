@@ -26,9 +26,13 @@ namespace Shapoco.Calctus.UI {
         private SheetView _activeView = null;
 
         private FileSystemWatcher _fsWatcher = new FileSystemWatcher();
-        private TreeNode _sideTreeNodeScratchPad;
+        private SheetFileNode _sideTreeNodeScratchPad;
         private TreeNode _sideTreeNodeNotebook = new TreeNode("Notebook");
         private TreeNode _sideTreeNodeHistory = new TreeNode("History");
+        private ContextMenuStrip _sidePaneContextMenu = new ContextMenuStrip();
+        private ToolStripMenuItem _sidePaneSaveButton = new ToolStripMenuItem("Save to Notebook");
+        private ToolStripMenuItem _sidePaneRenameButton = new ToolStripMenuItem("Rename");
+        private ToolStripMenuItem _sidePaneRemoveButton = new ToolStripMenuItem("Remove");
 
         private HotKey _hotkey = null;
         private bool _startup = true;
@@ -38,7 +42,6 @@ namespace Shapoco.Calctus.UI {
         private Size _startupWindowSize;
         private bool _topMost = false;
         private FormWindowState _lastWindowState = FormWindowState.Normal;
-
 
         public MainForm() {
             _instance = this;
@@ -51,6 +54,10 @@ namespace Shapoco.Calctus.UI {
 
             InitializeComponent();
             if (this.DesignMode) return;
+
+            _sidePaneContextMenu.Items.AddRange(new ToolStripItem[] {
+                _sidePaneSaveButton, _sidePaneRenameButton, _sidePaneRemoveButton
+            });
 
             _activeView = sheetView;
             _sideTreeNodeScratchPad = new SheetFileNode("Scratch Pad", null, sheetView);
@@ -114,6 +121,10 @@ namespace Shapoco.Calctus.UI {
             sideTreeView.Nodes.Add(_sideTreeNodeNotebook);
             sideTreeView.Nodes.Add(_sideTreeNodeHistory);
             sideTreeView.AfterSelect += SideTreeView_AfterSelect;
+            sideTreeView.MouseClick += SideTreeView_MouseClick;
+            _sidePaneSaveButton.Click += _sidePaneSaveButton_Click;
+            _sidePaneRenameButton.Click += _sidePaneRenameButton_Click;
+            _sidePaneRemoveButton.Click += _sidePaneRemoveButton_Click;
             _fsWatcher.Changed += delegate { requestScanFiles(); };
             _fsWatcher.Created += delegate { requestScanFiles(); };
             _fsWatcher.Deleted += delegate { requestScanFiles(); };
@@ -356,6 +367,46 @@ namespace Shapoco.Calctus.UI {
             refocus();
         }
 
+        private void SideTreeView_MouseClick(object sender, MouseEventArgs e) {
+            var clickedNode = sideTreeView.GetNodeAt(e.X, e.Y);
+            if (clickedNode != null) {
+                sideTreeView.SelectedNode = clickedNode;
+                if (e.Button == MouseButtons.Right && clickedNode is SheetFileNode) {
+                    _sidePaneRemoveButton.Enabled = (clickedNode != _sideTreeNodeScratchPad);
+                    _sidePaneRenameButton.Enabled = (clickedNode != _sideTreeNodeScratchPad);
+                    _sidePaneContextMenu.Show(sideTreeView.PointToScreen(e.Location));
+                }
+            }
+        }
+
+        private void _sidePaneSaveButton_Click(object sender, EventArgs e) {
+
+        }
+
+        private void _sidePaneRenameButton_Click(object sender, EventArgs e) {
+
+        }
+
+        private void _sidePaneRemoveButton_Click(object sender, EventArgs e) {
+            if (sideTreeView.SelectedNode == null) return;
+            if (!(sideTreeView.SelectedNode is SheetFileNode node)) return;
+            if (node == _sideTreeNodeScratchPad) return;
+
+            if (DialogResult.OK != MessageBox.Show("Are you sure you want to delete this file?:\r\n\r\n" + node.FilePath, Application.ProductName,
+                MessageBoxButtons.OKCancel, MessageBoxIcon.Exclamation)) {
+                return;
+            }
+
+            try {
+                File.Delete(node.FilePath);
+                node.Remove();
+            }
+            catch (Exception ex) {
+                MessageBox.Show("Failed to delete file:\r\n\r\n" + ex.Message, Application.ProductName,
+                    MessageBoxButtons.OK, MessageBoxIcon.Error);
+            }
+        }
+
         private void SettingsButton_Click(object sender, EventArgs e) {
             suspendTopMost();
             var dlg = new SettingsDialog();
@@ -456,7 +507,7 @@ namespace Shapoco.Calctus.UI {
             Console.WriteLine("requestScanFiles()");
 #endif
             _fileScanTimer.Stop();
-            _fileScanTimer.Interval = 1000;
+            _fileScanTimer.Interval = 100;
             _fileScanTimer.Start();
         }
 
@@ -485,7 +536,7 @@ namespace Shapoco.Calctus.UI {
                 loadedNodes.Add((SheetFileNode)node);
             }
             foreach (var existingPath in existingFiles) {
-                var node = loadedNodes.FirstOrDefault(p => p.Path == existingPath);
+                var node = loadedNodes.FirstOrDefault(p => p.FilePath == existingPath);
                 if (node != null) {
                     loadedNodes.Remove(node);
                 }

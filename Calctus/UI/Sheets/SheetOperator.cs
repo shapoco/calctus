@@ -9,6 +9,8 @@ namespace Shapoco.Calctus.UI.Sheets {
     class SheetOperator : IDisposable {
         public const int UndoBufferDepth = 1000;
 
+        public event EventHandler<EventArgs> Changed;
+
         private SheetView _view;
         private List<UndoEntry> _undoBuffer = new List<UndoEntry>();
         private int _undoBufferIndex = 0;
@@ -40,6 +42,7 @@ namespace Shapoco.Calctus.UI.Sheets {
             var entry = _undoBuffer[_undoBufferIndex];
             entry.UndoAction.Apply(_view);
             entry.ViewState.Restore(_view);
+            Changed?.Invoke(this, EventArgs.Empty);
         }
 
         /// <summary>リドゥ</summary>
@@ -50,6 +53,7 @@ namespace Shapoco.Calctus.UI.Sheets {
             if (_undoBufferIndex < _undoBuffer.Count) {
                 _undoBuffer[_undoBufferIndex].ViewState.Restore(_view);
             }
+            Changed?.Invoke(this, EventArgs.Empty);
         }
 
         /// <summary>新しい行の挿入</summary>
@@ -137,6 +141,7 @@ namespace Shapoco.Calctus.UI.Sheets {
                 _undoBufferIndex--;
             }
             entry.RedoAction.Apply(_view);
+            Changed?.Invoke(this, EventArgs.Empty);
         }
     }
 }

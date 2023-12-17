@@ -24,9 +24,11 @@ namespace Shapoco.Calctus.UI.Sheets {
 
         public event EventHandler DialogOpening;
         public event EventHandler DialogClosed;
+        public event EventHandler IsChangedChanged;
 
         private Sheet _sheet = null;
         private SheetOperator _operator = null;
+        private bool _isChanged = false;
         private int _focusedIndex = -1;
         private RpnOperation _focusedRpnOperation = null;
         private bool _recalcRequested = true;
@@ -138,6 +140,7 @@ namespace Shapoco.Calctus.UI.Sheets {
                     foreach (var noteItem in _sheet.Items) {
                         unlinkSheetItem(noteItem);
                     }
+                    _operator.Changed -= _operator_Changed;
                     _operator.Dispose();
                 }
                 _sheet = value;
@@ -152,15 +155,26 @@ namespace Shapoco.Calctus.UI.Sheets {
                     if (_sheet.Items.Count > 0) {
                         FocusViewItem(_sheet.Items.Count - 1);
                     }
+                    _operator.Changed += _operator_Changed;
                 }
                 else {
                     _focusedIndex = -1;
                 }
                 InvalidateLayout();
+                IsChanged = false;
             }
         }
 
         public SheetOperator Operator => _operator;
+
+        public bool IsChanged {
+            get => _isChanged;
+            private set {
+                if (value == _isChanged) return;
+                _isChanged = value;
+                IsChangedChanged?.Invoke(this, EventArgs.Empty);
+            }
+        }
 
         public void Load(string path) {
             this.Sheet = new Sheet(path);
@@ -172,12 +186,15 @@ namespace Shapoco.Calctus.UI.Sheets {
             if (!string.IsNullOrEmpty(path)) {
                 _filePath = path;
                 _sheet.Save(_filePath);
+                IsChanged = false;
             }
             else if (!string.IsNullOrEmpty(_filePath)) {
                 _sheet.Save(_filePath);
+                IsChanged = false;
             }
             else if (!_sheet.IsEmpty) {
                 _sheet.Save(Path.Combine(HistoryDirectory, DateTime.Now.ToString("yyyy-MM-dd-hh-mm-ss") + ".txt"));
+                IsChanged = false;
             }
         }
 
@@ -718,6 +735,10 @@ namespace Shapoco.Calctus.UI.Sheets {
             noteItem.ExpressionChanged -= SheetItem_ExpressionChanged;
             viewItem.Dispose();
             noteItem.Tag = null;
+        }
+
+        private void _operator_Changed(object sender, EventArgs e) {
+            IsChanged = true;
         }
 
         private void SheetItem_ExpressionChanged(object sender, EventArgs e) {
