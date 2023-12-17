@@ -120,11 +120,20 @@ namespace Shapoco.Calctus.UI {
             sideTreeView.Nodes.Add(_sideTreeNodeScratchPad);
             sideTreeView.Nodes.Add(_sideTreeNodeNotebook);
             sideTreeView.Nodes.Add(_sideTreeNodeHistory);
+            _sideTreeNodeNotebook.Expand();
+            _sideTreeNodeHistory.Expand();
+            sideTreeView.LabelEdit = true;
             sideTreeView.AfterSelect += SideTreeView_AfterSelect;
+            sideTreeView.BeforeLabelEdit += SideTreeView_BeforeLabelEdit;
+            sideTreeView.AfterLabelEdit += SideTreeView_AfterLabelEdit;
             sideTreeView.MouseClick += SideTreeView_MouseClick;
+            sideTreeView.KeyDown += SideTreeView_KeyDown;
             _sidePaneSaveButton.Click += _sidePaneSaveButton_Click;
             _sidePaneRenameButton.Click += _sidePaneRenameButton_Click;
             _sidePaneRemoveButton.Click += _sidePaneRemoveButton_Click;
+            _sidePaneSaveButton.ShortcutKeys = Keys.Control | Keys.S;
+            _sidePaneRenameButton.ShortcutKeys = Keys.F2;
+            _sidePaneRemoveButton.ShortcutKeys = Keys.Delete;
             _fsWatcher.Changed += delegate { requestScanFiles(); };
             _fsWatcher.Created += delegate { requestScanFiles(); };
             _fsWatcher.Deleted += delegate { requestScanFiles(); };
@@ -327,9 +336,11 @@ namespace Shapoco.Calctus.UI {
             sidePaneBodyPanel.Visible = !sidePaneBodyPanel.Visible;
             if (sidePaneBodyPanel.Visible) {
                 sidePaneOpenButton.Text = "<";
+                sideTreeView.Focus();
             }
             else {
                 sidePaneOpenButton.Text = ">";
+                refocus();
             }
         }
 
@@ -364,27 +375,123 @@ namespace Shapoco.Calctus.UI {
             catch (Exception ex) {
                 MessageBox.Show("Failed to load sheet:\r\n" + ex.Message);
             }
-            refocus();
+        }
+
+        private void SideTreeView_BeforeLabelEdit(object sender, NodeLabelEditEventArgs e) {
+            e.CancelEdit =
+                (sideTreeView.SelectedNode == null) ||
+                !(sideTreeView.SelectedNode is SheetFileNode) ||
+                (sideTreeView.SelectedNode == _sideTreeNodeScratchPad);
+        }
+
+        private void SideTreeView_AfterLabelEdit(object sender, NodeLabelEditEventArgs e) {
+            if (e.CancelEdit) return;
+            if (!(e.Node is SheetFileNode node)) {
+                e.CancelEdit = true;
+                return;
+            }
+
+            if (string.IsNullOrEmpty(e.Label)) {
+                e.CancelEdit = true;
+                return;
+            }
+            else if (e.Label.IndexOfAny(Path.GetInvalidFileNameChars()) >= 0) {
+                e.CancelEdit = true;
+                MessageBox.Show("Only valid characters as filenames can be used.", Application.ProductName,
+                    MessageBoxButtons.OK, MessageBoxIcon.Error);
+                return;
+            }
+
+            var oldPath = node.FilePath;
+            var newPath = Path.Combine(Path.GetDirectoryName(oldPath), e.Label + ".txt");
+            try {
+                File.Move(oldPath, newPath);
+                node.FilePath = newPath;
+            }
+            catch (Exception ex) {
+                node.FilePath = oldPath;
+                e.CancelEdit = true;
+                MessageBox.Show("Failed to rename:\r\n\r\n" + ex.Message, Application.ProductName,
+                    MessageBoxButtons.OK, MessageBoxIcon.Error);
+            }
         }
 
         private void SideTreeView_MouseClick(object sender, MouseEventArgs e) {
             var clickedNode = sideTreeView.GetNodeAt(e.X, e.Y);
             if (clickedNode != null) {
                 sideTreeView.SelectedNode = clickedNode;
-                if (e.Button == MouseButtons.Right && clickedNode is SheetFileNode) {
-                    _sidePaneRemoveButton.Enabled = (clickedNode != _sideTreeNodeScratchPad);
-                    _sidePaneRenameButton.Enabled = (clickedNode != _sideTreeNodeScratchPad);
-                    _sidePaneContextMenu.Show(sideTreeView.PointToScreen(e.Location));
+                if (e.Button == MouseButtons.Right) {
+                    showSidePaneContextMenu(sideTreeView.PointToScreen(e.Location));
                 }
             }
         }
 
-        private void _sidePaneSaveButton_Click(object sender, EventArgs e) {
+        private void SideTreeView_KeyDown(object sender, KeyEventArgs e) {
+            e.SuppressKeyPress = true;
+            if (e.Modifiers == Keys.Control && e.KeyCode == Keys.S) {
+                _sidePaneSaveButton.PerformClick();
+            }
+            else if (e.Modifiers == Keys.None && e.KeyCode == Keys.F2) {
+                _sidePaneRenameButton.PerformClick();
+            }
+            else if (e.Modifiers == Keys.None && e.KeyCode == Keys.Delete) {
+                _sidePaneRemoveButton.PerformClick();
+            }
+            else if (e.Modifiers == Keys.None && e.KeyCode == Keys.Apps) {
+                var node = sideTreeView.SelectedNode;
+                if (node == null) return;
+                showSidePaneContextMenu(sideTreeView.PointToScreen(new Point(node.Bounds.Left, node.Bounds.Bottom)));
+            }
+            else if (e.Modifiers == Keys.None && e.KeyCode == Keys.Space) {
+                var node = sideTreeView.SelectedNode;
+                if (node == null || node.Nodes.Count == 0) return;
+                if (node.IsExpanded) {
+                    node.Collapse();
+                }
+                else {
+                    node.Expand();
+                }
+            }
+            else {
+                e.SuppressKeyPress = false;
+            }
+        }
 
+        private void showSidePaneContextMenu(Point p) {
+            if (sideTreeView.SelectedNode == null) return;
+            if (!(sideTreeView.SelectedNode is SheetFileNode node)) return;
+            _sidePaneRemoveButton.Enabled = (node != _sideTreeNodeScratchPad);
+            _sidePaneRenameButton.Enabled = (node != _sideTreeNodeScratchPad);
+            _sidePaneContextMenu.Show(p);
+        }
+
+        private void _sidePaneSaveButton_Click(object sender, EventArgs e) {
+            if (sideTreeView.SelectedNode == null) return;
+            if (!(sideTreeView.SelectedNode is SheetFileNode node)) return;
+
+            try {
+                var nameBase = node.Name != null ? node.Name : DateTime.Now.ToString("yyyy-MM-dd-hh-mm-ss"); ;
+                var newPath = Path.Combine(SheetView.NotebookDirectory, nameBase + ".txt");
+                var suffixNumber = 1;
+                if (File.Exists(newPath)) {
+                    do {
+                        newPath = Path.Combine(SheetView.NotebookDirectory, nameBase + "(" + suffixNumber + ").txt");
+                        suffixNumber++;
+                    } while (File.Exists(newPath));
+                }
+                node.View.Sheet.Save(newPath);
+            }
+            catch (Exception ex) {
+                MessageBox.Show("Failed to save file:\r\n\r\n" + ex.Message, Application.ProductName,
+                    MessageBoxButtons.OK, MessageBoxIcon.Error);
+            }
         }
 
         private void _sidePaneRenameButton_Click(object sender, EventArgs e) {
-
+            if (sideTreeView.SelectedNode == null) return;
+            if (!(sideTreeView.SelectedNode is SheetFileNode node)) return;
+            if (node == _sideTreeNodeScratchPad) return;
+            node.BeginEdit();
         }
 
         private void _sidePaneRemoveButton_Click(object sender, EventArgs e) {
@@ -400,6 +507,7 @@ namespace Shapoco.Calctus.UI {
             try {
                 File.Delete(node.FilePath);
                 node.Remove();
+                sideTreeView.SelectedNode = _sideTreeNodeScratchPad;
             }
             catch (Exception ex) {
                 MessageBox.Show("Failed to delete file:\r\n\r\n" + ex.Message, Application.ProductName,
@@ -515,7 +623,7 @@ namespace Shapoco.Calctus.UI {
             _fileScanTimer.Stop();
             try {
                 if (Directory.Exists(SheetView.NotebookDirectory)) {
-                    scanFiles(_sideTreeNodeHistory, SheetView.NotebookDirectory);
+                    scanFiles(_sideTreeNodeNotebook, SheetView.NotebookDirectory);
                 }
                 if (Directory.Exists(SheetView.HistoryDirectory)) {
                     scanFiles(_sideTreeNodeHistory, SheetView.HistoryDirectory);

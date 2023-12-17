@@ -20,11 +20,10 @@ using Shapoco.Calctus.Model.Functions;
 namespace Shapoco.Calctus.UI.Sheets {
     class SheetView : GdiControl, IInputCandidateProvider {
         public static string HistoryDirectory = Path.Combine(AppDataManager.ActiveDataPath, "history");
-        public static string NotebookDirectory = Path.Combine(AppDataManager.ActiveDataPath, "memo");
+        public static string NotebookDirectory = Path.Combine(AppDataManager.ActiveDataPath, "notebook");
 
         public event EventHandler DialogOpening;
         public event EventHandler DialogClosed;
-        public event EventHandler IsChangedChanged;
 
         private Sheet _sheet = null;
         private SheetOperator _operator = null;
@@ -172,7 +171,6 @@ namespace Shapoco.Calctus.UI.Sheets {
             private set {
                 if (value == _isChanged) return;
                 _isChanged = value;
-                IsChangedChanged?.Invoke(this, EventArgs.Empty);
             }
         }
 
