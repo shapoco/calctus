@@ -8,6 +8,7 @@ using System.Text;
 using System.Threading.Tasks;
 using System.Windows.Forms;
 using System.Runtime.InteropServices;
+using System.IO;
 using Shapoco.Calctus.Model;
 using Shapoco.Calctus.Model.Sheets;
 using Shapoco.Calctus.UI.Sheets;
@@ -21,17 +22,23 @@ namespace Shapoco.Calctus.UI {
         [DllImport("user32.dll")]
         public static extern IntPtr GetForegroundWindow();
 
+        private Font _sheetViewFont = null;
+        private SheetView _activeView = null;
+
+        private FileSystemWatcher _fsWatcher = new FileSystemWatcher();
+        private TreeNode _sideTreeNodeScratchPad;
+        private TreeNode _sideTreeNodeNotebook = new TreeNode("Notebook");
+        private TreeNode _sideTreeNodeHistory = new TreeNode("History");
+
         private HotKey _hotkey = null;
         private bool _startup = true;
         private Timer _focusTimer = new Timer();
+        private Timer _fileScanTimer = new Timer();
         private Point _startupWindowPos;
         private Size _startupWindowSize;
         private bool _topMost = false;
         private FormWindowState _lastWindowState = FormWindowState.Normal;
 
-        private TreeNode tnMain = new TreeNode("Main");
-        private TreeNode tnMemo = new TreeNode("Memo");
-        private TreeNode tnHistory = new TreeNode("History");
 
         public MainForm() {
             _instance = this;
@@ -45,6 +52,8 @@ namespace Shapoco.Calctus.UI {
             InitializeComponent();
             if (this.DesignMode) return;
 
+            _activeView = sheetView;
+            _sideTreeNodeScratchPad = new SheetFileNode("Scratch Pad", null, sheetView);
             sidePaneBodyPanel.Visible = false;
 
             var sheet = new Sheet();
@@ -71,17 +80,16 @@ namespace Shapoco.Calctus.UI {
 #endif
             notifyIcon.MouseClick += NotifyIcon_MouseClick;
 
-            sheetView.DialogOpening += (sender, e) => { suspendTopMost(); };
-            sheetView.DialogClosed += (sender, e) => { resumeTopMost(); };
+            setupView(sheetView);
 
-            radixAutoButton.Click += (sender, e) => { sheetView.ReplaceFormatterFunction(null); sheetView.Focus(); }; 
-            radixDecButton.Click += (sender, e) => { sheetView.ReplaceFormatterFunction(EmbeddedFuncDef.dec); sheetView.Focus(); };
-            radixHexButton.Click += (sender, e) => { sheetView.ReplaceFormatterFunction(EmbeddedFuncDef.hex); sheetView.Focus(); };
-            radixBinButton.Click += (sender, e) => { sheetView.ReplaceFormatterFunction(EmbeddedFuncDef.bin); sheetView.Focus(); };
-            radixOctButton.Click += (sender, e) => { sheetView.ReplaceFormatterFunction(EmbeddedFuncDef.oct); sheetView.Focus(); };
-            radixSiButton.Click += (sender, e) => { sheetView.ReplaceFormatterFunction(EmbeddedFuncDef.si); sheetView.Focus(); };
-            radixKibiButton.Click += (sender, e) => { sheetView.ReplaceFormatterFunction(EmbeddedFuncDef.kibi); sheetView.Focus(); };
-            radixCharButton.Click += (sender, e) => { sheetView.ReplaceFormatterFunction(EmbeddedFuncDef.char_1); sheetView.Focus(); };
+            radixAutoButton.Click += (sender, e) => { _activeView.ReplaceFormatterFunction(null); _activeView.Focus(); }; 
+            radixDecButton.Click += (sender, e) => { _activeView.ReplaceFormatterFunction(EmbeddedFuncDef.dec); _activeView.Focus(); };
+            radixHexButton.Click += (sender, e) => { _activeView.ReplaceFormatterFunction(EmbeddedFuncDef.hex); _activeView.Focus(); };
+            radixBinButton.Click += (sender, e) => { _activeView.ReplaceFormatterFunction(EmbeddedFuncDef.bin); _activeView.Focus(); };
+            radixOctButton.Click += (sender, e) => { _activeView.ReplaceFormatterFunction(EmbeddedFuncDef.oct); _activeView.Focus(); };
+            radixSiButton.Click += (sender, e) => { _activeView.ReplaceFormatterFunction(EmbeddedFuncDef.si); _activeView.Focus(); };
+            radixKibiButton.Click += (sender, e) => { _activeView.ReplaceFormatterFunction(EmbeddedFuncDef.kibi); _activeView.Focus(); };
+            radixCharButton.Click += (sender, e) => { _activeView.ReplaceFormatterFunction(EmbeddedFuncDef.char_1); _activeView.Focus(); };
 
             toolTip.SetToolTip(radixAutoButton, "Automatic (F8)");
             toolTip.SetToolTip(radixDecButton, "Decimal (F9)");
@@ -92,19 +100,24 @@ namespace Shapoco.Calctus.UI {
             toolTip.SetToolTip(radixKibiButton, "Binary Prefix");
             toolTip.SetToolTip(radixCharButton, "Character");
 
-            undoButton.Click += (sender, e) => { sheetView.Undo(); };
-            redoButton.Click += (sender, e) => { sheetView.Redo(); };
-            copyButton.Click += (sender, e) => { sheetView.Copy(); };
-            pasteButton.Click += (sender, e) => { sheetView.Paste(); };
-            insertButton.Click += (sender, e) => { sheetView.ItemInsert(); };
-            deleteButton.Click += (sender, e) => { sheetView.ItemDelete(); };
-            moveUpButton.Click += (sender, e) => { sheetView.ItemMoveUp(); };
-            moveDownButton.Click += (sender, e) => { sheetView.ItemMoveDown(); };
+            undoButton.Click += (sender, e) => { _activeView.Undo(); };
+            redoButton.Click += (sender, e) => { _activeView.Redo(); };
+            copyButton.Click += (sender, e) => { _activeView.Copy(); };
+            pasteButton.Click += (sender, e) => { _activeView.Paste(); };
+            insertButton.Click += (sender, e) => { _activeView.ItemInsert(); };
+            deleteButton.Click += (sender, e) => { _activeView.ItemDelete(); };
+            moveUpButton.Click += (sender, e) => { _activeView.ItemMoveUp(); };
+            moveDownButton.Click += (sender, e) => { _activeView.ItemMoveDown(); };
 
             sidePaneOpenButton.Click += SidePaneOpenButton_Click;
-            sideTreeView.Nodes.Add(tnMain);
-            sideTreeView.Nodes.Add(tnMemo);
-            sideTreeView.Nodes.Add(tnHistory);
+            sideTreeView.Nodes.Add(_sideTreeNodeScratchPad);
+            sideTreeView.Nodes.Add(_sideTreeNodeNotebook);
+            sideTreeView.Nodes.Add(_sideTreeNodeHistory);
+            sideTreeView.AfterSelect += SideTreeView_AfterSelect;
+            _fsWatcher.Changed += delegate { requestScanFiles(); };
+            _fsWatcher.Created += delegate { requestScanFiles(); };
+            _fsWatcher.Deleted += delegate { requestScanFiles(); };
+            _fsWatcher.Renamed += delegate { requestScanFiles(); };
 
             settingsButton.Click += SettingsButton_Click;
             topMostButton.Click += TopMostButton_Click;
@@ -113,7 +126,10 @@ namespace Shapoco.Calctus.UI {
             contextOpen.Click += (sender, e) => { showForeground(); };
             contextExit.Click += (sender, e) => { appExit(); };
 
+            sideTreeView.SelectedNode = _sideTreeNodeScratchPad;
+
             _focusTimer.Tick += _focusTimer_Tick;
+            _fileScanTimer.Tick += _fileScanTimer_Tick;
         }
 
         private void MainForm_Load(object sender, EventArgs e) {
@@ -173,6 +189,7 @@ namespace Shapoco.Calctus.UI {
         }
 
         private void MainForm_FormClosed(object sender, FormClosedEventArgs e) {
+            _activeView.Save();
             notifyIcon.Visible = false;
             disableHotkey();
         }
@@ -215,14 +232,17 @@ namespace Shapoco.Calctus.UI {
                 var font_style = s.Appearance_Font_Bold ? FontStyle.Bold : FontStyle.Regular;
                 var font_ui_normal = new Font(s.Appearance_Font_Button_Name, s.Appearance_Font_Size, font_style);
                 var font_mono_normal = new Font(s.Appearance_Font_Expr_Name, s.Appearance_Font_Size, font_style);
-                var font_mono_large = new Font(s.Appearance_Font_Expr_Name, s.Appearance_Font_Size * font_large_coeff, font_style);
                 this.Font = font_ui_normal;
-                sheetView.Font = font_mono_large;
+                _sheetViewFont = new Font(s.Appearance_Font_Expr_Name, s.Appearance_Font_Size * font_large_coeff, font_style);
 
                 ToolStripManager.Renderer = new ToolStripProfessionalRenderer(new CustomProfessionalColors());
 
-                sheetView.BackColor = s.Appearance_Color_Background;
-                sheetView.ForeColor = s.Appearance_Color_Text;
+                foreach(var ctl in Controls) {
+                    if (ctl is SheetView view) {
+                        setViewAppearance(view);
+                    }
+                }
+
                 bottomPanel.BackColor = s.Appearance_Color_Background;
                 sideTreeView.BackColor = s.Appearance_Color_Background;
                 sideTreeView.ForeColor = s.Appearance_Color_Text;
@@ -244,12 +264,31 @@ namespace Shapoco.Calctus.UI {
                 radixCharButton.ForeColor = s.Appearance_Color_Text;
 
                 sidePaneBodyPanel.Width = 200;
+                _fsWatcher.Filter = "*.txt";
+                _fsWatcher.Path = AppDataManager.ActiveDataPath;
+                _fsWatcher.SynchronizingObject = this;
+                _fsWatcher.IncludeSubdirectories = true;
+                _fsWatcher.EnableRaisingEvents = true;
+                requestScanFiles();
 
                 sheetView.RelayoutText();
             }
             catch { }
             sheetView.RequestRecalc();
             GraphForm.ReloadSettingsAll();
+        }
+
+        private void setupView(SheetView view) {
+            view.DialogOpening += delegate { suspendTopMost(); };
+            view.DialogClosed += delegate { resumeTopMost(); };
+            setViewAppearance(view);
+        }
+
+        private void setViewAppearance(SheetView view) {
+            var s = Settings.Instance;
+            view.Font = _sheetViewFont;
+            view.BackColor = s.Appearance_Color_Background;
+            view.ForeColor = s.Appearance_Color_Text;
         }
 
         private void enableHotkey() {
@@ -281,6 +320,40 @@ namespace Shapoco.Calctus.UI {
             else {
                 sidePaneOpenButton.Text = ">";
             }
+        }
+
+        private TreeNode _lastSelectedNode = null;
+        private void SideTreeView_AfterSelect(object sender, TreeViewEventArgs e) {
+            if (_lastSelectedNode != null) {
+                _lastSelectedNode.BackColor = Settings.Instance.Appearance_Color_Background;
+                _lastSelectedNode.ForeColor = Settings.Instance.Appearance_Color_Text;
+            }
+            if (sideTreeView.SelectedNode == null) return;
+            _lastSelectedNode = sideTreeView.SelectedNode;
+            _lastSelectedNode.BackColor = SystemColors.Highlight;
+            _lastSelectedNode.ForeColor = SystemColors.HighlightText;
+            if (!(sideTreeView.SelectedNode is SheetFileNode node)) return;
+            try {
+                SheetView newView = node.View;
+                if (newView == null) {
+                    node.CreateView();
+                    newView = node.View;
+                    newView.Dock = DockStyle.Fill;
+                    setupView(newView);
+                    this.Controls.Add(newView);
+                    newView.BringToFront();
+                }
+                if (_activeView != newView) {
+                    var oldView = _activeView;
+                    _activeView = newView;
+                    newView.Visible = true;
+                    oldView.Visible = false;
+                }
+            }
+            catch (Exception ex) {
+                MessageBox.Show("Failed to load sheet:\r\n" + ex.Message);
+            }
+            refocus();
         }
 
         private void SettingsButton_Click(object sender, EventArgs e) {
@@ -375,7 +448,55 @@ namespace Shapoco.Calctus.UI {
 
         private void _focusTimer_Tick(object sender, EventArgs e) {
             _focusTimer.Stop();
-            sheetView.Focus();
+            _activeView.Focus();
+        }
+
+        private void requestScanFiles() {
+#if DEBUG
+            Console.WriteLine("requestScanFiles()");
+#endif
+            _fileScanTimer.Stop();
+            _fileScanTimer.Interval = 1000;
+            _fileScanTimer.Start();
+        }
+
+        private void _fileScanTimer_Tick(object sender, EventArgs e) {
+            _fileScanTimer.Stop();
+            try {
+                if (Directory.Exists(SheetView.NotebookDirectory)) {
+                    scanFiles(_sideTreeNodeHistory, SheetView.NotebookDirectory);
+                }
+                if (Directory.Exists(SheetView.HistoryDirectory)) {
+                    scanFiles(_sideTreeNodeHistory, SheetView.HistoryDirectory);
+                }
+            }
+            catch (Exception ex) {
+                Console.WriteLine("File scan failed: " + ex.Message);
+            }
+        }
+
+        private void scanFiles(TreeNode parentNode, string dirPath) {
+#if DEBUG
+            Console.WriteLine("Scanning directory: '" + dirPath + "'");
+#endif
+            var existingFiles = Directory.GetFiles(dirPath, "*.txt").ToList();
+            var loadedNodes = new List<SheetFileNode>();
+            foreach (var node in parentNode.Nodes) {
+                loadedNodes.Add((SheetFileNode)node);
+            }
+            foreach (var existingPath in existingFiles) {
+                var node = loadedNodes.FirstOrDefault(p => p.Path == existingPath);
+                if (node != null) {
+                    loadedNodes.Remove(node);
+                }
+                else {
+                    parentNode.Nodes.Add(new SheetFileNode(Path.GetFileNameWithoutExtension(existingPath), existingPath, null));
+                }
+            }
+            foreach (var node in loadedNodes) {
+                parentNode.Nodes.Remove(node);
+                node.View?.Dispose();
+            }
         }
 
         private void MainForm_KeyDown(object sender, KeyEventArgs e) {
@@ -385,22 +506,22 @@ namespace Shapoco.Calctus.UI {
             }
             else if (e.KeyCode == Keys.F5) {
                 ExternalFuncDef.ScanScripts();
-                sheetView.RequestRecalc();
+                _activeView.RequestRecalc();
             }
             else if (e.KeyCode == Keys.F8) {
-                sheetView.ReplaceFormatterFunction(null);
+                _activeView.ReplaceFormatterFunction(null);
             }
             else if (e.KeyCode == Keys.F9) {
-                sheetView.ReplaceFormatterFunction(EmbeddedFuncDef.dec);
+                _activeView.ReplaceFormatterFunction(EmbeddedFuncDef.dec);
             }
             else if (e.KeyCode == Keys.F10) {
-                sheetView.ReplaceFormatterFunction(EmbeddedFuncDef.hex);
+                _activeView.ReplaceFormatterFunction(EmbeddedFuncDef.hex);
             }
             else if (e.KeyCode == Keys.F11) {
-                sheetView.ReplaceFormatterFunction(EmbeddedFuncDef.bin);
+                _activeView.ReplaceFormatterFunction(EmbeddedFuncDef.bin);
             }
             else if (e.KeyCode == Keys.F12) {
-                sheetView.ReplaceFormatterFunction(EmbeddedFuncDef.si);
+                _activeView.ReplaceFormatterFunction(EmbeddedFuncDef.si);
             }
             else {
                 e.SuppressKeyPress = false;

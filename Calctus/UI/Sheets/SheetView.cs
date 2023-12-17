@@ -9,6 +9,7 @@ using System.ComponentModel;
 using System.Drawing;
 using System.Runtime.InteropServices;
 using System.Globalization;
+using System.IO;
 using Shapoco.Calctus.Model;
 using Shapoco.Calctus.Model.Types;
 using Shapoco.Calctus.Model.Parsers;
@@ -18,6 +19,9 @@ using Shapoco.Calctus.Model.Functions;
 
 namespace Shapoco.Calctus.UI.Sheets {
     class SheetView : GdiControl, IInputCandidateProvider {
+        public static string HistoryDirectory = Path.Combine(AppDataManager.ActiveDataPath, "history");
+        public static string NotebookDirectory = Path.Combine(AppDataManager.ActiveDataPath, "memo");
+
         public event EventHandler DialogOpening;
         public event EventHandler DialogClosed;
 
@@ -30,7 +34,8 @@ namespace Shapoco.Calctus.UI.Sheets {
         private GdiBox _innerBox;
         private VScrollBar _scrollBar = new VScrollBar();
         private bool _disposed = false;
-        
+        private string _filePath = null;
+
         private float _indentRatio = 0.3f;
         private int _equalWidth = 10;
 
@@ -66,7 +71,7 @@ namespace Shapoco.Calctus.UI.Sheets {
 
             _scrollBar.Dock = DockStyle.Right;
             _scrollBar.Visible = false;
-            _scrollBar.ValueChanged += (sender, e) => { _innerBox.Top = - _scrollBar.Value; Invalidate(); };
+            _scrollBar.ValueChanged += (sender, e) => { _innerBox.Top = -_scrollBar.Value; Invalidate(); };
             Controls.Add(_scrollBar);
 
             FocusedIndex = 0;
@@ -130,7 +135,7 @@ namespace Shapoco.Calctus.UI.Sheets {
                 if (_sheet != null) {
                     _sheet.Items.CollectionChanged -= Items_CollectionChanged;
                     _sheet.PreviewExecute -= Sheet_PreviewExecute;
-                    foreach(var noteItem in _sheet.Items) {
+                    foreach (var noteItem in _sheet.Items) {
                         unlinkSheetItem(noteItem);
                     }
                     _operator.Dispose();
@@ -151,11 +156,30 @@ namespace Shapoco.Calctus.UI.Sheets {
                 else {
                     _focusedIndex = -1;
                 }
-                Invalidate();
+                InvalidateLayout();
             }
         }
 
         public SheetOperator Operator => _operator;
+
+        public void Load(string path) {
+            this.Sheet = new Sheet(path);
+            _filePath = path;
+        }
+
+        public void Save(string path = null) {
+            if (_sheet == null) return;
+            if (!string.IsNullOrEmpty(path)) {
+                _filePath = path;
+                _sheet.Save(_filePath);
+            }
+            else if (!string.IsNullOrEmpty(_filePath)) {
+                _sheet.Save(_filePath);
+            }
+            else if (!_sheet.IsEmpty) {
+                _sheet.Save(Path.Combine(HistoryDirectory, DateTime.Now.ToString("yyyy-MM-dd-hh-mm-ss") + ".txt"));
+            }
+        }
 
         [Browsable(false)]
         [DefaultValue(-1)]
@@ -191,7 +215,7 @@ namespace Shapoco.Calctus.UI.Sheets {
             if (_sheet == null) return;
             CandidateHide();
             var selIndex = FocusedIndex;
-            if (selIndex > 0) { 
+            if (selIndex > 0) {
                 _operator.Move(selIndex, selIndex - 1);
                 FocusedIndex = selIndex - 1;
             }
@@ -300,6 +324,14 @@ namespace Shapoco.Calctus.UI.Sheets {
             if (_sheet == null) return;
             var ans = MessageBox.Show("Are you sure you want to delete all?", Application.ProductName, MessageBoxButtons.OKCancel, MessageBoxIcon.Exclamation);
             if (ans == DialogResult.OK) {
+                if (string.IsNullOrEmpty(_filePath)) {
+                    try {
+                        Save();
+                    }
+                    catch (Exception ex) {
+                        Console.WriteLine("History save failed: " + ex.Message);
+                    }
+                }
                 _operator.Clear();
             }
         }
@@ -399,7 +431,7 @@ namespace Shapoco.Calctus.UI.Sheets {
 
             if (e.Handled) return;
 
-            if (e.Modifiers == Keys.None && e.KeyCode == Keys.Return) { 
+            if (e.Modifiers == Keys.None && e.KeyCode == Keys.Return) {
                 e.Handled = true;
                 CandidateHide();
 
@@ -581,7 +613,7 @@ namespace Shapoco.Calctus.UI.Sheets {
         private RpnOperation parseRpnOperation(int index) {
             if (_sheet == null) return null;
             if (index < 0 || _sheet.Items.Count <= index) return null;
-            
+
             // 式が演算子のみで構成されている場合は RPN操作とみなす
             if (!Lexer.TryGetRpnSymbols(_sheet.Items[index].ExprText, out Token[] symbols)) {
                 return null;
@@ -631,7 +663,7 @@ namespace Shapoco.Calctus.UI.Sheets {
         }
 
         private void Items_CollectionChanged(object sender, NotifyCollectionChangedEventArgs e) {
-            switch(e.Action) {
+            switch (e.Action) {
                 case NotifyCollectionChangedAction.Add:
                     foreach (var item in e.NewItems) {
                         linkSheetItem((SheetItem)item);
@@ -661,7 +693,7 @@ namespace Shapoco.Calctus.UI.Sheets {
                     }
                     break;
             }
-            
+
             if (_focusedIndex < _sheet.Items.Count) {
                 FocusViewItem(_focusedIndex);
             }
@@ -852,6 +884,7 @@ namespace Shapoco.Calctus.UI.Sheets {
                 _scrollBar.LargeChange = client.Height;
             }
             else {
+                _scrollBar.Value = 0;
                 _scrollBar.Visible = false;
             }
             if (scrollToBottom) {
@@ -881,7 +914,7 @@ namespace Shapoco.Calctus.UI.Sheets {
             foreach (var v in ctx.EnumVars()) {
                 list.Add(new InputCandidate(v.Name.Text, v.Name.Text, v.Description, false));
             }
-            foreach(var f in ctx.EnumUserFuncs()) {
+            foreach (var f in ctx.EnumUserFuncs()) {
                 list.Add(new InputCandidate(f.Name.Text, f.ToString(), f.Description, true));
             }
             list.Add(new InputCandidate(Sheet.LastAnsId, Sheet.LastAnsId, "last answer", false));

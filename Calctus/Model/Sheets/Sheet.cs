@@ -5,6 +5,7 @@ using System.Collections.ObjectModel;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
+using System.IO;
 using Shapoco.Calctus.Model.Types;
 using Shapoco.Calctus.Model.Parsers;
 using Shapoco.Calctus.Model.Evaluations;
@@ -16,6 +17,35 @@ namespace Shapoco.Calctus.Model.Sheets {
         public event PreviewExecuteEventHandler PreviewExecute;
 
         public readonly ObservableCollection<SheetItem> Items = new ObservableCollection<SheetItem>();
+
+        public Sheet() { }
+        public Sheet(string path) {
+#if DEBUG
+            Console.WriteLine("Loading sheet from: '" + path + "'");
+#endif
+            using (var reader = new StreamReader(path)) {
+                while (!reader.EndOfStream) {
+                    Items.Add(new SheetItem(reader.ReadLine()));
+                }
+            }
+        }
+
+        public void Save(string path) {
+#if DEBUG
+            Console.WriteLine("Saving sheet to: '" + path + "'");
+#endif
+            var dir = Path.GetDirectoryName(path);
+            if (!Directory.Exists(dir)) {
+                Directory.CreateDirectory(dir);
+            }
+            using (var writer = new StreamWriter(path)) {
+                foreach (var item in Items) {
+                    writer.WriteLine(item.ExprText);
+                }
+            }
+        }
+
+        public bool IsEmpty => Items.All(p => string.IsNullOrEmpty(p.ExprText.Trim()));
 
         public EvalContext Run() => Run(new Dictionary<string, Val>());
 
