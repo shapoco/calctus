@@ -330,6 +330,22 @@ namespace Shapoco.Calctus.Model.Functions {
             return new RealVal(-1);
         }, "Returns the index of the first element whose value matches val.");
 
+        public static readonly EmbeddedFuncDef lastIndexOf = new EmbeddedFuncDef("lastIndexOf(array,val*)", (e, a) => {
+            var array = (Val[])a[0].Raw;
+            if (a[1] is FuncVal fVal) {
+                var func = (FuncDef)fVal.Raw;
+                for (int i = array.Length - 1; i >= 0; i--) {
+                    if (func.Call(e, array[i]).AsBool) return new RealVal(i);
+                }
+            }
+            else {
+                for (int i = array.Length - 1; i >= 0; i--) {
+                    if (array[i].Equals(e, a[1]).AsBool) return new RealVal(i);
+                }
+            }
+            return new RealVal(-1);
+        }, "Returns the index of the last element whose value matches val.");
+
         public static readonly EmbeddedFuncDef contains = new EmbeddedFuncDef("contains(array,val*)", (e, a) => {
             return indexOf.Call(e, a[0], a[1]).GraterEqual(e, new RealVal(0));
         }, "Returns whether the array contains val.");
