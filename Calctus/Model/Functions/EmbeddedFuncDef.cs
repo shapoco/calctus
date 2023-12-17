@@ -314,6 +314,22 @@ namespace Shapoco.Calctus.Model.Functions {
             return new ArrayVal(array0.Union(array1, new ValEqualityComparer(e)).ToArray(), a[0].FormatHint);
         }, "Returns the union of two arrays.");
 
+        public static readonly EmbeddedFuncDef indexOf = new EmbeddedFuncDef("indexOf(array,val*)", (e, a) => {
+            var array = (Val[])a[0].Raw;
+            if (a[1] is FuncVal fVal) {
+                var func = (FuncDef)fVal.Raw;
+                for (int i = 0; i < array.Length; i++) {
+                    if (func.Call(e, array[i]).AsBool) return new RealVal(i);
+                }
+            }
+            else {
+                for (int i = 0; i < array.Length; i++) {
+                    if (array[i].Equals(e, a[1]).AsBool) return new RealVal(i);
+                }
+            }
+            return new RealVal(-1);
+        }, "Returns the index of the first element whose value matches val.");
+
         public static readonly EmbeddedFuncDef assert = new EmbeddedFuncDef("assert(x)", (e, a) => {
             if (!a[0].AsBool) {
                 throw new CalctusError("Assertion failed.");
