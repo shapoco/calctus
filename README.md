@@ -295,7 +295,7 @@ If you wish to use a scripting language other than Python, please register the e
 
 ### Graph Plotting
 
-`plot(func)` can be used to draw a graph. `func`` is a function that takes one argument. The value of the argument is plotted on the horizontal axis and the return value of the function on the vertical axis.
+`plot(func)` can be used to draw a graph. `func` is a function that takes one argument. The value of the argument is plotted on the horizontal axis and the return value of the function on the vertical axis.
 
 :warning: This feature is experimental and may be removed in future versions.
 
