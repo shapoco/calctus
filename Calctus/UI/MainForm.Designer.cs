@@ -61,10 +61,9 @@ namespace Shapoco.Calctus.UI
             this.radixDecButton = new Shapoco.Calctus.UI.FlatButton();
             this.radixAutoButton = new Shapoco.Calctus.UI.FlatButton();
             this.toolTip = new System.Windows.Forms.ToolTip(this.components);
-            this.sheetView = new Shapoco.Calctus.UI.Sheets.SheetView();
             this.sidePaneHeaderPanel = new System.Windows.Forms.Panel();
             this.sidePaneOpenButton = new Shapoco.Calctus.UI.FlatButton();
-            this.sideTreeView = new System.Windows.Forms.TreeView();
+            this.bookTreeView = new Shapoco.Calctus.UI.Books.BookTreeView();
             this.sidePaneBodyPanel = new System.Windows.Forms.Panel();
             this.toolStrip.SuspendLayout();
             this.trayMenuStrip.SuspendLayout();
@@ -357,17 +356,6 @@ namespace Shapoco.Calctus.UI
             this.radixAutoButton.Text = "Auto";
             this.radixAutoButton.UseVisualStyleBackColor = false;
             // 
-            // sheetView
-            // 
-            this.sheetView.BackColor = System.Drawing.Color.FromArgb(((int)(((byte)(32)))), ((int)(((byte)(32)))), ((int)(((byte)(32)))));
-            this.sheetView.Dock = System.Windows.Forms.DockStyle.Fill;
-            this.sheetView.FocusedBox = null;
-            this.sheetView.Location = new System.Drawing.Point(220, 25);
-            this.sheetView.Name = "sheetView";
-            this.sheetView.Size = new System.Drawing.Size(357, 206);
-            this.sheetView.TabIndex = 0;
-            this.sheetView.Text = "bookView1";
-            // 
             // sidePaneHeaderPanel
             // 
             this.sidePaneHeaderPanel.Controls.Add(this.sidePaneOpenButton);
@@ -390,17 +378,17 @@ namespace Shapoco.Calctus.UI
             // 
             // sideTreeView
             // 
-            this.sideTreeView.BackColor = System.Drawing.Color.FromArgb(((int)(((byte)(64)))), ((int)(((byte)(64)))), ((int)(((byte)(64)))));
-            this.sideTreeView.BorderStyle = System.Windows.Forms.BorderStyle.None;
-            this.sideTreeView.Dock = System.Windows.Forms.DockStyle.Fill;
-            this.sideTreeView.Location = new System.Drawing.Point(0, 0);
-            this.sideTreeView.Name = "sideTreeView";
-            this.sideTreeView.Size = new System.Drawing.Size(200, 221);
-            this.sideTreeView.TabIndex = 0;
+            this.bookTreeView.BackColor = System.Drawing.Color.FromArgb(((int)(((byte)(64)))), ((int)(((byte)(64)))), ((int)(((byte)(64)))));
+            this.bookTreeView.BorderStyle = System.Windows.Forms.BorderStyle.None;
+            this.bookTreeView.Dock = System.Windows.Forms.DockStyle.Fill;
+            this.bookTreeView.Location = new System.Drawing.Point(0, 0);
+            this.bookTreeView.Name = "sideTreeView";
+            this.bookTreeView.Size = new System.Drawing.Size(200, 221);
+            this.bookTreeView.TabIndex = 0;
             // 
             // sidePaneBodyPanel
             // 
-            this.sidePaneBodyPanel.Controls.Add(this.sideTreeView);
+            this.sidePaneBodyPanel.Controls.Add(this.bookTreeView);
             this.sidePaneBodyPanel.Dock = System.Windows.Forms.DockStyle.Left;
             this.sidePaneBodyPanel.Location = new System.Drawing.Point(0, 25);
             this.sidePaneBodyPanel.Name = "sidePaneBodyPanel";
@@ -413,7 +401,6 @@ namespace Shapoco.Calctus.UI
             this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
             this.BackColor = System.Drawing.Color.FromArgb(((int)(((byte)(64)))), ((int)(((byte)(64)))), ((int)(((byte)(64)))));
             this.ClientSize = new System.Drawing.Size(577, 246);
-            this.Controls.Add(this.sheetView);
             this.Controls.Add(this.bottomPanel);
             this.Controls.Add(this.sidePaneHeaderPanel);
             this.Controls.Add(this.sidePaneBodyPanel);
@@ -456,7 +443,6 @@ namespace Shapoco.Calctus.UI
         private System.Windows.Forms.ToolStripButton deleteButton;
         private System.Windows.Forms.ToolStripButton moveUpButton;
         private System.Windows.Forms.ToolStripButton moveDownButton;
-        private UI.Sheets.SheetView sheetView;
         private System.Windows.Forms.ToolStripButton undoButton;
         private System.Windows.Forms.ToolStripButton redoButton;
         private FlatButton radixCharButton;
@@ -467,7 +453,7 @@ namespace Shapoco.Calctus.UI
         private System.Windows.Forms.ToolStripSeparator toolStripSeparator3;
         private System.Windows.Forms.Panel sidePaneHeaderPanel;
         private FlatButton sidePaneOpenButton;
-        private System.Windows.Forms.TreeView sideTreeView;
+        private Shapoco.Calctus.UI.Books.BookTreeView bookTreeView;
         private System.Windows.Forms.Panel sidePaneBodyPanel;
     }
 }

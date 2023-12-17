@@ -11,6 +11,7 @@ using System.Runtime.InteropServices;
 using System.IO;
 using Shapoco.Calctus.Model;
 using Shapoco.Calctus.Model.Sheets;
+using Shapoco.Calctus.UI.Books;
 using Shapoco.Calctus.UI.Sheets;
 using Shapoco.Calctus.Model.Functions;
 
@@ -25,19 +26,9 @@ namespace Shapoco.Calctus.UI {
         private Font _sheetViewFont = null;
         private SheetView _activeView = null;
 
-        private FileSystemWatcher _fsWatcher = new FileSystemWatcher();
-        private SheetFileNode _sideTreeNodeScratchPad;
-        private TreeNode _sideTreeNodeNotebook = new TreeNode("Notebook");
-        private TreeNode _sideTreeNodeHistory = new TreeNode("History");
-        private ContextMenuStrip _sidePaneContextMenu = new ContextMenuStrip();
-        private ToolStripMenuItem _sidePaneSaveButton = new ToolStripMenuItem("Save to Notebook");
-        private ToolStripMenuItem _sidePaneRenameButton = new ToolStripMenuItem("Rename");
-        private ToolStripMenuItem _sidePaneRemoveButton = new ToolStripMenuItem("Remove");
-
         private HotKey _hotkey = null;
         private bool _startup = true;
         private Timer _focusTimer = new Timer();
-        private Timer _fileScanTimer = new Timer();
         private Point _startupWindowPos;
         private Size _startupWindowSize;
         private bool _topMost = false;
@@ -55,19 +46,8 @@ namespace Shapoco.Calctus.UI {
             InitializeComponent();
             if (this.DesignMode) return;
 
-            _sidePaneContextMenu.Items.AddRange(new ToolStripItem[] {
-                _sidePaneSaveButton, _sidePaneRenameButton, _sidePaneRemoveButton
-            });
-
-            _activeView = sheetView;
-            _sideTreeNodeScratchPad = new SheetFileNode("Scratch Pad", null, sheetView);
             sidePaneBodyPanel.Visible = false;
 
-            var sheet = new Sheet();
-            sheet.Items.Add(new SheetItem());
-            sheetView.Sheet = sheet;
-
-            this.Text = Application.ProductName + " (v" + System.Reflection.Assembly.GetExecutingAssembly().GetName().Version + ")";
             this.KeyPreview = true; 
             this.KeyDown += MainForm_KeyDown;
             this.Load += MainForm_Load;
@@ -86,8 +66,6 @@ namespace Shapoco.Calctus.UI {
             notifyIcon.Text = Application.ProductName;
 #endif
             notifyIcon.MouseClick += NotifyIcon_MouseClick;
-
-            setupView(sheetView);
 
             radixAutoButton.Click += (sender, e) => { _activeView.ReplaceFormatterFunction(null); _activeView.Focus(); }; 
             radixDecButton.Click += (sender, e) => { _activeView.ReplaceFormatterFunction(EmbeddedFuncDef.dec); _activeView.Focus(); };
@@ -117,27 +95,7 @@ namespace Shapoco.Calctus.UI {
             moveDownButton.Click += (sender, e) => { _activeView.ItemMoveDown(); };
 
             sidePaneOpenButton.Click += SidePaneOpenButton_Click;
-            sideTreeView.Nodes.Add(_sideTreeNodeScratchPad);
-            sideTreeView.Nodes.Add(_sideTreeNodeNotebook);
-            sideTreeView.Nodes.Add(_sideTreeNodeHistory);
-            _sideTreeNodeNotebook.Expand();
-            _sideTreeNodeHistory.Expand();
-            sideTreeView.LabelEdit = true;
-            sideTreeView.AfterSelect += SideTreeView_AfterSelect;
-            sideTreeView.BeforeLabelEdit += SideTreeView_BeforeLabelEdit;
-            sideTreeView.AfterLabelEdit += SideTreeView_AfterLabelEdit;
-            sideTreeView.MouseClick += SideTreeView_MouseClick;
-            sideTreeView.KeyDown += SideTreeView_KeyDown;
-            _sidePaneSaveButton.Click += _sidePaneSaveButton_Click;
-            _sidePaneRenameButton.Click += _sidePaneRenameButton_Click;
-            _sidePaneRemoveButton.Click += _sidePaneRemoveButton_Click;
-            _sidePaneSaveButton.ShortcutKeys = Keys.Control | Keys.S;
-            _sidePaneRenameButton.ShortcutKeys = Keys.F2;
-            _sidePaneRemoveButton.ShortcutKeys = Keys.Delete;
-            _fsWatcher.Changed += delegate { requestScanFiles(); };
-            _fsWatcher.Created += delegate { requestScanFiles(); };
-            _fsWatcher.Deleted += delegate { requestScanFiles(); };
-            _fsWatcher.Renamed += delegate { requestScanFiles(); };
+            bookTreeView.AfterSelect += (sender, e) => { onBookItemSelected(); };
 
             settingsButton.Click += SettingsButton_Click;
             topMostButton.Click += TopMostButton_Click;
@@ -146,10 +104,11 @@ namespace Shapoco.Calctus.UI {
             contextOpen.Click += (sender, e) => { showForeground(); };
             contextExit.Click += (sender, e) => { appExit(); };
 
-            sideTreeView.SelectedNode = _sideTreeNodeScratchPad;
+            bookTreeView.ScratchPad.View.BeforeCleared += (sender, e) => { saveScratchPadToHistory(); };
+            bookTreeView.SelectedNode = bookTreeView.ScratchPad;
+            onBookItemSelected();
 
             _focusTimer.Tick += _focusTimer_Tick;
-            _fileScanTimer.Tick += _fileScanTimer_Tick;
         }
 
         private void MainForm_Load(object sender, EventArgs e) {
@@ -205,13 +164,17 @@ namespace Shapoco.Calctus.UI {
                 e.Cancel = true;
                 this.Visible = false;
                 GraphForm.HideAll();
+                deleteOldHistories();
             }
         }
 
         private void MainForm_FormClosed(object sender, FormClosedEventArgs e) {
-            _activeView.Save();
+            if (!bookTreeView.ScratchPad.View.Sheet.IsEmpty) {
+                saveScratchPadToHistory();
+            }
             notifyIcon.Visible = false;
             disableHotkey();
+            deleteOldHistories();
         }
 
         private void MainForm_Resize(object sender, EventArgs e) {
@@ -263,9 +226,11 @@ namespace Shapoco.Calctus.UI {
                     }
                 }
 
+                Color panelColor = ColorUtils.Blend(s.Appearance_Color_Background, s.Appearance_Color_Button_Face);
+
                 bottomPanel.BackColor = s.Appearance_Color_Background;
-                sideTreeView.BackColor = s.Appearance_Color_Background;
-                sideTreeView.ForeColor = s.Appearance_Color_Text;
+                bookTreeView.BackColor = s.Appearance_Color_Background;
+                bookTreeView.ForeColor = s.Appearance_Color_Text;
                 radixAutoButton.BackColor = s.Appearance_Color_Button_Face;
                 radixDecButton.BackColor = s.Appearance_Color_Button_Face;
                 radixHexButton.BackColor = s.Appearance_Color_Button_Face;
@@ -274,6 +239,9 @@ namespace Shapoco.Calctus.UI {
                 radixSiButton.BackColor = s.Appearance_Color_Button_Face;
                 radixKibiButton.BackColor = s.Appearance_Color_Button_Face;
                 radixCharButton.BackColor = s.Appearance_Color_Button_Face;
+                bottomPanel.BackColor = panelColor;
+                sidePaneHeaderPanel.BackColor = panelColor;
+                sidePaneOpenButton.BackColor = s.Appearance_Color_Button_Face;
                 radixAutoButton.ForeColor = s.Appearance_Color_Text;
                 radixDecButton.ForeColor = s.Appearance_Color_Text;
                 radixHexButton.ForeColor = s.Appearance_Color_Text;
@@ -282,26 +250,15 @@ namespace Shapoco.Calctus.UI {
                 radixSiButton.ForeColor = s.Appearance_Color_Text;
                 radixKibiButton.ForeColor = s.Appearance_Color_Text;
                 radixCharButton.ForeColor = s.Appearance_Color_Text;
+                sidePaneOpenButton.ForeColor = s.Appearance_Color_Text;
 
                 sidePaneBodyPanel.Width = 200;
-                _fsWatcher.Filter = "*.txt";
-                _fsWatcher.Path = AppDataManager.ActiveDataPath;
-                _fsWatcher.SynchronizingObject = this;
-                _fsWatcher.IncludeSubdirectories = true;
-                _fsWatcher.EnableRaisingEvents = true;
-                requestScanFiles();
 
-                sheetView.RelayoutText();
+                bookTreeView.ReloadSettings();
             }
             catch { }
-            sheetView.RequestRecalc();
+            _activeView.RequestRecalc();
             GraphForm.ReloadSettingsAll();
-        }
-
-        private void setupView(SheetView view) {
-            view.DialogOpening += delegate { suspendTopMost(); };
-            view.DialogClosed += delegate { resumeTopMost(); };
-            setViewAppearance(view);
         }
 
         private void setViewAppearance(SheetView view) {
@@ -309,6 +266,7 @@ namespace Shapoco.Calctus.UI {
             view.Font = _sheetViewFont;
             view.BackColor = s.Appearance_Color_Background;
             view.ForeColor = s.Appearance_Color_Text;
+            view.RelayoutText();
         }
 
         private void enableHotkey() {
@@ -336,7 +294,7 @@ namespace Shapoco.Calctus.UI {
             sidePaneBodyPanel.Visible = !sidePaneBodyPanel.Visible;
             if (sidePaneBodyPanel.Visible) {
                 sidePaneOpenButton.Text = "<";
-                sideTreeView.Focus();
+                bookTreeView.Focus();
             }
             else {
                 sidePaneOpenButton.Text = ">";
@@ -344,174 +302,82 @@ namespace Shapoco.Calctus.UI {
             }
         }
 
-        private TreeNode _lastSelectedNode = null;
-        private void SideTreeView_AfterSelect(object sender, TreeViewEventArgs e) {
-            if (_lastSelectedNode != null) {
-                _lastSelectedNode.BackColor = Settings.Instance.Appearance_Color_Background;
-                _lastSelectedNode.ForeColor = Settings.Instance.Appearance_Color_Text;
-            }
-            if (sideTreeView.SelectedNode == null) return;
-            _lastSelectedNode = sideTreeView.SelectedNode;
-            _lastSelectedNode.BackColor = SystemColors.Highlight;
-            _lastSelectedNode.ForeColor = SystemColors.HighlightText;
-            if (!(sideTreeView.SelectedNode is SheetFileNode node)) return;
+        private BookItem _lastSheetNode = null;
+        private void onBookItemSelected() {
+            if (bookTreeView.SelectedNode == null) return;
+            if (!(bookTreeView.SelectedNode is BookItem newNode)) return;
             try {
-                SheetView newView = node.View;
-                if (newView == null) {
-                    node.CreateView();
-                    newView = node.View;
-                    newView.Dock = DockStyle.Fill;
-                    setupView(newView);
-                    this.Controls.Add(newView);
-                    newView.BringToFront();
+                if (_lastSheetNode != null && _lastSheetNode.View != null && _lastSheetNode.HasFileName && _lastSheetNode.IsChanged) {
+                    _lastSheetNode.Save();
                 }
+            }
+            catch (Exception ex) {
+                MessageBox.Show("Failed to save sheet:\r\n\r\n" + ex.Message,
+                    Application.ProductName, MessageBoxButtons.OK, MessageBoxIcon.Error);
+            }
+            try {
+                SheetView newView = newNode.View;
+                if (newView == null) {
+                    newNode.CreateView();
+                    newView = newNode.View;
+                }
+                if (!this.Controls.Contains(newView)) {
+                    newView.Dock = DockStyle.Fill;
+                    newView.DialogOpening += delegate { suspendTopMost(); };
+                    newView.DialogClosed += delegate { resumeTopMost(); };
+                    this.Controls.Add(newView);
+                    setViewAppearance(newView);
+                }
+                newView.BringToFront();
                 if (_activeView != newView) {
                     var oldView = _activeView;
                     _activeView = newView;
                     newView.Visible = true;
-                    oldView.Visible = false;
+                    if (oldView != null) {
+                        oldView.Visible = false;
+                    }
                 }
+                _lastSheetNode = newNode;
             }
             catch (Exception ex) {
-                MessageBox.Show("Failed to load sheet:\r\n" + ex.Message);
+                MessageBox.Show("Failed to load sheet:\r\n\r\n" + ex.Message,
+                    Application.ProductName, MessageBoxButtons.OK, MessageBoxIcon.Error);
             }
+            this.Text =
+                Application.ProductName +
+                " (v" + System.Reflection.Assembly.GetExecutingAssembly().GetName().Version + ") - " +
+                (_lastSheetNode != null ? _lastSheetNode.Name : "(null)");
         }
 
-        private void SideTreeView_BeforeLabelEdit(object sender, NodeLabelEditEventArgs e) {
-            e.CancelEdit =
-                (sideTreeView.SelectedNode == null) ||
-                !(sideTreeView.SelectedNode is SheetFileNode) ||
-                (sideTreeView.SelectedNode == _sideTreeNodeScratchPad);
-        }
-
-        private void SideTreeView_AfterLabelEdit(object sender, NodeLabelEditEventArgs e) {
-            if (e.CancelEdit) return;
-            if (!(e.Node is SheetFileNode node)) {
-                e.CancelEdit = true;
-                return;
-            }
-
-            if (string.IsNullOrEmpty(e.Label)) {
-                e.CancelEdit = true;
-                return;
-            }
-            else if (e.Label.IndexOfAny(Path.GetInvalidFileNameChars()) >= 0) {
-                e.CancelEdit = true;
-                MessageBox.Show("Only valid characters as filenames can be used.", Application.ProductName,
-                    MessageBoxButtons.OK, MessageBoxIcon.Error);
-                return;
-            }
-
-            var oldPath = node.FilePath;
-            var newPath = Path.Combine(Path.GetDirectoryName(oldPath), e.Label + ".txt");
+        private void saveScratchPadToHistory() {
+            var sheet = bookTreeView.ScratchPad.View.Sheet;
+            if (sheet.IsEmpty) return;
             try {
-                File.Move(oldPath, newPath);
-                node.FilePath = newPath;
+                var dir = Book.HistoryDirectory;
+                if (!Directory.Exists(dir)) Directory.CreateDirectory(dir);
+                var path = Path.Combine(dir, DateTime.Now.ToString("yyyyMMdd-HHmmss") + ".txt");
+                sheet.Save(path);
             }
             catch (Exception ex) {
-                node.FilePath = oldPath;
-                e.CancelEdit = true;
-                MessageBox.Show("Failed to rename:\r\n\r\n" + ex.Message, Application.ProductName,
-                    MessageBoxButtons.OK, MessageBoxIcon.Error);
+                Console.WriteLine("Failed to save scratch pad: " + ex.Message);
             }
         }
 
-        private void SideTreeView_MouseClick(object sender, MouseEventArgs e) {
-            var clickedNode = sideTreeView.GetNodeAt(e.X, e.Y);
-            if (clickedNode != null) {
-                sideTreeView.SelectedNode = clickedNode;
-                if (e.Button == MouseButtons.Right) {
-                    showSidePaneContextMenu(sideTreeView.PointToScreen(e.Location));
-                }
-            }
-        }
-
-        private void SideTreeView_KeyDown(object sender, KeyEventArgs e) {
-            e.SuppressKeyPress = true;
-            if (e.Modifiers == Keys.Control && e.KeyCode == Keys.S) {
-                _sidePaneSaveButton.PerformClick();
-            }
-            else if (e.Modifiers == Keys.None && e.KeyCode == Keys.F2) {
-                _sidePaneRenameButton.PerformClick();
-            }
-            else if (e.Modifiers == Keys.None && e.KeyCode == Keys.Delete) {
-                _sidePaneRemoveButton.PerformClick();
-            }
-            else if (e.Modifiers == Keys.None && e.KeyCode == Keys.Apps) {
-                var node = sideTreeView.SelectedNode;
-                if (node == null) return;
-                showSidePaneContextMenu(sideTreeView.PointToScreen(new Point(node.Bounds.Left, node.Bounds.Bottom)));
-            }
-            else if (e.Modifiers == Keys.None && e.KeyCode == Keys.Space) {
-                var node = sideTreeView.SelectedNode;
-                if (node == null || node.Nodes.Count == 0) return;
-                if (node.IsExpanded) {
-                    node.Collapse();
-                }
-                else {
-                    node.Expand();
-                }
-            }
-            else {
-                e.SuppressKeyPress = false;
-            }
-        }
-
-        private void showSidePaneContextMenu(Point p) {
-            if (sideTreeView.SelectedNode == null) return;
-            if (!(sideTreeView.SelectedNode is SheetFileNode node)) return;
-            _sidePaneRemoveButton.Enabled = (node != _sideTreeNodeScratchPad);
-            _sidePaneRenameButton.Enabled = (node != _sideTreeNodeScratchPad);
-            _sidePaneContextMenu.Show(p);
-        }
-
-        private void _sidePaneSaveButton_Click(object sender, EventArgs e) {
-            if (sideTreeView.SelectedNode == null) return;
-            if (!(sideTreeView.SelectedNode is SheetFileNode node)) return;
-
+        private void deleteOldHistories() {
             try {
-                var nameBase = node.Name != null ? node.Name : DateTime.Now.ToString("yyyy-MM-dd-hh-mm-ss"); ;
-                var newPath = Path.Combine(SheetView.NotebookDirectory, nameBase + ".txt");
-                var suffixNumber = 1;
-                if (File.Exists(newPath)) {
-                    do {
-                        newPath = Path.Combine(SheetView.NotebookDirectory, nameBase + "(" + suffixNumber + ").txt");
-                        suffixNumber++;
-                    } while (File.Exists(newPath));
+                if (Directory.Exists(Book.HistoryDirectory)) {
+                    var files = Directory.GetFiles(Book.HistoryDirectory, "*.txt");
+                    foreach(var file in files) {
+                        if ((DateTime.Now - new FileInfo(file).LastWriteTime).TotalDays > Settings.Instance.History_KeepPeriod) {
+                            File.Delete(file);
+                        }
+                    }
                 }
-                node.View.Sheet.Save(newPath);
             }
-            catch (Exception ex) {
-                MessageBox.Show("Failed to save file:\r\n\r\n" + ex.Message, Application.ProductName,
-                    MessageBoxButtons.OK, MessageBoxIcon.Error);
-            }
-        }
-
-        private void _sidePaneRenameButton_Click(object sender, EventArgs e) {
-            if (sideTreeView.SelectedNode == null) return;
-            if (!(sideTreeView.SelectedNode is SheetFileNode node)) return;
-            if (node == _sideTreeNodeScratchPad) return;
-            node.BeginEdit();
-        }
-
-        private void _sidePaneRemoveButton_Click(object sender, EventArgs e) {
-            if (sideTreeView.SelectedNode == null) return;
-            if (!(sideTreeView.SelectedNode is SheetFileNode node)) return;
-            if (node == _sideTreeNodeScratchPad) return;
-
-            if (DialogResult.OK != MessageBox.Show("Are you sure you want to delete this file?:\r\n\r\n" + node.FilePath, Application.ProductName,
-                MessageBoxButtons.OKCancel, MessageBoxIcon.Exclamation)) {
-                return;
-            }
-
-            try {
-                File.Delete(node.FilePath);
-                node.Remove();
-                sideTreeView.SelectedNode = _sideTreeNodeScratchPad;
-            }
-            catch (Exception ex) {
-                MessageBox.Show("Failed to delete file:\r\n\r\n" + ex.Message, Application.ProductName,
-                    MessageBoxButtons.OK, MessageBoxIcon.Error);
+            catch(Exception ex) {
+#if DEBUG
+                Console.WriteLine("Failed to delete old history: " + ex.Message);
+#endif
             }
         }
 
@@ -610,46 +476,24 @@ namespace Shapoco.Calctus.UI {
             _activeView.Focus();
         }
 
-        private void requestScanFiles() {
-#if DEBUG
-            Console.WriteLine("requestScanFiles()");
-#endif
-            _fileScanTimer.Stop();
-            _fileScanTimer.Interval = 100;
-            _fileScanTimer.Start();
-        }
-
-        private void _fileScanTimer_Tick(object sender, EventArgs e) {
-            _fileScanTimer.Stop();
-            try {
-                if (Directory.Exists(SheetView.NotebookDirectory)) {
-                    scanFiles(_sideTreeNodeNotebook, SheetView.NotebookDirectory);
-                }
-                if (Directory.Exists(SheetView.HistoryDirectory)) {
-                    scanFiles(_sideTreeNodeHistory, SheetView.HistoryDirectory);
-                }
-            }
-            catch (Exception ex) {
-                Console.WriteLine("File scan failed: " + ex.Message);
-            }
-        }
-
-        private void scanFiles(TreeNode parentNode, string dirPath) {
+        private void scanFiles(TreeNode parentNode, string folderName) {
+            var dirPath = Path.Combine(AppDataManager.ActiveDataPath, folderName);
 #if DEBUG
             Console.WriteLine("Scanning directory: '" + dirPath + "'");
 #endif
             var existingFiles = Directory.GetFiles(dirPath, "*.txt").ToList();
-            var loadedNodes = new List<SheetFileNode>();
+            var loadedNodes = new List<BookItem>();
             foreach (var node in parentNode.Nodes) {
-                loadedNodes.Add((SheetFileNode)node);
+                loadedNodes.Add((BookItem)node);
             }
             foreach (var existingPath in existingFiles) {
-                var node = loadedNodes.FirstOrDefault(p => p.FilePath == existingPath);
+                var relPath = Path.Combine(folderName, Path.GetFileName(existingPath));
+                var node = loadedNodes.FirstOrDefault(p => p.FileName == relPath);
                 if (node != null) {
                     loadedNodes.Remove(node);
                 }
                 else {
-                    parentNode.Nodes.Add(new SheetFileNode(Path.GetFileNameWithoutExtension(existingPath), existingPath, null));
+                    parentNode.Nodes.Add(new BookItem(Path.GetFileNameWithoutExtension(existingPath), relPath, null));
                 }
             }
             foreach (var node in loadedNodes) {

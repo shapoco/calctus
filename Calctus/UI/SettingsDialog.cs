@@ -10,6 +10,8 @@ using System.IO;
 using System.Windows.Forms;
 using Shapoco.Calctus.Model;
 using Shapoco.Calctus.Model.Evaluations;
+using Shapoco.Calctus.UI.Books;
+using Shapoco.Calctus.UI.Sheets;
 
 namespace Shapoco.Calctus.UI {
     public partial class SettingsDialog : Form {
@@ -79,6 +81,7 @@ namespace Shapoco.Calctus.UI {
             Window_RememberPosition.CheckedChanged += (sender, e) => { s.Window_RememberPosition = ((CheckBox)sender).Checked; };
             SaveSettingsInInstallDirectoryCheckBox.CheckedChanged += SaveSettingsInInstallDirectoryCheckBox_CheckedChanged;
             openSettingFolderButton.Click += OpenSettingFolderButton_Click;
+            History_KeepPeriod.ValueChanged += (sender, e) => { s.History_KeepPeriod = (int)((NumericUpDown)sender).Value; };
 
             Hotkey_Enabled.CheckedChanged += (sender, e) => {
                 s.Hotkey_Enabled = ((CheckBox)sender).Checked;
@@ -164,6 +167,8 @@ namespace Shapoco.Calctus.UI {
                 Hotkey_Enabled.Checked = s.Hotkey_Enabled;
                 Hotkey_KeyCode.SetKeyCode(s.HotKey_Win, s.HotKey_Alt, s.HotKey_Ctrl, s.HotKey_Shift, s.HotKey_KeyCode);
 
+                setNudValue(History_KeepPeriod, s.History_KeepPeriod);
+
                 Input_IdAutoCompletion.Checked = s.Input_IdAutoCompletion;
                 Input_AutoCloseBrackets.Checked = s.Input_AutoCloseBrackets;
                 Input_AutoInputAns.Checked = s.Input_AutoInputAns;
@@ -228,40 +233,91 @@ namespace Shapoco.Calctus.UI {
             if (chkSender.Checked == AppDataManager.UseAssemblyPath) return;
             _settingDirectoryChanging = true;
             
-            string pathFrom, pathTo;
+            string settingPathFrom, settingPathTo;
+            string historyPathFrom, historyPathTo;
+            string notebookPathFrom, notebookPathTo;
             if (chkSender.Checked) {
-                pathFrom = Settings.PathInRoamingDirectory;
-                pathTo = Settings.PathInInstallDirectory;
+                settingPathFrom = Settings.PathInRoamingDirectory;
+                settingPathTo = Settings.PathInInstallDirectory;
+                notebookPathFrom = Path.Combine(AppDataManager.RoamingUserDataPath, Book.NotebookFolderName);
+                notebookPathTo = Path.Combine(AppDataManager.AssemblyPath, Book.NotebookFolderName);
+                historyPathFrom = Path.Combine(AppDataManager.RoamingUserDataPath, Book.HistoryFolderName);
+                historyPathTo = Path.Combine(AppDataManager.AssemblyPath, Book.HistoryFolderName);
             }
             else {
-                pathTo = Settings.PathInRoamingDirectory;
-                pathFrom = Settings.PathInInstallDirectory;
+                settingPathTo = Settings.PathInRoamingDirectory;
+                settingPathFrom = Settings.PathInInstallDirectory;
+                notebookPathTo = Path.Combine(AppDataManager.RoamingUserDataPath, Book.NotebookFolderName);
+                notebookPathFrom = Path.Combine(AppDataManager.AssemblyPath, Book.NotebookFolderName);
+                historyPathTo = Path.Combine(AppDataManager.RoamingUserDataPath, Book.HistoryFolderName);
+                historyPathFrom = Path.Combine(AppDataManager.AssemblyPath, Book.HistoryFolderName);
             }
 
+            bool copySuccess = false;
             try {
                 bool go = true;
-                if (File.Exists(pathTo)) {
-                    if (DialogResult.OK != MessageBox.Show("The destination file already exists. Are you sure you want to overwrite it?\r\n\r\n  \"" + pathTo + "\"", 
+                string fileExists = "";
+                if (File.Exists(settingPathTo)) fileExists += "\r\n - " + settingPathTo;
+                if (Directory.Exists(historyPathTo)) fileExists += "\r\n - " + historyPathTo;
+                if (!string.IsNullOrEmpty(fileExists)) {
+                    if (DialogResult.OK != MessageBox.Show("The destination file already exists. Are you sure you want to overwrite it?\r\n" + fileExists,
                         Application.ProductName, MessageBoxButtons.OKCancel, MessageBoxIcon.Exclamation)) {
                         go = false;
                     }
                 }
-                if (go) { 
-                    if (!Directory.Exists(Path.GetDirectoryName(pathTo))) {
-                        Directory.CreateDirectory(Path.GetDirectoryName(pathTo));
+                if (go) {
+                    if (!Directory.Exists(Path.GetDirectoryName(settingPathTo))) {
+                        // 移動先ディレクトリの作成
+                        Directory.CreateDirectory(Path.GetDirectoryName(settingPathTo));
                     }
-                    if (File.Exists(pathTo)) {
-                        File.Delete(pathTo);
+                    if (File.Exists(settingPathFrom)) {
+                        // 設定ファイルのコピー
+                        File.Copy(settingPathFrom, settingPathTo, true);
                     }
-                    if (File.Exists(pathFrom)) {
-                        File.Move(pathFrom, pathTo);
+                    if (Directory.Exists(notebookPathFrom)) {
+                        // ノートブックのコピー
+                        if (!Directory.Exists(notebookPathTo)) {
+                            Directory.CreateDirectory(notebookPathTo);
+                        }
+                        foreach (var file in Directory.GetFiles(notebookPathFrom, "*.txt")) {
+                            File.Copy(file, Path.Combine(notebookPathTo, Path.GetFileName(file)), true);
+                        }
+                    }
+                    if (Directory.Exists(historyPathFrom)) {
+                        // 履歴ファイルのコピー
+                        if (!Directory.Exists(historyPathTo)) {
+                            Directory.CreateDirectory(historyPathTo);
+                        }
+                        foreach (var file in Directory.GetFiles(historyPathFrom, "*.txt")) {
+                            File.Copy(file, Path.Combine(historyPathTo, Path.GetFileName(file)), true);
+                        }
                     }
                     AppDataManager.UseAssemblyPath = chkSender.Checked;
                     Settings.Instance.Save();
+                    copySuccess = true;
                 }
             }
             catch (Exception ex) {
-                MessageBox.Show(ex.Message, Application.ProductName, MessageBoxButtons.OK, MessageBoxIcon.Error);
+                MessageBox.Show("Failed to move files:\r\n\r\n" + ex.Message, 
+                    Application.ProductName, MessageBoxButtons.OK, MessageBoxIcon.Error);
+            }
+
+            if (copySuccess) {
+                try {
+                    if (File.Exists(settingPathFrom)) {
+                        File.Delete(settingPathFrom);
+                    }
+                    if (Directory.Exists(notebookPathFrom)) {
+                        Directory.Delete(notebookPathFrom, true);
+                    }
+                    if (Directory.Exists(historyPathFrom)) {
+                        Directory.Delete(historyPathFrom, true);
+                    }
+                }
+                catch (Exception ex) {
+                    MessageBox.Show("The files were successfully copied, but the original files failed to be deleted.:\r\n\r\n" + ex.Message,
+                        Application.ProductName, MessageBoxButtons.OK, MessageBoxIcon.Exclamation);
+                }
             }
 
             loadSettingLocation();

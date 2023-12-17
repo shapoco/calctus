@@ -19,15 +19,13 @@ using Shapoco.Calctus.Model.Functions;
 
 namespace Shapoco.Calctus.UI.Sheets {
     class SheetView : GdiControl, IInputCandidateProvider {
-        public static string HistoryDirectory = Path.Combine(AppDataManager.ActiveDataPath, "history");
-        public static string NotebookDirectory = Path.Combine(AppDataManager.ActiveDataPath, "notebook");
-
         public event EventHandler DialogOpening;
         public event EventHandler DialogClosed;
+        public event EventHandler Changed;
+        public event EventHandler BeforeCleared;
 
         private Sheet _sheet = null;
         private SheetOperator _operator = null;
-        private bool _isChanged = false;
         private int _focusedIndex = -1;
         private RpnOperation _focusedRpnOperation = null;
         private bool _recalcRequested = true;
@@ -35,7 +33,6 @@ namespace Shapoco.Calctus.UI.Sheets {
         private GdiBox _innerBox;
         private VScrollBar _scrollBar = new VScrollBar();
         private bool _disposed = false;
-        private string _filePath = null;
 
         private float _indentRatio = 0.3f;
         private int _equalWidth = 10;
@@ -160,42 +157,41 @@ namespace Shapoco.Calctus.UI.Sheets {
                     _focusedIndex = -1;
                 }
                 InvalidateLayout();
-                IsChanged = false;
             }
         }
 
         public SheetOperator Operator => _operator;
 
-        public bool IsChanged {
-            get => _isChanged;
-            private set {
-                if (value == _isChanged) return;
-                _isChanged = value;
-            }
-        }
-
-        public void Load(string path) {
-            this.Sheet = new Sheet(path);
-            _filePath = path;
-        }
-
-        public void Save(string path = null) {
-            if (_sheet == null) return;
-            if (!string.IsNullOrEmpty(path)) {
-                _filePath = path;
-                _sheet.Save(_filePath);
-                IsChanged = false;
-            }
-            else if (!string.IsNullOrEmpty(_filePath)) {
-                _sheet.Save(_filePath);
-                IsChanged = false;
-            }
-            else if (!_sheet.IsEmpty) {
-                _sheet.Save(Path.Combine(HistoryDirectory, DateTime.Now.ToString("yyyy-MM-dd-hh-mm-ss") + ".txt"));
-                IsChanged = false;
-            }
-        }
-
+        //public bool IsChanged {
+        //    get => _isChanged;
+        //    private set {
+        //        if (value == _isChanged) return;
+        //        _isChanged = value;
+        //    }
+        //}
+        //
+        //public void Load(string path) {
+        //    this.Sheet = new Sheet(path);
+        //    _filePath = path;
+        //}
+        //
+        //public void Save(string path = null) {
+        //    if (_sheet == null) return;
+        //    if (!string.IsNullOrEmpty(path)) {
+        //        _filePath = path;
+        //        _sheet.Save(_filePath);
+        //        IsChanged = false;
+        //    }
+        //    else if (!string.IsNullOrEmpty(_filePath)) {
+        //        _sheet.Save(_filePath);
+        //        IsChanged = false;
+        //    }
+        //    else if (!_sheet.IsEmpty) {
+        //        _sheet.Save(Path.Combine(HistoryDirectory, DateTime.Now.ToString("yyyy-MM-dd-hh-mm-ss") + ".txt"));
+        //        IsChanged = false;
+        //    }
+        //}
+        
         [Browsable(false)]
         [DefaultValue(-1)]
         public int FocusedIndex {
@@ -339,14 +335,7 @@ namespace Shapoco.Calctus.UI.Sheets {
             if (_sheet == null) return;
             var ans = MessageBox.Show("Are you sure you want to delete all?", Application.ProductName, MessageBoxButtons.OKCancel, MessageBoxIcon.Exclamation);
             if (ans == DialogResult.OK) {
-                if (string.IsNullOrEmpty(_filePath)) {
-                    try {
-                        Save();
-                    }
-                    catch (Exception ex) {
-                        Console.WriteLine("History save failed: " + ex.Message);
-                    }
-                }
+                BeforeCleared?.Invoke(this, EventArgs.Empty);
                 _operator.Clear();
             }
         }
@@ -736,7 +725,7 @@ namespace Shapoco.Calctus.UI.Sheets {
         }
 
         private void _operator_Changed(object sender, EventArgs e) {
-            IsChanged = true;
+            Changed?.Invoke(this, EventArgs.Empty);
         }
 
         private void SheetItem_ExpressionChanged(object sender, EventArgs e) {

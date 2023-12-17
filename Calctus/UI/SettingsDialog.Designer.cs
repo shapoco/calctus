@@ -43,18 +43,6 @@
             this.Startup_TrayIcon = new System.Windows.Forms.CheckBox();
             this.Window_RememberPosition = new System.Windows.Forms.CheckBox();
             this.Hotkey_Enabled = new System.Windows.Forms.CheckBox();
-            this.tabPage4 = new System.Windows.Forms.TabPage();
-            this.groupBox3 = new System.Windows.Forms.GroupBox();
-            this.Input_AutoInputAns = new System.Windows.Forms.CheckBox();
-            this.Input_IdAutoCompletion = new System.Windows.Forms.CheckBox();
-            this.Input_AutoCloseBrackets = new System.Windows.Forms.CheckBox();
-            this.tabPage1 = new System.Windows.Forms.TabPage();
-            this.groupBox4 = new System.Windows.Forms.GroupBox();
-            this.NumberFormat_Separator_Hexadecimal = new System.Windows.Forms.CheckBox();
-            this.NumberFormat_Separator_Thousands = new System.Windows.Forms.CheckBox();
-            this.groupBox2 = new System.Windows.Forms.GroupBox();
-            this.NumberFormat_Decimal_MaxLen = new System.Windows.Forms.NumericUpDown();
-            this.label6 = new System.Windows.Forms.Label();
             this.tabPage2 = new System.Windows.Forms.TabPage();
             this.colorGroup = new System.Windows.Forms.GroupBox();
             this.toggleLightDarkModeButton = new System.Windows.Forms.Button();
@@ -68,6 +56,24 @@
             this.Appearance_Font_Bold = new System.Windows.Forms.CheckBox();
             this.Appearance_Font_Expr_Name = new System.Windows.Forms.ComboBox();
             this.Appearance_Font_Button_Name = new System.Windows.Forms.ComboBox();
+            this.tabPage4 = new System.Windows.Forms.TabPage();
+            this.groupBox3 = new System.Windows.Forms.GroupBox();
+            this.Input_AutoInputAns = new System.Windows.Forms.CheckBox();
+            this.Input_IdAutoCompletion = new System.Windows.Forms.CheckBox();
+            this.Input_AutoCloseBrackets = new System.Windows.Forms.CheckBox();
+            this.tabPage1 = new System.Windows.Forms.TabPage();
+            this.groupBox4 = new System.Windows.Forms.GroupBox();
+            this.NumberFormat_Separator_Hexadecimal = new System.Windows.Forms.CheckBox();
+            this.NumberFormat_Separator_Thousands = new System.Windows.Forms.CheckBox();
+            this.groupBox2 = new System.Windows.Forms.GroupBox();
+            this.NumberFormat_Decimal_MaxLen = new System.Windows.Forms.NumericUpDown();
+            this.label6 = new System.Windows.Forms.Label();
+            this.tabPage7 = new System.Windows.Forms.TabPage();
+            this.groupBox6 = new System.Windows.Forms.GroupBox();
+            this.Calculation_Limit_MaxCallRecursions = new System.Windows.Forms.NumericUpDown();
+            this.Calculation_Limit_MaxArrayLength = new System.Windows.Forms.NumericUpDown();
+            this.label12 = new System.Windows.Forms.Label();
+            this.label11 = new System.Windows.Forms.Label();
             this.tabPage5 = new System.Windows.Forms.TabPage();
             this.constEditButton = new System.Windows.Forms.Button();
             this.constDelButton = new System.Windows.Forms.Button();
@@ -93,13 +99,12 @@
             this.columnHeader1 = ((System.Windows.Forms.ColumnHeader)(new System.Windows.Forms.ColumnHeader()));
             this.columnHeader5 = ((System.Windows.Forms.ColumnHeader)(new System.Windows.Forms.ColumnHeader()));
             this.columnHeader6 = ((System.Windows.Forms.ColumnHeader)(new System.Windows.Forms.ColumnHeader()));
+            this.groupBox7 = new System.Windows.Forms.GroupBox();
+            this.History_KeepPeriod = new System.Windows.Forms.NumericUpDown();
+            this.label13 = new System.Windows.Forms.Label();
+            this.label14 = new System.Windows.Forms.Label();
+            this.label15 = new System.Windows.Forms.Label();
             this.Hotkey_KeyCode = new Shapoco.Calctus.UI.KeyCodeBox();
-            this.tabPage7 = new System.Windows.Forms.TabPage();
-            this.groupBox6 = new System.Windows.Forms.GroupBox();
-            this.Calculation_Limit_MaxArrayLength = new System.Windows.Forms.NumericUpDown();
-            this.label11 = new System.Windows.Forms.Label();
-            this.label12 = new System.Windows.Forms.Label();
-            this.Calculation_Limit_MaxCallRecursions = new System.Windows.Forms.NumericUpDown();
             this.eNoteGroup.SuspendLayout();
             ((System.ComponentModel.ISupportInitialize)(this.NumberFormat_Exp_NegativeMax)).BeginInit();
             ((System.ComponentModel.ISupportInitialize)(this.NumberFormat_Exp_PositiveMin)).BeginInit();
@@ -107,23 +112,25 @@
             this.tabPage3.SuspendLayout();
             this.groupBox5.SuspendLayout();
             this.groupBox1.SuspendLayout();
+            this.tabPage2.SuspendLayout();
+            this.colorGroup.SuspendLayout();
+            this.fontGroup.SuspendLayout();
+            ((System.ComponentModel.ISupportInitialize)(this.Appearance_Font_Size)).BeginInit();
             this.tabPage4.SuspendLayout();
             this.groupBox3.SuspendLayout();
             this.tabPage1.SuspendLayout();
             this.groupBox4.SuspendLayout();
             this.groupBox2.SuspendLayout();
             ((System.ComponentModel.ISupportInitialize)(this.NumberFormat_Decimal_MaxLen)).BeginInit();
-            this.tabPage2.SuspendLayout();
-            this.colorGroup.SuspendLayout();
-            this.fontGroup.SuspendLayout();
-            ((System.ComponentModel.ISupportInitialize)(this.Appearance_Font_Size)).BeginInit();
+            this.tabPage7.SuspendLayout();
+            this.groupBox6.SuspendLayout();
+            ((System.ComponentModel.ISupportInitialize)(this.Calculation_Limit_MaxCallRecursions)).BeginInit();
+            ((System.ComponentModel.ISupportInitialize)(this.Calculation_Limit_MaxArrayLength)).BeginInit();
             this.tabPage5.SuspendLayout();
             this.tabPage6.SuspendLayout();
             this.scriptGroup.SuspendLayout();
-            this.tabPage7.SuspendLayout();
-            this.groupBox6.SuspendLayout();
-            ((System.ComponentModel.ISupportInitialize)(this.Calculation_Limit_MaxArrayLength)).BeginInit();
-            ((System.ComponentModel.ISupportInitialize)(this.Calculation_Limit_MaxCallRecursions)).BeginInit();
+            this.groupBox7.SuspendLayout();
+            ((System.ComponentModel.ISupportInitialize)(this.History_KeepPeriod)).BeginInit();
             this.SuspendLayout();
             // 
             // closeButton
@@ -250,6 +257,7 @@
             // 
             // tabPage3
             // 
+            this.tabPage3.Controls.Add(this.groupBox7);
             this.tabPage3.Controls.Add(this.groupBox5);
             this.tabPage3.Controls.Add(this.groupBox1);
             this.tabPage3.Location = new System.Drawing.Point(4, 22);
@@ -294,9 +302,9 @@
             this.SaveSettingsInInstallDirectoryCheckBox.AutoSize = true;
             this.SaveSettingsInInstallDirectoryCheckBox.Location = new System.Drawing.Point(10, 26);
             this.SaveSettingsInInstallDirectoryCheckBox.Name = "SaveSettingsInInstallDirectoryCheckBox";
-            this.SaveSettingsInInstallDirectoryCheckBox.Size = new System.Drawing.Size(248, 16);
+            this.SaveSettingsInInstallDirectoryCheckBox.Size = new System.Drawing.Size(315, 16);
             this.SaveSettingsInInstallDirectoryCheckBox.TabIndex = 0;
-            this.SaveSettingsInInstallDirectoryCheckBox.Text = "Place the setting file in the install directory";
+            this.SaveSettingsInInstallDirectoryCheckBox.Text = "Place the setting and history files in the install directory";
             this.SaveSettingsInInstallDirectoryCheckBox.UseVisualStyleBackColor = true;
             // 
             // groupBox1
@@ -352,146 +360,6 @@
             this.Hotkey_Enabled.TabIndex = 2;
             this.Hotkey_Enabled.Text = "Hotkey";
             this.Hotkey_Enabled.UseVisualStyleBackColor = true;
-            // 
-            // tabPage4
-            // 
-            this.tabPage4.Controls.Add(this.groupBox3);
-            this.tabPage4.Location = new System.Drawing.Point(4, 22);
-            this.tabPage4.Name = "tabPage4";
-            this.tabPage4.Padding = new System.Windows.Forms.Padding(3);
-            this.tabPage4.Size = new System.Drawing.Size(435, 320);
-            this.tabPage4.TabIndex = 3;
-            this.tabPage4.Text = "Input";
-            this.tabPage4.UseVisualStyleBackColor = true;
-            // 
-            // groupBox3
-            // 
-            this.groupBox3.Controls.Add(this.Input_AutoInputAns);
-            this.groupBox3.Controls.Add(this.Input_IdAutoCompletion);
-            this.groupBox3.Controls.Add(this.Input_AutoCloseBrackets);
-            this.groupBox3.Location = new System.Drawing.Point(6, 6);
-            this.groupBox3.Name = "groupBox3";
-            this.groupBox3.Size = new System.Drawing.Size(423, 89);
-            this.groupBox3.TabIndex = 0;
-            this.groupBox3.TabStop = false;
-            this.groupBox3.Text = "Auto Input";
-            // 
-            // Input_AutoInputAns
-            // 
-            this.Input_AutoInputAns.AutoSize = true;
-            this.Input_AutoInputAns.Location = new System.Drawing.Point(6, 63);
-            this.Input_AutoInputAns.Name = "Input_AutoInputAns";
-            this.Input_AutoInputAns.Size = new System.Drawing.Size(111, 16);
-            this.Input_AutoInputAns.TabIndex = 1;
-            this.Input_AutoInputAns.Text = "Auto input \"ans\"";
-            this.Input_AutoInputAns.UseVisualStyleBackColor = true;
-            // 
-            // Input_IdAutoCompletion
-            // 
-            this.Input_IdAutoCompletion.AutoSize = true;
-            this.Input_IdAutoCompletion.Location = new System.Drawing.Point(6, 19);
-            this.Input_IdAutoCompletion.Name = "Input_IdAutoCompletion";
-            this.Input_IdAutoCompletion.Size = new System.Drawing.Size(154, 16);
-            this.Input_IdAutoCompletion.TabIndex = 0;
-            this.Input_IdAutoCompletion.Text = "Identifier auto completion";
-            this.Input_IdAutoCompletion.UseVisualStyleBackColor = true;
-            // 
-            // Input_AutoCloseBrackets
-            // 
-            this.Input_AutoCloseBrackets.AutoSize = true;
-            this.Input_AutoCloseBrackets.Location = new System.Drawing.Point(6, 41);
-            this.Input_AutoCloseBrackets.Name = "Input_AutoCloseBrackets";
-            this.Input_AutoCloseBrackets.Size = new System.Drawing.Size(127, 16);
-            this.Input_AutoCloseBrackets.TabIndex = 0;
-            this.Input_AutoCloseBrackets.Text = "Auto close brackets";
-            this.Input_AutoCloseBrackets.UseVisualStyleBackColor = true;
-            // 
-            // tabPage1
-            // 
-            this.tabPage1.Controls.Add(this.groupBox4);
-            this.tabPage1.Controls.Add(this.NumberFormat_Exp_Enabled);
-            this.tabPage1.Controls.Add(this.groupBox2);
-            this.tabPage1.Controls.Add(this.eNoteGroup);
-            this.tabPage1.Location = new System.Drawing.Point(4, 22);
-            this.tabPage1.Name = "tabPage1";
-            this.tabPage1.Padding = new System.Windows.Forms.Padding(3);
-            this.tabPage1.Size = new System.Drawing.Size(435, 320);
-            this.tabPage1.TabIndex = 2;
-            this.tabPage1.Text = "Format";
-            this.tabPage1.UseVisualStyleBackColor = true;
-            // 
-            // groupBox4
-            // 
-            this.groupBox4.Controls.Add(this.NumberFormat_Separator_Hexadecimal);
-            this.groupBox4.Controls.Add(this.NumberFormat_Separator_Thousands);
-            this.groupBox4.Location = new System.Drawing.Point(6, 172);
-            this.groupBox4.Name = "groupBox4";
-            this.groupBox4.Size = new System.Drawing.Size(423, 74);
-            this.groupBox4.TabIndex = 2;
-            this.groupBox4.TabStop = false;
-            this.groupBox4.Text = "Numeric Separators";
-            // 
-            // NumberFormat_Separator_Hexadecimal
-            // 
-            this.NumberFormat_Separator_Hexadecimal.AutoSize = true;
-            this.NumberFormat_Separator_Hexadecimal.Location = new System.Drawing.Point(18, 45);
-            this.NumberFormat_Separator_Hexadecimal.Name = "NumberFormat_Separator_Hexadecimal";
-            this.NumberFormat_Separator_Hexadecimal.Size = new System.Drawing.Size(325, 16);
-            this.NumberFormat_Separator_Hexadecimal.TabIndex = 0;
-            this.NumberFormat_Separator_Hexadecimal.Text = "Separate hexadecimal/binary/octal numbers every 4 digits";
-            this.NumberFormat_Separator_Hexadecimal.UseVisualStyleBackColor = true;
-            // 
-            // NumberFormat_Separator_Thousands
-            // 
-            this.NumberFormat_Separator_Thousands.AutoSize = true;
-            this.NumberFormat_Separator_Thousands.Location = new System.Drawing.Point(18, 23);
-            this.NumberFormat_Separator_Thousands.Name = "NumberFormat_Separator_Thousands";
-            this.NumberFormat_Separator_Thousands.Size = new System.Drawing.Size(233, 16);
-            this.NumberFormat_Separator_Thousands.TabIndex = 0;
-            this.NumberFormat_Separator_Thousands.Text = "Separate decimal numbers every 3 digits";
-            this.NumberFormat_Separator_Thousands.UseVisualStyleBackColor = true;
-            // 
-            // groupBox2
-            // 
-            this.groupBox2.Controls.Add(this.NumberFormat_Decimal_MaxLen);
-            this.groupBox2.Controls.Add(this.label6);
-            this.groupBox2.Location = new System.Drawing.Point(6, 6);
-            this.groupBox2.Name = "groupBox2";
-            this.groupBox2.Size = new System.Drawing.Size(423, 48);
-            this.groupBox2.TabIndex = 0;
-            this.groupBox2.TabStop = false;
-            this.groupBox2.Text = "Decimal";
-            // 
-            // NumberFormat_Decimal_MaxLen
-            // 
-            this.NumberFormat_Decimal_MaxLen.Location = new System.Drawing.Point(222, 18);
-            this.NumberFormat_Decimal_MaxLen.Maximum = new decimal(new int[] {
-            28,
-            0,
-            0,
-            0});
-            this.NumberFormat_Decimal_MaxLen.Minimum = new decimal(new int[] {
-            1,
-            0,
-            0,
-            0});
-            this.NumberFormat_Decimal_MaxLen.Name = "NumberFormat_Decimal_MaxLen";
-            this.NumberFormat_Decimal_MaxLen.Size = new System.Drawing.Size(65, 19);
-            this.NumberFormat_Decimal_MaxLen.TabIndex = 1;
-            this.NumberFormat_Decimal_MaxLen.Value = new decimal(new int[] {
-            8,
-            0,
-            0,
-            0});
-            // 
-            // label6
-            // 
-            this.label6.AutoSize = true;
-            this.label6.Location = new System.Drawing.Point(11, 21);
-            this.label6.Name = "label6";
-            this.label6.Size = new System.Drawing.Size(205, 12);
-            this.label6.TabIndex = 0;
-            this.label6.Text = "Max length of decimal place to display:";
             // 
             // tabPage2
             // 
@@ -633,6 +501,232 @@
             this.Appearance_Font_Button_Name.Name = "Appearance_Font_Button_Name";
             this.Appearance_Font_Button_Name.Size = new System.Drawing.Size(227, 20);
             this.Appearance_Font_Button_Name.TabIndex = 1;
+            // 
+            // tabPage4
+            // 
+            this.tabPage4.Controls.Add(this.groupBox3);
+            this.tabPage4.Location = new System.Drawing.Point(4, 22);
+            this.tabPage4.Name = "tabPage4";
+            this.tabPage4.Padding = new System.Windows.Forms.Padding(3);
+            this.tabPage4.Size = new System.Drawing.Size(435, 320);
+            this.tabPage4.TabIndex = 3;
+            this.tabPage4.Text = "Input";
+            this.tabPage4.UseVisualStyleBackColor = true;
+            // 
+            // groupBox3
+            // 
+            this.groupBox3.Controls.Add(this.Input_AutoInputAns);
+            this.groupBox3.Controls.Add(this.Input_IdAutoCompletion);
+            this.groupBox3.Controls.Add(this.Input_AutoCloseBrackets);
+            this.groupBox3.Location = new System.Drawing.Point(6, 6);
+            this.groupBox3.Name = "groupBox3";
+            this.groupBox3.Size = new System.Drawing.Size(423, 89);
+            this.groupBox3.TabIndex = 0;
+            this.groupBox3.TabStop = false;
+            this.groupBox3.Text = "Auto Input";
+            // 
+            // Input_AutoInputAns
+            // 
+            this.Input_AutoInputAns.AutoSize = true;
+            this.Input_AutoInputAns.Location = new System.Drawing.Point(6, 63);
+            this.Input_AutoInputAns.Name = "Input_AutoInputAns";
+            this.Input_AutoInputAns.Size = new System.Drawing.Size(111, 16);
+            this.Input_AutoInputAns.TabIndex = 1;
+            this.Input_AutoInputAns.Text = "Auto input \"ans\"";
+            this.Input_AutoInputAns.UseVisualStyleBackColor = true;
+            // 
+            // Input_IdAutoCompletion
+            // 
+            this.Input_IdAutoCompletion.AutoSize = true;
+            this.Input_IdAutoCompletion.Location = new System.Drawing.Point(6, 19);
+            this.Input_IdAutoCompletion.Name = "Input_IdAutoCompletion";
+            this.Input_IdAutoCompletion.Size = new System.Drawing.Size(154, 16);
+            this.Input_IdAutoCompletion.TabIndex = 0;
+            this.Input_IdAutoCompletion.Text = "Identifier auto completion";
+            this.Input_IdAutoCompletion.UseVisualStyleBackColor = true;
+            // 
+            // Input_AutoCloseBrackets
+            // 
+            this.Input_AutoCloseBrackets.AutoSize = true;
+            this.Input_AutoCloseBrackets.Location = new System.Drawing.Point(6, 41);
+            this.Input_AutoCloseBrackets.Name = "Input_AutoCloseBrackets";
+            this.Input_AutoCloseBrackets.Size = new System.Drawing.Size(127, 16);
+            this.Input_AutoCloseBrackets.TabIndex = 0;
+            this.Input_AutoCloseBrackets.Text = "Auto close brackets";
+            this.Input_AutoCloseBrackets.UseVisualStyleBackColor = true;
+            // 
+            // tabPage1
+            // 
+            this.tabPage1.Controls.Add(this.groupBox4);
+            this.tabPage1.Controls.Add(this.NumberFormat_Exp_Enabled);
+            this.tabPage1.Controls.Add(this.groupBox2);
+            this.tabPage1.Controls.Add(this.eNoteGroup);
+            this.tabPage1.Location = new System.Drawing.Point(4, 22);
+            this.tabPage1.Name = "tabPage1";
+            this.tabPage1.Padding = new System.Windows.Forms.Padding(3);
+            this.tabPage1.Size = new System.Drawing.Size(435, 320);
+            this.tabPage1.TabIndex = 2;
+            this.tabPage1.Text = "Format";
+            this.tabPage1.UseVisualStyleBackColor = true;
+            // 
+            // groupBox4
+            // 
+            this.groupBox4.Controls.Add(this.NumberFormat_Separator_Hexadecimal);
+            this.groupBox4.Controls.Add(this.NumberFormat_Separator_Thousands);
+            this.groupBox4.Location = new System.Drawing.Point(6, 172);
+            this.groupBox4.Name = "groupBox4";
+            this.groupBox4.Size = new System.Drawing.Size(423, 74);
+            this.groupBox4.TabIndex = 2;
+            this.groupBox4.TabStop = false;
+            this.groupBox4.Text = "Numeric Separators";
+            // 
+            // NumberFormat_Separator_Hexadecimal
+            // 
+            this.NumberFormat_Separator_Hexadecimal.AutoSize = true;
+            this.NumberFormat_Separator_Hexadecimal.Location = new System.Drawing.Point(18, 45);
+            this.NumberFormat_Separator_Hexadecimal.Name = "NumberFormat_Separator_Hexadecimal";
+            this.NumberFormat_Separator_Hexadecimal.Size = new System.Drawing.Size(325, 16);
+            this.NumberFormat_Separator_Hexadecimal.TabIndex = 0;
+            this.NumberFormat_Separator_Hexadecimal.Text = "Separate hexadecimal/binary/octal numbers every 4 digits";
+            this.NumberFormat_Separator_Hexadecimal.UseVisualStyleBackColor = true;
+            // 
+            // NumberFormat_Separator_Thousands
+            // 
+            this.NumberFormat_Separator_Thousands.AutoSize = true;
+            this.NumberFormat_Separator_Thousands.Location = new System.Drawing.Point(18, 23);
+            this.NumberFormat_Separator_Thousands.Name = "NumberFormat_Separator_Thousands";
+            this.NumberFormat_Separator_Thousands.Size = new System.Drawing.Size(233, 16);
+            this.NumberFormat_Separator_Thousands.TabIndex = 0;
+            this.NumberFormat_Separator_Thousands.Text = "Separate decimal numbers every 3 digits";
+            this.NumberFormat_Separator_Thousands.UseVisualStyleBackColor = true;
+            // 
+            // groupBox2
+            // 
+            this.groupBox2.Controls.Add(this.NumberFormat_Decimal_MaxLen);
+            this.groupBox2.Controls.Add(this.label6);
+            this.groupBox2.Location = new System.Drawing.Point(6, 6);
+            this.groupBox2.Name = "groupBox2";
+            this.groupBox2.Size = new System.Drawing.Size(423, 48);
+            this.groupBox2.TabIndex = 0;
+            this.groupBox2.TabStop = false;
+            this.groupBox2.Text = "Decimal";
+            // 
+            // NumberFormat_Decimal_MaxLen
+            // 
+            this.NumberFormat_Decimal_MaxLen.Location = new System.Drawing.Point(222, 18);
+            this.NumberFormat_Decimal_MaxLen.Maximum = new decimal(new int[] {
+            28,
+            0,
+            0,
+            0});
+            this.NumberFormat_Decimal_MaxLen.Minimum = new decimal(new int[] {
+            1,
+            0,
+            0,
+            0});
+            this.NumberFormat_Decimal_MaxLen.Name = "NumberFormat_Decimal_MaxLen";
+            this.NumberFormat_Decimal_MaxLen.Size = new System.Drawing.Size(65, 19);
+            this.NumberFormat_Decimal_MaxLen.TabIndex = 1;
+            this.NumberFormat_Decimal_MaxLen.Value = new decimal(new int[] {
+            8,
+            0,
+            0,
+            0});
+            // 
+            // label6
+            // 
+            this.label6.AutoSize = true;
+            this.label6.Location = new System.Drawing.Point(11, 21);
+            this.label6.Name = "label6";
+            this.label6.Size = new System.Drawing.Size(205, 12);
+            this.label6.TabIndex = 0;
+            this.label6.Text = "Max length of decimal place to display:";
+            // 
+            // tabPage7
+            // 
+            this.tabPage7.Controls.Add(this.groupBox6);
+            this.tabPage7.Location = new System.Drawing.Point(4, 22);
+            this.tabPage7.Name = "tabPage7";
+            this.tabPage7.Padding = new System.Windows.Forms.Padding(3);
+            this.tabPage7.Size = new System.Drawing.Size(435, 320);
+            this.tabPage7.TabIndex = 6;
+            this.tabPage7.Text = "Calculation";
+            this.tabPage7.UseVisualStyleBackColor = true;
+            // 
+            // groupBox6
+            // 
+            this.groupBox6.Controls.Add(this.Calculation_Limit_MaxCallRecursions);
+            this.groupBox6.Controls.Add(this.Calculation_Limit_MaxArrayLength);
+            this.groupBox6.Controls.Add(this.label12);
+            this.groupBox6.Controls.Add(this.label11);
+            this.groupBox6.Location = new System.Drawing.Point(6, 6);
+            this.groupBox6.Name = "groupBox6";
+            this.groupBox6.Size = new System.Drawing.Size(423, 74);
+            this.groupBox6.TabIndex = 0;
+            this.groupBox6.TabStop = false;
+            this.groupBox6.Text = "Limits";
+            // 
+            // Calculation_Limit_MaxCallRecursions
+            // 
+            this.Calculation_Limit_MaxCallRecursions.Location = new System.Drawing.Point(164, 42);
+            this.Calculation_Limit_MaxCallRecursions.Maximum = new decimal(new int[] {
+            1024,
+            0,
+            0,
+            0});
+            this.Calculation_Limit_MaxCallRecursions.Minimum = new decimal(new int[] {
+            10,
+            0,
+            0,
+            0});
+            this.Calculation_Limit_MaxCallRecursions.Name = "Calculation_Limit_MaxCallRecursions";
+            this.Calculation_Limit_MaxCallRecursions.Size = new System.Drawing.Size(65, 19);
+            this.Calculation_Limit_MaxCallRecursions.TabIndex = 3;
+            this.Calculation_Limit_MaxCallRecursions.Value = new decimal(new int[] {
+            10,
+            0,
+            0,
+            0});
+            // 
+            // Calculation_Limit_MaxArrayLength
+            // 
+            this.Calculation_Limit_MaxArrayLength.Location = new System.Drawing.Point(164, 18);
+            this.Calculation_Limit_MaxArrayLength.Maximum = new decimal(new int[] {
+            65536,
+            0,
+            0,
+            0});
+            this.Calculation_Limit_MaxArrayLength.Minimum = new decimal(new int[] {
+            10,
+            0,
+            0,
+            0});
+            this.Calculation_Limit_MaxArrayLength.Name = "Calculation_Limit_MaxArrayLength";
+            this.Calculation_Limit_MaxArrayLength.Size = new System.Drawing.Size(65, 19);
+            this.Calculation_Limit_MaxArrayLength.TabIndex = 3;
+            this.Calculation_Limit_MaxArrayLength.Value = new decimal(new int[] {
+            10,
+            0,
+            0,
+            0});
+            // 
+            // label12
+            // 
+            this.label12.AutoSize = true;
+            this.label12.Location = new System.Drawing.Point(6, 44);
+            this.label12.Name = "label12";
+            this.label12.Size = new System.Drawing.Size(152, 12);
+            this.label12.TabIndex = 2;
+            this.label12.Text = "Max function call recursions:";
+            // 
+            // label11
+            // 
+            this.label11.AutoSize = true;
+            this.label11.Location = new System.Drawing.Point(6, 20);
+            this.label11.Name = "label11";
+            this.label11.Size = new System.Drawing.Size(93, 12);
+            this.label11.TabIndex = 2;
+            this.label11.Text = "Max array length:";
             // 
             // tabPage5
             // 
@@ -864,6 +958,68 @@
             this.columnHeader6.Text = "Parameter";
             this.columnHeader6.Width = 164;
             // 
+            // groupBox7
+            // 
+            this.groupBox7.Controls.Add(this.label14);
+            this.groupBox7.Controls.Add(this.label15);
+            this.groupBox7.Controls.Add(this.label13);
+            this.groupBox7.Controls.Add(this.History_KeepPeriod);
+            this.groupBox7.Location = new System.Drawing.Point(6, 240);
+            this.groupBox7.Name = "groupBox7";
+            this.groupBox7.Size = new System.Drawing.Size(422, 71);
+            this.groupBox7.TabIndex = 3;
+            this.groupBox7.TabStop = false;
+            this.groupBox7.Text = "History";
+            // 
+            // History_KeepPeriod
+            // 
+            this.History_KeepPeriod.Location = new System.Drawing.Point(133, 19);
+            this.History_KeepPeriod.Maximum = new decimal(new int[] {
+            365,
+            0,
+            0,
+            0});
+            this.History_KeepPeriod.Minimum = new decimal(new int[] {
+            1,
+            0,
+            0,
+            0});
+            this.History_KeepPeriod.Name = "History_KeepPeriod";
+            this.History_KeepPeriod.Size = new System.Drawing.Size(85, 19);
+            this.History_KeepPeriod.TabIndex = 0;
+            this.History_KeepPeriod.Value = new decimal(new int[] {
+            15,
+            0,
+            0,
+            0});
+            // 
+            // label13
+            // 
+            this.label13.AutoSize = true;
+            this.label13.Location = new System.Drawing.Point(8, 21);
+            this.label13.Name = "label13";
+            this.label13.Size = new System.Drawing.Size(120, 12);
+            this.label13.TabIndex = 1;
+            this.label13.Text = "Period to keep history:";
+            // 
+            // label14
+            // 
+            this.label14.AutoSize = true;
+            this.label14.Location = new System.Drawing.Point(224, 21);
+            this.label14.Name = "label14";
+            this.label14.Size = new System.Drawing.Size(29, 12);
+            this.label14.TabIndex = 1;
+            this.label14.Text = "days";
+            // 
+            // label15
+            // 
+            this.label15.AutoSize = true;
+            this.label15.Location = new System.Drawing.Point(8, 46);
+            this.label15.Name = "label15";
+            this.label15.Size = new System.Drawing.Size(301, 12);
+            this.label15.TabIndex = 1;
+            this.label15.Text = "Expired files are deleted when the main window is closed.";
+            // 
             // Hotkey_KeyCode
             // 
             this.Hotkey_KeyCode.Alt = false;
@@ -876,92 +1032,6 @@
             this.Hotkey_KeyCode.Size = new System.Drawing.Size(249, 19);
             this.Hotkey_KeyCode.TabIndex = 3;
             this.Hotkey_KeyCode.Win = false;
-            // 
-            // tabPage7
-            // 
-            this.tabPage7.Controls.Add(this.groupBox6);
-            this.tabPage7.Location = new System.Drawing.Point(4, 22);
-            this.tabPage7.Name = "tabPage7";
-            this.tabPage7.Padding = new System.Windows.Forms.Padding(3);
-            this.tabPage7.Size = new System.Drawing.Size(435, 320);
-            this.tabPage7.TabIndex = 6;
-            this.tabPage7.Text = "Calculation";
-            this.tabPage7.UseVisualStyleBackColor = true;
-            // 
-            // groupBox6
-            // 
-            this.groupBox6.Controls.Add(this.Calculation_Limit_MaxCallRecursions);
-            this.groupBox6.Controls.Add(this.Calculation_Limit_MaxArrayLength);
-            this.groupBox6.Controls.Add(this.label12);
-            this.groupBox6.Controls.Add(this.label11);
-            this.groupBox6.Location = new System.Drawing.Point(6, 6);
-            this.groupBox6.Name = "groupBox6";
-            this.groupBox6.Size = new System.Drawing.Size(423, 74);
-            this.groupBox6.TabIndex = 0;
-            this.groupBox6.TabStop = false;
-            this.groupBox6.Text = "Limits";
-            // 
-            // Calculation_Limit_MaxArrayLength
-            // 
-            this.Calculation_Limit_MaxArrayLength.Location = new System.Drawing.Point(164, 18);
-            this.Calculation_Limit_MaxArrayLength.Maximum = new decimal(new int[] {
-            65536,
-            0,
-            0,
-            0});
-            this.Calculation_Limit_MaxArrayLength.Minimum = new decimal(new int[] {
-            10,
-            0,
-            0,
-            0});
-            this.Calculation_Limit_MaxArrayLength.Name = "Calculation_Limit_MaxArrayLength";
-            this.Calculation_Limit_MaxArrayLength.Size = new System.Drawing.Size(65, 19);
-            this.Calculation_Limit_MaxArrayLength.TabIndex = 3;
-            this.Calculation_Limit_MaxArrayLength.Value = new decimal(new int[] {
-            10,
-            0,
-            0,
-            0});
-            // 
-            // label11
-            // 
-            this.label11.AutoSize = true;
-            this.label11.Location = new System.Drawing.Point(6, 20);
-            this.label11.Name = "label11";
-            this.label11.Size = new System.Drawing.Size(93, 12);
-            this.label11.TabIndex = 2;
-            this.label11.Text = "Max array length:";
-            // 
-            // label12
-            // 
-            this.label12.AutoSize = true;
-            this.label12.Location = new System.Drawing.Point(6, 44);
-            this.label12.Name = "label12";
-            this.label12.Size = new System.Drawing.Size(152, 12);
-            this.label12.TabIndex = 2;
-            this.label12.Text = "Max function call recursions:";
-            // 
-            // Calculation_Limit_MaxCallRecursions
-            // 
-            this.Calculation_Limit_MaxCallRecursions.Location = new System.Drawing.Point(164, 42);
-            this.Calculation_Limit_MaxCallRecursions.Maximum = new decimal(new int[] {
-            1024,
-            0,
-            0,
-            0});
-            this.Calculation_Limit_MaxCallRecursions.Minimum = new decimal(new int[] {
-            10,
-            0,
-            0,
-            0});
-            this.Calculation_Limit_MaxCallRecursions.Name = "Calculation_Limit_MaxCallRecursions";
-            this.Calculation_Limit_MaxCallRecursions.Size = new System.Drawing.Size(65, 19);
-            this.Calculation_Limit_MaxCallRecursions.TabIndex = 3;
-            this.Calculation_Limit_MaxCallRecursions.Value = new decimal(new int[] {
-            10,
-            0,
-            0,
-            0});
             // 
             // SettingsDialog
             // 
@@ -990,6 +1060,11 @@
             this.groupBox5.PerformLayout();
             this.groupBox1.ResumeLayout(false);
             this.groupBox1.PerformLayout();
+            this.tabPage2.ResumeLayout(false);
+            this.colorGroup.ResumeLayout(false);
+            this.fontGroup.ResumeLayout(false);
+            this.fontGroup.PerformLayout();
+            ((System.ComponentModel.ISupportInitialize)(this.Appearance_Font_Size)).EndInit();
             this.tabPage4.ResumeLayout(false);
             this.groupBox3.ResumeLayout(false);
             this.groupBox3.PerformLayout();
@@ -1000,21 +1075,19 @@
             this.groupBox2.ResumeLayout(false);
             this.groupBox2.PerformLayout();
             ((System.ComponentModel.ISupportInitialize)(this.NumberFormat_Decimal_MaxLen)).EndInit();
-            this.tabPage2.ResumeLayout(false);
-            this.colorGroup.ResumeLayout(false);
-            this.fontGroup.ResumeLayout(false);
-            this.fontGroup.PerformLayout();
-            ((System.ComponentModel.ISupportInitialize)(this.Appearance_Font_Size)).EndInit();
+            this.tabPage7.ResumeLayout(false);
+            this.groupBox6.ResumeLayout(false);
+            this.groupBox6.PerformLayout();
+            ((System.ComponentModel.ISupportInitialize)(this.Calculation_Limit_MaxCallRecursions)).EndInit();
+            ((System.ComponentModel.ISupportInitialize)(this.Calculation_Limit_MaxArrayLength)).EndInit();
             this.tabPage5.ResumeLayout(false);
             this.tabPage6.ResumeLayout(false);
             this.tabPage6.PerformLayout();
             this.scriptGroup.ResumeLayout(false);
             this.scriptGroup.PerformLayout();
-            this.tabPage7.ResumeLayout(false);
-            this.groupBox6.ResumeLayout(false);
-            this.groupBox6.PerformLayout();
-            ((System.ComponentModel.ISupportInitialize)(this.Calculation_Limit_MaxArrayLength)).EndInit();
-            ((System.ComponentModel.ISupportInitialize)(this.Calculation_Limit_MaxCallRecursions)).EndInit();
+            this.groupBox7.ResumeLayout(false);
+            this.groupBox7.PerformLayout();
+            ((System.ComponentModel.ISupportInitialize)(this.History_KeepPeriod)).EndInit();
             this.ResumeLayout(false);
 
         }
@@ -1097,5 +1170,10 @@
         private System.Windows.Forms.NumericUpDown Calculation_Limit_MaxArrayLength;
         private System.Windows.Forms.Label label12;
         private System.Windows.Forms.Label label11;
+        private System.Windows.Forms.GroupBox groupBox7;
+        private System.Windows.Forms.Label label13;
+        private System.Windows.Forms.NumericUpDown History_KeepPeriod;
+        private System.Windows.Forms.Label label14;
+        private System.Windows.Forms.Label label15;
     }
 }

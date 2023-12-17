@@ -83,6 +83,16 @@ namespace Shapoco.Properties {
         /// <summary>
         ///   型 System.Drawing.Bitmap のローカライズされたリソースを検索します。
         /// </summary>
+        internal static System.Drawing.Bitmap ToolIcon_Folder {
+            get {
+                object obj = ResourceManager.GetObject("ToolIcon_Folder", resourceCulture);
+                return ((System.Drawing.Bitmap)(obj));
+            }
+        }
+        
+        /// <summary>
+        ///   型 System.Drawing.Bitmap のローカライズされたリソースを検索します。
+        /// </summary>
         internal static System.Drawing.Bitmap ToolIcon_Help {
             get {
                 object obj = ResourceManager.GetObject("ToolIcon_Help", resourceCulture);
@@ -106,16 +116,6 @@ namespace Shapoco.Properties {
         internal static System.Drawing.Bitmap ToolIcon_InvertBrightness {
             get {
                 object obj = ResourceManager.GetObject("ToolIcon_InvertBrightness", resourceCulture);
-                return ((System.Drawing.Bitmap)(obj));
-            }
-        }
-        
-        /// <summary>
-        ///   型 System.Drawing.Bitmap のローカライズされたリソースを検索します。
-        /// </summary>
-        internal static System.Drawing.Bitmap ToolIcon_Memo {
-            get {
-                object obj = ResourceManager.GetObject("ToolIcon_Memo", resourceCulture);
                 return ((System.Drawing.Bitmap)(obj));
             }
         }
@@ -166,6 +166,16 @@ namespace Shapoco.Properties {
         internal static System.Drawing.Bitmap ToolIcon_Settings {
             get {
                 object obj = ResourceManager.GetObject("ToolIcon_Settings", resourceCulture);
+                return ((System.Drawing.Bitmap)(obj));
+            }
+        }
+        
+        /// <summary>
+        ///   型 System.Drawing.Bitmap のローカライズされたリソースを検索します。
+        /// </summary>
+        internal static System.Drawing.Bitmap ToolIcon_Sheet {
+            get {
+                object obj = ResourceManager.GetObject("ToolIcon_Sheet", resourceCulture);
                 return ((System.Drawing.Bitmap)(obj));
             }
         }

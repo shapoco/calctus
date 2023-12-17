@@ -18,7 +18,9 @@ namespace Shapoco.Calctus.Model.Sheets {
 
         public readonly ObservableCollection<SheetItem> Items = new ObservableCollection<SheetItem>();
 
-        public Sheet() { }
+        public Sheet() {
+            Items.Add(new SheetItem());
+        }
         public Sheet(string path) {
 #if DEBUG
             Console.WriteLine("Loading sheet from: '" + path + "'");

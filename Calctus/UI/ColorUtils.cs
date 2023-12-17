@@ -30,5 +30,14 @@ namespace Shapoco.Calctus.UI {
                 (color.G - oldMin) + newMin,
                 (color.B - oldMin) + newMin);
         }
+
+        public static Color Blend(Color c0, Color c1, float alpha = 0.5f) {
+            float xAlpha = 1 - alpha;
+            return Color.FromArgb(
+                (int)Math.Round(c0.A * xAlpha + c1.A * alpha),
+                (int)Math.Round(c0.R * xAlpha + c1.R * alpha),
+                (int)Math.Round(c0.G * xAlpha + c1.G * alpha),
+                (int)Math.Round(c0.B * xAlpha + c1.B * alpha));
+        }
     }
 }
