@@ -103,7 +103,7 @@ Sort the `array`.
 
 ### `sort(array, func)`
 
-Sort the `array` using a evaluation function `func(x)`.
+Sort the `array` using a evaluator function `func(x)`.
 
 ### `union(array0, array1)`
 
@@ -115,7 +115,7 @@ Returns an array of unique elements.
 
 ### `unique(array, func)`
 
-Return unique elements using comparer function `func(a,b)`.
+Return unique elements using evaluator function `func(x)`.
 
 ----
 ## Assertion
@@ -332,19 +332,19 @@ Encode `str` to UTF8 byte sequence.
 
 ### `esCeil(series, *x)`
 
-Nearest E-series value greater than or equal to `x` (series=3, 6, 12, 24, 48, 96, or 192).
+Nearest E-series value greater than or equal to `x` (`series`=3, 6, 12, 24, 48, 96, or 192).
 
 ### `esFloor(series, *x)`
 
-Nearest E-series value less than or equal to `x` (series=3, 6, 12, 24, 48, 96, or 192).
+Nearest E-series value less than or equal to `x` (`series`=3, 6, 12, 24, 48, 96, or 192).
 
 ### `esRatio(series, *x)`
 
-Two E-series resistor values that provide the closest value to the voltage divider ratio `x` (series=3, 6, 12, 24, 48, 96, or 192).
+Two E-series resistor values that provide the closest value to the voltage divider ratio `x` (`series`=3, 6, 12, 24, 48, 96, or 192).
 
 ### `esRound(series, *x)`
 
-Nearest E-series value (series=3, 6, 12, 24, 48, 96, or 192).
+Nearest E-series value (`series`=3, 6, 12, 24, 48, 96, or 192).
 
 ----
 ## Exponential

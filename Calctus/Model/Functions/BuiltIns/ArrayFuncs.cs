@@ -62,7 +62,7 @@ namespace Shapoco.Calctus.Model.Functions.BuiltIns {
             var array = (Val[])a[0].AsArrayVal().Raw;
             var func = (FuncDef)a[1].Raw;
             return new ArrayVal(array.OrderBy(p => func.Call(e, p).AsReal).ToArray(), a[0].FormatHint);
-        }, "Sort the `array` using a evaluation function `func(x)`.");
+        }, "Sort the `array` using a evaluator function `func(x)`.");
 
         public static readonly BuiltInFuncDef extend = new BuiltInFuncDef("extend(array,func,count)", (e, a) => {
             var seedArray = a[0].AsArrayVal();
@@ -115,7 +115,7 @@ namespace Shapoco.Calctus.Model.Functions.BuiltIns {
             var array = (Val[])a[0].AsArrayVal().Raw;
             var func = (FuncDef)a[1].Raw;
             return new ArrayVal(array.Distinct(new EqualityComparerFunc(e, func)).ToArray(), a[0].FormatHint);
-        }, "Return unique elements using comparer function `func(a,b)`.");
+        }, "Return unique elements using evaluator function `func(x)`.");
 
         public static readonly BuiltInFuncDef except = new BuiltInFuncDef("except(array0,array1)", (e, a) => {
             var array0 = (Val[])a[0].AsArrayVal().Raw;
