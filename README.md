@@ -89,6 +89,8 @@ User-defined constants can also be used.
 See [Built-In Functions](FUNCTIONS.md) for details.
 
 <!-- START_OF_BUILT_IN_FUNCTION_TABLE -->
+Now calctus has 137 built-in functions.
+
 |Category|Functions|
 |:--:|:--|
 |Absolute/Sign|`abs(*x)`, `mag(x[]...)`, `sign(*x)`|
@@ -139,7 +141,7 @@ f(3) // --> 9.
 Rust-style lambda function is available.
 
 ```c++
-f=|x|->x^2
+f=(x)=>x^2
 f(3) // --> 9.
 ```
 
@@ -150,7 +152,7 @@ Use the `solve` function to solve equations numerically by Newton's method.
 ```c++
 def f(x)=x^2-2
 solve(f) // --> [-1.414213562, 1.414213562].
-solve(|x|->x^2-2) // This gives the same result.
+solve((x)=>x^2-2) // This gives the same result.
 ```
 
 By default, the Newton's method is performed based on automatically generated initial values. Therefore, it may produce inaccurate results if the solution is concentrated in a small area or exists far from the origin.
