@@ -37,7 +37,7 @@ namespace Shapoco.Calctus.Model.Types {
                 return thisArray;
             }
             else if (this is StrVal thisStr) {
-                return new ArrayVal(thisStr.AsString.Select(p => (real)p).ToArray(), new FormatHint(NumberFormatter.CStyleHex));
+                return new ArrayVal(thisStr.AsString.Select(p => (real)p).ToArray(), new FormatHint(NumberFormatter.CStyleChar));
             }
             else {
                 throw new InvalidCastException();

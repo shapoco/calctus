@@ -29,7 +29,7 @@ namespace Shapoco.Calctus.Model.Functions.BuiltIns {
             "Returns an array consists of sequence of numbers greater than or equal to `start` and less than or equal to `stop` with common difference `step`.");
         
         public static readonly BuiltInFuncDef reverseArray = new BuiltInFuncDef("reverseArray(array)", (e, a) => {
-            var array = (Val[])((ArrayVal)a[0]).Raw;
+            var array = (Val[])a[0].AsArrayVal().Raw;
             Array.Reverse(array);
             return new ArrayVal(array, a[0].FormatHint);
         }, "Reverses the order of elements of `array`");
