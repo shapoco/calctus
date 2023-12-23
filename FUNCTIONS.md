@@ -330,21 +330,21 @@ Encode `str` to UTF8 byte sequence.
 ----
 ## E Series
 
-### `e3Ratio(series, *x)`
-
-E-series value of divider resistor
-
 ### `esCeil(series, *x)`
 
-E-series ceiling
+Nearest E-series value greater than or equal to `x` (series=3, 6, 12, 24, 48, 96, or 192).
 
 ### `esFloor(series, *x)`
 
-E-series floor
+Nearest E-series value less than or equal to `x` (series=3, 6, 12, 24, 48, 96, or 192).
+
+### `esRatio(series, *x)`
+
+Two E-series resistor values that provide the closest value to the voltage divider ratio `x` (series=3, 6, 12, 24, 48, 96, or 192).
 
 ### `esRound(series, *x)`
 
-E-series round
+Nearest E-series value (series=3, 6, 12, 24, 48, 96, or 192).
 
 ----
 ## Exponential

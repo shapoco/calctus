@@ -11,19 +11,19 @@ namespace Shapoco.Calctus.Model.Functions.BuiltIns {
     static class ESeriesFuncs {
         public static readonly BuiltInFuncDef esFloor = new BuiltInFuncDef("esFloor(series,*x)", (e, a) => {
             return new RealVal(PreferredNumbers.Floor(ESeries.GetSeries(a[0].AsInt), a[1].AsReal), a[1].FormatHint);
-        }, "E-series floor");
+        }, "Nearest E-series value less than or equal to `x` (series=3, 6, 12, 24, 48, 96, or 192).");
 
         public static readonly BuiltInFuncDef esCeil = new BuiltInFuncDef("esCeil(series,*x)", (e, a) => {
             return new RealVal(PreferredNumbers.Ceiling(ESeries.GetSeries(a[0].AsInt), a[1].AsReal), a[1].FormatHint);
-        }, "E-series ceiling");
+        }, "Nearest E-series value greater than or equal to `x` (series=3, 6, 12, 24, 48, 96, or 192).");
 
         public static readonly BuiltInFuncDef esRound = new BuiltInFuncDef("esRound(series,*x)", (e, a) => {
             return new RealVal(PreferredNumbers.Round(ESeries.GetSeries(a[0].AsInt), a[1].AsReal), a[1].FormatHint);
-        }, "E-series round");
+        }, "Nearest E-series value (series=3, 6, 12, 24, 48, 96, or 192).");
 
         public static readonly BuiltInFuncDef esRatio = new BuiltInFuncDef("esRatio(series,*x)", (e, a) => {
             return new ArrayVal(PreferredNumbers.FindSplitPair(ESeries.GetSeries(a[0].AsInt), a[1].AsReal));
-        }, "E-series value of divider resistor");
+        }, "Two E-series resistor values that provide the closest value to the voltage divider ratio `x` (series=3, 6, 12, 24, 48, 96, or 192).");
 
         /*
         public static readonly EmbeddedFuncDef e3Floor = new EmbeddedFuncDef("e3Floor(*x)", (e, a) => new RealVal(PreferredNumbers.Floor(Eseries.E3, a[0].AsReal), a[0].FormatHint), "E3 series floor");
