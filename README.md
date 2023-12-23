@@ -84,32 +84,36 @@ Calctus (カルクタス) is a calculator application for Windows developed for 
 
 User-defined constants can also be used. 
 
-### Embedded Functions
+### Built-In Functions
 
-|Category|Functions|Precision|
-|:--|:--|:--|
-|Exponential|`pow(*x,y)`, `exp(*x)` :new:, `sqrt(*x)`, `log(*x)`, `log2(*x)`, `log10(*x)`, `clog2(*x)`, `clog10(*x)`|`Decimal`|
-|Trigonometric|`sin(*x)`, `cos(*x)`, `tan(*x)`,`asin(*x)`, `acos(*x)`, `atan(*x)`, `atan2(y, x)`,`sinh(*x)`, `cosh(*x)`, `tanh(*x)`|`Double`|
-|Round|`floor(*x)`, `ceil(*x)`, `trunc(*x)`, `round(*x)`|`Decimal`|
-|Absolute/Sign|`abs(*x)`, `sign(*x)`|`Decimal`|
-|Max/Min|`max(x...)`, `min(x...)`|`Decimal`|
-|Sum/Average|`sum(x...)`, `ave(x...)`, `harMean(x...)`, `invSum(x...)`, `geoMean(x...)`|`Decimal`|
-|GCD, LCM|`gcd(x...)`, `lcm(x...)`|`Decimal`|
-|Bit/Byte Operations|`swapNib(*x)`, `swap2(*x)`, `swap4(*x)`, `swap8(*x)`, `reverseBits(b,*x)`, `reverseBytewise(*x)`, `rotateL(b,*x)`, `rotateR(b,*x)`, `count1(*x)`|`Int64`|
-|Parity/ECC|`xorReduce(*x)`, `oddParity(*x)`, `eccWidth(*x)`, `eccEnc(b,*x)`, `eccDec(b,e,x)`|`Int64`|
-|Gray-code|`toGray(*x)`, `fromGray(*x)`|`Int64`|
-|Fractions|`rat(x)`, `rat(x,a)`, `real(x)`|`Decimal`|
-|Representation|`dec(*x)`, `hex(*x)`, `bin(*x)`, `oct(*x)`, `char(*x)`, `si(*x)`, `kibi(*x)`, `datetime(*x)`,`array(str)`,`str(array)`|`Decimal`|
-|Date Time|`now()`, `fromDays(x)`, `fromHours(x)`, `fromMinutes(x)`, `fromSeconds(x)`, `toDays(x)`, `toHours(x)`, `toMinutes(x)`, `toSeconds(x)`|`Double`|
-|Color|`rgb(r,g,b)`, `rgb(rgb)`, `hsv2rgb(h,s,v)`, `rgb2hsv(rgb)`, `hsl2rgb(h,s,l)`, `rgb2hsl(rgb)`, `yuv2rgb(y,u,v)`, `yuv2rgb(yuv)`, `rgb2yuv(r,g,b)`, `rgb2yuv(rgb)`, `rgbto565(rgb)`, `rgbfrom565(rgb565)`, `pack565(r5,g6,b5)`, `unpack565(rgb565)`|`Decimal`|
-|E-series|Rounding to the E-series value: `eXFloor(x)`, `eXCeil(x)`, `eXRound(x)`<br>Calculation of voltage divider resistance: `eXRatio(x)`<br> (`X`=`3`, `6`, `12`, `24`, `48`, `96`, `192`)|`Decimal`|
-|Prime Number|`isPrime(x)`, `prime(n)`, `primeFact(x)`|`Int64`|
-|Random|`rand()`, `rand(min,max)`, `rand32()`, `rand64()`|`Decimal`, `Int64`|
-|Array :new:|`len(array)`, `range(start,end)`, `range(start,end,step)`, `rangeInclusive(start,end)`, `rangeInclusive(start,end,step)`, `map(array,func)`, `filter(array,func)`, `count(array,func)`, `sort(array)`, `sort(array,func)`, `extend(array,func,count)`, `aggregate(array,func)`, `all(array)`, `all(array,func)`, `any(array)`, `any(array,func)`, `unique(array)`, `unique(array,func)`, `except(array0,array1)`, `intesect(array0,array1)`, `union(array0,array1)`|`Array`/`String`|
-|Encoding :new:|`utf8Enc(str)`, `utf8Dec(array)`, `urlEnc(str)`, `urlDec(str)`, `base64Enc(str)`, `base64Dec(str)`, `base64EncBytes(array)`, `base64DecBytes(str)`|`Array`/`String`|
-|Solver|`solve(func)`, `solve(func,init)`, `solve(func,min,max)`|`Decimal`|
-|Graph|`plot(func)`|`Decimal`|
-|Assertion|`assert(expr)`|`Boolean`|
+See [Built-In Functions](FUNCTIONS.md) for details.
+
+<!-- START_OF_BUILT_IN_FUNCTION_TABLE -->
+|Category|Functions|
+|:--:|:--|
+|Absolute/Sign|`abs(*x)`, `mag(x[]...)`, `sign(*x)`|
+|Array|`aggregate(array,func)`, `all(array)`, `all(array,func)`, `any(array)`, `any(array,func)`, `contains(array,*val)`, `count(array,func)`, `except(array0,array1)`, `extend(array,func,count)`, `filter(array,func)`, `indexOf(array,*val)`, `intersect(array0,array1)`, `lastIndexOf(array,*val)`, `len(array)`, `map(array,func)`, `range(start,stop)`, `range(start,stop,step)`, `rangeInclusive(start,stop)`, `rangeInclusive(start,stop,step)`, `reverseArray(array)`, `sort(array)`, `sort(array,func)`, `union(array0,array1)`, `unique(array)`, `unique(array,func)`|
+|Assertion|`assert(x)`|
+|Bit/Byte Operation|`count1(*x)`, `pack(b,array[]...)`, `reverseBits(b,*x)`, `reverseBytewise(*x)`, `rotateL(b,*x)`, `rotateR(b,*x)`, `swap2(*x)`, `swap4(*x)`, `swap8(*x)`, `swapNib(*x)`, `unpack(b,x)`|
+|Cast|`array(s)`, `rat(*x)`, `rat(*x,max)`, `real(*x)`, `str(array)`|
+|Color|`hsl2rgb(h,s,l)`, `hsv2rgb(h,s,v)`, `pack565(x,y,z)`, `rgb(r,g,b)`, `rgb(*rgb)`, `rgb2hsl(*rgb)`, `rgb2hsv(*rgb)`, `rgb2yuv(r,g,b)`, `rgb2yuv(*rgb)`, `rgbFrom565(*rgb)`, `rgbTo565(*rgb)`, `unpack565(*x)`, `yuv2rgb(y,u,v)`, `yuv2rgb(*yuv)`|
+|Date Time|`fromDays(*x)`, `fromHours(*x)`, `fromMinutes(*x)`, `fromSeconds(*x)`, `now()`, `toDays(*x)`, `toHours(*x)`, `toMinutes(*x)`, `toSeconds(*x)`|
+|Encoding|`base64Dec(str)`, `base64DecBytes(str)`, `base64Enc(str)`, `base64EncBytes(bytes[]...)`, `urlDec(str)`, `urlEnc(str)`, `utf8Dec(bytes[]...)`, `utf8Enc(str)`|
+|E Series|`esCeil(series,*x)`, `esFloor(series,*x)`, `esRatio(series,*x)`, `esRound(series,*x)`|
+|Exponential|`clog10(*x)`, `clog2(*x)`, `exp(*x)`, `log(*x)`, `log10(*x)`, `log2(*x)`, `pow(*x,y)`, `sqrt(*x)`|
+|Gcd/Lcm|`gcd(x...)`, `lcm(x...)`|
+|Gray Code|`fromGray(*x)`, `toGray(*x)`|
+|Min/Max|`max(x...)`, `min(x...)`|
+|Parity/Ecc|`eccDec(b,ecc,x)`, `eccEnc(b,*x)`, `eccWidth(*b)`, `oddParity(*x)`, `xorReduce(*x)`|
+|Plotting|`plot(func)`|
+|Prime Number|`isPrime(*x)`, `prime(*x)`, `primeFact(*x)`|
+|Random|`rand()`, `rand(min,max)`, `rand32()`, `rand64()`|
+|Representaion|`bin(*x)`, `char(*x)`, `datetime(*x)`, `dec(*x)`, `hex(*x)`, `kibi(*x)`, `oct(*x)`, `si(*x)`|
+|Rounding|`ceil(*x)`, `floor(*x)`, `round(*x)`, `trunc(*x)`|
+|Solve|`solve(func)`, `solve(func,init)`, `solve(func,min,max)`|
+|Sum/Average|`ave(x...)`, `geoMean(x...)`, `harMean(x...)`, `invSum(x...)`, `sum(x...)`|
+|Trigonometric|`acos(*x)`, `asin(*x)`, `atan(*x)`, `atan2(a,b)`, `cos(*x)`, `cosh(*x)`, `sin(*x)`, `sinh(*x)`, `tan(*x)`, `tanh(*x)`|
+<!-- END_OF_BUILT_IN_FUNCTION_TABLE -->
 
 ### Variables
 

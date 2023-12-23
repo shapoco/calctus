@@ -44,31 +44,33 @@ namespace Shapoco.Calctus.Model.Functions {
         }
 
 #if DEBUG
+        private static string categoryNameOf(Type type) {
+            var typeName = type.Name.Substring(0, type.Name.Length - 5);
+            var sb = new StringBuilder();
+            foreach (var c in typeName) {
+                if (c == '_') {
+                    sb.Append('/');
+                }
+                else if (sb.Length > 0 && sb[sb.Length - 1] != '/' && 'A' <= c && c <= 'Z') {
+                    sb.Append(' ').Append(c);
+                }
+                else {
+                    sb.Append(c);
+                }
+            }
+            return sb.ToString();
+        }
+
         public static void GenerateDocumentation() {
             if (!AppDataManager.AssemblyPath.EndsWith(@"\bin\Debug")) return;
             Console.WriteLine("Generating embedded function documentation...");
             using (var writer = new StreamWriter("../../FUNCTIONS.md")) {
-                writer.WriteLine("# Embedded Functions");
+                writer.WriteLine("# Built-In Functions");
                 writer.WriteLine();
-                foreach (var libType in Assembly.GetExecutingAssembly().GetTypes().Where(p => p.Name.EndsWith("Funcs")).OrderBy(p => p.Name)) {
-                    var libName = libType.Name.Substring(0, libType.Name.Length - 5);
-                    var sb = new StringBuilder();
-                    foreach(var c in libName) {
-                        if (c == '_') {
-                            sb.Append('/');
-                        }
-                        else if (sb.Length > 0 && sb[sb.Length-1] != '/' && 'A' <= c &&  c<= 'Z') {
-                            sb.Append(' ').Append(c);
-                        }
-                        else {
-                            sb.Append(c);
-                        }
-                    }
-                    libName = sb.ToString();
-
-                    writer.WriteLine("## " + libName);
+                foreach (var categoryType in Assembly.GetExecutingAssembly().GetTypes().Where(p => p.Name.EndsWith("Funcs")).OrderBy(p => p.Name)) {
+                    writer.WriteLine("## " + categoryNameOf(categoryType));
                     writer.WriteLine();
-                    foreach (var func in EnumFunctions(libType).OrderBy(p => p.Name.Text)) {
+                    foreach (var func in EnumFunctions(categoryType).OrderBy(p => p.Name.Text)) {
                         writer.WriteLine("### `" + func.ToString() + "`");
                         writer.WriteLine();
                         writer.WriteLine(func.Description);
@@ -76,6 +78,48 @@ namespace Shapoco.Calctus.Model.Functions {
                     }
                     writer.WriteLine("----");
                 }
+            }
+
+            var readMeBeforeTable = new StringBuilder();
+            var readMeAfterTable = new StringBuilder();
+            using (var reader = new StreamReader("../../README.md")) {
+                bool isBeforeTable = true;
+                bool isAfterTable = false;
+                while (!reader.EndOfStream) {
+                    var line = reader.ReadLine();
+                    if (isBeforeTable) {
+                        readMeBeforeTable.AppendLine(line);
+                        if (line.Trim() == "<!-- START_OF_BUILT_IN_FUNCTION_TABLE -->") {
+                            isBeforeTable = false;
+                        }
+                    }
+                    else if (!isAfterTable) {
+                        if (line.Trim() == "<!-- END_OF_BUILT_IN_FUNCTION_TABLE -->") {
+                            readMeAfterTable.AppendLine(line);
+                            isAfterTable = true;
+                        }
+                    }
+                    else if (!reader.EndOfStream || !string.IsNullOrEmpty(line.Trim())) {
+                        readMeAfterTable.AppendLine(line);
+                    }
+                }
+            }
+
+            using (var writer = new StreamWriter("../../README.md")) {
+                writer.Write(readMeBeforeTable.ToString());
+                writer.WriteLine("|Category|Functions|");
+                writer.WriteLine("|:--:|:--|");
+                foreach (var categoryType in Assembly.GetExecutingAssembly().GetTypes().Where(p => p.Name.EndsWith("Funcs")).OrderBy(p => p.Name)) {
+                    writer.Write("|" + categoryNameOf(categoryType) + "|");
+                    bool first = true;
+                    foreach (var func in EnumFunctions(categoryType).OrderBy(p => p.Name.Text)) {
+                        if (!first) writer.Write(", ");
+                        writer.Write("`" + func.ToString().Replace(" ", "") + "`");
+                        first = false;
+                    }
+                    writer.WriteLine("|");
+                }
+                writer.Write(readMeAfterTable.ToString());
             }
         }
 #endif

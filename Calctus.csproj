@@ -83,7 +83,7 @@
     <Compile Include="Calctus\Model\Functions\BuiltIns\Gcd_LcmFuncs.cs" />
     <Compile Include="Calctus\Model\Functions\BuiltIns\Min_MaxFuncs.cs" />
     <Compile Include="Calctus\Model\Functions\BuiltIns\RoundingFuncs.cs" />
-    <Compile Include="Calctus\Model\Functions\BuiltIns\Abs_SignFuncs.cs" />
+    <Compile Include="Calctus\Model\Functions\BuiltIns\Absolute_SignFuncs.cs" />
     <Compile Include="Calctus\Model\Functions\BuiltIns\Sum_AverageFuncs.cs" />
     <Compile Include="Calctus\Model\Functions\BuiltIns\TrigonometricFuncs.cs" />
     <Compile Include="Calctus\Model\Functions\Types.cs" />

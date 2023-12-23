@@ -1,6 +1,6 @@
-# Embedded Functions
+# Built-In Functions
 
-## Abs/Sign
+## Absolute/Sign
 
 ### `abs(*x)`
 
