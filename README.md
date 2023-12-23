@@ -111,7 +111,7 @@ See [Built-In Functions](FUNCTIONS.md) for details.
 |Representaion|`bin(*x)`, `char(*x)`, `datetime(*x)`, `dec(*x)`, `hex(*x)`, `kibi(*x)`, `oct(*x)`, `si(*x)`|
 |Rounding|`ceil(*x)`, `floor(*x)`, `round(*x)`, `trunc(*x)`|
 |Solve|`solve(func)`, `solve(func,init)`, `solve(func,min,max)`|
-|Sum/Average|`ave(x...)`, `geoMean(x...)`, `harMean(x...)`, `invSum(x...)`, `sum(x...)`|
+|Sum/Average|`ave(array...)`, `geoMean(array...)`, `harMean(array...)`, `invSum(array...)`, `sum(array...)`|
 |Trigonometric|`acos(*x)`, `asin(*x)`, `atan(*x)`, `atan2(a,b)`, `cos(*x)`, `cosh(*x)`, `sin(*x)`, `sinh(*x)`, `tan(*x)`, `tanh(*x)`|
 <!-- END_OF_BUILT_IN_FUNCTION_TABLE -->
 

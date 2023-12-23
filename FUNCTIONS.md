@@ -550,25 +550,25 @@ Solve func(x)=0 using Newton's Method with range of initial value.
 ----
 ## Sum/Average
 
-### `ave(x...)`
+### `ave(array...)`
 
-Arithmetic mean of the arguments
+Arithmetic mean of elements of the `array`.
 
-### `geoMean(x...)`
+### `geoMean(array...)`
 
-Geometric mean of the arguments
+Geometric mean of elements of the `array`.
 
-### `harMean(x...)`
+### `harMean(array...)`
 
-Harmonic mean of the arguments
+Harmonic mean of elements of the `array`.
 
-### `invSum(x...)`
+### `invSum(array...)`
 
-Inverse of the sum of the inverses
+Inverse of the sum of the inverses. Composite resistance of parallel resistors.
 
-### `sum(x...)`
+### `sum(array...)`
 
-Sum of the arguments
+Sum of elements of the `array`.
 
 ----
 ## Trigonometric
