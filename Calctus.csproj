@@ -58,7 +58,9 @@
     <Compile Include="Calctus\Model\Evaluations\EvalError.cs" />
     <Compile Include="Calctus\Model\Evaluations\ValComparer.cs" />
     <Compile Include="Calctus\Model\Evaluations\ValEqualityComparer.cs" />
+    <Compile Include="Calctus\Model\Expressions\AsterExpr.cs" />
     <Compile Include="Calctus\Model\Expressions\LambdaExpr.cs" />
+    <Compile Include="Calctus\Model\Expressions\ParenthesisExpr.cs" />
     <Compile Include="Calctus\Model\Formats\FormatSettingss.cs" />
     <Compile Include="Calctus\Model\Functions\ArgDefList.cs" />
     <Compile Include="Calctus\Model\Functions\EqualityComparerFunc.cs" />
@@ -223,7 +225,7 @@
     <Compile Include="Calctus\Model\Expressions\Operator.cs" />
     <Compile Include="Calctus\Model\Expressions\PartRef.cs" />
     <Compile Include="Calctus\Model\Expressions\UnaryOp.cs" />
-    <Compile Include="Calctus\Model\Expressions\VarRef.cs" />
+    <Compile Include="Calctus\Model\Expressions\IdExpr.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
     <Compile Include="Windows\StartupShortcut.cs" />
     <EmbeddedResource Include="Calctus\UI\ConstEditForm.resx">

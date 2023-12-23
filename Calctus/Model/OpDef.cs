@@ -63,7 +63,7 @@ namespace Shapoco.Calctus.Model {
         public static OpDef ExclusiveRange = new OpDef(OpType.Binary, 20, "..");
         public static OpDef InclusiveRange = new OpDef(OpType.Binary, 20, "..=");
 
-        public static OpDef Arrow = new OpDef(OpType.Binary, 10, "->");
+        public static OpDef Arrow = new OpDef(OpType.Binary, 10, "=>");
         
         public static OpDef Assign = new OpDef(OpType.Binary, OpPriorityDir.Right, 0, "=");
 

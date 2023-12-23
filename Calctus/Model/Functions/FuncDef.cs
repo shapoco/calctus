@@ -12,7 +12,7 @@ using Shapoco.Calctus.Model.Evaluations;
 
 namespace Shapoco.Calctus.Model.Functions {
     abstract class FuncDef {
-        public static readonly Regex PrototypePattern = new Regex(@"^(?<name>\w+)\((?<args>\w+\*?(, *\w+\*?)*((\[\])?\.\.\.)?)?\)$");
+        public static readonly Regex PrototypePattern = new Regex(@"^(?<name>\w+)\((?<args>\*?\w+(, *\*?\w+)*((\[\])?\.\.\.)?)?\)$");
 
         public readonly Token Name;
         public readonly ArgDefList Args;
@@ -43,11 +43,11 @@ namespace Shapoco.Calctus.Model.Functions {
                 var caps = argsStr.Split(',').Select(p => p.Trim()).ToArray();
                 for (int i = 0; i < caps.Length; i++) {
                     var cap = caps[i];
-                    if (cap.EndsWith("*")) {
+                    if (cap.StartsWith("*")) {
                         if (vecArgIndex >= 0) throw new CalctusError("Only one argument is vectorizable.");
                         if (mode != VariadicMode.None) throw new CalctusError("Variadic argument and vectorizable argument cannot coexist.");
                         vecArgIndex = i;
-                        args.Add(new ArgDef(cap.Substring(0, cap.Length - 1)));
+                        args.Add(new ArgDef(cap.Substring(1)));
                     }
                     else {
                         args.Add(new ArgDef(cap));
@@ -158,8 +158,8 @@ namespace Shapoco.Calctus.Model.Functions {
             sb.Append('(');
             for (int i = 0; i < Args.Count; i++) {
                 if (i > 0) sb.Append(", ");
-                sb.Append(Args[i].ToString());
                 if (i == Args.VectorizableArgIndex) sb.Append('*');
+                sb.Append(Args[i].ToString());
             }
             switch (Args.Mode) {
                 case VariadicMode.Flatten: sb.Append("..."); break;

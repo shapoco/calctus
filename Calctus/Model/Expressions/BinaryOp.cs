@@ -22,20 +22,20 @@ namespace Shapoco.Calctus.Model.Expressions {
 
         protected override Val OnEval(EvalContext e) {
             if (Method == OpDef.Assign) {
-                if (A is VarRef aRef) {
+                if (A is IdExpr aRef) {
                     // 変数の参照
                     var val = B.Eval(e);
-                    e.Ref(aRef.RefName, allowCreate: true).Value = val;
+                    e.Ref(aRef.Id, allowCreate: true).Value = val;
                     return val;
                 }
-                else if (A is PartRef pRef && pRef.Target is VarRef tRef) {
+                else if (A is PartRef pRef && pRef.Target is IdExpr tRef) {
                     // Part Select を使った参照
                     var from = pRef.IndexFrom.Eval(e).AsInt;
                     var to = pRef.IndexTo.Eval(e).AsInt;
                     if (from < to) throw new ArgumentOutOfRangeException();
 
                     var val = B.Eval(e);
-                    var varRef = e.Ref(tRef.RefName, allowCreate: false);
+                    var varRef = e.Ref(tRef.Id, allowCreate: false);
                     var varVal = varRef.Value;
                     if (varVal is ArrayVal array) {
                         // 配列の書き換え

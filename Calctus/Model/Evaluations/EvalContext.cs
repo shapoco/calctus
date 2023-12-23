@@ -113,7 +113,7 @@ namespace Shapoco.Calctus.Model.Evaluations {
             EmbeddedFuncDef.NativeFunctions.Select(p => (FuncDef)p).Concat(ExternalFuncDef.ExternalFunctions).Concat(_userFuncs);
 
         public bool SolveFunc(string name , out FuncDef func) {
-            func = AllNamedFuncs().First(p => p.Name != null && p.Name.Text == name);
+            func = AllNamedFuncs().FirstOrDefault(p => p.Name != null && p.Name.Text == name);
             return func != null;
         }
 

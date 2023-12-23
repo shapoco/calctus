@@ -78,30 +78,26 @@ namespace Shapoco.Calctus.Model.Parsers {
         }
 
         public Expr UnaryOpExpr() {
-            if (ReadIf("|")) {
-                var args = ArgDefList();
-                Expect("|");
-                Expect("->", out Token arrow);
-                var expr = Expr();
-                return new LambdaExpr(arrow, new UserFuncDef(null, args, expr));
+            Token tok;
+            if (ReadIf("*", out tok)) {
+                Expect(TokenType.Word, out Token id);
+                return new AsterExpr(tok, new IdExpr(id));
+            }
+            else if (ReadIf(TokenType.OperatorSymbol, out tok)) {
+                var expr = UnaryOpExpr();
+                if (expr is Number num && num.Value is RealVal val) {
+                    // 単純な
+                    if (tok.Text == OpDef.Plus.Symbol) {
+                        return expr;
+                    }
+                    else if (tok.Text == OpDef.ArithInv.Symbol) {
+                        return new Number(new RealVal(-val.AsReal));
+                    }
+                }
+                return new UnaryOp(expr, tok);
             }
             else {
-                if (ReadIf(TokenType.OperatorSymbol, out Token tok)) {
-                    var expr = UnaryOpExpr();
-                    if (expr is Number num && num.Value is RealVal val) {
-                        // 単純な
-                        if (tok.Text == OpDef.Plus.Symbol) {
-                            return expr;
-                        }
-                        else if (tok.Text == OpDef.ArithInv.Symbol) {
-                            return new Number(new RealVal(-val.AsReal));
-                        }
-                    }
-                    return new UnaryOp(expr, tok);
-                }
-                else {
-                    return ElemRefExpr();
-                }
+                return ElemRefExpr();
             }
         }
 
@@ -123,10 +119,8 @@ namespace Shapoco.Calctus.Model.Parsers {
 
         public Expr Operand() {
             Token tok;
-            if (ReadIf("(")) {
-                var ret = Expr();
-                Expect(")");
-                return ret;
+            if (ReadIf("(", out tok)) {
+                return Parenthesis(tok);
             }
             else if (ReadIf("[", out tok)) {
                 var elms = new List<Expr>();
@@ -158,7 +152,7 @@ namespace Shapoco.Calctus.Model.Parsers {
                     return new CallExpr(tok, args.ToArray());
                 }
                 else {
-                    return new VarRef(tok);
+                    return new IdExpr(tok);
                 }
             }
             else if (EndOfExpr) {
@@ -168,6 +162,50 @@ namespace Shapoco.Calctus.Model.Parsers {
                 var nextToken = Peek();
                 throw new ParserError(nextToken, "Invalid operand: '" + nextToken + "'");
             }
+        }
+
+        public Expr Parenthesis(Token first) {
+            var exprs = new List<Expr>();
+            Token t;
+            Token firstComma = null;
+            if (!ReadIf(")")) {
+                exprs.Add(Expr());
+                while (ReadIf(",", out t)) {
+                    if (firstComma == null) firstComma = t;
+                    exprs.Add(Expr());
+                }
+                Expect(")");
+            }
+            if (ReadIf("=>", out t)) {
+                return Lambda(exprs.ToArray(), t);
+            }
+            else if (exprs.Count == 1) {
+                return exprs[0];
+            }
+            else {
+                return new ParenthesisExpr(first, firstComma, exprs.ToArray());
+            }
+        }
+
+        public Expr Lambda(Expr[] argExprs, Token arrow) {
+            ArgDef[] args = new ArgDef[argExprs.Length];
+            int vecArgIndex = -1;
+            for (int i = 0; i < argExprs.Length; i++) {
+                if (argExprs[i] is IdExpr id) {
+                    args[i] = new ArgDef(id.Token);
+                }
+                else if (argExprs[i] is AsterExpr aster) {
+                    if (vecArgIndex >= 0) throw new ParserError(aster.Token, "Only one argument is vectorizable.");
+                    vecArgIndex = i;
+                    args[i] = new ArgDef(aster.Id.Token);
+                }
+                else {
+                    throw new ParserError(argExprs[i].Token, "Single identifier is expected.");
+                }
+            }
+            var argDefs = new ArgDefList(args, VariadicMode.None, vecArgIndex);
+            var body = Expr();
+            return new LambdaExpr(arrow, new UserFuncDef(Token.Empty, argDefs, body));
         }
 
         public Expr Def(Token first) {

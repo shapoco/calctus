@@ -4,21 +4,21 @@ using Shapoco.Calctus.Model.Evaluations;
 using Shapoco.Calctus.Model.Functions;
 
 namespace Shapoco.Calctus.Model.Expressions {
-    class VarRef : Expr {
-        public Token RefName => Token;
-        public VarRef(Token name) : base(name) { }
+    class IdExpr : Expr {
+        public Token Id => Token;
+        public IdExpr(Token id) : base(id) { }
 
         public override bool CausesValueChange() => true;
 
         protected override Val OnEval(EvalContext ctx) {
-            if (ctx.Ref(RefName, false, out Var v)) {
+            if (ctx.Ref(Id, false, out Var v)) {
                 return v.Value;
             }
-            else if (ctx.SolveFunc(RefName.Text, out FuncDef f)) {
+            else if (ctx.SolveFunc(Id.Text, out FuncDef f)) {
                 return new FuncVal(f);
             }
             else {
-                throw new EvalError(ctx, RefName, "variant or function not found.");
+                throw new EvalError(ctx, Id, "Variant or function '" + Id.Text + "' not found.");
             }
         }
     }
