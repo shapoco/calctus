@@ -9,6 +9,7 @@ using System.Windows.Forms;
 using Shapoco.Calctus.Model;
 using Shapoco.Calctus.Model.Sheets;
 using Shapoco.Calctus.Model.Functions;
+using Shapoco.Calctus.Model.Functions.BuiltIns;
 using Shapoco.Calctus.Model.Types;
 
 namespace Shapoco.Calctus.UI.Sheets {
@@ -77,7 +78,7 @@ namespace Shapoco.Calctus.UI.Sheets {
         }
 
         public void ReplaceFormatterFunction(FuncDef newFunc) {
-            var funcs = EmbeddedFuncDef.FormatterFunctions.Select(p => p.Name.Text).ToArray();
+            var funcs = BuiltInFuncDef.EnumFunctions(typeof(RepresentaionFuncs)).Select(p => p.Name.Text).ToArray();
             var prefixPattern = new Regex(@"^ *(?<func>" + String.Join("|", funcs) + @") *\( *(?<body>.+)");
             var suffixPattern = new Regex(@" *\)$");
             var pm = prefixPattern.Match(ExprBox.Text);

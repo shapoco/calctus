@@ -27,7 +27,7 @@ namespace Shapoco.Calctus.UI.Sheets {
 
             FormBorderStyle = FormBorderStyle.None;
             TopMost = true;
-            Size = new Size(200, 200);
+            Size = new Size(250, 250);
             Font = new Font(Settings.Instance.Appearance_Font_Button_Name, Settings.Instance.Appearance_Font_Size, FontStyle.Regular);
             BackColor = Color.FromArgb(32, 32, 32);
             ForeColor = Color.White;
@@ -42,7 +42,7 @@ namespace Shapoco.Calctus.UI.Sheets {
 
             _desc.Dock = DockStyle.Bottom;
             _desc.AutoSize = false;
-            _desc.Height = 50;
+            _desc.Height = 100;
             _desc.BackColor = Color.FromArgb(48, 48, 48);
             Controls.Add(_desc);
         }

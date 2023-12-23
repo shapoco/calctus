@@ -913,7 +913,7 @@ namespace Shapoco.Calctus.UI.Sheets {
 
             // 入力補完候補の列挙
             var list = new List<InputCandidate>();
-            foreach (var f in EmbeddedFuncDef.NativeFunctions) {
+            foreach (var f in BuiltInFuncDef.NativeFunctions) {
                 list.Add(new InputCandidate(f.Name.Text, f.ToString(), f.Description, true));
             }
             foreach (var f in ExternalFuncDef.ExternalFunctions) {

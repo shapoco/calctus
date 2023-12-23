@@ -5,7 +5,7 @@ using Shapoco.Calctus.Model.Types;
 using Shapoco.Calctus.Model.Parsers;
 using Shapoco.Calctus.Model.Evaluations;
 using Shapoco.Calctus.Model.Mathematics;
-using Shapoco.Calctus.Model.Functions;
+using Shapoco.Calctus.Model.Functions.BuiltIns;
 
 namespace Shapoco.Calctus.Model.Expressions {
     /// <summary>二項演算</summary>
@@ -89,7 +89,7 @@ namespace Shapoco.Calctus.Model.Expressions {
                 }
             }
             else if (Method == OpDef.Pow) {
-                return EmbeddedFuncDef.pow.Call(e, new Val[] { A.Eval(e), B.Eval(e) });
+                return ExponentialFuncs.pow.Call(e, new Val[] { A.Eval(e), B.Eval(e) });
             }
             else {
                 var a = A.Eval(e);

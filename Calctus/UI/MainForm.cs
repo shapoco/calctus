@@ -14,6 +14,7 @@ using Shapoco.Calctus.Model.Sheets;
 using Shapoco.Calctus.UI.Books;
 using Shapoco.Calctus.UI.Sheets;
 using Shapoco.Calctus.Model.Functions;
+using Shapoco.Calctus.Model.Functions.BuiltIns;
 
 namespace Shapoco.Calctus.UI {
     internal partial class MainForm : Form {
@@ -68,13 +69,13 @@ namespace Shapoco.Calctus.UI {
             notifyIcon.MouseClick += NotifyIcon_MouseClick;
 
             radixAutoButton.Click += (sender, e) => { _activeView.ReplaceFormatterFunction(null); _activeView.Focus(); }; 
-            radixDecButton.Click += (sender, e) => { _activeView.ReplaceFormatterFunction(EmbeddedFuncDef.dec); _activeView.Focus(); };
-            radixHexButton.Click += (sender, e) => { _activeView.ReplaceFormatterFunction(EmbeddedFuncDef.hex); _activeView.Focus(); };
-            radixBinButton.Click += (sender, e) => { _activeView.ReplaceFormatterFunction(EmbeddedFuncDef.bin); _activeView.Focus(); };
-            radixOctButton.Click += (sender, e) => { _activeView.ReplaceFormatterFunction(EmbeddedFuncDef.oct); _activeView.Focus(); };
-            radixSiButton.Click += (sender, e) => { _activeView.ReplaceFormatterFunction(EmbeddedFuncDef.si); _activeView.Focus(); };
-            radixKibiButton.Click += (sender, e) => { _activeView.ReplaceFormatterFunction(EmbeddedFuncDef.kibi); _activeView.Focus(); };
-            radixCharButton.Click += (sender, e) => { _activeView.ReplaceFormatterFunction(EmbeddedFuncDef.char_1); _activeView.Focus(); };
+            radixDecButton.Click += (sender, e) => { _activeView.ReplaceFormatterFunction(RepresentaionFuncs.dec); _activeView.Focus(); };
+            radixHexButton.Click += (sender, e) => { _activeView.ReplaceFormatterFunction(RepresentaionFuncs.hex); _activeView.Focus(); };
+            radixBinButton.Click += (sender, e) => { _activeView.ReplaceFormatterFunction(RepresentaionFuncs.bin); _activeView.Focus(); };
+            radixOctButton.Click += (sender, e) => { _activeView.ReplaceFormatterFunction(RepresentaionFuncs.oct); _activeView.Focus(); };
+            radixSiButton.Click += (sender, e) => { _activeView.ReplaceFormatterFunction(RepresentaionFuncs.si); _activeView.Focus(); };
+            radixKibiButton.Click += (sender, e) => { _activeView.ReplaceFormatterFunction(RepresentaionFuncs.kibi); _activeView.Focus(); };
+            radixCharButton.Click += (sender, e) => { _activeView.ReplaceFormatterFunction(RepresentaionFuncs.char_1); _activeView.Focus(); };
 
             toolTip.SetToolTip(radixAutoButton, "Automatic (F8)");
             toolTip.SetToolTip(radixDecButton, "Decimal (F9)");
@@ -515,16 +516,16 @@ namespace Shapoco.Calctus.UI {
                 _activeView.ReplaceFormatterFunction(null);
             }
             else if (e.KeyCode == Keys.F9) {
-                _activeView.ReplaceFormatterFunction(EmbeddedFuncDef.dec);
+                _activeView.ReplaceFormatterFunction(RepresentaionFuncs.dec);
             }
             else if (e.KeyCode == Keys.F10) {
-                _activeView.ReplaceFormatterFunction(EmbeddedFuncDef.hex);
+                _activeView.ReplaceFormatterFunction(RepresentaionFuncs.hex);
             }
             else if (e.KeyCode == Keys.F11) {
-                _activeView.ReplaceFormatterFunction(EmbeddedFuncDef.bin);
+                _activeView.ReplaceFormatterFunction(RepresentaionFuncs.bin);
             }
             else if (e.KeyCode == Keys.F12) {
-                _activeView.ReplaceFormatterFunction(EmbeddedFuncDef.si);
+                _activeView.ReplaceFormatterFunction(RepresentaionFuncs.si);
             }
             else {
                 e.SuppressKeyPress = false;
