@@ -7,7 +7,7 @@ using Shapoco.Calctus.Model.Types;
 
 namespace Shapoco.Calctus.Model.Standards {
     // https://en.wikipedia.org/wiki/E_series_of_preferred_numbers
-    static class Eseries {
+    static class ESeries {
         public static real[] E3 = new real[] {
             1.0m, 2.2m, 4.7m
         };

@@ -10,19 +10,19 @@ using Shapoco.Calctus.Model.Standards;
 namespace Shapoco.Calctus.Model.Functions.BuiltIns {
     static class ESeriesFuncs {
         public static readonly BuiltInFuncDef esFloor = new BuiltInFuncDef("esFloor(series,*x)", (e, a) => {
-            return new RealVal(PreferredNumbers.Floor(Eseries.GetSeries(a[0].AsInt), a[1].AsReal), a[1].FormatHint);
+            return new RealVal(PreferredNumbers.Floor(ESeries.GetSeries(a[0].AsInt), a[1].AsReal), a[1].FormatHint);
         }, "E-series floor");
 
         public static readonly BuiltInFuncDef esCeil = new BuiltInFuncDef("esCeil(series,*x)", (e, a) => {
-            return new RealVal(PreferredNumbers.Ceiling(Eseries.GetSeries(a[0].AsInt), a[1].AsReal), a[1].FormatHint);
+            return new RealVal(PreferredNumbers.Ceiling(ESeries.GetSeries(a[0].AsInt), a[1].AsReal), a[1].FormatHint);
         }, "E-series ceiling");
 
         public static readonly BuiltInFuncDef esRound = new BuiltInFuncDef("esRound(series,*x)", (e, a) => {
-            return new RealVal(PreferredNumbers.Round(Eseries.GetSeries(a[0].AsInt), a[1].AsReal), a[1].FormatHint);
+            return new RealVal(PreferredNumbers.Round(ESeries.GetSeries(a[0].AsInt), a[1].AsReal), a[1].FormatHint);
         }, "E-series round");
 
-        public static readonly BuiltInFuncDef esRatio = new BuiltInFuncDef("e3Ratio(series,*x)", (e, a) => {
-            return new ArrayVal(PreferredNumbers.FindSplitPair(Eseries.GetSeries(a[0].AsInt), a[1].AsReal));
+        public static readonly BuiltInFuncDef esRatio = new BuiltInFuncDef("esRatio(series,*x)", (e, a) => {
+            return new ArrayVal(PreferredNumbers.FindSplitPair(ESeries.GetSeries(a[0].AsInt), a[1].AsReal));
         }, "E-series value of divider resistor");
 
         /*
