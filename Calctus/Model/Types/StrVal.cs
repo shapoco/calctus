@@ -11,8 +11,13 @@ namespace Shapoco.Calctus.Model.Types {
     class StrVal : Val {
         public static readonly StrVal Empty = new StrVal("");
 
+        public static void CheckStringLength(int length) {
+            if (length > Settings.Instance.Calculation_Limit_MaxStringLength) throw new CalctusError("String length exceeds limit.");
+        }
+
         private string _raw;
         public StrVal(string val, FormatHint fmt = null) : base (fmt) {
+            CheckStringLength(val.Length);
             _raw = val;
         }
 
@@ -44,7 +49,16 @@ namespace Shapoco.Calctus.Model.Types {
 
         protected override Val OnAdd(EvalContext ctx, Val b) => new StrVal(_raw + b.AsString);
         protected override Val OnSub(EvalContext ctx, Val b) => throw new InvalidOperationException();
-        protected override Val OnMul(EvalContext ctx, Val b) => throw new InvalidOperationException();
+        protected override Val OnMul(EvalContext ctx, Val b) {
+            int n = b.AsInt;
+            if (n < 0) throw new ArgumentOutOfRangeException();
+            CheckStringLength(_raw.Length * n);
+            var sb = new StringBuilder();
+            for (int i = 0; i < b.AsInt; i++) {
+                sb.Append(_raw);
+            }
+            return new StrVal(sb.ToString());
+        }
         protected override Val OnDiv(EvalContext ctx, Val b) => throw new InvalidOperationException();
 
         protected override Val OnIDiv(EvalContext ctx, Val b) => throw new InvalidOperationException();

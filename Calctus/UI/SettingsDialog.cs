@@ -116,6 +116,7 @@ namespace Shapoco.Calctus.UI {
             NumberFormat_Separator_Hexadecimal.CheckedChanged += (sender, e) => { s.NumberFormat_Separator_Hexadecimal = ((CheckBox)sender).Checked; };
 
             Calculation_Limit_MaxArrayLength.ValueChanged += (sender, e) => { s.Calculation_Limit_MaxArrayLength = (int)((NumericUpDown)sender).Value; };
+            Calculation_Limit_MaxStringLength.ValueChanged += (sender, e) => { s.Calculation_Limit_MaxStringLength = (int)((NumericUpDown)sender).Value; };
             Calculation_Limit_MaxCallRecursions.ValueChanged += (sender, e) => { s.Calculation_Limit_MaxCallRecursions = (int)((NumericUpDown)sender).Value; };
 
             Appearance_Font_Button_Name.Items.Clear();
@@ -184,6 +185,7 @@ namespace Shapoco.Calctus.UI {
                 NumberFormat_Separator_Hexadecimal.Checked = s.NumberFormat_Separator_Hexadecimal;
 
                 setNudValue(Calculation_Limit_MaxArrayLength, s.Calculation_Limit_MaxArrayLength);
+                setNudValue(Calculation_Limit_MaxStringLength, s.Calculation_Limit_MaxStringLength);
                 setNudValue(Calculation_Limit_MaxCallRecursions, s.Calculation_Limit_MaxCallRecursions);
 
                 Appearance_Font_Button_Name.Text = s.Appearance_Font_Button_Name;

@@ -34,6 +34,11 @@
             this.NumberFormat_Exp_PositiveMin = new System.Windows.Forms.NumericUpDown();
             this.tabControl = new System.Windows.Forms.TabControl();
             this.tabPage3 = new System.Windows.Forms.TabPage();
+            this.groupBox7 = new System.Windows.Forms.GroupBox();
+            this.label14 = new System.Windows.Forms.Label();
+            this.label15 = new System.Windows.Forms.Label();
+            this.label13 = new System.Windows.Forms.Label();
+            this.History_KeepPeriod = new System.Windows.Forms.NumericUpDown();
             this.groupBox5 = new System.Windows.Forms.GroupBox();
             this.txtSettingDirectoryPath = new System.Windows.Forms.TextBox();
             this.openSettingFolderButton = new System.Windows.Forms.Button();
@@ -41,6 +46,7 @@
             this.groupBox1 = new System.Windows.Forms.GroupBox();
             this.Startup_AutoStart = new System.Windows.Forms.CheckBox();
             this.Startup_TrayIcon = new System.Windows.Forms.CheckBox();
+            this.Hotkey_KeyCode = new Shapoco.Calctus.UI.KeyCodeBox();
             this.Window_RememberPosition = new System.Windows.Forms.CheckBox();
             this.Hotkey_Enabled = new System.Windows.Forms.CheckBox();
             this.tabPage2 = new System.Windows.Forms.TabPage();
@@ -99,17 +105,15 @@
             this.columnHeader1 = ((System.Windows.Forms.ColumnHeader)(new System.Windows.Forms.ColumnHeader()));
             this.columnHeader5 = ((System.Windows.Forms.ColumnHeader)(new System.Windows.Forms.ColumnHeader()));
             this.columnHeader6 = ((System.Windows.Forms.ColumnHeader)(new System.Windows.Forms.ColumnHeader()));
-            this.groupBox7 = new System.Windows.Forms.GroupBox();
-            this.History_KeepPeriod = new System.Windows.Forms.NumericUpDown();
-            this.label13 = new System.Windows.Forms.Label();
-            this.label14 = new System.Windows.Forms.Label();
-            this.label15 = new System.Windows.Forms.Label();
-            this.Hotkey_KeyCode = new Shapoco.Calctus.UI.KeyCodeBox();
+            this.label16 = new System.Windows.Forms.Label();
+            this.Calculation_Limit_MaxStringLength = new System.Windows.Forms.NumericUpDown();
             this.eNoteGroup.SuspendLayout();
             ((System.ComponentModel.ISupportInitialize)(this.NumberFormat_Exp_NegativeMax)).BeginInit();
             ((System.ComponentModel.ISupportInitialize)(this.NumberFormat_Exp_PositiveMin)).BeginInit();
             this.tabControl.SuspendLayout();
             this.tabPage3.SuspendLayout();
+            this.groupBox7.SuspendLayout();
+            ((System.ComponentModel.ISupportInitialize)(this.History_KeepPeriod)).BeginInit();
             this.groupBox5.SuspendLayout();
             this.groupBox1.SuspendLayout();
             this.tabPage2.SuspendLayout();
@@ -129,8 +133,7 @@
             this.tabPage5.SuspendLayout();
             this.tabPage6.SuspendLayout();
             this.scriptGroup.SuspendLayout();
-            this.groupBox7.SuspendLayout();
-            ((System.ComponentModel.ISupportInitialize)(this.History_KeepPeriod)).BeginInit();
+            ((System.ComponentModel.ISupportInitialize)(this.Calculation_Limit_MaxStringLength)).BeginInit();
             this.SuspendLayout();
             // 
             // closeButton
@@ -267,6 +270,68 @@
             this.tabPage3.Text = "General";
             this.tabPage3.UseVisualStyleBackColor = true;
             // 
+            // groupBox7
+            // 
+            this.groupBox7.Controls.Add(this.label14);
+            this.groupBox7.Controls.Add(this.label15);
+            this.groupBox7.Controls.Add(this.label13);
+            this.groupBox7.Controls.Add(this.History_KeepPeriod);
+            this.groupBox7.Location = new System.Drawing.Point(6, 240);
+            this.groupBox7.Name = "groupBox7";
+            this.groupBox7.Size = new System.Drawing.Size(422, 71);
+            this.groupBox7.TabIndex = 3;
+            this.groupBox7.TabStop = false;
+            this.groupBox7.Text = "History";
+            // 
+            // label14
+            // 
+            this.label14.AutoSize = true;
+            this.label14.Location = new System.Drawing.Point(224, 21);
+            this.label14.Name = "label14";
+            this.label14.Size = new System.Drawing.Size(29, 12);
+            this.label14.TabIndex = 1;
+            this.label14.Text = "days";
+            // 
+            // label15
+            // 
+            this.label15.AutoSize = true;
+            this.label15.Location = new System.Drawing.Point(8, 46);
+            this.label15.Name = "label15";
+            this.label15.Size = new System.Drawing.Size(301, 12);
+            this.label15.TabIndex = 1;
+            this.label15.Text = "Expired files are deleted when the main window is closed.";
+            // 
+            // label13
+            // 
+            this.label13.AutoSize = true;
+            this.label13.Location = new System.Drawing.Point(8, 21);
+            this.label13.Name = "label13";
+            this.label13.Size = new System.Drawing.Size(120, 12);
+            this.label13.TabIndex = 1;
+            this.label13.Text = "Period to keep history:";
+            // 
+            // History_KeepPeriod
+            // 
+            this.History_KeepPeriod.Location = new System.Drawing.Point(133, 19);
+            this.History_KeepPeriod.Maximum = new decimal(new int[] {
+            365,
+            0,
+            0,
+            0});
+            this.History_KeepPeriod.Minimum = new decimal(new int[] {
+            1,
+            0,
+            0,
+            0});
+            this.History_KeepPeriod.Name = "History_KeepPeriod";
+            this.History_KeepPeriod.Size = new System.Drawing.Size(85, 19);
+            this.History_KeepPeriod.TabIndex = 0;
+            this.History_KeepPeriod.Value = new decimal(new int[] {
+            15,
+            0,
+            0,
+            0});
+            // 
             // groupBox5
             // 
             this.groupBox5.Controls.Add(this.txtSettingDirectoryPath);
@@ -340,6 +405,19 @@
             this.Startup_TrayIcon.TabIndex = 1;
             this.Startup_TrayIcon.Text = "Reside in task tray";
             this.Startup_TrayIcon.UseVisualStyleBackColor = true;
+            // 
+            // Hotkey_KeyCode
+            // 
+            this.Hotkey_KeyCode.Alt = false;
+            this.Hotkey_KeyCode.Ctrl = false;
+            this.Hotkey_KeyCode.Enabled = false;
+            this.Hotkey_KeyCode.KeyCode = System.Windows.Forms.Keys.None;
+            this.Hotkey_KeyCode.Location = new System.Drawing.Point(41, 83);
+            this.Hotkey_KeyCode.Name = "Hotkey_KeyCode";
+            this.Hotkey_KeyCode.Shift = false;
+            this.Hotkey_KeyCode.Size = new System.Drawing.Size(249, 19);
+            this.Hotkey_KeyCode.TabIndex = 3;
+            this.Hotkey_KeyCode.Win = false;
             // 
             // Window_RememberPosition
             // 
@@ -656,19 +734,21 @@
             // groupBox6
             // 
             this.groupBox6.Controls.Add(this.Calculation_Limit_MaxCallRecursions);
+            this.groupBox6.Controls.Add(this.Calculation_Limit_MaxStringLength);
             this.groupBox6.Controls.Add(this.Calculation_Limit_MaxArrayLength);
+            this.groupBox6.Controls.Add(this.label16);
             this.groupBox6.Controls.Add(this.label12);
             this.groupBox6.Controls.Add(this.label11);
             this.groupBox6.Location = new System.Drawing.Point(6, 6);
             this.groupBox6.Name = "groupBox6";
-            this.groupBox6.Size = new System.Drawing.Size(423, 74);
+            this.groupBox6.Size = new System.Drawing.Size(423, 101);
             this.groupBox6.TabIndex = 0;
             this.groupBox6.TabStop = false;
             this.groupBox6.Text = "Limits";
             // 
             // Calculation_Limit_MaxCallRecursions
             // 
-            this.Calculation_Limit_MaxCallRecursions.Location = new System.Drawing.Point(164, 42);
+            this.Calculation_Limit_MaxCallRecursions.Location = new System.Drawing.Point(164, 68);
             this.Calculation_Limit_MaxCallRecursions.Maximum = new decimal(new int[] {
             1024,
             0,
@@ -713,7 +793,7 @@
             // label12
             // 
             this.label12.AutoSize = true;
-            this.label12.Location = new System.Drawing.Point(6, 44);
+            this.label12.Location = new System.Drawing.Point(6, 70);
             this.label12.Name = "label12";
             this.label12.Size = new System.Drawing.Size(152, 12);
             this.label12.TabIndex = 2;
@@ -958,80 +1038,36 @@
             this.columnHeader6.Text = "Parameter";
             this.columnHeader6.Width = 164;
             // 
-            // groupBox7
+            // label16
             // 
-            this.groupBox7.Controls.Add(this.label14);
-            this.groupBox7.Controls.Add(this.label15);
-            this.groupBox7.Controls.Add(this.label13);
-            this.groupBox7.Controls.Add(this.History_KeepPeriod);
-            this.groupBox7.Location = new System.Drawing.Point(6, 240);
-            this.groupBox7.Name = "groupBox7";
-            this.groupBox7.Size = new System.Drawing.Size(422, 71);
-            this.groupBox7.TabIndex = 3;
-            this.groupBox7.TabStop = false;
-            this.groupBox7.Text = "History";
+            this.label16.AutoSize = true;
+            this.label16.Location = new System.Drawing.Point(6, 45);
+            this.label16.Name = "label16";
+            this.label16.Size = new System.Drawing.Size(96, 12);
+            this.label16.TabIndex = 2;
+            this.label16.Text = "Max string length:";
             // 
-            // History_KeepPeriod
+            // Calculation_Limit_MaxStringLength
             // 
-            this.History_KeepPeriod.Location = new System.Drawing.Point(133, 19);
-            this.History_KeepPeriod.Maximum = new decimal(new int[] {
-            365,
+            this.Calculation_Limit_MaxStringLength.Location = new System.Drawing.Point(164, 43);
+            this.Calculation_Limit_MaxStringLength.Maximum = new decimal(new int[] {
+            65536,
             0,
             0,
             0});
-            this.History_KeepPeriod.Minimum = new decimal(new int[] {
-            1,
+            this.Calculation_Limit_MaxStringLength.Minimum = new decimal(new int[] {
+            10,
             0,
             0,
             0});
-            this.History_KeepPeriod.Name = "History_KeepPeriod";
-            this.History_KeepPeriod.Size = new System.Drawing.Size(85, 19);
-            this.History_KeepPeriod.TabIndex = 0;
-            this.History_KeepPeriod.Value = new decimal(new int[] {
-            15,
+            this.Calculation_Limit_MaxStringLength.Name = "Calculation_Limit_MaxStringLength";
+            this.Calculation_Limit_MaxStringLength.Size = new System.Drawing.Size(65, 19);
+            this.Calculation_Limit_MaxStringLength.TabIndex = 3;
+            this.Calculation_Limit_MaxStringLength.Value = new decimal(new int[] {
+            10,
             0,
             0,
             0});
-            // 
-            // label13
-            // 
-            this.label13.AutoSize = true;
-            this.label13.Location = new System.Drawing.Point(8, 21);
-            this.label13.Name = "label13";
-            this.label13.Size = new System.Drawing.Size(120, 12);
-            this.label13.TabIndex = 1;
-            this.label13.Text = "Period to keep history:";
-            // 
-            // label14
-            // 
-            this.label14.AutoSize = true;
-            this.label14.Location = new System.Drawing.Point(224, 21);
-            this.label14.Name = "label14";
-            this.label14.Size = new System.Drawing.Size(29, 12);
-            this.label14.TabIndex = 1;
-            this.label14.Text = "days";
-            // 
-            // label15
-            // 
-            this.label15.AutoSize = true;
-            this.label15.Location = new System.Drawing.Point(8, 46);
-            this.label15.Name = "label15";
-            this.label15.Size = new System.Drawing.Size(301, 12);
-            this.label15.TabIndex = 1;
-            this.label15.Text = "Expired files are deleted when the main window is closed.";
-            // 
-            // Hotkey_KeyCode
-            // 
-            this.Hotkey_KeyCode.Alt = false;
-            this.Hotkey_KeyCode.Ctrl = false;
-            this.Hotkey_KeyCode.Enabled = false;
-            this.Hotkey_KeyCode.KeyCode = System.Windows.Forms.Keys.None;
-            this.Hotkey_KeyCode.Location = new System.Drawing.Point(41, 83);
-            this.Hotkey_KeyCode.Name = "Hotkey_KeyCode";
-            this.Hotkey_KeyCode.Shift = false;
-            this.Hotkey_KeyCode.Size = new System.Drawing.Size(249, 19);
-            this.Hotkey_KeyCode.TabIndex = 3;
-            this.Hotkey_KeyCode.Win = false;
             // 
             // SettingsDialog
             // 
@@ -1056,6 +1092,9 @@
             ((System.ComponentModel.ISupportInitialize)(this.NumberFormat_Exp_PositiveMin)).EndInit();
             this.tabControl.ResumeLayout(false);
             this.tabPage3.ResumeLayout(false);
+            this.groupBox7.ResumeLayout(false);
+            this.groupBox7.PerformLayout();
+            ((System.ComponentModel.ISupportInitialize)(this.History_KeepPeriod)).EndInit();
             this.groupBox5.ResumeLayout(false);
             this.groupBox5.PerformLayout();
             this.groupBox1.ResumeLayout(false);
@@ -1085,9 +1124,7 @@
             this.tabPage6.PerformLayout();
             this.scriptGroup.ResumeLayout(false);
             this.scriptGroup.PerformLayout();
-            this.groupBox7.ResumeLayout(false);
-            this.groupBox7.PerformLayout();
-            ((System.ComponentModel.ISupportInitialize)(this.History_KeepPeriod)).EndInit();
+            ((System.ComponentModel.ISupportInitialize)(this.Calculation_Limit_MaxStringLength)).EndInit();
             this.ResumeLayout(false);
 
         }
@@ -1175,5 +1212,7 @@
         private System.Windows.Forms.NumericUpDown History_KeepPeriod;
         private System.Windows.Forms.Label label14;
         private System.Windows.Forms.Label label15;
+        private System.Windows.Forms.NumericUpDown Calculation_Limit_MaxStringLength;
+        private System.Windows.Forms.Label label16;
     }
 }

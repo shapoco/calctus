@@ -50,6 +50,7 @@ namespace Shapoco.Calctus {
         public int History_KeepPeriod { get; set; } = 15;
 
         public int Calculation_Limit_MaxArrayLength { get; set; } = 256;
+        public int Calculation_Limit_MaxStringLength { get; set; } = 256;
         public int Calculation_Limit_MaxCallRecursions { get; set; } = 64;
 
         public bool Input_IdAutoCompletion { get; set; } = true;

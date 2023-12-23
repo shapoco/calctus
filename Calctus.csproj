@@ -78,6 +78,7 @@
     <Compile Include="Calctus\Model\Functions\BuiltIns\RandomFuncs.cs" />
     <Compile Include="Calctus\Model\Functions\BuiltIns\RepresentaionFuncs.cs" />
     <Compile Include="Calctus\Model\Functions\BuiltIns\SolveFuncs.cs" />
+    <Compile Include="Calctus\Model\Functions\BuiltIns\StringFuncs.cs" />
     <Compile Include="Calctus\Model\Functions\EqualityComparerFunc.cs" />
     <Compile Include="Calctus\Model\Functions\BuiltIns\ExponentialFuncs.cs" />
     <Compile Include="Calctus\Model\Functions\BuiltIns\Gcd_LcmFuncs.cs" />

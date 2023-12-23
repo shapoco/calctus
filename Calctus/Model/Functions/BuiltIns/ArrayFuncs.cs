@@ -10,7 +10,7 @@ using Shapoco.Calctus.Model.Evaluations;
 namespace Shapoco.Calctus.Model.Functions.BuiltIns {
     static class ArrayFuncs {
         public static readonly BuiltInFuncDef len = new BuiltInFuncDef("len(array)", (e, a) 
-            => new RealVal(((ArrayVal)a[0]).Length), "Length of `array`");
+            => new RealVal(a[0].AsArrayVal().Length), "Length of `array`");
         
         public static readonly BuiltInFuncDef range_2 = new BuiltInFuncDef("range(start, stop)", (e, a) 
             => new ArrayVal(RMath.Range(a[0].AsReal, a[1].AsReal, 0, false)),

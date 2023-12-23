@@ -89,7 +89,7 @@ User-defined constants can also be used.
 See [Built-In Functions](FUNCTIONS.md) for details.
 
 <!-- START_OF_BUILT_IN_FUNCTION_TABLE -->
-Now Calctus has 137 built-in functions.
+Now Calctus has 147 built-in functions.
 
 |Category|Functions|
 |:--:|:--|
@@ -113,6 +113,7 @@ Now Calctus has 137 built-in functions.
 |Representaion|`bin(*x)`, `char(*x)`, `datetime(*x)`, `dec(*x)`, `hex(*x)`, `kibi(*x)`, `oct(*x)`, `si(*x)`|
 |Rounding|`ceil(*x)`, `floor(*x)`, `round(*x)`, `trunc(*x)`|
 |Solve|`solve(func)`, `solve(func,array)`, `solve(func,min,max)`|
+|String|`endsWith(*s,key)`, `join(sep,array[]...)`, `replace(*s,old,new)`, `split(sep,s)`, `startsWith(*s,key)`, `toLower(*s)`, `toUpper(*s)`, `trim(*s)`, `trimEnd(*s)`, `trimStart(*s)`|
 |Sum/Average|`ave(array...)`, `geoMean(array...)`, `harMean(array...)`, `invSum(array...)`, `sum(array...)`|
 |Trigonometric|`acos(*x)`, `asin(*x)`, `atan(*x)`, `atan2(a,b)`, `cos(*x)`, `cosh(*x)`, `sin(*x)`, `sinh(*x)`, `tan(*x)`, `tanh(*x)`|
 <!-- END_OF_BUILT_IN_FUNCTION_TABLE -->
