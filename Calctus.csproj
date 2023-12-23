@@ -124,7 +124,7 @@
     <Compile Include="Calctus\Model\Functions\BuiltInFuncDef.cs" />
     <Compile Include="Calctus\Model\Types\real.cs" />
     <Compile Include="Calctus\Model\Standards\ColorSpace.cs" />
-    <Compile Include="Calctus\Model\Standards\Eseries.cs" />
+    <Compile Include="Calctus\Model\Standards\ESeries.cs" />
     <Compile Include="Calctus\Model\Standards\PreferredNumbers.cs" />
     <Compile Include="Calctus\Model\Standards\UnixTime.cs" />
     <Compile Include="Calctus\Model\Formats\CharFormatter.cs" />
