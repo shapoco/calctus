@@ -103,7 +103,7 @@ See [Built-In Functions](FUNCTIONS.md) for details.
 |Exponential|`clog10(*x)`, `clog2(*x)`, `exp(*x)`, `log(*x)`, `log10(*x)`, `log2(*x)`, `pow(*x,y)`, `sqrt(*x)`|
 |Gcd/Lcm|`gcd(array...)`, `lcm(array...)`|
 |Gray Code|`fromGray(*x)`, `toGray(*x)`|
-|Min/Max|`max(x...)`, `min(x...)`|
+|Min/Max|`max(array...)`, `min(array...)`|
 |Parity/Ecc|`eccDec(b,ecc,x)`, `eccEnc(b,*x)`, `eccWidth(*b)`, `oddParity(*x)`, `xorReduce(*x)`|
 |Plotting|`plot(func)`|
 |Prime Number|`isPrime(*x)`, `prime(*x)`, `primeFact(*x)`|

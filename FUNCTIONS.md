@@ -8,7 +8,7 @@ Absolute value of `x`
 
 ### `mag(x[]...)`
 
-Magnitude of vector `x`.
+Magnitude of vector `x`
 
 ### `sign(*x)`
 
@@ -406,13 +406,13 @@ Converts the value from binary to gray-code.
 ----
 ## Min/Max
 
-### `max(x...)`
+### `max(array...)`
 
-Maximum value of the arguments
+Maximum value of elements of the `array`
 
-### `min(x...)`
+### `min(array...)`
 
-Minimum value of the arguments
+Minimum value of elements of the `array`
 
 ----
 ## Parity/Ecc
