@@ -32,13 +32,15 @@ namespace Shapoco.Calctus.Model.Expressions {
                     // Part Select を使った参照
                     var from = pRef.IndexFrom.Eval(e).AsInt;
                     var to = pRef.IndexTo.Eval(e).AsInt;
-                    if (from < to) throw new ArgumentOutOfRangeException();
 
                     var val = B.Eval(e);
                     var varRef = e.Ref(tRef.Id, allowCreate: false);
                     var varVal = varRef.Value;
                     if (varVal is ArrayVal array) {
                         // 配列の書き換え
+                        if (from < 0) from = array.Length + from;
+                        if (to < 0) to = array.Length + to;
+                        if (from > to) throw new ArgumentOutOfRangeException();
                         if (from == to) {
                             array = array.Modify(from, to, new Val[] { val });
                         }
@@ -47,10 +49,21 @@ namespace Shapoco.Calctus.Model.Expressions {
                         }
                         varVal = array;
                     }
+                    else if (varVal is StrVal strVal) {
+                        // 部分文字列の書き換え
+                        var str = strVal.AsString;
+                        if (from < 0) from = str.Length + from;
+                        if (to < 0) to = str.Length + to;
+                        if (from > to) throw new ArgumentOutOfRangeException();
+                        if (from < 0) throw new ArgumentOutOfRangeException();
+                        if (to > str.Length) throw new ArgumentOutOfRangeException();
+                        varVal = new StrVal(str.Substring(0, from) + val.AsString + str.Substring(to));
+                    }
                     else {
                         // ビットフィールドの書き換え
-                        if (from < 0 || 63 < from) throw new ArgumentOutOfRangeException();
-                        if (to < 0 || 63 < to) throw new ArgumentOutOfRangeException();
+                        if (from < to) throw new ArgumentOutOfRangeException();
+                        if (from < 0) throw new ArgumentOutOfRangeException();
+                        if (to > 63) throw new ArgumentOutOfRangeException();
                         var w = from - to + 1;
                         var mask = w < 64 ? ((1L << w) - 1L) : unchecked((long)0xffffffffffffffff);
                         mask <<= to;

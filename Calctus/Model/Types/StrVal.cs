@@ -23,6 +23,8 @@ namespace Shapoco.Calctus.Model.Types {
 
         public override object Raw => _raw;
 
+        public int Length => _raw.Length;
+
         public override bool IsScalar => false;
         public override bool IsInteger => false;
 

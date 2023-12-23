@@ -32,6 +32,16 @@ namespace Shapoco.Calctus.Model.Expressions {
                     return array.Slice(from, to);
                 }
             }
+            else if (obj is StrVal str) {
+                if (from < 0) from = str.Length + from;
+                if (to < 0) to = str.Length + to;
+                if (from == to) {
+                    return new RealVal(str.AsString[from]).FormatChar();
+                }
+                else {
+                    return new StrVal(str.AsString.Substring(from, to - from));
+                }
+            }
             else {
                 if (from < to) throw new ArgumentOutOfRangeException();
                 if (from < 0 || 63 < from) throw new ArgumentOutOfRangeException();

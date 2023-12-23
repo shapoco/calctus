@@ -222,13 +222,13 @@ namespace Shapoco.Calctus.Model.Parsers {
             var args = new List<ArgDef>();
             var mode = VariadicMode.None;
             var vecArgIndex = -1;
-            if (Peek().Type == TokenType.Word) {
+            if (Peek().Text != ")") {
                 do {
-                    Expect(TokenType.Word, out Token arg);
                     if (ReadIf("*", out Token aster)) {
                         if (vecArgIndex >= 0) throw new ParserError(aster, "Only one argument is vectorizable.");
                         vecArgIndex = args.Count;
                     }
+                    Expect(TokenType.Word, out Token arg);
                     args.Add(new ArgDef(arg));
                 } while (ReadIf(","));
                 if (args.Count > 0 && ReadIf("[")) {
