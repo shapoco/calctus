@@ -25,6 +25,7 @@ namespace Shapoco.Calctus.UI {
         public static extern IntPtr GetForegroundWindow();
 
         private Font _sheetViewFont = null;
+        private BookItem _activeBookItem = null;
         private SheetView _activeView = null;
 
         private HotKey _hotkey = null;
@@ -173,6 +174,9 @@ namespace Shapoco.Calctus.UI {
             if (!bookTreeView.ScratchPad.View.Sheet.IsEmpty) {
                 saveScratchPadToHistory();
             }
+            if (_activeBookItem != bookTreeView.ScratchPad && _activeBookItem.HasFileName && _activeBookItem.IsChanged) {
+                _activeBookItem.Save();
+            }
             notifyIcon.Visible = false;
             disableHotkey();
             deleteOldHistories();
@@ -303,13 +307,13 @@ namespace Shapoco.Calctus.UI {
             }
         }
 
-        private BookItem _lastSheetNode = null;
+        private BookItem _lastBookItem = null;
         private void onBookItemSelected() {
             if (bookTreeView.SelectedNode == null) return;
-            if (!(bookTreeView.SelectedNode is BookItem newNode)) return;
+            if (!(bookTreeView.SelectedNode is BookItem newBookItem)) return;
             try {
-                if (_lastSheetNode != null && _lastSheetNode.View != null && _lastSheetNode.HasFileName && _lastSheetNode.IsChanged) {
-                    _lastSheetNode.Save();
+                if (_lastBookItem != null && _lastBookItem.View != null && _lastBookItem.HasFileName && _lastBookItem.IsChanged) {
+                    _lastBookItem.Save();
                 }
             }
             catch (Exception ex) {
@@ -317,10 +321,10 @@ namespace Shapoco.Calctus.UI {
                     Application.ProductName, MessageBoxButtons.OK, MessageBoxIcon.Error);
             }
             try {
-                SheetView newView = newNode.View;
+                SheetView newView = newBookItem.View;
                 if (newView == null) {
-                    newNode.CreateView();
-                    newView = newNode.View;
+                    newBookItem.CreateView();
+                    newView = newBookItem.View;
                 }
                 if (!this.Controls.Contains(newView)) {
                     newView.Dock = DockStyle.Fill;
@@ -332,13 +336,14 @@ namespace Shapoco.Calctus.UI {
                 newView.BringToFront();
                 if (_activeView != newView) {
                     var oldView = _activeView;
+                    _activeBookItem = newBookItem;
                     _activeView = newView;
                     newView.Visible = true;
                     if (oldView != null) {
                         oldView.Visible = false;
                     }
                 }
-                _lastSheetNode = newNode;
+                _lastBookItem = newBookItem;
             }
             catch (Exception ex) {
                 MessageBox.Show("Failed to load sheet:\r\n\r\n" + ex.Message,
@@ -347,7 +352,7 @@ namespace Shapoco.Calctus.UI {
             this.Text =
                 Application.ProductName +
                 " (v" + System.Reflection.Assembly.GetExecutingAssembly().GetName().Version + ") - " +
-                (_lastSheetNode != null ? _lastSheetNode.Name : "(null)");
+                (_lastBookItem != null ? _lastBookItem.Name : "(null)");
         }
 
         private void saveScratchPadToHistory() {
