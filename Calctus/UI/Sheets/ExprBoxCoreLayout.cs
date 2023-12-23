@@ -181,7 +181,6 @@ namespace Shapoco.Calctus.UI.Sheets {
 
                     case TokenType.NumericLiteral:
                         if (t.Hint is NumberTokenHint nth) {
-                            Match m;
                             if (nth.Value.FormatHint.Formatter == NumberFormatter.SiPrefixed) {
                                 // SI接頭語の強調表示
                                 _chars[t.Position.Index + t.Text.Length - 1].Style.ForeColor = s.Appearance_Color_SI_Prefix;
@@ -190,12 +189,6 @@ namespace Shapoco.Calctus.UI.Sheets {
                                 // 二進接頭語の強調表示
                                 _chars[t.Position.Index + t.Text.Length - 2].Style.ForeColor = s.Appearance_Color_SI_Prefix;
                                 _chars[t.Position.Index + t.Text.Length - 1].Style.ForeColor = s.Appearance_Color_SI_Prefix;
-                            }
-                            else if (nth.Value.FormatHint.Formatter != NumberFormatter.CStyleHex && (m = ExponentPattern.Match(t.Text)).Success) {
-                                // 指数
-                                for (int i = 0; i < m.Length; i++) {
-                                    _chars[t.Position.Index + m.Index + i].Style.ForeColor = s.Appearance_Color_SI_Prefix;
-                                }
                             }
                             else if (nth.Value.FormatHint.Formatter == NumberFormatter.WebColor) {
                                 // WebColorの強調表示
@@ -207,15 +200,21 @@ namespace Shapoco.Calctus.UI.Sheets {
                                     _chars[t.Position.Index + i].Style.ForeColor = fore;
                                 }
                             }
-                            else {
-                                bool isSpecialLiteral =
-                                    (nth.Value.FormatHint.Formatter == NumberFormatter.CStyleChar) ||
-                                    (nth.Value.FormatHint.Formatter == NumberFormatter.CStyleString) ||
-                                    (nth.Value.FormatHint.Formatter == NumberFormatter.DateTime);
-                                if (isSpecialLiteral) {
-                                    // その他の特殊リテラルの強調表示
-                                    for (int i = 0; i < t.Text.Length; i++) {
-                                        _chars[t.Position.Index + i].Style.ForeColor = s.Appearance_Color_Special_Literals;
+                            else if (nth.Value.FormatHint.Formatter == NumberFormatter.CStyleChar || 
+                                    nth.Value.FormatHint.Formatter == NumberFormatter.CStyleString || 
+                                    nth.Value.FormatHint.Formatter == NumberFormatter.DateTime) {
+                                // その他の特殊リテラルの強調表示
+                                for (int i = 0; i < t.Text.Length; i++) {
+                                    _chars[t.Position.Index + i].Style.ForeColor = s.Appearance_Color_Special_Literals;
+                                }
+                            }
+                            else if (nth.Value.FormatHint.Formatter == NumberFormatter.CStyleInt || 
+                                    nth.Value.FormatHint.Formatter == NumberFormatter.CStyleReal) {
+                                Match m;
+                                if ((m = ExponentPattern.Match(t.Text)).Success) {
+                                    // 指数の強調表示
+                                    for (int i = 0; i < m.Length; i++) {
+                                        _chars[t.Position.Index + m.Index + i].Style.ForeColor = s.Appearance_Color_SI_Prefix;
                                     }
                                 }
                             }
