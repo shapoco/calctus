@@ -45,7 +45,7 @@ Calctus (カルクタス) is a calculator application for Windows developed for 
 
 ### Operators
 
-|Category|Symbol|Precision|
+|Category|Symbol|Type|
 |:--|:--|:--|
 |Add, Sub, Mul, Div|`+`, `-`, `*`, `/`|`Decimal`|
 |Integral Division|`//`|`Decimal`|
@@ -63,7 +63,8 @@ Calctus (カルクタス) is a calculator application for Windows developed for 
 |Logical AND|`&&`|`Boolean`|
 |Logical OR|`\|\|`|`Boolean`|
 |Conditional Operator|`? :`|`Boolean`|
-|Range Operator|`..`, `..=`|`Array`/`String`|
+|Range Operator|`..`, `..=`|`Array`|
+|Arrow|`=>`|`Function`|
 
 ### Constants
 
