@@ -29,7 +29,7 @@ namespace Shapoco.Calctus.Model.Formats {
             }
         }
 
-        protected override string OnFormat(Val val, FormatSettingss fs) {
+        protected override string OnFormat(Val val, FormatSettings fs) {
             if (val is RealVal) {
                 var fval = val.AsReal;
                 var ival = RMath.Truncate(fval);

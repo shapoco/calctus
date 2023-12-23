@@ -25,18 +25,18 @@ namespace Shapoco.Calctus.Model.Types {
         public override real AsReal => (real)_raw;
         public override frac AsFrac => _raw;
         public override double AsDouble => (double)_raw;
-        public override long AsLong => (long)_raw;
-        public override int AsInt => (int)_raw;
-        public override byte AsByte => (byte)_raw;
+        public override long AsLong => RMath.ToLong((real)_raw);
+        public override int AsInt => RMath.ToInt((real)_raw);
+        public override char AsChar => RMath.ToChar((real)_raw);
+        public override byte AsByte => RMath.ToByte((real)_raw);
         public override bool AsBool => throw new InvalidCastException();
-        public override string AsString => throw new InvalidCastException();
 
         public override real[] AsRealArray => new real[] { (real)_raw };
         public override long[] AsLongArray => new long[] { (long)_raw };
         public override int[] AsIntArray => new int[] { (int)_raw };
         public override byte[] AsByteArray => new byte[] { (byte)_raw };
 
-        public override string ToString(FormatSettingss fs) => _raw.ToString();
+        public override string ToString(FormatSettings fs) => _raw.ToString();
 
         public static Val Normalize(frac f, FormatHint hint) {
             if (f.Deno == 1) {
@@ -86,6 +86,7 @@ namespace Shapoco.Calctus.Model.Types {
         protected override Val OnUpConvert(EvalContext ctx, Val b) {
             if (b is RealVal) return this;
             if (b is FracVal) return this;
+            if (b is StrVal) return AsStrVal();
             throw new InvalidCastException(this.ValTypeName + " cannot be converted to " + b.ValTypeName);
         }
     }

@@ -20,8 +20,8 @@ namespace Shapoco.Calctus.Model.Formats {
 
         public abstract Val Parse(Match m);
 
-        public virtual string Format(Val val, FormatSettingss fs) => OnFormat(val, fs);
-        protected virtual string OnFormat(Val val, FormatSettingss fs) {
+        public virtual string Format(Val val, FormatSettings fs) => OnFormat(val, fs);
+        protected virtual string OnFormat(Val val, FormatSettings fs) {
             if (val is ArrayVal aval) {
                 var raw = (Val[])aval.Raw;
                 var sb = new StringBuilder();
@@ -35,6 +35,9 @@ namespace Shapoco.Calctus.Model.Formats {
             }
             else if (val is BoolVal) {
                 return val.AsBool ? BoolVal.TrueKeyword : BoolVal.FalseKeyword;
+            }
+            else if (val is StrVal) {
+                return StringFormatter.FormatAsStringLiteral(val.AsString);
             }
             else {
                 return RealToString(val.AsReal, fs, true);
@@ -67,7 +70,7 @@ namespace Shapoco.Calctus.Model.Formats {
             WebColor,
         };
 
-        public static string RealToString(real val, FormatSettingss fs, bool allowENotation) {
+        public static string RealToString(real val, FormatSettings fs, bool allowENotation) {
             if (val == 0.0m) return "0";
 
             var sbDecFormat = new StringBuilder("0.");
@@ -96,14 +99,14 @@ namespace Shapoco.Calctus.Model.Formats {
             }
         }
 
-        public static void Test(FormatSettingss s, Val val, string str) {
+        public static void Test(FormatSettings s, Val val, string str) {
             Assert.Equal(nameof(NumberFormatter), val.ToString(s), str);
         }
 
         public static void Test() {
             var cint = new FormatHint(CStyleInt);
             {
-                var fs = new FormatSettingss();
+                var fs = new FormatSettings();
                 fs.DecimalLengthToDisplay = 28;
                 fs.ENotationEnabled = false;
                 fs.ENotationExpPositiveMin = 4;
@@ -127,7 +130,7 @@ namespace Shapoco.Calctus.Model.Formats {
                 Test(fs, new RealVal(-0.0000000000000012345m, cint), "-0.0000000000000012345");
             }
             {
-                var fs = new FormatSettingss();
+                var fs = new FormatSettings();
                 fs.DecimalLengthToDisplay = 28;
                 fs.ENotationEnabled = true;
                 fs.ENotationExpPositiveMin = 4;
@@ -157,7 +160,7 @@ namespace Shapoco.Calctus.Model.Formats {
                 Test(fs, new RealVal(-0.0000000000000012345m, cint), "-1.2345e-15");
             }
             {
-                var fs = new FormatSettingss();
+                var fs = new FormatSettings();
                 fs.DecimalLengthToDisplay = 28;
                 fs.ENotationEnabled = true;
                 fs.ENotationExpPositiveMin = 4;
@@ -198,7 +201,7 @@ namespace Shapoco.Calctus.Model.Formats {
                 Test(fs, new RealVal(-0.0000000000000012345m, cint), "-1.2345e-15");
             }
             {
-                var fs = new FormatSettingss();
+                var fs = new FormatSettings();
                 fs.DecimalLengthToDisplay = 5;
                 fs.ENotationEnabled = false;
                 Test(fs, new RealVal(10000, cint), "10000");

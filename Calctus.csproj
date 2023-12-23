@@ -61,7 +61,7 @@
     <Compile Include="Calctus\Model\Expressions\AsterExpr.cs" />
     <Compile Include="Calctus\Model\Expressions\LambdaExpr.cs" />
     <Compile Include="Calctus\Model\Expressions\ParenthesisExpr.cs" />
-    <Compile Include="Calctus\Model\Formats\FormatSettingss.cs" />
+    <Compile Include="Calctus\Model\Formats\FormatSettings.cs" />
     <Compile Include="Calctus\Model\Functions\ArgDefList.cs" />
     <Compile Include="Calctus\Model\Functions\EqualityComparerFunc.cs" />
     <Compile Include="Calctus\Model\Functions\Types.cs" />
@@ -91,6 +91,7 @@
     <Compile Include="Calctus\Model\Formats\BinaryPrefixFormatter.cs" />
     <Compile Include="Calctus\Model\Formats\SiPrefixFormatter.cs" />
     <Compile Include="Calctus\Model\Formats\Type.cs" />
+    <Compile Include="Calctus\Model\Types\StrVal.cs" />
     <Compile Include="Calctus\Model\Types\ufixed113.cs" />
     <Compile Include="Calctus\Model\Types\frac.cs" />
     <Compile Include="Calctus\Model\Types\FracVal.cs" />

@@ -51,7 +51,7 @@ namespace Shapoco.Calctus.Model.Formats {
             return new RealVal(frac * RMath.Pow10(exp) , new FormatHint(this));
         }
 
-        protected override string OnFormat(Val val, FormatSettingss fs) {
+        protected override string OnFormat(Val val, FormatSettings fs) {
             if (val is RealVal) {
                 var r = val.AsReal;
                 int prefixIndex = 0;

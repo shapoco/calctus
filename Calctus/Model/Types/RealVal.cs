@@ -27,6 +27,7 @@ namespace Shapoco.Calctus.Model.Types {
         protected override Val OnUpConvert(EvalContext e, Val b) {
             if (b is RealVal) return this;
             if (b is FracVal) return new FracVal(new frac(_raw.Raw, 1));
+            if (b is StrVal) return AsStrVal();
             throw new InvalidCastException(this.ValTypeName + " cannot be converted to " + b.ValTypeName);
         }
 
@@ -68,18 +69,28 @@ namespace Shapoco.Calctus.Model.Types {
         public override real AsReal => _raw;
         public override frac AsFrac => (frac)_raw;
         public override double AsDouble => (double)_raw;
-        public override long AsLong => (long)_raw; // todo: 丸め/切り捨ての明示は不要？
-        public override int AsInt => (int)_raw; // todo: 丸め/切り捨ての明示は不要？
-        public override byte AsByte => (byte)_raw; // todo: 丸め/切り捨ての明示は不要？
+        public override long AsLong => RMath.ToLong(_raw);
+        public override int AsInt => RMath.ToInt(_raw);
+        public override char AsChar => RMath.ToChar(_raw);
+        public override byte AsByte => RMath.ToByte(_raw);
         public override bool AsBool => throw new InvalidCastException();
-        public override string AsString => throw new InvalidCastException();
+        public override string AsString {
+            get {
+                if (FormatHint.Formatter == NumberFormatter.CStyleChar && char.MinValue <= _raw && _raw <= char.MaxValue) {
+                    return ((char)_raw).ToString();
+                }
+                else {
+                    return base.AsString;
+                }
+            }
+        }
 
         public override real[] AsRealArray => new real[] { _raw };
         public override long[] AsLongArray => new long[] { (long)_raw }; // todo: 丸め/切り捨ての明示は不要？
         public override int[] AsIntArray => new int[] { (int)_raw };
         public override byte[] AsByteArray => new byte[] { (byte)_raw };
 
-        public override string ToString(FormatSettingss fs) => FormatHint.Formatter.Format(this, fs);
+        public override string ToString(FormatSettings fs) => FormatHint.Formatter.Format(this, fs);
         //public static implicit operator double(RealVal val) => val.AsDouble();
         //public static implicit operator RealVal(double val) => new RealVal(val);
 

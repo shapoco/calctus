@@ -242,7 +242,7 @@ namespace Shapoco.Calctus.Model.Mathematics {
                 deno = 1;
                 return;
             }
-            
+
             if (x == Math.Floor(x)) {
                 nume = x;
                 deno = 1;
@@ -307,7 +307,7 @@ namespace Shapoco.Calctus.Model.Mathematics {
         public static real Ceiling(real val) => (real)Math.Ceiling(val.Raw);
         public static real Truncate(real val) => (real)Math.Truncate(val.Raw);
         public static real Round(real val) => (real)Math.Round(val.Raw);
-        
+
         // 絶対値と符号
         public static real Abs(real val) => val >= 0 ? val : -val;
         public static int Sign(real val) => Math.Sign(val.Raw);
@@ -376,6 +376,27 @@ namespace Shapoco.Calctus.Model.Mathematics {
                 array[i] = start + step * i;
             }
             return array;
+        }
+
+        public static long ToLong(decimal val) {
+            val = Math.Round(val);
+            if (val < long.MinValue && long.MaxValue < val) throw new OverflowException("Out of range of int64.");
+            return (long)val;
+        }
+        public static int ToInt(decimal val) {
+            val = Math.Round(val);
+            if (val < int.MinValue && int.MaxValue < val) throw new OverflowException("Out of range of int32.");
+            return (int)val;
+        }
+        public static char ToChar(decimal val) {
+            val = Math.Round(val);
+            if (val < char.MinValue && char.MaxValue < val) throw new OverflowException("Out of range of char.");
+            return (char)val;
+        }
+        public static byte ToByte(decimal val) {
+            val = Math.Round(val);
+            if (val < byte.MinValue && byte.MaxValue < val) throw new OverflowException("Out of range of byte.");
+            return (byte)val;
         }
     }
 }

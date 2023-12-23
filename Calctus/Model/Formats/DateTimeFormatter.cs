@@ -19,7 +19,7 @@ namespace Shapoco.Calctus.Model.Formats {
             return new RealVal(unixTime, new FormatHint(this));
         }
 
-        protected override string OnFormat(Val val, FormatSettingss fs) {
+        protected override string OnFormat(Val val, FormatSettings fs) {
             if (!(val is RealVal)) {
                 return base.OnFormat(val, fs);
             }

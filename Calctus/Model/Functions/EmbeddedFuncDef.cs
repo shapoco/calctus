@@ -10,6 +10,7 @@ using Shapoco.Calctus.Model.Mathematics;
 using Shapoco.Calctus.Model.Parsers;
 using Shapoco.Calctus.Model.Evaluations;
 using Shapoco.Calctus.Model.Graphs;
+using Shapoco.Calctus.Model.Formats;
 
 namespace Shapoco.Calctus.Model.Functions {
     class EmbeddedFuncDef : FuncDef {
@@ -27,16 +28,43 @@ namespace Shapoco.Calctus.Model.Functions {
             return Method(e, args);
         }
 
-        public static readonly EmbeddedFuncDef dec = new EmbeddedFuncDef("dec(*x)", (e, a) => a[0].FormatInt(), "Converts the value to decimal representation.");
-        public static readonly EmbeddedFuncDef hex = new EmbeddedFuncDef("hex(*x)", (e, a) => a[0].FormatHex(), "Converts the value to hexdecimal representation.");
-        public static readonly EmbeddedFuncDef bin = new EmbeddedFuncDef("bin(*x)", (e, a) => a[0].FormatBin(), "Converts the value to binary representation.");
-        public static readonly EmbeddedFuncDef oct = new EmbeddedFuncDef("oct(*x)", (e, a) => a[0].FormatOct(), "Converts the value to octal representation.");
-        public static readonly EmbeddedFuncDef si = new EmbeddedFuncDef("si(*x)", (e, a) => a[0].FormatSiPrefix(), "Converts the value to SI prefixed representation.");
-        public static readonly EmbeddedFuncDef kibi = new EmbeddedFuncDef("kibi(*x)", (e, a) => a[0].FormatBinaryPrefix(), "Converts the value to binary prefixed representation.");
-        public static readonly EmbeddedFuncDef char_1 = new EmbeddedFuncDef("char(*x)", (e, a) => a[0].FormatChar(), "Converts the value to character representation.");
-        public static readonly EmbeddedFuncDef datetime = new EmbeddedFuncDef("datetime(*x)", (e, a) => a[0].FormatDateTime(), "Converts the value to datetime representation.");
-        public static readonly EmbeddedFuncDef array = new EmbeddedFuncDef("array(x[]...)", (e, a) => a[0].FormatDefault(), "Converts the string value to array representation.");
-        public static readonly EmbeddedFuncDef str = new EmbeddedFuncDef("str(x[]...)", (e, a) => a[0].FormatString(), "Converts the array value to string representation.");
+        public static readonly EmbeddedFuncDef dec = new EmbeddedFuncDef("dec(*x)", (e, a) => a[0].FormatInt(), "Converts `x` to decimal representation.");
+        public static readonly EmbeddedFuncDef hex = new EmbeddedFuncDef("hex(*x)", (e, a) => a[0].FormatHex(), "Converts `x` to hexdecimal representation.");
+        public static readonly EmbeddedFuncDef bin = new EmbeddedFuncDef("bin(*x)", (e, a) => a[0].FormatBin(), "Converts `x` to binary representation.");
+        public static readonly EmbeddedFuncDef oct = new EmbeddedFuncDef("oct(*x)", (e, a) => a[0].FormatOct(), "Converts `x` to octal representation.");
+        public static readonly EmbeddedFuncDef si = new EmbeddedFuncDef("si(*x)", (e, a) => a[0].FormatSiPrefix(), "Converts `x` to SI prefixed representation.");
+        public static readonly EmbeddedFuncDef kibi = new EmbeddedFuncDef("kibi(*x)", (e, a) => a[0].FormatBinaryPrefix(), "Converts `x` to binary prefixed representation.");
+        public static readonly EmbeddedFuncDef char_1 = new EmbeddedFuncDef("char(*x)", (e, a) => a[0].FormatChar(), "Converts `x` to character representation.");
+        public static readonly EmbeddedFuncDef datetime = new EmbeddedFuncDef("datetime(*x)", (e, a) => a[0].FormatDateTime(), "Converts `x` to datetime representation.");
+
+        public static readonly EmbeddedFuncDef array = new EmbeddedFuncDef("array(x)", (e, a) => {
+            if (a[0] is StrVal strVal) {
+                return strVal.AsArrayVal();
+            }
+            else if (a[0] is ArrayVal) {
+                return a[0];
+            }
+            else {
+                throw new EvalError(e, Token.Empty, "Value is not string or array.");
+            }
+        }, "Converts string value `x` to an array.");
+
+        public static readonly EmbeddedFuncDef str = new EmbeddedFuncDef("str(x)", (e, a) => {
+            if (a[0] is ArrayVal arrayVal) {
+                var vals = (Val[])arrayVal.Raw;
+                var sb = new StringBuilder();
+                foreach (var val in vals) {
+                    sb.Append(val.AsChar);
+                }
+                return new StrVal(sb.ToString());
+            }
+            else if (a[0] is StrVal) {
+                return a[0];
+            }
+            else {
+                return new StrVal(a[0].AsString);
+            }
+        }, "Converts `x` to a string.");
 
         public static readonly FuncDef[] FormatterFunctions = new FuncDef[] { dec, hex, bin, oct, si, kibi, char_1, datetime, array, str };
 
@@ -204,47 +232,47 @@ namespace Shapoco.Calctus.Model.Functions {
         }, "Reverses the order of array elements");
 
         public static readonly EmbeddedFuncDef utf8Enc = new EmbeddedFuncDef("utf8Enc(str)", (e, a) => new ArrayVal(Encoding.UTF8.GetBytes(a[0].AsString)), "Encode string to UTF8 byte sequence.");
-        public static readonly EmbeddedFuncDef utf8Dec = new EmbeddedFuncDef("utf8Dec(bytes[]...)", (e, a) => new ArrayVal(Encoding.UTF8.GetString(a[0].AsByteArray)), "Decode UTF8 byte sequence.");
+        public static readonly EmbeddedFuncDef utf8Dec = new EmbeddedFuncDef("utf8Dec(bytes[]...)", (e, a) => new StrVal(Encoding.UTF8.GetString(a[0].AsByteArray)), "Decode UTF8 byte sequence.");
 
-        public static readonly EmbeddedFuncDef urlEnc = new EmbeddedFuncDef("urlEnc(str)", (e, a) => new ArrayVal(System.Web.HttpUtility.UrlEncode(a[0].AsString)), "Escape URL string.");
-        public static readonly EmbeddedFuncDef urlDec = new EmbeddedFuncDef("urlDec(str)", (e, a) => new ArrayVal(System.Web.HttpUtility.UrlDecode(a[0].AsString)), "Decode URL string.");
+        public static readonly EmbeddedFuncDef urlEnc = new EmbeddedFuncDef("urlEnc(str)", (e, a) => new StrVal(System.Web.HttpUtility.UrlEncode(a[0].AsString)), "Escape URL string.");
+        public static readonly EmbeddedFuncDef urlDec = new EmbeddedFuncDef("urlDec(str)", (e, a) => new StrVal(System.Web.HttpUtility.UrlDecode(a[0].AsString)), "Decode URL string.");
 
-        public static readonly EmbeddedFuncDef base64Enc = new EmbeddedFuncDef("base64Enc(str)", (e, a) => new ArrayVal(Convert.ToBase64String(Encoding.UTF8.GetBytes(a[0].AsString))), "Encode string to Base64.");
-        public static readonly EmbeddedFuncDef base64Dec = new EmbeddedFuncDef("base64Dec(str)", (e, a) => new ArrayVal(Encoding.UTF8.GetString(Convert.FromBase64String(a[0].AsString))), "Decode Base64 to string.");
-        public static readonly EmbeddedFuncDef base64EncBytes = new EmbeddedFuncDef("base64EncBytes(bytes[]...)", (e, a) => new ArrayVal(Convert.ToBase64String(a[0].AsByteArray)), "Encode byte-array to Base64.");
+        public static readonly EmbeddedFuncDef base64Enc = new EmbeddedFuncDef("base64Enc(str)", (e, a) => new StrVal(Convert.ToBase64String(Encoding.UTF8.GetBytes(a[0].AsString))), "Encode string to Base64.");
+        public static readonly EmbeddedFuncDef base64Dec = new EmbeddedFuncDef("base64Dec(str)", (e, a) => new StrVal(Encoding.UTF8.GetString(Convert.FromBase64String(a[0].AsString))), "Decode Base64 to string.");
+        public static readonly EmbeddedFuncDef base64EncBytes = new EmbeddedFuncDef("base64EncBytes(bytes[]...)", (e, a) => new StrVal(Convert.ToBase64String(a[0].AsByteArray)), "Encode byte-array to Base64.");
         public static readonly EmbeddedFuncDef base64DecBytes = new EmbeddedFuncDef("base64DecBytes(str)", (e, a) => new ArrayVal(Convert.FromBase64String(a[0].AsString)), "Decode Base64 to byte-array.");
 
         public static readonly EmbeddedFuncDef map = new EmbeddedFuncDef("map(array,func)", (e, a) => {
-            var array = (Val[])a[0].Raw;
+            var array = (Val[])a[0].AsArrayVal().Raw;
             var func = (FuncDef)a[1].Raw;
             return new ArrayVal(array.Select(p => func.Call(e, p)).ToArray());
         }, "Map an array using a converter function.");
 
         public static readonly EmbeddedFuncDef filter = new EmbeddedFuncDef("filter(array,func)", (e, a) => {
-            var array = (Val[])a[0].Raw;
+            var array = (Val[])a[0].AsArrayVal().Raw;
             var func = (FuncDef)a[1].Raw;
             return new ArrayVal(array.Where(p => func.Call(e, p).AsBool).ToArray(), a[0].FormatHint);
         }, "Filter an array using a tester function.");
 
         public static readonly EmbeddedFuncDef count = new EmbeddedFuncDef("count(array,func)", (e, a) => {
-            var array = (Val[])a[0].Raw;
+            var array = (Val[])a[0].AsArrayVal().Raw;
             var func = (FuncDef)a[1].Raw;
             return new RealVal(array.Count(p => func.Call(e, p).AsBool));
         }, "Count specific elements in array using a tester function.");
 
         public static readonly EmbeddedFuncDef sort_1 = new EmbeddedFuncDef("sort(array)", (e, a) => {
-            var array = (Val[])a[0].Raw;
+            var array = (Val[])a[0].AsArrayVal().Raw;
             return new ArrayVal(array.OrderBy(p => p, new ValComparer(e)).ToArray(), a[0].FormatHint);
         }, "Sort the array.");
 
         public static readonly EmbeddedFuncDef sort_2 = new EmbeddedFuncDef("sort(array,func)", (e, a) => {
-            var array = (Val[])a[0].Raw;
+            var array = (Val[])a[0].AsArrayVal().Raw;
             var func = (FuncDef)a[1].Raw;
             return new ArrayVal(array.OrderBy(p => func.Call(e, p).AsReal).ToArray(), a[0].FormatHint);
         }, "Sort the array using a converter function.");
 
         public static readonly EmbeddedFuncDef extend = new EmbeddedFuncDef("extend(array,func,count)", (e, a) => {
-            var seedArray = (ArrayVal)a[0];
+            var seedArray = a[0].AsArrayVal();
             var list = ((Val[])seedArray.Raw).ToList();
             var func = (FuncDef)a[1].Raw;
             var countReal = a[2].AsReal;
@@ -258,92 +286,102 @@ namespace Shapoco.Calctus.Model.Functions {
         }, "Extends the array using converter function.");
 
         public static readonly EmbeddedFuncDef aggregate = new EmbeddedFuncDef("aggregate(array,func)", (e, a) => {
-            var array = (Val[])a[0].Raw;
+            var array = (Val[])a[0].AsArrayVal().Raw;
             var func = (FuncDef)a[1].Raw;
             return array.Aggregate((p, q) => func.Call(e, p, q));
         }, "Apply the aggregate function for the array.");
 
         public static readonly EmbeddedFuncDef all_1 = new EmbeddedFuncDef("all(array)", (e, a) => {
-            var array = (Val[])a[0].Raw;
+            var array = (Val[])a[0].AsArrayVal().Raw;
             return BoolVal.FromBool(array.All(p => p.AsBool));
         }, "Returns true if all array elements are true.");
 
         public static readonly EmbeddedFuncDef all_2 = new EmbeddedFuncDef("all(array,func)", (e, a) => {
-            var array = (Val[])a[0].Raw;
+            var array = (Val[])a[0].AsArrayVal().Raw;
             var func = (FuncDef)a[1].Raw;
             return BoolVal.FromBool(array.All(p => func.Call(e, p).AsBool));
         }, "Returns true if func returns true for all elements of the array.");
 
         public static readonly EmbeddedFuncDef any_1 = new EmbeddedFuncDef("any(array)", (e, a) => {
-            var array = (Val[])a[0].Raw;
+            var array = (Val[])a[0].AsArrayVal().Raw;
             return BoolVal.FromBool(array.Any(p => p.AsBool));
         }, "Returns true if at least one element is true.");
 
         public static readonly EmbeddedFuncDef any_2 = new EmbeddedFuncDef("any(array,func)", (e, a) => {
-            var array = (Val[])a[0].Raw;
+            var array = (Val[])a[0].AsArrayVal().Raw;
             var func = (FuncDef)a[1].Raw;
             return BoolVal.FromBool(array.Any(p => func.Call(e, p).AsBool));
         }, "Return true if func returns true for at least one element of the array.");
 
         public static readonly EmbeddedFuncDef unique_1 = new EmbeddedFuncDef("unique(array)", (e, a) => {
-            var array = (Val[])a[0].Raw;
+            var array = (Val[])a[0].AsArrayVal().Raw;
             return new ArrayVal(array.Distinct(new ValEqualityComparer(e)).ToArray(), a[0].FormatHint);
         }, "Return unique elements.");
 
         public static readonly EmbeddedFuncDef unique_2 = new EmbeddedFuncDef("unique(array,func)", (e, a) => {
-            var array = (Val[])a[0].Raw;
+            var array = (Val[])a[0].AsArrayVal().Raw;
             var func = (FuncDef)a[1].Raw;
             return new ArrayVal(array.Distinct(new EqualityComparerFunc(e, func)).ToArray(), a[0].FormatHint);
         }, "Return unique elements using comparer function.");
 
         public static readonly EmbeddedFuncDef except = new EmbeddedFuncDef("except(array0,array1)", (e, a) => {
-            var array0 = (Val[])a[0].Raw;
-            var array1 = (Val[])a[1].Raw;
+            var array0 = (Val[])a[0].AsArrayVal().Raw;
+            var array1 = (Val[])a[1].AsArrayVal().Raw;
             return new ArrayVal(array0.Except(array1, new ValEqualityComparer(e)).ToArray(), a[0].FormatHint);
         }, "Returns the difference set of two arrays.");
 
         public static readonly EmbeddedFuncDef intersect = new EmbeddedFuncDef("intersect(array0,array1)", (e, a) => {
-            var array0 = (Val[])a[0].Raw;
-            var array1 = (Val[])a[1].Raw;
+            var array0 = (Val[])a[0].AsArrayVal().Raw;
+            var array1 = (Val[])a[1].AsArrayVal().Raw;
             return new ArrayVal(array0.Intersect(array1, new ValEqualityComparer(e)).ToArray(), a[0].FormatHint);
         }, "Returns the product set of two arrays.");
 
         public static readonly EmbeddedFuncDef union = new EmbeddedFuncDef("union(array0,array1)", (e, a) => {
-            var array0 = (Val[])a[0].Raw;
-            var array1 = (Val[])a[1].Raw;
+            var array0 = (Val[])a[0].AsArrayVal().Raw;
+            var array1 = (Val[])a[1].AsArrayVal().Raw;
             return new ArrayVal(array0.Union(array1, new ValEqualityComparer(e)).ToArray(), a[0].FormatHint);
         }, "Returns the union of two arrays.");
 
         public static readonly EmbeddedFuncDef indexOf = new EmbeddedFuncDef("indexOf(array,*val)", (e, a) => {
-            var array = (Val[])a[0].Raw;
-            if (a[1] is FuncVal fVal) {
-                var func = (FuncDef)fVal.Raw;
-                for (int i = 0; i < array.Length; i++) {
-                    if (func.Call(e, array[i]).AsBool) return new RealVal(i);
-                }
+            if (a[0] is StrVal sVal0 && a[1] is StrVal sVal1) {
+                return new RealVal(sVal0.AsString.IndexOf(sVal1.AsString));
             }
             else {
-                for (int i = 0; i < array.Length; i++) {
-                    if (array[i].Equals(e, a[1]).AsBool) return new RealVal(i);
+                var array = (Val[])a[0].AsArrayVal().Raw;
+                if (a[1] is FuncVal fVal) {
+                    var func = (FuncDef)fVal.Raw;
+                    for (int i = 0; i < array.Length; i++) {
+                        if (func.Call(e, array[i]).AsBool) return new RealVal(i);
+                    }
                 }
+                else {
+                    for (int i = 0; i < array.Length; i++) {
+                        if (array[i].Equals(e, a[1]).AsBool) return new RealVal(i);
+                    }
+                }
+                return new RealVal(-1);
             }
-            return new RealVal(-1);
         }, "Returns the index of the first element whose value matches val.");
 
         public static readonly EmbeddedFuncDef lastIndexOf = new EmbeddedFuncDef("lastIndexOf(array,*val)", (e, a) => {
-            var array = (Val[])a[0].Raw;
-            if (a[1] is FuncVal fVal) {
-                var func = (FuncDef)fVal.Raw;
-                for (int i = array.Length - 1; i >= 0; i--) {
-                    if (func.Call(e, array[i]).AsBool) return new RealVal(i);
-                }
+            if (a[0] is StrVal sVal0 && a[1] is StrVal sVal1) {
+                return new RealVal(sVal0.AsString.LastIndexOf(sVal1.AsString));
             }
             else {
-                for (int i = array.Length - 1; i >= 0; i--) {
-                    if (array[i].Equals(e, a[1]).AsBool) return new RealVal(i);
+                var array = (Val[])a[0].AsArrayVal().Raw;
+                if (a[1] is FuncVal fVal) {
+                    var func = (FuncDef)fVal.Raw;
+                    for (int i = array.Length - 1; i >= 0; i--) {
+                        if (func.Call(e, array[i]).AsBool) return new RealVal(i);
+                    }
                 }
+                else {
+                    for (int i = array.Length - 1; i >= 0; i--) {
+                        if (array[i].Equals(e, a[1]).AsBool) return new RealVal(i);
+                    }
+                }
+                return new RealVal(-1);
             }
-            return new RealVal(-1);
         }, "Returns the index of the last element whose value matches val.");
 
         public static readonly EmbeddedFuncDef contains = new EmbeddedFuncDef("contains(array,*val)", (e, a) => {

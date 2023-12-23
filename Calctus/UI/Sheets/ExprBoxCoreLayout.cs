@@ -11,6 +11,7 @@ using Shapoco.Calctus.Model.Parsers;
 using Shapoco.Calctus.Model.Formats;
 using Shapoco.Calctus.Model.Expressions;
 using Shapoco.Calctus.Model.Evaluations;
+using Shapoco.Calctus.Model.Types;
 
 namespace Shapoco.Calctus.UI.Sheets {
     /// <summary>
@@ -202,7 +203,8 @@ namespace Shapoco.Calctus.UI.Sheets {
                             }
                             else if (nth.Value.FormatHint.Formatter == NumberFormatter.CStyleChar || 
                                     nth.Value.FormatHint.Formatter == NumberFormatter.CStyleString || 
-                                    nth.Value.FormatHint.Formatter == NumberFormatter.DateTime) {
+                                    nth.Value.FormatHint.Formatter == NumberFormatter.DateTime ||
+                                    nth.Value is StrVal) {
                                 // その他の特殊リテラルの強調表示
                                 for (int i = 0; i < t.Text.Length; i++) {
                                     _chars[t.Position.Index + i].Style.ForeColor = s.Appearance_Color_Special_Literals;
@@ -343,14 +345,14 @@ namespace Shapoco.Calctus.UI.Sheets {
                 }
                 else if (error is ParserError parserError) {
                     // 構文解析エラー
-                    if (parserError.Token != null && parserError.Token.Text != null) {
+                    if (parserError.Token != null && !string.IsNullOrEmpty(parserError.Token.Text)) {
                         errorStart = parserError.Token.Position.Index;
                         errorEnd = errorStart + parserError.Token.Text.Length;
                     }
                 }
                 else if (error is EvalError evalError) {
                     // 評価エラー
-                    if (evalError.Token != null && evalError.Token.Text != null) {
+                    if (evalError.Token != null && !string.IsNullOrEmpty(evalError.Token.Text)) {
                         errorStart = evalError.Token.Position.Index;
                         errorEnd = errorStart + evalError.Token.Text.Length;
                     }

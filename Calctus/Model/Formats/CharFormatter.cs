@@ -86,7 +86,7 @@ namespace Shapoco.Calctus.Model.Formats {
             return new RealVal(Unescape(m.Groups["char"].Value), new FormatHint(this));
         }
 
-        protected override string OnFormat(Val val, FormatSettingss fs) {
+        protected override string OnFormat(Val val, FormatSettings fs) {
             if (!val.IsInteger) {
                 // 整数でない場合はデフォルトの数値表現を使用
                 return base.OnFormat(val, fs);

@@ -28,7 +28,7 @@ namespace Shapoco.Calctus.Model.Formats {
             }
         }
 
-        protected override string OnFormat(Val val, FormatSettingss fs) {
+        protected override string OnFormat(Val val, FormatSettings fs) {
             if (!(val is RealVal)) {
                 return base.OnFormat(val, fs);
             }

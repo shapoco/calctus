@@ -17,26 +17,25 @@ namespace Shapoco.Calctus.Model.Formats {
             foreach (Capture cap in m.Groups["char"].Captures) {
                 sb.Append(CharFormatter.Unescape(cap.Value));
             }
-            return new ArrayVal(sb.ToString());
+            return new StrVal(sb.ToString());
         }
 
-        protected override string OnFormat(Val val, FormatSettingss fs) {
-            if (!(val is ArrayVal aval)) {
-                // 配列以外にはデフォルトの表現を適用
-                return base.OnFormat(val, fs);
+        protected override string OnFormat(Val val, FormatSettings fs) {
+            if (!(val is StrVal strVal)) {
+                // 文字列以外にはデフォルトの表現を適用
+                return base.OnFormat(val, new FormatSettings());
             }
-
-            var vals = (Val[])aval.Raw;
-            if (!vals.All(p => p.IsInteger && char.MinValue <= p.AsReal && p.AsReal <= char.MaxValue)) {
-                // char の範囲外の値や小数を含む場合はデフォルトの表現を適用
-                return base.OnFormat(val, fs);
+            else {
+                return FormatAsStringLiteral(strVal.AsString);
             }
+        }
 
+        public static string FormatAsStringLiteral(string str) {
             // 文字列表現への変換
             var sb = new StringBuilder();
             sb.Append('"');
-            foreach(var c in vals) {
-                CharFormatter.Escape(sb, (char)c.AsReal, true);
+            foreach (var c in str) {
+                CharFormatter.Escape(sb, c, true);
             }
             sb.Append('"');
             return sb.ToString();

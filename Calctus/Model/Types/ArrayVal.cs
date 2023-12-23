@@ -59,10 +59,6 @@ namespace Shapoco.Calctus.Model.Types {
             }
             this._raw = array;
         }
-        public ArrayVal(string val) : base(new FormatHint(NumberFormatter.CStyleString)) {
-            CheckArrayLength(val.Length);
-            this._raw = val.Select(p => new RealVal(p).FormatHex()).ToArray();
-        }
 
         public Val this[int index] => _raw[index];
 
@@ -100,27 +96,16 @@ namespace Shapoco.Calctus.Model.Types {
         public override double AsDouble => throw new InvalidCastException();
         public override long AsLong => throw new InvalidCastException();
         public override int AsInt => throw new InvalidCastException();
+        public override char AsChar => throw new InvalidCastException();
         public override byte AsByte => throw new InvalidCastException();
         public override bool AsBool => throw new InvalidCastException();
-        public override string AsString {
-            get {
-                if (!_raw.All(p => p.IsInteger && char.MinValue <= p.AsReal && p.AsReal <= char.MaxValue)) {
-                    throw new CalctusError("Array contains non-character value.");
-                }
-                var sb = new StringBuilder();
-                foreach(var val in _raw) {
-                    sb.Append((char)val.AsReal);
-                }
-                return sb.ToString();
-            }
-        }
-
+        
         public override real[] AsRealArray => _raw.Select(p => p.AsReal).ToArray();
         public override long[] AsLongArray => _raw.Select(p => p.AsLong).ToArray();
         public override int[] AsIntArray => _raw.Select(p => p.AsInt).ToArray();
         public override byte[] AsByteArray => _raw.Select(p => p.AsByte).ToArray();
 
-        public override string ToString(FormatSettingss fs) => FormatHint.Formatter.Format(this, fs);
+        public override string ToString(FormatSettings fs) => FormatHint.Formatter.Format(this, fs);
 
         protected override RealVal OnAsRealVal() => throw new InvalidCastException();
 
@@ -162,6 +147,7 @@ namespace Shapoco.Calctus.Model.Types {
 
         protected override Val OnUpConvert(EvalContext ctx, Val b) {
             if (b is ArrayVal) return this;
+            if (b is StrVal) return AsStrVal();
             throw new InvalidCastException(this.ValTypeName + " cannot be converted to " + b.ValTypeName);
         }
     }

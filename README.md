@@ -88,18 +88,18 @@ User-defined constants can also be used.
 
 |Category|Functions|Precision|
 |:--|:--|:--|
-|Exponential|`pow(x*,y)`, `exp(x*)` :new:, `sqrt(x*)`, `log(x*)`, `log2(x*)`, `log10(x*)`, `clog2(x*)`, `clog10(x*)`|`Decimal`|
-|Trigonometric|`sin(x*)`, `cos(x*)`, `tan(x*)`,`asin(x*)`, `acos(x*)`, `atan(x*)`, `atan2(y, x)`,`sinh(x*)`, `cosh(x*)`, `tanh(x*)`|`Double`|
-|Round|`floor(x*)`, `ceil(x*)`, `trunc(x*)`, `round(x*)`|`Decimal`|
-|Absolute/Sign|`abs(x*)`, `sign(x*)`|`Decimal`|
+|Exponential|`pow(*x,y)`, `exp(*x)` :new:, `sqrt(*x)`, `log(*x)`, `log2(*x)`, `log10(*x)`, `clog2(*x)`, `clog10(*x)`|`Decimal`|
+|Trigonometric|`sin(*x)`, `cos(*x)`, `tan(*x)`,`asin(*x)`, `acos(*x)`, `atan(*x)`, `atan2(y, x)`,`sinh(*x)`, `cosh(*x)`, `tanh(*x)`|`Double`|
+|Round|`floor(*x)`, `ceil(*x)`, `trunc(*x)`, `round(*x)`|`Decimal`|
+|Absolute/Sign|`abs(*x)`, `sign(*x)`|`Decimal`|
 |Max/Min|`max(x...)`, `min(x...)`|`Decimal`|
 |Sum/Average|`sum(x...)`, `ave(x...)`, `harMean(x...)`, `invSum(x...)`, `geoMean(x...)`|`Decimal`|
-|GCD, LCM|`gcd(a, b)`, `lcm(a, b)`|`Decimal`|
-|Bit/Byte Operations|`swapNib(x)`, `swap2(x)`, `swap4(x)`, `swap8(x)`, `reverseBits(x,w)`, `reverseBytewise(x)`, `rotatel(x,w)`, `rotater(x,w)`, `count1(x,w)`|`Int64`|
-|Parity/ECC|`xorReduce(x)`, `oddParity(x)`, `eccWidth(x)`, `eccEnc(x,w)`, `eccDec(e,x,w)`|`Int64`|
-|Gray-code|`toGray(x)`, `fromGray(x)`|`Int64`|
+|GCD, LCM|`gcd(x...)`, `lcm(x...)`|`Decimal`|
+|Bit/Byte Operations|`swapNib(*x)`, `swap2(*x)`, `swap4(*x)`, `swap8(*x)`, `reverseBits(b,*x)`, `reverseBytewise(*x)`, `rotateL(b,*x)`, `rotateR(b,*x)`, `count1(*x)`|`Int64`|
+|Parity/ECC|`xorReduce(*x)`, `oddParity(*x)`, `eccWidth(*x)`, `eccEnc(b,*x)`, `eccDec(b,e,x)`|`Int64`|
+|Gray-code|`toGray(*x)`, `fromGray(*x)`|`Int64`|
 |Fractions|`rat(x)`, `rat(x,a)`, `real(x)`|`Decimal`|
-|Representation|`dec(x)`, `hex(x)`, `bin(x)`, `oct(x)`, `char(x)`, `si(x)`, `kibi(x)`, `datetime(x)`|`Decimal`|
+|Representation|`dec(*x)`, `hex(*x)`, `bin(*x)`, `oct(*x)`, `char(*x)`, `si(*x)`, `kibi(*x)`, `datetime(*x)`,`array(str)`,`str(array)`|`Decimal`|
 |Date Time|`now()`, `fromDays(x)`, `fromHours(x)`, `fromMinutes(x)`, `fromSeconds(x)`, `toDays(x)`, `toHours(x)`, `toMinutes(x)`, `toSeconds(x)`|`Double`|
 |Color|`rgb(r,g,b)`, `rgb(rgb)`, `hsv2rgb(h,s,v)`, `rgb2hsv(rgb)`, `hsl2rgb(h,s,l)`, `rgb2hsl(rgb)`, `yuv2rgb(y,u,v)`, `yuv2rgb(yuv)`, `rgb2yuv(r,g,b)`, `rgb2yuv(rgb)`, `rgbto565(rgb)`, `rgbfrom565(rgb565)`, `pack565(r5,g6,b5)`, `unpack565(rgb565)`|`Decimal`|
 |E-series|Rounding to the E-series value: `eXFloor(x)`, `eXCeil(x)`, `eXRound(x)`<br>Calculation of voltage divider resistance: `eXRatio(x)`<br> (`X`=`3`, `6`, `12`, `24`, `48`, `96`, `192`)|`Decimal`|

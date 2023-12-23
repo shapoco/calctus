@@ -32,14 +32,36 @@ namespace Shapoco.Calctus.Model.Types {
         }
         protected abstract RealVal OnAsRealVal();
 
+        public ArrayVal AsArrayVal() {
+            if (this is ArrayVal thisArray) {
+                return thisArray;
+            }
+            else if (this is StrVal thisStr) {
+                return new ArrayVal(thisStr.AsString.Select(p => (real)p).ToArray(), new FormatHint(NumberFormatter.CStyleHex));
+            }
+            else {
+                throw new InvalidCastException();
+            }
+        }
+
+        public StrVal AsStrVal() {
+            if (this is StrVal thisStr) {
+                return thisStr;
+            }
+            else {
+                return new StrVal(AsString);
+            }
+        }
+
         public abstract real AsReal { get; }
         public abstract frac AsFrac { get; }
         public abstract double AsDouble { get; }
         public abstract long AsLong { get; }
         public abstract int AsInt { get; }
+        public abstract char AsChar { get; }
         public abstract byte AsByte { get; }
         public abstract bool AsBool { get; }
-        public abstract string AsString { get; }
+        public virtual string AsString => ToString();
 
         public abstract real[] AsRealArray { get; }
         public abstract long[] AsLongArray { get; }
@@ -145,8 +167,8 @@ namespace Shapoco.Calctus.Model.Types {
         protected abstract Val OnLogicAnd(EvalContext ctx, Val b);
         protected abstract Val OnLogicOr(EvalContext ctx, Val b);
 
-        public override string ToString() => this.ToString(new FormatSettingss());
-        public abstract string ToString(FormatSettingss fs);
+        public override string ToString() => this.ToString(new FormatSettings());
+        public abstract string ToString(FormatSettings fs);
 
         public override int GetHashCode() => Raw.GetHashCode();
     }
