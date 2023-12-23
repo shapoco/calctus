@@ -351,46 +351,46 @@ Nearest E-series value (`series`=3, 6, 12, 24, 48, 96, or 192).
 
 ### `clog10(*x)`
 
-Ceiling of common logarithm
+Ceiling of common logarithm of `x`
 
 ### `clog2(*x)`
 
-Ceiling of binary logarithm
+Ceiling of binary logarithm of `x`
 
 ### `exp(*x)`
 
-Exponential
+Exponential of `x`
 
 ### `log(*x)`
 
-Logarithm
+Logarithm of `x`
 
 ### `log10(*x)`
 
-Common logarithm
+Common logarithm of `x`
 
 ### `log2(*x)`
 
-Binary logarithm
+Binary logarithm of `x`
 
 ### `pow(*x, y)`
 
-Power
+`y` power of `x`
 
 ### `sqrt(*x)`
 
-Square root
+Square root of `x`
 
 ----
 ## Gcd/Lcm
 
-### `gcd(x...)`
+### `gcd(array...)`
 
-Greatest common divisor
+Greatest common divisor of elements of the `array`.
 
-### `lcm(x...)`
+### `lcm(array...)`
 
-Least common multiple
+Least common multiple of elements of the `array`.
 
 ----
 ## Gray Code
@@ -419,30 +419,30 @@ Minimum value of the arguments
 
 ### `eccDec(b, ecc, x)`
 
-Check ECC code (b: data width, ecc: ECC code, x: data)
+Checks ECC code (`b`: data width, `ecc`: ECC code, `x`: data). Returns: 0 = no error, positive value = position of 1-bit error, negative value = 2-bit error.
 
 ### `eccEnc(b, *x)`
 
-Generate ECC code (b: data width, x: data)
+Generates ECC code (`b`: data width, `x`: data).
 
 ### `eccWidth(*b)`
 
-Width of ECC for b-bit data.
+Width of ECC for `b`-bit data.
 
 ### `oddParity(*x)`
 
-Odd parity.
+Odd parity of `x`.
 
 ### `xorReduce(*x)`
 
-Reduction XOR (Same as even parity).
+Reduction XOR of `x` (Same as even parity).
 
 ----
 ## Plotting
 
 ### `plot(func)`
 
-Plot graph.
+Plot graph of `func(x)`.
 
 ----
 ## Prime Number
@@ -537,15 +537,15 @@ Integral part of `x`
 
 ### `solve(func)`
 
-Solve func(x)=0 using Newton's Method.
+Returns solutions of `func(x)=0` using Newton's Method.
 
-### `solve(func, init)`
+### `solve(func, array)`
 
-Solve func(x)=0 using Newton's Method with initial value.
+Returns solutions of `func(x)=0` using Newton's Method with initial value in `array`.
 
 ### `solve(func, min, max)`
 
-Solve func(x)=0 using Newton's Method with range of initial value.
+Returns solutions of `func(x)=0` using Newton's Method with initial value between `min` and `max`.
 
 ----
 ## Sum/Average

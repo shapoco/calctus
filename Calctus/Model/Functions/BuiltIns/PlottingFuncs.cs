@@ -13,6 +13,6 @@ namespace Shapoco.Calctus.Model.Functions.BuiltIns {
             var req = new PlotCall(e, PlotCall.DefaultWindowName, func);
             e.PlotCalls.Add(req);
             return NullVal.Instance;
-        }, "Plot graph.");
+        }, "Plot graph of `func(x)`.");
     }
 }

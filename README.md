@@ -101,7 +101,7 @@ See [Built-In Functions](FUNCTIONS.md) for details.
 |Encoding|`base64Dec(str)`, `base64DecBytes(str)`, `base64Enc(str)`, `base64EncBytes(bytes[]...)`, `urlDec(str)`, `urlEnc(str)`, `utf8Dec(bytes[]...)`, `utf8Enc(str)`|
 |E Series|`esCeil(series,*x)`, `esFloor(series,*x)`, `esRatio(series,*x)`, `esRound(series,*x)`|
 |Exponential|`clog10(*x)`, `clog2(*x)`, `exp(*x)`, `log(*x)`, `log10(*x)`, `log2(*x)`, `pow(*x,y)`, `sqrt(*x)`|
-|Gcd/Lcm|`gcd(x...)`, `lcm(x...)`|
+|Gcd/Lcm|`gcd(array...)`, `lcm(array...)`|
 |Gray Code|`fromGray(*x)`, `toGray(*x)`|
 |Min/Max|`max(x...)`, `min(x...)`|
 |Parity/Ecc|`eccDec(b,ecc,x)`, `eccEnc(b,*x)`, `eccWidth(*b)`, `oddParity(*x)`, `xorReduce(*x)`|
@@ -110,7 +110,7 @@ See [Built-In Functions](FUNCTIONS.md) for details.
 |Random|`rand()`, `rand(min,max)`, `rand32()`, `rand64()`|
 |Representaion|`bin(*x)`, `char(*x)`, `datetime(*x)`, `dec(*x)`, `hex(*x)`, `kibi(*x)`, `oct(*x)`, `si(*x)`|
 |Rounding|`ceil(*x)`, `floor(*x)`, `round(*x)`, `trunc(*x)`|
-|Solve|`solve(func)`, `solve(func,init)`, `solve(func,min,max)`|
+|Solve|`solve(func)`, `solve(func,array)`, `solve(func,min,max)`|
 |Sum/Average|`ave(array...)`, `geoMean(array...)`, `harMean(array...)`, `invSum(array...)`, `sum(array...)`|
 |Trigonometric|`acos(*x)`, `asin(*x)`, `atan(*x)`, `atan2(a,b)`, `cos(*x)`, `cosh(*x)`, `sin(*x)`, `sinh(*x)`, `tan(*x)`, `tanh(*x)`|
 <!-- END_OF_BUILT_IN_FUNCTION_TABLE -->
