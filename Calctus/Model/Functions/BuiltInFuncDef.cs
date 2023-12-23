@@ -111,7 +111,7 @@ namespace Shapoco.Calctus.Model.Functions {
 
             using (var writer = new StreamWriter("../../README.md")) {
                 writer.Write(readMeBeforeTable.ToString());
-                writer.WriteLine("Now calctus has " + numFuncs + " built-in functions.");
+                writer.WriteLine("Now Calctus has " + numFuncs + " built-in functions.");
                 writer.WriteLine();
                 writer.WriteLine("|Category|Functions|");
                 writer.WriteLine("|:--:|:--|");

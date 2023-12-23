@@ -89,7 +89,7 @@ User-defined constants can also be used.
 See [Built-In Functions](FUNCTIONS.md) for details.
 
 <!-- START_OF_BUILT_IN_FUNCTION_TABLE -->
-Now calctus has 137 built-in functions.
+Now Calctus has 137 built-in functions.
 
 |Category|Functions|
 |:--:|:--|
