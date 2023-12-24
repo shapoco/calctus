@@ -33,7 +33,8 @@ namespace Shapoco.Calctus.UI.Books {
                 IconImageList = new ImageList();
                 IconImageList.ColorDepth = ColorDepth.Depth32Bit;
                 IconImageList.Images.Add(Properties.Resources.ToolIcon_Folder);
-                IconImageList.Images.Add(Properties.Resources.ToolIcon_Sheet);
+                IconImageList.Images.Add(Properties.Resources.ToolIcon_Sheet_Close);
+                IconImageList.Images.Add(Properties.Resources.ToolIcon_Sheet_Open);
             }
             this.ImageList = IconImageList;
 
@@ -187,8 +188,7 @@ namespace Shapoco.Calctus.UI.Books {
 
         private void showSidePaneContextMenu(Point p) {
             if (SelectedNode == null || !(SelectedNode is BookItem node)) return;
-            _renameButton.Enabled = node.HasFileName;
-            _removeButton.Enabled = node.HasFileName;
+            _renameButton.Enabled = _removeButton.Enabled = node.HasFileName;
             _sidePaneContextMenu.Show(p);
         }
 

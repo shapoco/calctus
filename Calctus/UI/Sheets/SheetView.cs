@@ -162,36 +162,6 @@ namespace Shapoco.Calctus.UI.Sheets {
 
         public SheetOperator Operator => _operator;
 
-        //public bool IsChanged {
-        //    get => _isChanged;
-        //    private set {
-        //        if (value == _isChanged) return;
-        //        _isChanged = value;
-        //    }
-        //}
-        //
-        //public void Load(string path) {
-        //    this.Sheet = new Sheet(path);
-        //    _filePath = path;
-        //}
-        //
-        //public void Save(string path = null) {
-        //    if (_sheet == null) return;
-        //    if (!string.IsNullOrEmpty(path)) {
-        //        _filePath = path;
-        //        _sheet.Save(_filePath);
-        //        IsChanged = false;
-        //    }
-        //    else if (!string.IsNullOrEmpty(_filePath)) {
-        //        _sheet.Save(_filePath);
-        //        IsChanged = false;
-        //    }
-        //    else if (!_sheet.IsEmpty) {
-        //        _sheet.Save(Path.Combine(HistoryDirectory, DateTime.Now.ToString("yyyy-MM-dd-hh-mm-ss") + ".txt"));
-        //        IsChanged = false;
-        //    }
-        //}
-        
         [Browsable(false)]
         [DefaultValue(-1)]
         public int FocusedIndex {

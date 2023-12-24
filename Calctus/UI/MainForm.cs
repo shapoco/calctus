@@ -26,7 +26,6 @@ namespace Shapoco.Calctus.UI {
 
         private Font _sheetViewFont = null;
         private BookItem _activeBookItem = null;
-        private SheetView _activeView = null;
 
         private HotKey _hotkey = null;
         private bool _startup = true;
@@ -69,14 +68,14 @@ namespace Shapoco.Calctus.UI {
 #endif
             notifyIcon.MouseClick += NotifyIcon_MouseClick;
 
-            radixAutoButton.Click += (sender, e) => { _activeView.ReplaceFormatterFunction(null); _activeView.Focus(); }; 
-            radixDecButton.Click += (sender, e) => { _activeView.ReplaceFormatterFunction(RepresentaionFuncs.dec); _activeView.Focus(); };
-            radixHexButton.Click += (sender, e) => { _activeView.ReplaceFormatterFunction(RepresentaionFuncs.hex); _activeView.Focus(); };
-            radixBinButton.Click += (sender, e) => { _activeView.ReplaceFormatterFunction(RepresentaionFuncs.bin); _activeView.Focus(); };
-            radixOctButton.Click += (sender, e) => { _activeView.ReplaceFormatterFunction(RepresentaionFuncs.oct); _activeView.Focus(); };
-            radixSiButton.Click += (sender, e) => { _activeView.ReplaceFormatterFunction(RepresentaionFuncs.si); _activeView.Focus(); };
-            radixKibiButton.Click += (sender, e) => { _activeView.ReplaceFormatterFunction(RepresentaionFuncs.kibi); _activeView.Focus(); };
-            radixCharButton.Click += (sender, e) => { _activeView.ReplaceFormatterFunction(RepresentaionFuncs.char_1); _activeView.Focus(); };
+            radixAutoButton.Click += (sender, e) => { _activeBookItem.View.ReplaceFormatterFunction(null); _activeBookItem.View.Focus(); }; 
+            radixDecButton.Click += (sender, e) => { _activeBookItem.View.ReplaceFormatterFunction(RepresentaionFuncs.dec); _activeBookItem.View.Focus(); };
+            radixHexButton.Click += (sender, e) => { _activeBookItem.View.ReplaceFormatterFunction(RepresentaionFuncs.hex); _activeBookItem.View.Focus(); };
+            radixBinButton.Click += (sender, e) => { _activeBookItem.View.ReplaceFormatterFunction(RepresentaionFuncs.bin); _activeBookItem.View.Focus(); };
+            radixOctButton.Click += (sender, e) => { _activeBookItem.View.ReplaceFormatterFunction(RepresentaionFuncs.oct); _activeBookItem.View.Focus(); };
+            radixSiButton.Click += (sender, e) => { _activeBookItem.View.ReplaceFormatterFunction(RepresentaionFuncs.si); _activeBookItem.View.Focus(); };
+            radixKibiButton.Click += (sender, e) => { _activeBookItem.View.ReplaceFormatterFunction(RepresentaionFuncs.kibi); _activeBookItem.View.Focus(); };
+            radixCharButton.Click += (sender, e) => { _activeBookItem.View.ReplaceFormatterFunction(RepresentaionFuncs.char_1); _activeBookItem.View.Focus(); };
 
             toolTip.SetToolTip(radixAutoButton, "Automatic (F8)");
             toolTip.SetToolTip(radixDecButton, "Decimal (F9)");
@@ -87,14 +86,14 @@ namespace Shapoco.Calctus.UI {
             toolTip.SetToolTip(radixKibiButton, "Binary Prefix");
             toolTip.SetToolTip(radixCharButton, "Character");
 
-            undoButton.Click += (sender, e) => { _activeView.Undo(); };
-            redoButton.Click += (sender, e) => { _activeView.Redo(); };
-            copyButton.Click += (sender, e) => { _activeView.Copy(); };
-            pasteButton.Click += (sender, e) => { _activeView.Paste(); };
-            insertButton.Click += (sender, e) => { _activeView.ItemInsert(); };
-            deleteButton.Click += (sender, e) => { _activeView.ItemDelete(); };
-            moveUpButton.Click += (sender, e) => { _activeView.ItemMoveUp(); };
-            moveDownButton.Click += (sender, e) => { _activeView.ItemMoveDown(); };
+            undoButton.Click += (sender, e) => { _activeBookItem.View.Undo(); };
+            redoButton.Click += (sender, e) => { _activeBookItem.View.Redo(); };
+            copyButton.Click += (sender, e) => { _activeBookItem.View.Copy(); };
+            pasteButton.Click += (sender, e) => { _activeBookItem.View.Paste(); };
+            insertButton.Click += (sender, e) => { _activeBookItem.View.ItemInsert(); };
+            deleteButton.Click += (sender, e) => { _activeBookItem.View.ItemDelete(); };
+            moveUpButton.Click += (sender, e) => { _activeBookItem.View.ItemMoveUp(); };
+            moveDownButton.Click += (sender, e) => { _activeBookItem.View.ItemMoveDown(); };
 
             sidePaneOpenButton.Click += SidePaneOpenButton_Click;
             bookTreeView.AfterSelect += (sender, e) => { onBookItemSelected(); };
@@ -175,7 +174,12 @@ namespace Shapoco.Calctus.UI {
                 saveScratchPadToHistory();
             }
             if (_activeBookItem != bookTreeView.ScratchPad && _activeBookItem.HasFileName && _activeBookItem.IsChanged) {
-                _activeBookItem.Save();
+                try {
+                    _activeBookItem.Save();
+                }
+                catch (Exception ex) {
+                    Console.WriteLine("Save failed: " + ex.Message);
+                }
             }
             notifyIcon.Visible = false;
             disableHotkey();
@@ -257,12 +261,10 @@ namespace Shapoco.Calctus.UI {
                 radixCharButton.ForeColor = s.Appearance_Color_Text;
                 sidePaneOpenButton.ForeColor = s.Appearance_Color_Text;
 
-                sidePaneBodyPanel.Width = 200;
-
                 bookTreeView.ReloadSettings();
             }
             catch { }
-            _activeView.RequestRecalc();
+            _activeBookItem.View.RequestRecalc();
             GraphForm.ReloadSettingsAll();
         }
 
@@ -307,43 +309,56 @@ namespace Shapoco.Calctus.UI {
             }
         }
 
-        private BookItem _lastBookItem = null;
         private void onBookItemSelected() {
             if (bookTreeView.SelectedNode == null) return;
             if (!(bookTreeView.SelectedNode is BookItem newBookItem)) return;
-            try {
-                if (_lastBookItem != null && _lastBookItem.View != null && _lastBookItem.HasFileName && _lastBookItem.IsChanged) {
-                    _lastBookItem.Save();
+            if (newBookItem == _activeBookItem) return;
+            var lastBookItem = _activeBookItem;
+            
+            if (lastBookItem != null && lastBookItem.View != null && lastBookItem.HasFileName && lastBookItem.IsChanged) {
+                // 以前開いていたシートを保存する
+                try {
+                    lastBookItem.Save();
+                }
+                catch (Exception ex) {
+                    MessageBox.Show("Failed to save sheet:\r\n\r\n" + ex.Message,
+                        Application.ProductName, MessageBoxButtons.OK, MessageBoxIcon.Error);
                 }
             }
-            catch (Exception ex) {
-                MessageBox.Show("Failed to save sheet:\r\n\r\n" + ex.Message,
-                    Application.ProductName, MessageBoxButtons.OK, MessageBoxIcon.Error);
-            }
+
             try {
-                SheetView newView = newBookItem.View;
+                var newView = newBookItem.View;
+                var oldView = lastBookItem != null ? lastBookItem.View : null;
                 if (newView == null) {
+                    // シートが読み込まれてなければ読み込む
                     newBookItem.CreateView();
                     newView = newBookItem.View;
                 }
-                if (!this.Controls.Contains(newView)) {
+
+                if (!Controls.Contains(newView)) {
+                    // SheetView コントロールをフォームに追加
                     newView.Dock = DockStyle.Fill;
-                    newView.DialogOpening += delegate { suspendTopMost(); };
-                    newView.DialogClosed += delegate { resumeTopMost(); };
-                    this.Controls.Add(newView);
+                    newView.DialogOpening += SheetView_DialogOpening;
+                    newView.DialogClosed += SheetView_DialogClosed;
+                    Controls.Add(newView);
                     setViewAppearance(newView);
                 }
+
                 newView.BringToFront();
-                if (_activeView != newView) {
-                    var oldView = _activeView;
-                    _activeBookItem = newBookItem;
-                    _activeView = newView;
-                    newView.Visible = true;
-                    if (oldView != null) {
+                newView.Visible = true;
+
+                if (oldView != null) {
+                    if (lastBookItem.HasFileName && !lastBookItem.IsTouched) {
+                        if (Controls.Contains(oldView)) Controls.Remove(oldView);
+                        oldView.DialogOpening -= SheetView_DialogOpening;
+                        oldView.DialogClosed -= SheetView_DialogClosed;
+                        lastBookItem.CloseView();
+                    }
+                    else {
                         oldView.Visible = false;
                     }
                 }
-                _lastBookItem = newBookItem;
+                _activeBookItem = newBookItem;
             }
             catch (Exception ex) {
                 MessageBox.Show("Failed to load sheet:\r\n\r\n" + ex.Message,
@@ -352,7 +367,15 @@ namespace Shapoco.Calctus.UI {
             this.Text =
                 Application.ProductName +
                 " (v" + System.Reflection.Assembly.GetExecutingAssembly().GetName().Version + ") - " +
-                (_lastBookItem != null ? _lastBookItem.Name : "(null)");
+                (_activeBookItem != null ? _activeBookItem.Name : "(null)");
+        }
+
+        private void SheetView_DialogOpening(object sender, EventArgs e) {
+            suspendTopMost();
+        }
+
+        private void SheetView_DialogClosed(object sender, EventArgs e) {
+            resumeTopMost();
         }
 
         private void saveScratchPadToHistory() {
@@ -479,7 +502,7 @@ namespace Shapoco.Calctus.UI {
 
         private void _focusTimer_Tick(object sender, EventArgs e) {
             _focusTimer.Stop();
-            _activeView.Focus();
+            _activeBookItem.View.Focus();
         }
 
         private void scanFiles(TreeNode parentNode, string folderName) {
@@ -515,22 +538,22 @@ namespace Shapoco.Calctus.UI {
             }
             else if (e.KeyCode == Keys.F5) {
                 ExternalFuncDef.ScanScripts();
-                _activeView.RequestRecalc();
+                _activeBookItem.View.RequestRecalc();
             }
             else if (e.KeyCode == Keys.F8) {
-                _activeView.ReplaceFormatterFunction(null);
+                _activeBookItem.View.ReplaceFormatterFunction(null);
             }
             else if (e.KeyCode == Keys.F9) {
-                _activeView.ReplaceFormatterFunction(RepresentaionFuncs.dec);
+                _activeBookItem.View.ReplaceFormatterFunction(RepresentaionFuncs.dec);
             }
             else if (e.KeyCode == Keys.F10) {
-                _activeView.ReplaceFormatterFunction(RepresentaionFuncs.hex);
+                _activeBookItem.View.ReplaceFormatterFunction(RepresentaionFuncs.hex);
             }
             else if (e.KeyCode == Keys.F11) {
-                _activeView.ReplaceFormatterFunction(RepresentaionFuncs.bin);
+                _activeBookItem.View.ReplaceFormatterFunction(RepresentaionFuncs.bin);
             }
             else if (e.KeyCode == Keys.F12) {
-                _activeView.ReplaceFormatterFunction(RepresentaionFuncs.si);
+                _activeBookItem.View.ReplaceFormatterFunction(RepresentaionFuncs.si);
             }
             else {
                 e.SuppressKeyPress = false;

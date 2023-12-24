@@ -13,13 +13,13 @@ namespace Shapoco.Calctus.UI.Books {
         private string _fileName = null;
         private SheetView _view = null;
         private bool _isChanged = false;
+        private bool _isTouched = false;
 
         public BookItem(string name, string fileName, SheetView view) : base(name) {
             Name = name;
             _fileName = fileName;
             View = view;
-            ImageIndex = 1;
-            SelectedImageIndex = 1;
+            SelectedImageIndex = ImageIndex = view != null ? 2 : 1;
             try {
                 if (HasFileName && File.Exists(FullPath)) {
                     LastModified = new FileInfo(FullPath).LastWriteTime;
@@ -29,6 +29,7 @@ namespace Shapoco.Calctus.UI.Books {
         }
 
         public bool IsChanged => _isChanged;
+        public bool IsTouched => _isTouched;
         public DateTime LastModified { get; private set; } = DateTime.Now;
 
         public string FileName {
@@ -72,15 +73,26 @@ namespace Shapoco.Calctus.UI.Books {
             var view = new SheetView();
             view.Sheet = new Sheet(FilePath);
             this.View = view;
+            SelectedImageIndex = ImageIndex = 2;
+        }
+
+        public void CloseView() {
+            if (_view == null) return;
+            if (_isChanged) Save();
+            View.Dispose();
+            this.View = null;
+            _isTouched = false;
+            SelectedImageIndex = ImageIndex = 1;
         }
 
         private void _view_Changed(object sender, EventArgs e) {
             _isChanged = true;
+            _isTouched = true;
             LastModified = DateTime.Now;
         }
 
         public void Save() {
-            if (_view != null && !string.IsNullOrEmpty(FileName)) {
+            if (_view != null && HasFileName) {
                 View.Sheet.Save(FilePath);
                 _isChanged = false;
             }

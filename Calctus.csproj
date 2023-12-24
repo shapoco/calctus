@@ -295,6 +295,8 @@
   </ItemGroup>
   <ItemGroup>
     <Content Include="icon.ico" />
+    <None Include="Resources\ToolIcon_Sheet_Open.png" />
+    <None Include="Resources\ToolIcon_Sheet_Close.png" />
     <None Include="Resources\ToolIcon_Sheet.png" />
     <None Include="Resources\ToolIcon_Folder.png" />
     <None Include="Resources\ToolIcon_Memo.png" />

@@ -392,7 +392,7 @@ namespace Shapoco.Calctus.UI
             this.sidePaneBodyPanel.Dock = System.Windows.Forms.DockStyle.Left;
             this.sidePaneBodyPanel.Location = new System.Drawing.Point(0, 25);
             this.sidePaneBodyPanel.Name = "sidePaneBodyPanel";
-            this.sidePaneBodyPanel.Size = new System.Drawing.Size(200, 221);
+            this.sidePaneBodyPanel.Size = new System.Drawing.Size(150, 221);
             this.sidePaneBodyPanel.TabIndex = 7;
             // 
             // MainForm

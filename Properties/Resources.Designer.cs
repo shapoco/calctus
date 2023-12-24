@@ -173,9 +173,19 @@ namespace Shapoco.Properties {
         /// <summary>
         ///   型 System.Drawing.Bitmap のローカライズされたリソースを検索します。
         /// </summary>
-        internal static System.Drawing.Bitmap ToolIcon_Sheet {
+        internal static System.Drawing.Bitmap ToolIcon_Sheet_Close {
             get {
-                object obj = ResourceManager.GetObject("ToolIcon_Sheet", resourceCulture);
+                object obj = ResourceManager.GetObject("ToolIcon_Sheet_Close", resourceCulture);
+                return ((System.Drawing.Bitmap)(obj));
+            }
+        }
+        
+        /// <summary>
+        ///   型 System.Drawing.Bitmap のローカライズされたリソースを検索します。
+        /// </summary>
+        internal static System.Drawing.Bitmap ToolIcon_Sheet_Open {
+            get {
+                object obj = ResourceManager.GetObject("ToolIcon_Sheet_Open", resourceCulture);
                 return ((System.Drawing.Bitmap)(obj));
             }
         }
