@@ -8,6 +8,7 @@ using System.Drawing;
 using System.IO;
 using Shapoco.Calctus.Model;
 using Shapoco.Calctus.Model.Evaluations;
+using Shapoco.Calctus.UI;
 
 namespace Shapoco.Calctus {
     internal class Settings {
@@ -162,5 +163,9 @@ namespace Shapoco.Calctus {
             return null;
         }
 
+        public ValuePickupJoinMethod ValuePickup_JoinMethod { get; set; } = ValuePickupJoinMethod.WithOperator;
+        public string ValuePickup_JoinOperator { get; set; } = "+";
+        public bool ValuePickup_RemoveComma { get; set; } = true;
+        public bool ValuePickup_ValueAsString { get; set; } = false;
     }
 }

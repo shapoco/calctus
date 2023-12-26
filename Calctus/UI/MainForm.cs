@@ -134,11 +134,11 @@ namespace Shapoco.Calctus.UI {
         private void MainForm_Activated(object sender, EventArgs e) {
             ExternalFuncDef.ScanScripts();
             //GraphForm.ReshowAll();
-            GraphForm.SetTopMostAll(true);
+            setSubWindowTopMost(true);
         }
 
         private void MainForm_Deactivate(object sender, EventArgs e) {
-            GraphForm.SetTopMostAll(_topMost);
+            setSubWindowTopMost(_topMost);
         }
 
         private void MainForm_Shown(object sender, EventArgs e) {
@@ -455,22 +455,27 @@ namespace Shapoco.Calctus.UI {
         
         private void setTopMost(bool value) {
             _topMost = value;
-            GraphForm.SetTopMostAll(value);
+            setSubWindowTopMost(value);
             TopMost = value;
         }
 
         private void suspendTopMost() {
             if (_topMost) {
-                GraphForm.SetTopMostAll(false);
+                setSubWindowTopMost(false);
                 TopMost = false;
             }
         }
 
         private void resumeTopMost() {
             if (_topMost) {
-                GraphForm.SetTopMostAll(true);
+                setSubWindowTopMost(true);
                 TopMost = true;
             }
+        }
+
+        private void setSubWindowTopMost(bool topMost) {
+            GraphForm.SetTopMostAll(topMost);
+            ValuePickupDialog.SetTopMost(topMost);
         }
 
         private void showForeground() {
