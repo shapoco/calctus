@@ -872,18 +872,16 @@ namespace Shapoco.Calctus.UI.Sheets {
             var bottomPadding = (int)equalSize.Height;
 
             // イコールの位置を揃える
-            var exprBoxes = _sheet.Items
-                .Select(p => ((SheetViewItem)p.Tag).ExprBox)
-                .Where(p => p.Visible)
-                .Select(p => p.GetPreferredSize().Width)
+            var itemsHaveAns = _sheet.Items
+                .Select(p => (SheetViewItem)p.Tag)
+                .Where(p => p.AnsBox.Visible)
                 .ToArray();
-            var ansBoxes = _sheet.Items
-                .Select(p => ((SheetViewItem)p.Tag).AnsBox)
-                .Where(p => p.Visible)
-                .Select(p => p.GetPreferredSize().Width)
-                .ToArray();
-            int maxExprWidth = exprBoxes.Length > 0 ? exprBoxes.Max() : 0;
-            int maxAnsWidth = ansBoxes.Length > 0 ? ansBoxes.Max() : 0;
+            var maxExprWidth = 0;
+            var maxAnsWidth = 0;
+            if (itemsHaveAns.Length > 0) {
+                maxExprWidth = itemsHaveAns.Max(p => p.ExprBox.GetPreferredSize().Width);
+                maxAnsWidth = itemsHaveAns.Max(p => p.AnsBox.GetPreferredSize().Width);
+            }
             int minEqualPos = Math.Min(_equalWidth, _innerBox.Width / 5);
             int newEqualPos;
             if (maxExprWidth + maxAnsWidth + _equalWidth < _innerBox.Width) {

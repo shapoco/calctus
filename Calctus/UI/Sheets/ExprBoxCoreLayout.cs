@@ -270,9 +270,7 @@ namespace Shapoco.Calctus.UI.Sheets {
             }
             _segments = segs.ToArray();
 
-            PreferredSize = new Size(
-                Math.Max(100, CursorPosToX(text.Length)),
-                _charHeight);
+            PreferredSize = new Size(CursorPosToX(text.Length), _charHeight);
         }
         
         /// <summary>カーソル位置からX座標を返す</summary>
