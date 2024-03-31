@@ -208,7 +208,8 @@ array[1]=5 // --> [1, 5, 3].
 ```c++
 x=0x1234
 x[11:4]      // --> 0x23.
-x[11:4]=0xab // --> 0x1ab4.
+x[11:4]=0xab
+x            // --> 0x1ab4.
 ```
 
 Negative indexes represents distance from the end of the array. :new:
@@ -249,7 +250,7 @@ Many unary and binary operators can be applied to arrays to perform operations o
 
 Also functions with arguments marked with an asterisk can be vectorized by supplying an array for the argument.
 
-For example, the power function `pow(x*, y)` can take an array as its `x` argument. `pow([1,2,3],3)` is equivalent to `[pow(1,3),pow(2,3),pow(3,3)]`.
+For example, the power function `pow(*x, y)` can take an array as its `x` argument. `pow([1,2,3],3)` is equivalent to `[pow(1,3),pow(2,3),pow(3,3)]`.
 
 ```
 pow(2,3)        // --> 8
