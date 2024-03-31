@@ -20,6 +20,7 @@ namespace Shapoco.Calctus.Model.Types {
 
         public abstract bool IsScalar { get; }
         public abstract bool IsInteger { get; }
+        public abstract bool IsSerializable { get; }
 
         // RealVal への変換はフォーマットを確実に引き継ぐため
         // OnAsRealVal() で型変換したあとここで Format() する
@@ -31,17 +32,41 @@ namespace Shapoco.Calctus.Model.Types {
         }
         protected abstract RealVal OnAsRealVal();
 
+        public ArrayVal AsArrayVal() {
+            if (this is ArrayVal thisArray) {
+                return thisArray;
+            }
+            else if (this is StrVal thisStr) {
+                return new ArrayVal(thisStr.AsString.Select(p => (real)p).ToArray(), new FormatHint(NumberFormatter.CStyleChar));
+            }
+            else {
+                throw new InvalidCastException();
+            }
+        }
+
+        public StrVal AsStrVal() {
+            if (this is StrVal thisStr) {
+                return thisStr;
+            }
+            else {
+                return new StrVal(AsString);
+            }
+        }
+
         public abstract real AsReal { get; }
         public abstract frac AsFrac { get; }
         public abstract double AsDouble { get; }
         public abstract long AsLong { get; }
         public abstract int AsInt { get; }
+        public abstract char AsChar { get; }
+        public abstract byte AsByte { get; }
         public abstract bool AsBool { get; }
-        public abstract string AsString { get; }
+        public virtual string AsString => ToString();
 
         public abstract real[] AsRealArray { get; }
         public abstract long[] AsLongArray { get; }
         public abstract int[] AsIntArray { get; }
+        public abstract byte[] AsByteArray { get; }
 
         //public static implicit operator Val(double val) => new RealVal(val);
         //public static implicit operator double(Val val) => val.AsDouble();
@@ -115,7 +140,7 @@ namespace Shapoco.Calctus.Model.Types {
         // 比較演算
         public Val Grater(EvalContext ctx, Val b) => UpConvert(ctx, b).OnGrater(ctx, b);
         public Val Less(EvalContext ctx, Val b) => b.UpConvert(ctx, this).OnGrater(ctx, this);
-        public Val Equal(EvalContext ctx, Val b) => UpConvert(ctx, b).OnEqual(ctx, b);
+        public Val Equals(EvalContext ctx, Val b) => UpConvert(ctx, b).OnEqual(ctx, b);
         public Val GraterEqual(EvalContext ctx, Val b) {
             var a = UpConvert(ctx, b);
             return a.OnGrater(ctx, b).OnLogicOr(ctx, a.OnEqual(ctx, b));
@@ -142,7 +167,9 @@ namespace Shapoco.Calctus.Model.Types {
         protected abstract Val OnLogicAnd(EvalContext ctx, Val b);
         protected abstract Val OnLogicOr(EvalContext ctx, Val b);
 
-        public override string ToString() => this.ToString(new FormatSettingss());
-        public abstract string ToString(FormatSettingss fs);
+        public override string ToString() => this.ToString(new FormatSettings());
+        public abstract string ToString(FormatSettings fs);
+
+        public override int GetHashCode() => Raw.GetHashCode();
     }
 }

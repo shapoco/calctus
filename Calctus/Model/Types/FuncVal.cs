@@ -5,6 +5,8 @@ using System.Text;
 using System.Threading.Tasks;
 using Shapoco.Calctus.Model.Formats;
 using Shapoco.Calctus.Model.Evaluations;
+using Shapoco.Calctus.Model.Functions;
+using Shapoco.Calctus.Model.Parsers;
 
 namespace Shapoco.Calctus.Model.Types {
     class FuncVal : Val {
@@ -19,19 +21,31 @@ namespace Shapoco.Calctus.Model.Types {
         public override bool IsScalar => false;
         public override bool IsInteger => false;
 
+        public override bool IsSerializable => false;
+
         public override real AsReal => throw new InvalidCastException();
         public override frac AsFrac => throw new InvalidCastException();
         public override double AsDouble => throw new InvalidCastException();
         public override long AsLong => throw new InvalidCastException();
         public override int AsInt => throw new InvalidCastException();
+        public override char AsChar => throw new InvalidCastException();
+        public override byte AsByte => throw new InvalidCastException();
         public override bool AsBool => throw new InvalidCastException();
         public override string AsString => throw new InvalidCastException();
 
         public override real[] AsRealArray => throw new InvalidCastException();
         public override long[] AsLongArray => throw new InvalidCastException();
         public override int[] AsIntArray => throw new InvalidCastException();
+        public override byte[] AsByteArray => throw new InvalidCastException();
 
-        public override string ToString(FormatSettingss fs) => _raw.Name + "()";
+        public override string ToString(FormatSettings fs) {
+            if (Token.IsNullOrEmpty(_raw.Name)) {
+                return "(unnamed_function)";
+            }
+            else {
+                return _raw.Name.Text;
+            }
+        }
 
         protected override RealVal OnAsRealVal() => throw new InvalidCastException();
 

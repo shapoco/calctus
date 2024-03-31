@@ -31,8 +31,7 @@ namespace Shapoco.Calctus.Model.Graphs {
                 try {
                     var xPos = ps.XAxis.PosBottom + ps.XAxis.PosRange * ((decimal)i / ps.NumSamples);
                     x = ps.XAxis.PosToValue(xPos);
-                    call.Context.Ref(call.Variants[0], true).Value = new RealVal(x);
-                    y = call.Expression.Eval(call.Context).AsReal;
+                    y = call.Function.Call(call.Context, new RealVal(x)).AsReal;
                     success = true;
                 }
                 catch { }

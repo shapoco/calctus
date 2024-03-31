@@ -9,7 +9,7 @@ using Shapoco.Calctus.Model.Evaluations;
 
 namespace Shapoco.Calctus.Model.Formats {
     class CharFormatter : NumberFormatter {
-        public CharFormatter() : base(new Regex("'([^'\\\\]|\\\\[abfnrtv\\\\\'0]|\\\\o[0-7]{3}|\\\\x[0-9a-fA-F]{2}|\\\\u[0-9a-fA-F]{4})'"), FormatPriority.AlwaysLeft) { }
+        public CharFormatter() : base(new Regex("'(?<char>[^'\\\\]|\\\\[abfnrtv\\\\\'0]|\\\\o[0-7]{3}|\\\\x[0-9a-fA-F]{2}|\\\\u[0-9a-fA-F]{4})'"), FormatPriority.AlwaysLeft) { }
 
         public static void Escape(StringBuilder sb, char c, bool stringMode) {
             switch (c) {
@@ -83,10 +83,10 @@ namespace Shapoco.Calctus.Model.Formats {
         }
 
         public override Val Parse(Match m) {
-            return new RealVal(Unescape(m.Groups[1].Value), new FormatHint(this));
+            return new RealVal(Unescape(m.Groups["char"].Value), new FormatHint(this));
         }
 
-        protected override string OnFormat(Val val, FormatSettingss fs) {
+        protected override string OnFormat(Val val, FormatSettings fs) {
             if (!val.IsInteger) {
                 // 整数でない場合はデフォルトの数値表現を使用
                 return base.OnFormat(val, fs);

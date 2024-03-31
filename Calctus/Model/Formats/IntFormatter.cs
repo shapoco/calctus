@@ -12,32 +12,30 @@ namespace Shapoco.Calctus.Model.Formats {
     class IntFormatter : NumberFormatter {
         public readonly int Radix;
         public string Prefix;
-        private int _captureGroupIndex;
 
-        public IntFormatter(int radix, string prefix, Regex regex, int groupIndex, FormatPriority priority) : base(regex, priority) {
+        public IntFormatter(int radix, string prefix, Regex regex, FormatPriority priority) : base(regex, priority) {
             this.Radix = radix;
             this.Prefix = prefix;
-            this._captureGroupIndex = groupIndex;
         }
 
         public override Val Parse(Match m) {
-            System.Diagnostics.Debug.Assert(m.Groups[_captureGroupIndex].Length > 0);
-            var tok = m.Groups[_captureGroupIndex].Value;
+            System.Diagnostics.Debug.Assert(m.Groups["digits"].Length > 0);
+            var tok = m.Groups["digits"].Value;
             if (Radix == 10) {
-                return new RealVal(real.Parse(tok), new FormatHint(this));
+                return new RealVal(real.Parse(tok.Replace("_", "")), new FormatHint(this));
             }
             else {
-                return new RealVal(Convert.ToInt64(tok, Radix), new FormatHint(this));
+                return new RealVal(Convert.ToInt64(tok.Replace("_", ""), Radix), new FormatHint(this));
             }
         }
 
-        protected override string OnFormat(Val val, FormatSettingss fs) {
+        protected override string OnFormat(Val val, FormatSettings fs) {
             if (val is RealVal) {
                 var fval = val.AsReal;
                 var ival = RMath.Truncate(fval);
 
                 // 10進表記、かつ指数表記対象に該当する場合はデフォルトの数値表現を使う
-                int exp = RMath.FLog10(val.AsReal);
+                int exp = RMath.FLog10Abs(val.AsReal);
                 bool enotation =
                     Radix == 10 &&
                     fs.ENotationEnabled &&

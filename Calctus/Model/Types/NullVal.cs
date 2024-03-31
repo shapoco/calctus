@@ -19,19 +19,24 @@ namespace Shapoco.Calctus.Model.Types {
         public override bool IsScalar => false;
         public override bool IsInteger => false;
 
+        public override bool IsSerializable => false;
+
         public override real AsReal => throw new InvalidCastException();
         public override frac AsFrac => throw new InvalidCastException();
         public override double AsDouble => throw new InvalidCastException();
         public override long AsLong => throw new InvalidCastException();
         public override int AsInt => throw new InvalidCastException();
+        public override char AsChar => throw new InvalidCastException();
+        public override byte AsByte => throw new InvalidCastException();
         public override bool AsBool => throw new InvalidCastException();
         public override string AsString => throw new InvalidCastException();
 
         public override real[] AsRealArray => throw new InvalidCastException();
         public override long[] AsLongArray => throw new InvalidCastException();
         public override int[] AsIntArray => throw new InvalidCastException();
+        public override byte[] AsByteArray => throw new InvalidCastException();
 
-        public override string ToString(FormatSettingss fs) => ValueKeyword;
+        public override string ToString(FormatSettings fs) => ValueKeyword;
 
         protected override RealVal OnAsRealVal() => throw new InvalidCastException();
 
@@ -47,7 +52,7 @@ namespace Shapoco.Calctus.Model.Types {
         protected override Val OnAtirhInv(EvalContext ctx) => throw new InvalidOperationException();
 
         protected override Val OnGrater(EvalContext ctx, Val b) => throw new InvalidOperationException();
-        protected override Val OnEqual(EvalContext ctx, Val b) => new BoolVal(b is NullVal);
+        protected override Val OnEqual(EvalContext ctx, Val b) => BoolVal.FromBool(b is NullVal);
 
         protected override Val OnBitNot(EvalContext ctx) => throw new InvalidOperationException();
         protected override Val OnBitAnd(EvalContext ctx, Val b) => throw new InvalidOperationException();

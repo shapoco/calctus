@@ -6,9 +6,12 @@ using System.Drawing;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
+using System.IO;
 using System.Windows.Forms;
 using Shapoco.Calctus.Model;
 using Shapoco.Calctus.Model.Evaluations;
+using Shapoco.Calctus.UI.Books;
+using Shapoco.Calctus.UI.Sheets;
 
 namespace Shapoco.Calctus.UI {
     public partial class SettingsDialog : Form {
@@ -24,17 +27,23 @@ namespace Shapoco.Calctus.UI {
             {
                 var colorLabels = new List<Label>();
                 var xPadding = 10;
+                var centerPadding = 30;
                 var yPadding = 15;
                 var x = xPadding;
                 var y = yPadding;
                 var wColor = 60;
-                var wName = (colorGroup.ClientSize.Width - xPadding * 3) / 2 - wColor;
+                var wName = (colorGroup.ClientSize.Width - centerPadding - xPadding * 2) / 2 - wColor;
                 var hLabel = 15;
                 foreach (var prop in typeof(Settings).GetProperties()) {
                     if (prop.Name.StartsWith(ColorSettingNamePrefix)) {
                         var colorName = prop.Name.Substring(ColorSettingNamePrefix.Length);
                         var nameLabel = new Label();
-                        nameLabel.Text = colorName.Replace('_', ' ');
+                        if (colorName == "SI_Prefix") {
+                            nameLabel.Text = "Exponent / SI Prefix";
+                        }
+                        else {
+                            nameLabel.Text = colorName.Replace('_', ' ');
+                        }
                         nameLabel.AutoSize = false;
                         nameLabel.TextAlign = ContentAlignment.MiddleLeft;
                         nameLabel.SetBounds(x, y, wName, hLabel);
@@ -50,7 +59,7 @@ namespace Shapoco.Calctus.UI {
                         colorLabels.Add(colorLabel);
                         y += hLabel + 2;
                         if (y + hLabel > toggleLightDarkModeButton.Top) {
-                            x += wName + wColor + xPadding;
+                            x += wName + wColor + centerPadding;
                             y = yPadding;
                         }
                     }
@@ -70,6 +79,9 @@ namespace Shapoco.Calctus.UI {
             Startup_TrayIcon.CheckedChanged += (sender, e) => { s.Startup_TrayIcon = ((CheckBox)sender).Checked; };
             Startup_AutoStart.CheckedChanged += Startup_AutoStart_CheckedChanged;
             Window_RememberPosition.CheckedChanged += (sender, e) => { s.Window_RememberPosition = ((CheckBox)sender).Checked; };
+            SaveSettingsInInstallDirectoryCheckBox.CheckedChanged += SaveSettingsInInstallDirectoryCheckBox_CheckedChanged;
+            openSettingFolderButton.Click += OpenSettingFolderButton_Click;
+            History_KeepPeriod.ValueChanged += (sender, e) => { s.History_KeepPeriod = (int)((NumericUpDown)sender).Value; };
 
             Hotkey_Enabled.CheckedChanged += (sender, e) => {
                 s.Hotkey_Enabled = ((CheckBox)sender).Checked;
@@ -99,6 +111,13 @@ namespace Shapoco.Calctus.UI {
             NumberFormat_Exp_NegativeMax.ValueChanged += (sender, e) => { s.NumberFormat_Exp_NegativeMax = (int)((NumericUpDown)sender).Value; };
             NumberFormat_Exp_PositiveMin.ValueChanged += (sender, e) => { s.NumberFormat_Exp_PositiveMin = (int)((NumericUpDown)sender).Value; };
             NumberFormat_Exp_Alignment.CheckedChanged += (sender, e) => { s.NumberFormat_Exp_Alignment = ((CheckBox)sender).Checked; };
+
+            NumberFormat_Separator_Thousands.CheckedChanged += (sender, e) => { s.NumberFormat_Separator_Thousands = ((CheckBox)sender).Checked; };
+            NumberFormat_Separator_Hexadecimal.CheckedChanged += (sender, e) => { s.NumberFormat_Separator_Hexadecimal = ((CheckBox)sender).Checked; };
+
+            Calculation_Limit_MaxArrayLength.ValueChanged += (sender, e) => { s.Calculation_Limit_MaxArrayLength = (int)((NumericUpDown)sender).Value; };
+            Calculation_Limit_MaxStringLength.ValueChanged += (sender, e) => { s.Calculation_Limit_MaxStringLength = (int)((NumericUpDown)sender).Value; };
+            Calculation_Limit_MaxCallRecursions.ValueChanged += (sender, e) => { s.Calculation_Limit_MaxCallRecursions = (int)((NumericUpDown)sender).Value; };
 
             Appearance_Font_Button_Name.Items.Clear();
             Appearance_Font_Expr_Name.Items.Clear();
@@ -144,24 +163,34 @@ namespace Shapoco.Calctus.UI {
 
                 Startup_TrayIcon.Checked = s.Startup_TrayIcon;
                 Window_RememberPosition.Checked = s.Window_RememberPosition;
+                loadSettingLocation();
 
                 Hotkey_Enabled.Checked = s.Hotkey_Enabled;
                 Hotkey_KeyCode.SetKeyCode(s.HotKey_Win, s.HotKey_Alt, s.HotKey_Ctrl, s.HotKey_Shift, s.HotKey_KeyCode);
+
+                setNudValue(History_KeepPeriod, s.History_KeepPeriod);
 
                 Input_IdAutoCompletion.Checked = s.Input_IdAutoCompletion;
                 Input_AutoCloseBrackets.Checked = s.Input_AutoCloseBrackets;
                 Input_AutoInputAns.Checked = s.Input_AutoInputAns;
 
-                NumberFormat_Decimal_MaxLen.Value = s.NumberFormat_Decimal_MaxLen;
+                setNudValue(NumberFormat_Decimal_MaxLen, s.NumberFormat_Decimal_MaxLen);
 
                 NumberFormat_Exp_Enabled.Checked = s.NumberFormat_Exp_Enabled;
-                NumberFormat_Exp_NegativeMax.Value = s.NumberFormat_Exp_NegativeMax;
-                NumberFormat_Exp_PositiveMin.Value = s.NumberFormat_Exp_PositiveMin;
+                setNudValue(NumberFormat_Exp_NegativeMax, s.NumberFormat_Exp_NegativeMax);
+                setNudValue(NumberFormat_Exp_PositiveMin, s.NumberFormat_Exp_PositiveMin);
                 NumberFormat_Exp_Alignment.Checked = s.NumberFormat_Exp_Alignment;
+
+                NumberFormat_Separator_Thousands.Checked = s.NumberFormat_Separator_Thousands;
+                NumberFormat_Separator_Hexadecimal.Checked = s.NumberFormat_Separator_Hexadecimal;
+
+                setNudValue(Calculation_Limit_MaxArrayLength, s.Calculation_Limit_MaxArrayLength);
+                setNudValue(Calculation_Limit_MaxStringLength, s.Calculation_Limit_MaxStringLength);
+                setNudValue(Calculation_Limit_MaxCallRecursions, s.Calculation_Limit_MaxCallRecursions);
 
                 Appearance_Font_Button_Name.Text = s.Appearance_Font_Button_Name;
                 Appearance_Font_Expr_Name.Text = s.Appearance_Font_Expr_Name;
-                Appearance_Font_Size.Value = s.Appearance_Font_Size;
+                setNudValue(Appearance_Font_Size, s.Appearance_Font_Size);
                 Appearance_Font_Bold.Checked = s.Appearance_Font_Bold;
 
                 foreach (var colorLabel in _colorLabels) {
@@ -176,7 +205,7 @@ namespace Shapoco.Calctus.UI {
                 constDelButton.Enabled = false;
                 constEditButton.Enabled = false;
 
-                foreach(var sf in s.GetScriptFilters()) {
+                foreach (var sf in s.GetScriptFilters()) {
                     addScriptFilter(sf);
                 }
                 scriptFilterDelButton.Enabled = false;
@@ -190,8 +219,137 @@ namespace Shapoco.Calctus.UI {
             catch { }
         }
 
+        private void setNudValue(NumericUpDown nud, int value) {
+            nud.Value = Math.Max(nud.Minimum, Math.Min(nud.Maximum, value));
+        }
+
         private void Startup_AutoStart_CheckedChanged(object sender, EventArgs e) {
             Shapoco.Windows.StartupShortcut.SetStartupRegistration(((CheckBox)sender).Checked);
+        }
+
+        private bool _settingDirectoryChanging = false;
+        private void SaveSettingsInInstallDirectoryCheckBox_CheckedChanged(object sender, EventArgs e) {
+            var chkSender = (CheckBox)sender;
+
+            if (_settingDirectoryChanging) return;
+            if (chkSender.Checked == AppDataManager.UseAssemblyPath) return;
+            _settingDirectoryChanging = true;
+            
+            string settingPathFrom, settingPathTo;
+            string historyPathFrom, historyPathTo;
+            string notebookPathFrom, notebookPathTo;
+            if (chkSender.Checked) {
+                settingPathFrom = Settings.PathInRoamingDirectory;
+                settingPathTo = Settings.PathInInstallDirectory;
+                notebookPathFrom = Path.Combine(AppDataManager.RoamingUserDataPath, Book.NotebookFolderName);
+                notebookPathTo = Path.Combine(AppDataManager.AssemblyPath, Book.NotebookFolderName);
+                historyPathFrom = Path.Combine(AppDataManager.RoamingUserDataPath, Book.HistoryFolderName);
+                historyPathTo = Path.Combine(AppDataManager.AssemblyPath, Book.HistoryFolderName);
+            }
+            else {
+                settingPathTo = Settings.PathInRoamingDirectory;
+                settingPathFrom = Settings.PathInInstallDirectory;
+                notebookPathTo = Path.Combine(AppDataManager.RoamingUserDataPath, Book.NotebookFolderName);
+                notebookPathFrom = Path.Combine(AppDataManager.AssemblyPath, Book.NotebookFolderName);
+                historyPathTo = Path.Combine(AppDataManager.RoamingUserDataPath, Book.HistoryFolderName);
+                historyPathFrom = Path.Combine(AppDataManager.AssemblyPath, Book.HistoryFolderName);
+            }
+
+            bool copySuccess = false;
+            try {
+                bool go = true;
+                string fileExists = "";
+                if (File.Exists(settingPathTo)) fileExists += "\r\n - " + settingPathTo;
+                if (Directory.Exists(historyPathTo)) fileExists += "\r\n - " + historyPathTo;
+                if (!string.IsNullOrEmpty(fileExists)) {
+                    if (DialogResult.OK != MessageBox.Show("The destination file already exists. Are you sure you want to overwrite it?\r\n" + fileExists,
+                        Application.ProductName, MessageBoxButtons.OKCancel, MessageBoxIcon.Exclamation)) {
+                        go = false;
+                    }
+                }
+                if (go) {
+                    if (!Directory.Exists(Path.GetDirectoryName(settingPathTo))) {
+                        // 移動先ディレクトリの作成
+                        Directory.CreateDirectory(Path.GetDirectoryName(settingPathTo));
+                    }
+                    if (File.Exists(settingPathFrom)) {
+                        // 設定ファイルのコピー
+                        File.Copy(settingPathFrom, settingPathTo, true);
+                    }
+                    if (Directory.Exists(notebookPathFrom)) {
+                        // ノートブックのコピー
+                        if (!Directory.Exists(notebookPathTo)) {
+                            Directory.CreateDirectory(notebookPathTo);
+                        }
+                        foreach (var file in Directory.GetFiles(notebookPathFrom, "*.txt")) {
+                            File.Copy(file, Path.Combine(notebookPathTo, Path.GetFileName(file)), true);
+                        }
+                    }
+                    if (Directory.Exists(historyPathFrom)) {
+                        // 履歴ファイルのコピー
+                        if (!Directory.Exists(historyPathTo)) {
+                            Directory.CreateDirectory(historyPathTo);
+                        }
+                        foreach (var file in Directory.GetFiles(historyPathFrom, "*.txt")) {
+                            File.Copy(file, Path.Combine(historyPathTo, Path.GetFileName(file)), true);
+                        }
+                    }
+                    AppDataManager.UseAssemblyPath = chkSender.Checked;
+                    Settings.Instance.Save();
+                    copySuccess = true;
+                }
+            }
+            catch (Exception ex) {
+                MessageBox.Show("Failed to move files:\r\n\r\n" + ex.Message, 
+                    Application.ProductName, MessageBoxButtons.OK, MessageBoxIcon.Error);
+            }
+
+            if (copySuccess) {
+                try {
+                    if (File.Exists(settingPathFrom)) {
+                        File.Delete(settingPathFrom);
+                    }
+                    if (Directory.Exists(notebookPathFrom)) {
+                        Directory.Delete(notebookPathFrom, true);
+                    }
+                    if (Directory.Exists(historyPathFrom)) {
+                        Directory.Delete(historyPathFrom, true);
+                    }
+                }
+                catch (Exception ex) {
+                    MessageBox.Show("The files were successfully copied, but the original files failed to be deleted.:\r\n\r\n" + ex.Message,
+                        Application.ProductName, MessageBoxButtons.OK, MessageBoxIcon.Exclamation);
+                }
+            }
+
+            loadSettingLocation();
+            _settingDirectoryChanging = false;
+        }
+
+        void loadSettingLocation() {
+            SaveSettingsInInstallDirectoryCheckBox.Checked = AppDataManager.UseAssemblyPath;
+            txtSettingDirectoryPath.Text = AppDataManager.UseAssemblyPath ?
+                Settings.PathInInstallDirectory : Settings.PathInRoamingDirectory;
+        }
+
+        private void OpenSettingFolderButton_Click(object sender, EventArgs e) {
+            var path = Path.GetDirectoryName(txtSettingDirectoryPath.Text);
+            try {
+                if (!Directory.Exists(path)) {
+                    if (DialogResult.Yes == MessageBox.Show(
+                            "The folder does not exist. Do you want to create it?",
+                            Application.ProductName, MessageBoxButtons.YesNo, MessageBoxIcon.Question)) {
+                        Directory.CreateDirectory(path);
+                    }
+                    else {
+                        return;
+                    }
+                }
+                System.Diagnostics.Process.Start(path);
+            }
+            catch (Exception ex) {
+                MessageBox.Show(ex.Message, Application.ProductName, MessageBoxButtons.OK, MessageBoxIcon.Error);
+            }
         }
 
         private void ColorBox_Click(object sender, EventArgs e) {
@@ -273,11 +431,11 @@ namespace Shapoco.Calctus.UI {
 
         private void ScriptFolderOpenButton_Click(object sender, EventArgs e) {
             try {
-                if (!System.IO.Directory.Exists(Script_FolderPath.Text)) {
+                if (!Directory.Exists(Script_FolderPath.Text)) {
                     if (DialogResult.Yes == MessageBox.Show(
                             "The folder does not exist. Do you want to create it?", 
                             Application.ProductName, MessageBoxButtons.YesNo, MessageBoxIcon.Question) ) {
-                        System.IO.Directory.CreateDirectory(Script_FolderPath.Text);
+                        Directory.CreateDirectory(Script_FolderPath.Text);
                     }
                     else {
                         return;

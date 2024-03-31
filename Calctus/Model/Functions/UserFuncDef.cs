@@ -10,23 +10,21 @@ using Shapoco.Calctus.Model.Types;
 using Shapoco.Calctus.Model.Parsers;
 using Shapoco.Calctus.Model.Evaluations;
 using Shapoco.Calctus.Model.Expressions;
+using Shapoco.Calctus.Model;
 
-namespace Shapoco.Calctus.Model {
+namespace Shapoco.Calctus.Model.Functions {
     class UserFuncDef : FuncDef {
         private Expr _expr;
-        private string[] _argNames;
 
-        public UserFuncDef(string name, string[] args, Expr expr) : base(name, args.Length, null, "User-defined function") {
+        public UserFuncDef(Token name, ArgDefList args, Expr expr)
+            : base(name, args, "User-defined function") {
             _expr = expr;
-            _argNames = args;
-            Call = (e, a) => Exec(e, a);
         }
 
-        public Val Exec(EvalContext e, Val[] args) {
+        protected override Val OnCall(EvalContext e, Val[] args) {
             var scope = new EvalContext(e);
-            scope.Undef(Name, true); // 再帰呼び出しを防ぐために自分自身の定義をスコープから抹消する
-            for(int i = 0; i < _argNames.Length; i++) {
-                scope.Ref(_argNames[i], true).Value = args[i];
+            for (int i = 0; i < Args.Count; i++) {
+                scope.Ref(Args[i].Name, true).Value = args[i];
             }
             return _expr.Eval(scope);
         }

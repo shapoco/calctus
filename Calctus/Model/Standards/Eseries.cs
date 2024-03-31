@@ -7,7 +7,7 @@ using Shapoco.Calctus.Model.Types;
 
 namespace Shapoco.Calctus.Model.Standards {
     // https://en.wikipedia.org/wiki/E_series_of_preferred_numbers
-    static class Eseries {
+    static class ESeries {
         public static real[] E3 = new real[] {
             1.0m, 2.2m, 4.7m
         };
@@ -61,5 +61,18 @@ namespace Shapoco.Calctus.Model.Standards {
             7.50m, 7.59m, 7.68m, 7.77m, 7.87m, 7.96m, 8.06m, 8.16m, 8.25m, 8.35m, 8.45m, 8.56m,
             8.66m, 8.76m, 8.87m, 8.98m, 9.09m, 9.20m, 9.31m, 9.42m, 9.53m, 9.65m, 9.76m, 9.88m,
         };
+
+        public static real[] GetSeries(int n) {
+            switch (n) {
+                case 3: return E3;
+                case 6: return E6;
+                case 12: return E12;
+                case 24: return E24;
+                case 48: return E48;
+                case 96: return E96;
+                case 192: return E192;
+                default: throw new CalctusError("Invalid E-series number.");
+            }
+        }
     }
 }

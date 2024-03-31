@@ -11,8 +11,13 @@ namespace Shapoco.Calctus.Model.Types {
         public const string TrueKeyword = "true";
         public const string FalseKeyword = "false";
 
+        public static readonly BoolVal True  = new BoolVal(true);
+        public static readonly BoolVal False = new BoolVal(false);
+
+        public static BoolVal FromBool(bool val) => val ? True : False;
+
         private bool _raw;
-        public BoolVal(bool val, FormatHint fmt = null) : base(fmt) {
+        private BoolVal(bool val, FormatHint fmt = null) : base(fmt) {
             this._raw = val;
         }
 
@@ -21,19 +26,23 @@ namespace Shapoco.Calctus.Model.Types {
         public override bool IsScalar => false;
         public override bool IsInteger => false;
 
+        public override bool IsSerializable => true;
+
         public override real AsReal => throw new InvalidCastException();
         public override frac AsFrac => throw new InvalidCastException();
         public override double AsDouble => throw new InvalidCastException();
         public override long AsLong => throw new InvalidCastException();
         public override int AsInt => throw new InvalidCastException();
+        public override char AsChar => throw new InvalidCastException();
+        public override byte AsByte => throw new InvalidCastException();
         public override bool AsBool => _raw;
-        public override string AsString => throw new InvalidCastException();
 
         public override real[] AsRealArray => throw new InvalidCastException();
         public override long[] AsLongArray => throw new InvalidCastException();
         public override int[] AsIntArray => throw new InvalidCastException();
+        public override byte[] AsByteArray => throw new InvalidCastException();
 
-        public override string ToString(FormatSettingss e) => _raw ? TrueKeyword : FalseKeyword;
+        public override string ToString(FormatSettings e) => _raw ? TrueKeyword : FalseKeyword;
 
         protected override RealVal OnAsRealVal() => throw new InvalidCastException();
 
@@ -68,6 +77,7 @@ namespace Shapoco.Calctus.Model.Types {
 
         protected override Val OnUpConvert(EvalContext ctx, Val b) {
             if (b is BoolVal) return this;
+            if (b is StrVal) return AsStrVal();
             throw new InvalidCastException(this.ValTypeName + " cannot be converted to " + b.ValTypeName);
         }
     }

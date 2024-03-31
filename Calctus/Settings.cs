@@ -5,19 +5,33 @@ using System.Text;
 using System.Threading.Tasks;
 using System.Windows.Forms;
 using System.Drawing;
+using System.IO;
 using Shapoco.Calctus.Model;
 using Shapoco.Calctus.Model.Evaluations;
+using Shapoco.Calctus.UI;
 
 namespace Shapoco.Calctus {
     internal class Settings {
+        public static readonly string PathInInstallDirectory = Path.Combine(AppDataManager.AssemblyPath, Filename);
+        public static readonly string PathInRoamingDirectory = Path.Combine(AppDataManager.RoamingUserDataPath, Filename);
         public static readonly Settings Instance = new Settings();
 #if DEBUG
-        private const string Filename = "Settings.Debug.cfg";
+        public const string Filename = "Settings.Debug.cfg";
 #else
-        private const string Filename = "Settings.cfg";
+        public const string Filename = "Settings.cfg";
 #endif
 
         private Settings() {
+            try {
+                AppDataManager.UseAssemblyPath = File.Exists(PathInInstallDirectory);
+#if DEBUG
+                Console.WriteLine("Setting file found in install directory: \"" + PathInInstallDirectory + "\"");
+#endif
+            }
+            catch { }
+#if DEBUG
+            Console.WriteLine("Setting file path: \"" + AppDataManager.ActiveDataPath + "\"");
+#endif
             AppDataManager.LoadPropertiesFromRoamingAppData(this, Filename);
         }
 
@@ -34,6 +48,12 @@ namespace Shapoco.Calctus {
         public bool HotKey_Shift { get; set; } = false;
         public Keys HotKey_KeyCode { get; set; } = Keys.None;
 
+        public int History_KeepPeriod { get; set; } = 7;
+
+        public int Calculation_Limit_MaxArrayLength { get; set; } = 256;
+        public int Calculation_Limit_MaxStringLength { get; set; } = 256;
+        public int Calculation_Limit_MaxCallRecursions { get; set; } = 64;
+
         public bool Input_IdAutoCompletion { get; set; } = true;
         public bool Input_AutoCloseBrackets { get; set; } = true;
         public bool Input_AutoInputAns { get; set; } = true;
@@ -44,6 +64,9 @@ namespace Shapoco.Calctus {
         public bool NumberFormat_Exp_Alignment { get; set; } = false;
         public int NumberFormat_Exp_PositiveMin { get; set; } = 15;
         public int NumberFormat_Exp_NegativeMax { get; set; } = -5;
+
+        public bool NumberFormat_Separator_Thousands { get; set; } = true;
+        public bool NumberFormat_Separator_Hexadecimal { get; set; } = true;
 
         public string Appearance_Font_Button_Name { get; set; } = "Arial";
         public string Appearance_Font_Expr_Name { get; set; } = "Consolas";
@@ -140,5 +163,9 @@ namespace Shapoco.Calctus {
             return null;
         }
 
+        public ValuePickupJoinMethod ValuePickup_JoinMethod { get; set; } = ValuePickupJoinMethod.WithOperator;
+        public string ValuePickup_JoinOperator { get; set; } = "+";
+        public bool ValuePickup_RemoveComma { get; set; } = true;
+        public bool ValuePickup_ValueAsString { get; set; } = false;
     }
 }

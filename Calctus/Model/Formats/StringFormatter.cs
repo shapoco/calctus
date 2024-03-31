@@ -10,33 +10,32 @@ using Shapoco.Calctus.Model.Evaluations;
 
 namespace Shapoco.Calctus.Model.Formats {
     class StringFormatter : NumberFormatter {
-        public StringFormatter() : base(new Regex("\"([^\"\\\\]|\\\\[abfnrtv\"\\\\0]|\\\\o[0-7]{3}|\\\\x[0-9a-fA-F]{2}|\\\\u[0-9a-fA-F]{4})*\""), FormatPriority.Strong) { }
+        public StringFormatter() : base(new Regex("\"(?<char>[^\"\\\\]|\\\\[abfnrtv\"\\\\0]|\\\\o[0-7]{3}|\\\\x[0-9a-fA-F]{2}|\\\\u[0-9a-fA-F]{4})*\""), FormatPriority.Strong) { }
 
         public override Val Parse(Match m) {
-            var list = new List<int>();
-            foreach(Capture cap in m.Groups[1].Captures) {
-                list.Add(CharFormatter.Unescape(cap.Value));
+            var sb = new StringBuilder();
+            foreach (Capture cap in m.Groups["char"].Captures) {
+                sb.Append(CharFormatter.Unescape(cap.Value));
             }
-            return new ArrayVal(list.ToArray(), new FormatHint(this));
+            return new StrVal(sb.ToString());
         }
 
-        protected override string OnFormat(Val val, FormatSettingss fs) {
-            if (!(val is ArrayVal aval)) {
-                // 配列以外にはデフォルトの表現を適用
-                return base.OnFormat(val, fs);
+        protected override string OnFormat(Val val, FormatSettings fs) {
+            if (!(val is StrVal strVal)) {
+                // 文字列以外にはデフォルトの表現を適用
+                return base.OnFormat(val, new FormatSettings());
             }
-
-            var vals = (Val[])aval.Raw;
-            if (!vals.All(p => p.IsInteger && char.MinValue <= p.AsReal && p.AsReal <= char.MaxValue)) {
-                // char の範囲外の値や小数を含む場合はデフォルトの表現を適用
-                return base.OnFormat(val, fs);
+            else {
+                return FormatAsStringLiteral(strVal.AsString);
             }
+        }
 
+        public static string FormatAsStringLiteral(string str) {
             // 文字列表現への変換
             var sb = new StringBuilder();
             sb.Append('"');
-            foreach(var c in vals) {
-                CharFormatter.Escape(sb, (char)c.AsReal, true);
+            foreach (var c in str) {
+                CharFormatter.Escape(sb, c, true);
             }
             sb.Append('"');
             return sb.ToString();

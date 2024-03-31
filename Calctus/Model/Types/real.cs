@@ -8,7 +8,7 @@ using System.Threading.Tasks;
 
 namespace Shapoco.Calctus.Model.Types {
     struct real : IComparable<real> {
-        private static readonly Regex NumberRegex = new Regex(@"^(-?\d*(\.\d+)?)((e|E)([+\-]?\d+))?$");
+        public static readonly Regex Pattern = new Regex(@"^(?<frac>-?([1-9][0-9]*(_[0-9]+)*|0)*(\.[0-9]+(_[0-9]+)*)?)(?<exppart>(?<echar>e|E)(?<exp>[+\-]?[0-9]+(_[0-9]+)*))?$");
         public static readonly real MaxValue = (real)decimal.MaxValue;
         public static readonly real MinValue = (real)decimal.MinValue;
 
@@ -34,15 +34,15 @@ namespace Shapoco.Calctus.Model.Types {
             frac = 0;
             eChar = '\0';
             exp = 0;
-
-            var m = NumberRegex.Match(str);
+            
+            var m = Pattern.Match(str);
             if (!m.Success) {
                 return false;
             }
-            frac = decimal.Parse(m.Groups[1].Value, CultureInfo.InvariantCulture);
-            if (m.Groups[3].Success) {
-                eChar = m.Groups[4].Value[0];
-                exp = int.Parse(m.Groups[5].Value, CultureInfo.InvariantCulture);
+            frac = decimal.Parse(m.Groups["frac"].Value.Replace("_", ""), CultureInfo.InvariantCulture);
+            if (m.Groups["exppart"].Success) {
+                eChar = m.Groups["echar"].Value[0];
+                exp = int.Parse(m.Groups["exp"].Value.Replace("_", ""), CultureInfo.InvariantCulture);
             }
             return true;
         }

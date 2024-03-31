@@ -10,21 +10,10 @@ using System.Windows.Forms;
 using Shapoco.Calctus.Model.Sheets;
 using Shapoco.Calctus.Model.Mathematics;
 using Shapoco.Calctus.Model.Graphs;
-using System.Runtime.InteropServices;
+using Shapoco.Windows;
 
 namespace Shapoco.Calctus.UI {
     partial class GraphForm : Form {
-        [DllImport("user32.dll")]
-        [return: MarshalAs(UnmanagedType.Bool)]
-        private static extern bool SetWindowPos(IntPtr hWnd, IntPtr hWndInsertAfter, int x, int y, int cx, int cy, uint flags);
-        private static readonly IntPtr HWND_TOP = new IntPtr(0);
-        private static readonly IntPtr HWND_BOTTOM = new IntPtr(1);
-        private static readonly IntPtr HWND_TOPMOST = new IntPtr(-1);
-        private static readonly IntPtr HWND_NOTOPMOST = new IntPtr(-2);
-        private const uint SWP_SHOWWINDOW = 0x0040;
-        private const uint SWP_NOACTIVATE = 0x0010;
-        private const uint SWP_NOSIZE = 0x0001;
-        private const uint SWP_NOMOVE = 0x0002;
 
         public static readonly Dictionary<Sheet, PlotCall[]> Requests = new Dictionary<Sheet, PlotCall[]>();
         public static readonly Dictionary<string, GraphForm> Forms = new Dictionary<string, GraphForm>();
@@ -80,7 +69,7 @@ namespace Shapoco.Calctus.UI {
 
         public static void ReshowAll() {
             foreach (var form in Forms.Values) {
-                if (!form.ClosedByUser) {
+                if (!form.HiddenByUser) {
                     form.Visible = true;
                 }
             }
@@ -89,8 +78,8 @@ namespace Shapoco.Calctus.UI {
         public static void SetTopMostAll(bool value) {
             foreach (var form in Forms.Values) {
                 if (form.IsHandleCreated) {
-                    var hWndInsertAfter = value ? HWND_TOPMOST : HWND_NOTOPMOST;
-                    SetWindowPos(form.Handle, hWndInsertAfter, 0, 0, 0, 0, SWP_NOACTIVATE | SWP_NOSIZE | SWP_NOMOVE);
+                    var hWndInsertAfter = value ? WinUser.HWND_TOPMOST : WinUser.HWND_NOTOPMOST;
+                    WinUser.SetWindowPos(form.Handle, hWndInsertAfter, 0, 0, 0, 0, WinUser.SWP_NOACTIVATE | WinUser.SWP_NOSIZE | WinUser.SWP_NOMOVE);
                 }
             }
         }
@@ -104,7 +93,7 @@ namespace Shapoco.Calctus.UI {
 
         //------------------------------------------------------------
 
-        public bool ClosedByUser { get; private set; } = false;
+        public bool HiddenByUser { get; private set; } = false;
 
         protected override bool ShowWithoutActivation => true;
 
@@ -129,7 +118,7 @@ namespace Shapoco.Calctus.UI {
 
         protected override void OnShown(EventArgs e) {
             base.OnShown(e);
-            ClosedByUser = false;
+            HiddenByUser = false;
         }
 
         /// <summary>グラフ描画をリクエストする</summary>
@@ -157,9 +146,11 @@ namespace Shapoco.Calctus.UI {
         }
 
         private void GraphForm_FormClosing(object sender, FormClosingEventArgs e) {
-            e.Cancel = true;
-            Visible = false;
-            ClosedByUser = true;
+            if (e.CloseReason == CloseReason.UserClosing) {
+                e.Cancel = true;
+                Visible = false;
+                HiddenByUser = true;
+            }
         }
 
         private void CopyButton_Click(object sender, EventArgs e) {

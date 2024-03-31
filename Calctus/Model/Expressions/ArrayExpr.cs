@@ -12,6 +12,8 @@ namespace Shapoco.Calctus.Model.Expressions {
             this.Elements = elms;
         }
 
+        public override bool CausesValueChange() => Elements.Any(p => p.CausesValueChange());
+
         protected override Val OnEval(EvalContext ctx) {
             return new ArrayVal(Elements.Select(p => p.Eval(ctx)).ToArray());
         }

@@ -9,6 +9,8 @@ using Shapoco.Calctus.Model.Evaluations;
 
 namespace Shapoco.Calctus.Model.Types {
     class RealVal : Val {
+        public static readonly RealVal Zero = new RealVal(0);
+        public static readonly RealVal One = new RealVal(1);
 
         private real _raw;
         public RealVal(real val, FormatHint fmt = null) : base(fmt) {
@@ -20,9 +22,12 @@ namespace Shapoco.Calctus.Model.Types {
         public override bool IsScalar => true;
         public override bool IsInteger => (_raw == (long)_raw);
 
+        public override bool IsSerializable => true;
+
         protected override Val OnUpConvert(EvalContext e, Val b) {
             if (b is RealVal) return this;
             if (b is FracVal) return new FracVal(new frac(_raw.Raw, 1));
+            if (b is StrVal) return AsStrVal();
             throw new InvalidCastException(this.ValTypeName + " cannot be converted to " + b.ValTypeName);
         }
 
@@ -37,8 +42,8 @@ namespace Shapoco.Calctus.Model.Types {
         protected override Val OnIDiv(EvalContext e, Val b) => new RealVal(RMath.Truncate(_raw / b.AsReal), FormatHint);
         protected override Val OnMod(EvalContext e, Val b) => new RealVal(_raw % b.AsReal, FormatHint);
 
-        protected override Val OnGrater(EvalContext ctx, Val b) => new BoolVal(AsReal > b.AsReal);
-        protected override Val OnEqual(EvalContext ctx, Val b) => new BoolVal(AsReal == b.AsReal);
+        protected override Val OnGrater(EvalContext ctx, Val b) => BoolVal.FromBool(AsReal > b.AsReal);
+        protected override Val OnEqual(EvalContext ctx, Val b) => BoolVal.FromBool(AsReal == b.AsReal);
 
         protected override Val OnLogicShiftL(EvalContext e, Val b) => new RealVal(this.AsLong << b.AsInt, FormatHint);
         protected override Val OnLogicShiftR(EvalContext e, Val b) => new RealVal((UInt64)this.AsLong >> b.AsInt, FormatHint);
@@ -64,16 +69,28 @@ namespace Shapoco.Calctus.Model.Types {
         public override real AsReal => _raw;
         public override frac AsFrac => (frac)_raw;
         public override double AsDouble => (double)_raw;
-        public override long AsLong => (long)_raw; // todo: 丸め/切り捨ての明示は不要？
-        public override int AsInt => (int)_raw; // todo: 丸め/切り捨ての明示は不要？
+        public override long AsLong => RMath.ToLong(_raw);
+        public override int AsInt => RMath.ToInt(_raw);
+        public override char AsChar => RMath.ToChar(_raw);
+        public override byte AsByte => RMath.ToByte(_raw);
         public override bool AsBool => throw new InvalidCastException();
-        public override string AsString => throw new InvalidCastException();
+        public override string AsString {
+            get {
+                if (FormatHint.Formatter == NumberFormatter.CStyleChar && char.MinValue <= _raw && _raw <= char.MaxValue) {
+                    return ((char)_raw).ToString();
+                }
+                else {
+                    return base.AsString;
+                }
+            }
+        }
 
         public override real[] AsRealArray => new real[] { _raw };
         public override long[] AsLongArray => new long[] { (long)_raw }; // todo: 丸め/切り捨ての明示は不要？
         public override int[] AsIntArray => new int[] { (int)_raw };
+        public override byte[] AsByteArray => new byte[] { (byte)_raw };
 
-        public override string ToString(FormatSettingss fs) => FormatHint.Formatter.Format(this, fs);
+        public override string ToString(FormatSettings fs) => FormatHint.Formatter.Format(this, fs);
         //public static implicit operator double(RealVal val) => val.AsDouble();
         //public static implicit operator RealVal(double val) => new RealVal(val);
 

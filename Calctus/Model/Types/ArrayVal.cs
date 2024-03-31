@@ -9,12 +9,26 @@ using Shapoco.Calctus.Model.Evaluations;
 
 namespace Shapoco.Calctus.Model.Types {
     class ArrayVal : Val {
-
         private Val[] _raw;
+
+        public static void CheckArrayLength(int length) {
+            if (length > Settings.Instance.Calculation_Limit_MaxArrayLength) throw new CalctusError("Array length exceeds limit.");
+        }
+
         public ArrayVal(Val[] val, FormatHint fmt = null) : base(fmt) {
+            CheckArrayLength(val.Length);
             this._raw = val;
         }
         public ArrayVal(real[] val, FormatHint fmt = null) : base(fmt) {
+            CheckArrayLength(val.Length);
+            var array = new Val[val.Length];
+            for (int i = 0; i < val.Length; i++) {
+                array[i] = new RealVal(val[i], fmt);
+            }
+            this._raw = array;
+        }
+        public ArrayVal(decimal[] val, FormatHint fmt = null) : base(fmt) {
+            CheckArrayLength(val.Length);
             var array = new Val[val.Length];
             for (int i = 0; i < val.Length; i++) {
                 array[i] = new RealVal(val[i], fmt);
@@ -22,6 +36,7 @@ namespace Shapoco.Calctus.Model.Types {
             this._raw = array;
         }
         public ArrayVal(long[] val, FormatHint fmt = null) : base(fmt) {
+            CheckArrayLength(val.Length);
             var array = new Val[val.Length];
             for (int i = 0; i < val.Length; i++) {
                 array[i] = new RealVal(val[i], fmt);
@@ -29,14 +44,25 @@ namespace Shapoco.Calctus.Model.Types {
             this._raw = array;
         }
         public ArrayVal(int[] val, FormatHint fmt = null) : base(fmt) {
+            CheckArrayLength(val.Length);
             var array = new Val[val.Length];
             for (int i = 0; i < val.Length; i++) {
                 array[i] = new RealVal(val[i], fmt);
             }
             this._raw = array;
         }
+        public ArrayVal(byte[] val) {
+            CheckArrayLength(val.Length);
+            var array = new Val[val.Length];
+            for (int i = 0; i < val.Length; i++) {
+                array[i] = new RealVal(val[i]).FormatHex();
+            }
+            this._raw = array;
+        }
 
         public Val this[int index] => _raw[index];
+
+        public override bool IsSerializable => _raw.All(p => p.IsSerializable);
 
         public ArrayVal Slice(int from, int to) {
             if (from > to) throw new ArgumentOutOfRangeException();
@@ -58,6 +84,8 @@ namespace Shapoco.Calctus.Model.Types {
             return new ArrayVal(array, FormatHint);
         }
 
+        public int Length => _raw.Length;
+
         public override object Raw => _raw;
 
         public override bool IsScalar => false;
@@ -68,25 +96,16 @@ namespace Shapoco.Calctus.Model.Types {
         public override double AsDouble => throw new InvalidCastException();
         public override long AsLong => throw new InvalidCastException();
         public override int AsInt => throw new InvalidCastException();
+        public override char AsChar => throw new InvalidCastException();
+        public override byte AsByte => throw new InvalidCastException();
         public override bool AsBool => throw new InvalidCastException();
-        public override string AsString {
-            get {
-                if (!_raw.All(p => p.IsInteger && char.MinValue <= p.AsReal && p.AsReal <= char.MaxValue)) {
-                    throw new CalctusError("Array contains non-character value.");
-                }
-                var sb = new StringBuilder();
-                foreach(var val in _raw) {
-                    sb.Append((char)val.AsReal);
-                }
-                return sb.ToString();
-            }
-        }
-
+        
         public override real[] AsRealArray => _raw.Select(p => p.AsReal).ToArray();
         public override long[] AsLongArray => _raw.Select(p => p.AsLong).ToArray();
         public override int[] AsIntArray => _raw.Select(p => p.AsInt).ToArray();
+        public override byte[] AsByteArray => _raw.Select(p => p.AsByte).ToArray();
 
-        public override string ToString(FormatSettingss fs) => FormatHint.Formatter.Format(this, fs);
+        public override string ToString(FormatSettings fs) => FormatHint.Formatter.Format(this, fs);
 
         protected override RealVal OnAsRealVal() => throw new InvalidCastException();
 
@@ -104,7 +123,7 @@ namespace Shapoco.Calctus.Model.Types {
         protected override Val OnGrater(EvalContext ctx, Val b) => throw new InvalidOperationException();
         protected override Val OnEqual(EvalContext ctx, Val b) {
             if (b is ArrayVal bArray) {
-                return new BoolVal(_raw.Equals(bArray._raw));
+                return BoolVal.FromBool(_raw.Equals(bArray._raw));
             }
             else {
                 throw new InvalidOperationException();
@@ -128,6 +147,7 @@ namespace Shapoco.Calctus.Model.Types {
 
         protected override Val OnUpConvert(EvalContext ctx, Val b) {
             if (b is ArrayVal) return this;
+            if (b is StrVal) return AsStrVal();
             throw new InvalidCastException(this.ValTypeName + " cannot be converted to " + b.ValTypeName);
         }
     }

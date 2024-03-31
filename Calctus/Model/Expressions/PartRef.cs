@@ -16,16 +16,30 @@ namespace Shapoco.Calctus.Model.Expressions {
             IndexTo = to;
         }
 
+        public override bool CausesValueChange() => true;
+
         protected override Val OnEval(EvalContext ctx) {
             var from = IndexFrom.Eval(ctx).AsInt;
             var to = IndexTo.Eval(ctx).AsInt;
             var obj = Target.Eval(ctx);
             if (obj is ArrayVal array) {
+                if (from < 0) from = array.Length + from;
+                if (to < 0) to = array.Length + to;
                 if (from == to) {
                     return array[from];
                 }
                 else {
                     return array.Slice(from, to);
+                }
+            }
+            else if (obj is StrVal str) {
+                if (from < 0) from = str.Length + from;
+                if (to < 0) to = str.Length + to;
+                if (from == to) {
+                    return new RealVal(str.AsString[from]).FormatChar();
+                }
+                else {
+                    return new StrVal(str.AsString.Substring(from, to - from));
                 }
             }
             else {

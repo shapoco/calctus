@@ -10,24 +10,24 @@ using Shapoco.Calctus.Model.Types;
 using Shapoco.Calctus.Model.Parsers;
 using Shapoco.Calctus.Model.Evaluations;
 
-namespace Shapoco.Calctus.Model {
-    class ExtFuncDef : FuncDef {
+namespace Shapoco.Calctus.Model.Functions {
+    class ExternalFuncDef : FuncDef {
         [DllImport("shell32.dll")]
         private static extern int FindExecutable(string lpFile, string lpDirectory, [Out] StringBuilder lpResult);
 
         public readonly string Path;
 
-        public ExtFuncDef(string path) : base(
-                System.IO.Path.GetFileNameWithoutExtension(path), Variadic, null,
+        public ExternalFuncDef(string path) : base(
+                Token.FromWord(System.IO.Path.GetFileNameWithoutExtension(path)),
+                new ArgDefList(new ArgDef[] { new ArgDef("args") }, VariadicMode.Flatten, -1),
                 "External Function \"" + System.IO.Path.GetFileName(path) + "\"") {
             Path = path;
-            Call = (e,a) => Exec(a);
         }
 
-        public Val Exec(Val[] a) {
-            var args = new string[a.Length];
-            for(int i = 0; i < a.Length; i++) {
-                args[i] = a[i].AsReal.ToString();
+        protected override Val OnCall(EvalContext e, Val[] args) {
+            var strArgs = new string[args.Length];
+            for (int i = 0; i < args.Length; i++) {
+                strArgs[i] = args[i].AsReal.ToString();
             }
 
             var sf = Settings.Instance.GetScriptFilterFromPath(Path);
@@ -48,13 +48,13 @@ namespace Shapoco.Calctus.Model {
             try {
                 var psi = new ProcessStartInfo();
                 if (!string.IsNullOrEmpty(sf.Parameter)) {
-                    psi.Arguments = sf.Parameter.Replace("%s", Path).Replace("%p", string.Join(" ", args));
+                    psi.Arguments = sf.Parameter.Replace("%s", Path).Replace("%p", string.Join(" ", strArgs));
                 }
                 else if (directExec) {
-                    psi.Arguments = string.Join(" ", args);
+                    psi.Arguments = string.Join(" ", strArgs);
                 }
                 else {
-                    psi.Arguments = "\"" + Path + "\" " + string.Join(" ", args);
+                    psi.Arguments = "\"" + Path + "\" " + string.Join(" ", strArgs);
                 }
                 psi.FileName = exe;
                 psi.CreateNoWindow = true;
@@ -70,17 +70,17 @@ namespace Shapoco.Calctus.Model {
             }
         }
 
-        public static ExtFuncDef[] ExternalFunctions = new ExtFuncDef[0];
-        private static IEnumerable<ExtFuncDef> EnumExternalFunctions() {
+        public static ExternalFuncDef[] ExternalFunctions = new ExternalFuncDef[0];
+        private static IEnumerable<ExternalFuncDef> enumExternalFunctions() {
             var s = Settings.Instance;
             if (!Directory.Exists(s.Script_FolderPath)) yield break;
             foreach(var p in Directory.GetFiles(s.Script_FolderPath)) {
-                yield return new ExtFuncDef(p);
+                yield return new ExternalFuncDef(p);
             }
         }
 
         public static void ScanScripts() {
-            ExternalFunctions = EnumExternalFunctions().ToArray();
+            ExternalFunctions = enumExternalFunctions().ToArray();
         }
     }
 }

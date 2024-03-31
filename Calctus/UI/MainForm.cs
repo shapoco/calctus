@@ -8,10 +8,13 @@ using System.Text;
 using System.Threading.Tasks;
 using System.Windows.Forms;
 using System.Runtime.InteropServices;
-
+using System.IO;
 using Shapoco.Calctus.Model;
 using Shapoco.Calctus.Model.Sheets;
+using Shapoco.Calctus.UI.Books;
 using Shapoco.Calctus.UI.Sheets;
+using Shapoco.Calctus.Model.Functions;
+using Shapoco.Calctus.Model.Functions.BuiltIns;
 
 namespace Shapoco.Calctus.UI {
     internal partial class MainForm : Form {
@@ -21,7 +24,9 @@ namespace Shapoco.Calctus.UI {
         [DllImport("user32.dll")]
         public static extern IntPtr GetForegroundWindow();
 
-        private RadixMode _radixMode = RadixMode.Auto;
+        private Font _sheetViewFont = null;
+        private BookItem _activeBookItem = null;
+
         private HotKey _hotkey = null;
         private bool _startup = true;
         private Timer _focusTimer = new Timer();
@@ -42,11 +47,8 @@ namespace Shapoco.Calctus.UI {
             InitializeComponent();
             if (this.DesignMode) return;
 
-            var sheet = new Sheet();
-            sheet.Items.Add(new SheetItem());
-            sheetView.Sheet = sheet;
+            sidePaneBodyPanel.Visible = false;
 
-            this.Text = Application.ProductName + " (v" + System.Reflection.Assembly.GetExecutingAssembly().GetName().Version + ")";
             this.KeyPreview = true; 
             this.KeyDown += MainForm_KeyDown;
             this.Load += MainForm_Load;
@@ -66,19 +68,14 @@ namespace Shapoco.Calctus.UI {
 #endif
             notifyIcon.MouseClick += NotifyIcon_MouseClick;
 
-            sheetView.RadixModeChanged += (sender, e) => { RadixMode = ((SheetView)sender).ActiveRadixMode; };
-            sheetView.DialogOpening += (sender, e) => { suspendTopMost(); };
-            sheetView.DialogClosed += (sender, e) => { resumeTopMost(); };
-
-            radixAutoButton.CheckedChanged += (sender, e) => { RadixCheckedChanged((RadioButton)sender, RadixMode.Auto); };
-            radixDecButton.CheckedChanged += (sender, e) => { RadixCheckedChanged((RadioButton)sender, RadixMode.Dec); };
-            radixHexButton.CheckedChanged += (sender, e) => { RadixCheckedChanged((RadioButton)sender, RadixMode.Hex); };
-            radixBinButton.CheckedChanged += (sender, e) => { RadixCheckedChanged((RadioButton)sender, RadixMode.Bin); };
-            radixOctButton.CheckedChanged += (sender, e) => { RadixCheckedChanged((RadioButton)sender, RadixMode.Oct); };
-            radixSiButton.CheckedChanged += (sender, e) => { RadixCheckedChanged((RadioButton)sender, RadixMode.SiPrefix); };
-            radixKibiButton.CheckedChanged += (sender, e) => { RadixCheckedChanged((RadioButton)sender, RadixMode.BinaryPrefix); };
-            radixCharButton.CheckedChanged += (sender, e) => { RadixCheckedChanged((RadioButton)sender, RadixMode.Char); };
-            radixAutoButton.Checked = true;
+            radixAutoButton.Click += (sender, e) => { _activeBookItem.View.ReplaceFormatterFunction(null); _activeBookItem.View.Focus(); }; 
+            radixDecButton.Click += (sender, e) => { _activeBookItem.View.ReplaceFormatterFunction(RepresentaionFuncs.dec); _activeBookItem.View.Focus(); };
+            radixHexButton.Click += (sender, e) => { _activeBookItem.View.ReplaceFormatterFunction(RepresentaionFuncs.hex); _activeBookItem.View.Focus(); };
+            radixBinButton.Click += (sender, e) => { _activeBookItem.View.ReplaceFormatterFunction(RepresentaionFuncs.bin); _activeBookItem.View.Focus(); };
+            radixOctButton.Click += (sender, e) => { _activeBookItem.View.ReplaceFormatterFunction(RepresentaionFuncs.oct); _activeBookItem.View.Focus(); };
+            radixSiButton.Click += (sender, e) => { _activeBookItem.View.ReplaceFormatterFunction(RepresentaionFuncs.si); _activeBookItem.View.Focus(); };
+            radixKibiButton.Click += (sender, e) => { _activeBookItem.View.ReplaceFormatterFunction(RepresentaionFuncs.kibi); _activeBookItem.View.Focus(); };
+            radixCharButton.Click += (sender, e) => { _activeBookItem.View.ReplaceFormatterFunction(RepresentaionFuncs.char_1); _activeBookItem.View.Focus(); };
 
             toolTip.SetToolTip(radixAutoButton, "Automatic (F8)");
             toolTip.SetToolTip(radixDecButton, "Decimal (F9)");
@@ -89,14 +86,17 @@ namespace Shapoco.Calctus.UI {
             toolTip.SetToolTip(radixKibiButton, "Binary Prefix");
             toolTip.SetToolTip(radixCharButton, "Character");
 
-            undoButton.Click += (sender, e) => { sheetView.Undo(); };
-            redoButton.Click += (sender, e) => { sheetView.Redo(); };
-            copyButton.Click += (sender, e) => { sheetView.Copy(); };
-            pasteButton.Click += (sender, e) => { sheetView.Paste(); };
-            insertButton.Click += (sender, e) => { sheetView.ItemInsert(); };
-            deleteButton.Click += (sender, e) => { sheetView.ItemDelete(); };
-            moveUpButton.Click += (sender, e) => { sheetView.ItemMoveUp(); };
-            moveDownButton.Click += (sender, e) => { sheetView.ItemMoveDown(); };
+            undoButton.Click += (sender, e) => { _activeBookItem.View.Undo(); };
+            redoButton.Click += (sender, e) => { _activeBookItem.View.Redo(); };
+            copyButton.Click += (sender, e) => { _activeBookItem.View.Copy(); };
+            pasteButton.Click += (sender, e) => { _activeBookItem.View.Paste(); };
+            insertButton.Click += (sender, e) => { _activeBookItem.View.ItemInsert(); };
+            deleteButton.Click += (sender, e) => { _activeBookItem.View.ItemDelete(); };
+            moveUpButton.Click += (sender, e) => { _activeBookItem.View.ItemMoveUp(); };
+            moveDownButton.Click += (sender, e) => { _activeBookItem.View.ItemMoveDown(); };
+
+            sidePaneOpenButton.Click += SidePaneOpenButton_Click;
+            bookTreeView.AfterSelect += (sender, e) => { onBookItemSelected(); };
 
             settingsButton.Click += SettingsButton_Click;
             topMostButton.Click += TopMostButton_Click;
@@ -104,6 +104,10 @@ namespace Shapoco.Calctus.UI {
 
             contextOpen.Click += (sender, e) => { showForeground(); };
             contextExit.Click += (sender, e) => { appExit(); };
+
+            bookTreeView.ScratchPad.View.BeforeCleared += (sender, e) => { saveScratchPadToHistory(); };
+            bookTreeView.SelectedNode = bookTreeView.ScratchPad;
+            onBookItemSelected();
 
             _focusTimer.Tick += _focusTimer_Tick;
         }
@@ -128,13 +132,14 @@ namespace Shapoco.Calctus.UI {
         }
 
         private void MainForm_Activated(object sender, EventArgs e) {
-            ExtFuncDef.ScanScripts();
+            ExternalFuncDef.ScanScripts();
             //GraphForm.ReshowAll();
-            GraphForm.SetTopMostAll(true);
+            setSubWindowTopMost(true);
+            checkActiveFileChange();
         }
 
         private void MainForm_Deactivate(object sender, EventArgs e) {
-            GraphForm.SetTopMostAll(_topMost);
+            setSubWindowTopMost(_topMost);
         }
 
         private void MainForm_Shown(object sender, EventArgs e) {
@@ -161,12 +166,25 @@ namespace Shapoco.Calctus.UI {
                 e.Cancel = true;
                 this.Visible = false;
                 GraphForm.HideAll();
+                deleteOldHistories();
             }
         }
 
         private void MainForm_FormClosed(object sender, FormClosedEventArgs e) {
+            if (!bookTreeView.ScratchPad.View.Sheet.IsEmpty) {
+                saveScratchPadToHistory();
+            }
+            if (_activeBookItem != bookTreeView.ScratchPad && _activeBookItem.HasFileName && _activeBookItem.HasUnsavedChanges) {
+                try {
+                    _activeBookItem.Save();
+                }
+                catch (Exception ex) {
+                    Console.WriteLine("Save failed: " + ex.Message);
+                }
+            }
             notifyIcon.Visible = false;
             disableHotkey();
+            deleteOldHistories();
         }
 
         private void MainForm_Resize(object sender, EventArgs e) {
@@ -207,15 +225,22 @@ namespace Shapoco.Calctus.UI {
                 var font_style = s.Appearance_Font_Bold ? FontStyle.Bold : FontStyle.Regular;
                 var font_ui_normal = new Font(s.Appearance_Font_Button_Name, s.Appearance_Font_Size, font_style);
                 var font_mono_normal = new Font(s.Appearance_Font_Expr_Name, s.Appearance_Font_Size, font_style);
-                var font_mono_large = new Font(s.Appearance_Font_Expr_Name, s.Appearance_Font_Size * font_large_coeff, font_style);
                 this.Font = font_ui_normal;
-                sheetView.Font = font_mono_large;
+                _sheetViewFont = new Font(s.Appearance_Font_Expr_Name, s.Appearance_Font_Size * font_large_coeff, font_style);
 
                 ToolStripManager.Renderer = new ToolStripProfessionalRenderer(new CustomProfessionalColors());
 
-                sheetView.BackColor = s.Appearance_Color_Background;
-                sheetView.ForeColor = s.Appearance_Color_Text;
+                foreach(var ctl in Controls) {
+                    if (ctl is SheetView view) {
+                        setViewAppearance(view);
+                    }
+                }
+
+                Color panelColor = ColorUtils.Blend(s.Appearance_Color_Background, s.Appearance_Color_Button_Face);
+
                 bottomPanel.BackColor = s.Appearance_Color_Background;
+                bookTreeView.BackColor = s.Appearance_Color_Background;
+                bookTreeView.ForeColor = s.Appearance_Color_Text;
                 radixAutoButton.BackColor = s.Appearance_Color_Button_Face;
                 radixDecButton.BackColor = s.Appearance_Color_Button_Face;
                 radixHexButton.BackColor = s.Appearance_Color_Button_Face;
@@ -224,6 +249,9 @@ namespace Shapoco.Calctus.UI {
                 radixSiButton.BackColor = s.Appearance_Color_Button_Face;
                 radixKibiButton.BackColor = s.Appearance_Color_Button_Face;
                 radixCharButton.BackColor = s.Appearance_Color_Button_Face;
+                bottomPanel.BackColor = panelColor;
+                sidePaneHeaderPanel.BackColor = panelColor;
+                sidePaneOpenButton.BackColor = s.Appearance_Color_Button_Face;
                 radixAutoButton.ForeColor = s.Appearance_Color_Text;
                 radixDecButton.ForeColor = s.Appearance_Color_Text;
                 radixHexButton.ForeColor = s.Appearance_Color_Text;
@@ -232,12 +260,21 @@ namespace Shapoco.Calctus.UI {
                 radixSiButton.ForeColor = s.Appearance_Color_Text;
                 radixKibiButton.ForeColor = s.Appearance_Color_Text;
                 radixCharButton.ForeColor = s.Appearance_Color_Text;
-                
-                sheetView.RelayoutText();
+                sidePaneOpenButton.ForeColor = s.Appearance_Color_Text;
+
+                bookTreeView.ReloadSettings();
             }
             catch { }
-            sheetView.RequestRecalc();
+            _activeBookItem.View.RequestRecalc();
             GraphForm.ReloadSettingsAll();
+        }
+
+        private void setViewAppearance(SheetView view) {
+            var s = Settings.Instance;
+            view.Font = _sheetViewFont;
+            view.BackColor = s.Appearance_Color_Background;
+            view.ForeColor = s.Appearance_Color_Text;
+            view.RelayoutText();
         }
 
         private void enableHotkey() {
@@ -258,6 +295,132 @@ namespace Shapoco.Calctus.UI {
                 _hotkey.HotKeyPush -= _hotkey_HotKeyPush;
                 _hotkey.Dispose();
                 _hotkey = null;
+            }
+        }
+
+        private void SidePaneOpenButton_Click(object sender, EventArgs e) {
+            sidePaneBodyPanel.Visible = !sidePaneBodyPanel.Visible;
+            if (sidePaneBodyPanel.Visible) {
+                sidePaneOpenButton.Text = "<";
+                bookTreeView.Focus();
+            }
+            else {
+                sidePaneOpenButton.Text = ">";
+                refocus();
+            }
+        }
+
+        private void onBookItemSelected() {
+            if (bookTreeView.SelectedNode == null) return;
+            if (!(bookTreeView.SelectedNode is BookItem newBookItem)) return;
+            if (newBookItem == _activeBookItem) return;
+            var lastBookItem = _activeBookItem;
+            
+            if (lastBookItem != null && lastBookItem.View != null && lastBookItem.HasFileName && lastBookItem.HasUnsavedChanges) {
+                // 以前開いていたシートを保存する
+                try {
+                    lastBookItem.Save();
+                }
+                catch (Exception ex) {
+                    MessageBox.Show("Failed to save sheet:\r\n\r\n" + ex.Message,
+                        Application.ProductName, MessageBoxButtons.OK, MessageBoxIcon.Error);
+                }
+            }
+
+            bool requestCheckFileChange = false;
+            try {
+                var newView = newBookItem.View;
+                var oldView = lastBookItem != null ? lastBookItem.View : null;
+                if (newView == null) {
+                    // シートが読み込まれてなければ読み込む
+                    newBookItem.CreateView();
+                    newView = newBookItem.View;
+                }
+                else {
+                    requestCheckFileChange = true;
+                }
+
+                // SheetView コントロールをフォームに追加
+                addView(newView);
+
+                if (oldView != null) {
+                    if (lastBookItem.HasFileName && !lastBookItem.IsTouched) {
+                        removeView(oldView, true);
+                        lastBookItem.CloseView(true);
+                    }
+                    else {
+                        oldView.Visible = false;
+                    }
+                }
+                _activeBookItem = newBookItem;
+            }
+            catch (Exception ex) {
+                MessageBox.Show("Failed to load sheet:\r\n\r\n" + ex.Message,
+                    Application.ProductName, MessageBoxButtons.OK, MessageBoxIcon.Error);
+            }
+            this.Text =
+                Application.ProductName +
+                " (v" + System.Reflection.Assembly.GetExecutingAssembly().GetName().Version + ") - " +
+                (_activeBookItem != null ? _activeBookItem.Name : "(null)");
+
+            if (requestCheckFileChange) {
+                checkActiveFileChange();
+            }
+        }
+
+        private void addView(SheetView view) {
+            view.Dock = DockStyle.Fill;
+            if (!Controls.Contains(view)) {
+                view.DialogOpening += SheetView_DialogOpening;
+                view.DialogClosed += SheetView_DialogClosed;
+                Controls.Add(view);
+            }
+            view.BringToFront();
+            view.Visible = true;
+            setViewAppearance(view);
+        }
+
+        private void removeView(SheetView view, bool saveChanges) {
+            if (Controls.Contains(view)) Controls.Remove(view);
+            view.DialogOpening -= SheetView_DialogOpening;
+            view.DialogClosed -= SheetView_DialogClosed;
+        }
+
+        private void SheetView_DialogOpening(object sender, EventArgs e) {
+            suspendTopMost();
+        }
+
+        private void SheetView_DialogClosed(object sender, EventArgs e) {
+            resumeTopMost();
+        }
+
+        private void saveScratchPadToHistory() {
+            var sheet = bookTreeView.ScratchPad.View.Sheet;
+            if (sheet.IsEmpty) return;
+            try {
+                var dir = Book.HistoryDirectory;
+                if (!Directory.Exists(dir)) Directory.CreateDirectory(dir);
+                var path = Path.Combine(dir, DateTime.Now.ToString("yyyyMMdd-HHmmss") + ".txt");
+                sheet.Save(path);
+            }
+            catch (Exception ex) {
+                Console.WriteLine("Failed to save scratch pad: " + ex.Message);
+            }
+        }
+
+        private void deleteOldHistories() {
+            try {
+                if (Directory.Exists(Book.HistoryDirectory)) {
+                    var files = Directory.GetFiles(Book.HistoryDirectory, "*.txt");
+                    foreach (var file in files) {
+                        if ((DateTime.Now - new FileInfo(file).LastWriteTime).TotalDays > Settings.Instance.History_KeepPeriod) {
+                            File.Delete(file);
+                        }
+                    }
+                }
+            }
+            catch (Exception ex) {
+                Console.WriteLine("Failed to delete old history: " + ex.Message);
             }
         }
 
@@ -306,22 +469,27 @@ namespace Shapoco.Calctus.UI {
         
         private void setTopMost(bool value) {
             _topMost = value;
-            GraphForm.SetTopMostAll(value);
+            setSubWindowTopMost(value);
             TopMost = value;
         }
 
         private void suspendTopMost() {
             if (_topMost) {
-                GraphForm.SetTopMostAll(false);
+                setSubWindowTopMost(false);
                 TopMost = false;
             }
         }
 
         private void resumeTopMost() {
             if (_topMost) {
-                GraphForm.SetTopMostAll(true);
+                setSubWindowTopMost(true);
                 TopMost = true;
             }
+        }
+
+        private void setSubWindowTopMost(bool topMost) {
+            GraphForm.SetTopMostAll(topMost);
+            ValuePickupDialog.SetTopMost(topMost);
         }
 
         private void showForeground() {
@@ -330,6 +498,31 @@ namespace Shapoco.Calctus.UI {
                 this.WindowState = FormWindowState.Normal;
             }
             Microsoft.VisualBasic.Interaction.AppActivate(this.Text);
+        }
+
+        private void checkActiveFileChange() {
+            var bookItem = _activeBookItem;
+            if (!bookItem.HasFileName) return;
+            try {
+                var lastSync = bookItem.LastSynchronized;
+                var lastMod = File.GetLastWriteTime(bookItem.FilePath);
+#if DEBUG
+                Console.WriteLine("Last Synchronized: " + lastSync);
+                Console.WriteLine("Last Modified    : " + lastMod);
+#endif
+                if (lastMod > lastSync) {
+                    if (!bookItem.HasUnsavedChanges || DialogResult.Yes == MessageBox.Show(
+                            "The sheet file '" + Path.GetFileName(bookItem.FilePath) + "' has been modified externally. Ignore local changes and reload ?",
+                            Application.ProductName, MessageBoxButtons.YesNo, MessageBoxIcon.Exclamation)) {
+                        removeView(bookItem.View, false);
+                        bookItem.Reload();
+                        addView(bookItem.View);
+                    }
+                }
+            }
+            catch(Exception ex) {
+                Console.WriteLine(ex.Message);
+            }
         }
 
         private void refocus() {
@@ -353,60 +546,45 @@ namespace Shapoco.Calctus.UI {
 
         private void _focusTimer_Tick(object sender, EventArgs e) {
             _focusTimer.Stop();
-            sheetView.Focus();
+            _activeBookItem.View.Focus();
         }
 
         private void MainForm_KeyDown(object sender, KeyEventArgs e) {
             e.SuppressKeyPress = true;
-            if (e.KeyCode == Keys.F1) {
+            if (e.Modifiers == Keys.Control && e.KeyCode == Keys.S) {
+                if (_activeBookItem.HasFileName) {
+                    _activeBookItem.Save();
+                }
+                else {
+                    System.Media.SystemSounds.Beep.Play();
+                }
+            }
+            else if (e.Modifiers == Keys.None && e.KeyCode == Keys.F1) {
                 helpButton.PerformClick();
             }
-            else if (e.KeyCode == Keys.F5) {
-                ExtFuncDef.ScanScripts();
-                sheetView.RequestRecalc();
+            else if (e.Modifiers == Keys.None && e.KeyCode == Keys.F5) {
+                ExternalFuncDef.ScanScripts();
+                _activeBookItem.View.RequestRecalc();
+                bookTreeView.RequestScanFiles();
+                checkActiveFileChange();
             }
-            else if (e.KeyCode == Keys.F8) {
-                this.RadixMode = RadixMode.Auto;
+            else if (e.Modifiers == Keys.None && e.KeyCode == Keys.F8) {
+                _activeBookItem.View.ReplaceFormatterFunction(null);
             }
-            else if (e.KeyCode == Keys.F9) {
-                this.RadixMode = RadixMode.Dec;
+            else if (e.Modifiers == Keys.None && e.KeyCode == Keys.F9) {
+                _activeBookItem.View.ReplaceFormatterFunction(RepresentaionFuncs.dec);
             }
-            else if (e.KeyCode == Keys.F10) {
-                this.RadixMode = RadixMode.Hex;
+            else if (e.Modifiers == Keys.None && e.KeyCode == Keys.F10) {
+                _activeBookItem.View.ReplaceFormatterFunction(RepresentaionFuncs.hex);
             }
-            else if (e.KeyCode == Keys.F11) {
-                this.RadixMode = RadixMode.Bin;
+            else if (e.Modifiers == Keys.None && e.KeyCode == Keys.F11) {
+                _activeBookItem.View.ReplaceFormatterFunction(RepresentaionFuncs.bin);
             }
-            else if (e.KeyCode == Keys.F12) {
-                this.RadixMode = RadixMode.SiPrefix;
+            else if (e.Modifiers == Keys.None && e.KeyCode == Keys.F12) {
+                _activeBookItem.View.ReplaceFormatterFunction(RepresentaionFuncs.si);
             }
             else {
                 e.SuppressKeyPress = false;
-            }
-        }
-
-        public RadixMode RadixMode {
-            get => _radixMode;
-            set {
-                if (value == _radixMode) return;
-                _radixMode = value;
-                switch(value) {
-                    case RadixMode.Auto: radixAutoButton.Checked = true; break;
-                    case RadixMode.Dec: radixDecButton.Checked = true; break;
-                    case RadixMode.Hex: radixHexButton.Checked = true; break;
-                    case RadixMode.Bin: radixBinButton.Checked = true; break;
-                    case RadixMode.Oct: radixOctButton.Checked = true; break;
-                    case RadixMode.SiPrefix: radixSiButton.Checked = true; break;
-                    case RadixMode.BinaryPrefix: radixKibiButton.Checked = true; break;
-                    case RadixMode.Char: radixCharButton.Checked = true; break;
-                }
-                sheetView.ActiveRadixMode = value;
-            }
-        }
-
-        private void RadixCheckedChanged(RadioButton btn, RadixMode mode) {
-            if (btn.Checked) {
-                this.RadixMode = mode;
             }
         }
     }

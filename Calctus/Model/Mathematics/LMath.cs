@@ -50,45 +50,50 @@ namespace Shapoco.Calctus.Model.Mathematics {
                 ((val >> 56) & 0x00000000000000ff);
         }
 
-        public static long Reverse(long val, int nbits) {
+        public static long Reverse(int nbits, long val) {
             if (nbits < 1 || 64 < nbits) throw new ArgumentOutOfRangeException();
+            var tmp = val;
             long ret = 0;
             for (int i = 0; i < nbits; i++) {
                 ret <<= 1;
-                ret |= (val & 1);
-                val >>= 1;
+                ret |= tmp & 1L;
+                tmp >>= 1;
             }
+            ret |= val & ~((1L << nbits) - 1L);
             return ret;
         }
 
-        public static long ReverseBytes(long val) {
-            return
-                ((val & 0x0101010101010101) << 7) |
-                ((val & 0x0202020202020202) << 5) |
-                ((val & 0x0404040404040404) << 3) |
-                ((val & 0x0808080808080808) << 1) |
-                ((val >> 1) & 0x0808080808080808) |
-                ((val >> 3) & 0x0404040404040404) |
-                ((val >> 5) & 0x0202020202020202) |
-                ((val >> 7) & 0x0101010101010101);
+        public static long ReverseBytes(int nbytes, long val) {
+            if (nbytes < 1 || 8 < nbytes) throw new ArgumentOutOfRangeException();
+            var tmp = val;
+            long ret = 0;
+            for (int i = 0; i < nbytes; i++) {
+                ret <<= 8;
+                ret |= tmp & 0xffL;
+                tmp >>= 8;
+            }
+            ret |= val & ~((1L << (nbytes * 8)) - 1L);
+            return ret;
         }
 
-        public static long RotateLeft(long val, int nbits) {
+        public static long RotateLeft(int nbits, int nshift, long val) {
             if (nbits < 1 || 64 < nbits) throw new ArgumentOutOfRangeException();
-            var carry = (val >> (nbits - 1)) & 1L;
-            val &= (1L << (nbits - 1)) - 1L;
-            val <<= 1;
-            val |= carry;
-            return val;
+            if (nshift < 0 || nbits < nshift ) throw new ArgumentOutOfRangeException();
+            var carry = (val >> (nbits - nshift)) & ((1L << nshift) - 1L);
+            var ret = (val & ((1L << (nbits - nshift)) - 1L)) << nshift;
+            ret |= carry;
+            ret |= val & ~((1L << nbits) - 1L);
+            return ret;
         }
 
-        public static long RotateRight(long val, int nbits) {
+        public static long RotateRight(int nbits, int nshift, long val) {
             if (nbits < 1 || 64 < nbits) throw new ArgumentOutOfRangeException();
-            var carry = (val & 1L) << (nbits - 1);
-            val >>= 1;
-            val &= (1L << (nbits - 1)) - 1L;
-            val |= carry;
-            return val;
+            if (nshift < 0 || nbits < nshift) throw new ArgumentOutOfRangeException();
+            var carry = (val & ((1L << nshift) - 1L)) << (nbits - nshift);
+            var ret = (val >> nshift) & ((1L << (nbits - nshift)) - 1L);
+            ret |= carry;
+            ret |= val & ~((1L << nbits) - 1L);
+            return ret;
         }
 
         public static int XorReduce(long val) {
@@ -140,7 +145,7 @@ namespace Shapoco.Calctus.Model.Mathematics {
             return eccWidth + 1;
         }
 
-        public static int EccEncode(long data, int dataWidth) {
+        public static int EccEncode(int dataWidth, long data) {
             if (dataWidth < 1 || 64 < dataWidth) throw new ArgumentOutOfRangeException();
             var eccWidth = EccWidth(dataWidth);
             var ecc = 0;
@@ -152,10 +157,10 @@ namespace Shapoco.Calctus.Model.Mathematics {
             return ecc;
         }
 
-        public static int EccDecode(int ecc, long data, int dataWidth) {
+        public static int EccDecode(int dataWidth, int ecc, long data) {
             var parity = OddParity(ecc) ^ OddParity(data);
             var eccWidth = EccWidth(dataWidth);
-            var syndrome = ecc ^ EccEncode(data, dataWidth);
+            var syndrome = ecc ^ EccEncode(dataWidth, data);
             syndrome &= (1 << (eccWidth - 1)) - 1;
             var errPos = EccCorrectionTable[syndrome];
             if (parity == 0) {
@@ -180,28 +185,55 @@ namespace Shapoco.Calctus.Model.Mathematics {
         }
 
         /// <summary>パッキング</summary>
-        public static long Pack(int elemWidth, long[] array) {
+        public static long Pack(int elemWidth, long[] valueArray) {
             if (elemWidth < 1) throw new ArgumentOutOfRangeException();
-            if (elemWidth * array.Length > 64) throw new ArgumentOutOfRangeException();
+            if (elemWidth * valueArray.Length > 64) throw new ArgumentOutOfRangeException();
+            var widthArray = new int[valueArray.Length];
+            for (int i = 0; i < valueArray.Length; i++) {
+                widthArray[i] = elemWidth;
+            }
+            return Pack(widthArray, valueArray);
+        }
+
+        /// <summary>パッキング</summary>
+        public static long Pack(int[] widthArray, long[] valueArray) {
+            if (widthArray.Length < 1 || 64 < widthArray.Length) throw new ArgumentOutOfRangeException();
+            if (widthArray.Any(p => p < 1)) throw new ArgumentOutOfRangeException();
+            int totalBits = widthArray.Sum();
+            if (totalBits < 1 || 64 < totalBits) throw new ArgumentOutOfRangeException();
+            if (widthArray.Length != valueArray.Length) throw new ArgumentOutOfRangeException();
+            int shift = 0;
             long buff = 0;
-            for (int i = 0; i < array.Length; ++i) {
-                buff |= array[i] << (elemWidth * i);
+            for (int i = 0; i < valueArray.Length; ++i) {
+                buff |= (valueArray[i] & ((1L << widthArray[i]) - 1)) << shift;
+                shift += widthArray[i];
             }
             return buff;
         }
 
         /// <summary>アンパッキング</summary>
-        public static long[] Unpack(int elemWidth, long val) {
-            if (elemWidth < 1) throw new ArgumentOutOfRangeException();
-            var list = new List<long>();
-            while (val != 0) {
-                list.Add(val & ((1L << elemWidth) -1));
-                val >>= elemWidth;
-                val &= (1L << (64 - elemWidth)) - 1L;
+        public static long[] Unpack(int elemWidth, int numElems, long val) {
+            if (elemWidth < 1 || 64 < elemWidth) throw new ArgumentOutOfRangeException();
+            if (elemWidth * numElems < 1 || 64 < elemWidth * numElems) throw new ArgumentOutOfRangeException();
+            var widthArray = new int[numElems];
+            for(int i = 0; i <numElems; i++) {
+                widthArray[i] = elemWidth;
             }
-            return list.ToArray();
+            return Unpack(widthArray, val);
         }
 
-
+        /// <summary>アンパッキング</summary>
+        public static long[] Unpack(int[] widthArray, long val) {
+            if (widthArray.Length < 1 || 64 < widthArray.Length) throw new ArgumentOutOfRangeException();
+            if (widthArray.Any(p => p < 1)) throw new ArgumentOutOfRangeException();
+            int totalBits = widthArray.Sum();
+            if (totalBits < 1 || 64 < totalBits) throw new ArgumentOutOfRangeException();
+            var ret = new long[widthArray.Length];
+            for (int i = 0; i < widthArray.Length; i++) {
+                ret[i] = (val & ((1L << widthArray[i]) - 1));
+                val >>= widthArray[i];
+            }
+            return ret;
+        }
     }
 }

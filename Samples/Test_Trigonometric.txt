@@ -1,0 +1,7 @@
+assert(abs(acos(cos(0.5))-0.5)<1e-10)
+assert(abs(asin(sin(0.5))-0.5)<1e-10)
+assert(abs(atan(tan(0.5))-0.5)<1e-10)
+assert(abs(atan2(2,3)-0.5880026035)<1e-10)
+assert(abs(sinh(1)-1.17520119364)<1e10)
+assert(abs(cosh(1)-1.54308063482)<1e10)
+assert(abs(tanh(1)-0.761594155956)<1e10)

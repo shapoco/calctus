@@ -16,17 +16,14 @@ namespace Shapoco.Calctus.Model.Sheets {
 
         private string _exprText = null;
         
-        private RadixMode _radixMode = RadixMode.Auto;
-        //public Token[] Tokens { get; private set; }
         public Expr ExprTree { get; private set; }
         public Val AnsVal { get; private set; }
         public string AnsText { get; private set; } = "";
         public Exception SyntaxError { get; private set; }
         public Exception EvalError { get; private set; }
 
-        public SheetItem(string expr = "", RadixMode radix = RadixMode.Auto) {
+        public SheetItem(string expr = "") {
             ExprText = expr;
-            RadixMode = radix;
         }
 
         public object Tag = null;
@@ -36,15 +33,6 @@ namespace Shapoco.Calctus.Model.Sheets {
             set {
                 if (value == _exprText) return;
                 parse(value);
-            }
-        }
-
-        public RadixMode RadixMode {
-            get => _radixMode;
-            set {
-                if (value == _radixMode) return;
-                _radixMode = value;
-                ExpressionChanged?.Invoke(this, EventArgs.Empty);
             }
         }
 
@@ -87,17 +75,7 @@ namespace Shapoco.Calctus.Model.Sheets {
             }
             else {
                 try {
-                    var val = ExprTree.Eval(e);
-                    switch (RadixMode) {
-                        case RadixMode.Dec: val = val.FormatInt(); break;
-                        case RadixMode.Hex: val = val.FormatHex(); break;
-                        case RadixMode.Bin: val = val.FormatBin(); break;
-                        case RadixMode.Oct: val = val.FormatOct(); break;
-                        case RadixMode.SiPrefix: val = val.FormatSiPrefix(); break;
-                        case RadixMode.BinaryPrefix: val = val.FormatBinaryPrefix(); break;
-                        case RadixMode.Char: val = val.FormatChar(); break;
-                    }
-                    SetStatus(val, null, null);
+                    SetStatus(ExprTree.Eval(e), null, null);
                 }
                 catch (Exception ex) {
                     SetStatus(NullVal.Instance, null, ex);
@@ -106,8 +84,9 @@ namespace Shapoco.Calctus.Model.Sheets {
         }
 
         public void SetStatus(Val ans, Exception syntaxError, Exception evalError) {
-            string ansText = ans.ToString();
-            if (ans.Equals(AnsVal) && ansText != AnsText && syntaxError == SyntaxError && evalError == EvalError) return;
+            string ansText;
+            ansText = ans.ToString();
+            if (ans.Equals(AnsVal) && ansText == AnsText && syntaxError == SyntaxError && evalError == EvalError) return;
             AnsVal = ans;
             AnsText = ansText;
             SyntaxError = syntaxError;

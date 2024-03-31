@@ -3,11 +3,14 @@ using System.Collections.Generic;
 using System.Drawing;
 using System.Linq;
 using System.Text;
+using System.Text.RegularExpressions;
 using System.Threading.Tasks;
 using System.Windows.Forms;
 using Shapoco.Calctus.Model;
 using Shapoco.Calctus.Model.Sheets;
-using Shapoco.Calctus.Model.Expressions;
+using Shapoco.Calctus.Model.Functions;
+using Shapoco.Calctus.Model.Functions.BuiltIns;
+using Shapoco.Calctus.Model.Types;
 
 namespace Shapoco.Calctus.UI.Sheets {
     class SheetViewItem : GdiBox, IDisposable {
@@ -15,7 +18,7 @@ namespace Shapoco.Calctus.UI.Sheets {
                 .Select(p => p[0])
                 .Distinct()
                 .ToArray();
-        
+
         private SheetView _view;
         public readonly SheetItem SheetItem;
         public readonly ExprBoxCore ExprBox;
@@ -24,7 +27,7 @@ namespace Shapoco.Calctus.UI.Sheets {
         public bool IsFreshAnswer = false;
         private bool _isRpnOperand = false;
         private bool _disposed = false;
-        private int _preferredHeight = 0;
+        private Size _lastPreferredSize = Size.Empty;
         private bool _ignoreExprChanged = false;
 
         public SheetViewItem(SheetView view, SheetItem bookItem) : base(view) {
@@ -74,6 +77,37 @@ namespace Shapoco.Calctus.UI.Sheets {
             AnsBox.RelayoutText();
         }
 
+        public void ReplaceFormatterFunction(FuncDef newFunc) {
+            var funcs = BuiltInFuncDef.EnumFunctions(typeof(RepresentaionFuncs)).Select(p => p.Name.Text).ToArray();
+            var prefixPattern = new Regex(@"^ *(?<func>" + String.Join("|", funcs) + @") *\( *(?<body>.+)");
+            var suffixPattern = new Regex(@" *\)$");
+            var pm = prefixPattern.Match(ExprBox.Text);
+            var body = ExprBox.Text;
+            var selStart = ExprBox.SelectionStart;
+            var selLength = ExprBox.SelectionLength;
+            if (pm.Success) {
+                var oldFuncName = pm.Groups["func"].Value;
+                if (funcs.Contains(oldFuncName)) {
+                    body = pm.Groups["body"].Value;
+                    selStart -= pm.Groups["body"].Index;
+                    var sm = suffixPattern.Match(body);
+                    if (sm.Success) {
+                        body = body.Substring(0, body.Length - sm.Length);
+                    }
+                }
+            }
+            if (newFunc == null) {
+                ExprBox.Text = body;
+                ExprBox.SelectionStart = selStart;
+                ExprBox.SelectionLength = selLength;
+            }
+            else {
+                ExprBox.Text = newFunc.Name.Text + "(" + body + ")";
+                ExprBox.SelectionStart = newFunc.Name.Text.Length + 1 + selStart;
+                ExprBox.SelectionLength = selLength;
+            }
+        }
+
         protected override void OnPaint(PaintEventArgs e) {
             base.OnPaint(e);
             var g = e.Graphics;
@@ -93,10 +127,10 @@ namespace Shapoco.Calctus.UI.Sheets {
             if (_ignoreExprChanged) return;
             _view.Operator.ChangeExpression(_view.IndexOf(this), ExprBox.Text);
             IsFreshAnswer = false;
-            int prefHeight = GetPreferredSize().Height;
-            if (prefHeight != _preferredHeight) {
+            var prefSize = GetPreferredSize();
+            if (prefSize != _lastPreferredSize) {
                 _view.InvalidateLayout();
-                _preferredHeight = prefHeight;
+                _lastPreferredSize = prefSize;
             }
         }
 
@@ -146,22 +180,32 @@ namespace Shapoco.Calctus.UI.Sheets {
                 err = SheetItem.EvalError;
                 ExprBox.EvalError = SheetItem.EvalError;
             }
+            bool ansVisible;
             if (err == null) {
-                var ans = SheetItem.AnsText;
-                AnsBox.Text = ans == "null" ? "" : ans;
+                var ansVal = SheetItem.AnsVal;
+                var ansText = SheetItem.AnsText;
+                ansText = (ansVal != null && ansVal.IsSerializable) ? ansText : "";
+                AnsBox.Text = ansText;
                 AnsBox.PlaceHolder = "";
+                ansVisible = SheetItem.ExprTree.CausesValueChange() && !(SheetItem.AnsVal is NullVal) && !(SheetItem.AnsVal is FuncVal);
             }
             else {
                 AnsBox.Text = "";
                 AnsBox.PlaceHolder = "? " + err.Message;
+                ansVisible = true;
+            }
+            if (AnsBox.Visible != ansVisible) {
+                AnsBox.Visible = Equal.Visible = ansVisible;
+                relayout();
+                _view.InvalidateLayout();
             }
         }
 
         public override Size GetPreferredSize() {
             var exprSize = ExprBox.GetPreferredSize();
             var ansSize = AnsBox.GetPreferredSize();
-            var indent = _view.Indent;
-            if (exprSize.Width < indent) {
+            var indent = _view.EqualPosition;
+            if (exprSize.Width <= indent || !AnsBox.Visible) {
                 return new Size(exprSize.Width + ansSize.Width, Math.Max(exprSize.Height, ansSize.Height));
             }
             else {
@@ -174,12 +218,17 @@ namespace Shapoco.Calctus.UI.Sheets {
             relayout();
         }
 
+        public void Relayout() => relayout();
+
         private void relayout() {
             var exprSize = ExprBox.GetPreferredSize();
-            var indent = _view.Indent;
+            var indent = _view.EqualPosition;
             var equalWidth = _view.EqualWidth;
             var ansLeft = indent + equalWidth;
-            if (Height < exprSize.Height * 3 / 2) {
+            if (!AnsBox.Visible) {
+                ExprBox.SetBounds(0, 0, Width, Height);
+            }
+            else if (Height < exprSize.Height * 3 / 2) {
                 ExprBox.SetBounds(0, 0, indent, Height);
                 Equal.SetBounds(indent, 0, equalWidth, Height);
                 AnsBox.SetBounds(ansLeft, 0, Width - ansLeft, Height);

@@ -1,0 +1,4 @@
+assert(max(1,2,3)==3)
+assert(max(9,8,7)==9)
+assert(min(1,2,3)==1)
+assert(min(9,8,7)==7)

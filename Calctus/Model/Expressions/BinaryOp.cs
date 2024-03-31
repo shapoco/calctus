@@ -4,6 +4,8 @@ using System.Linq;
 using Shapoco.Calctus.Model.Types;
 using Shapoco.Calctus.Model.Parsers;
 using Shapoco.Calctus.Model.Evaluations;
+using Shapoco.Calctus.Model.Mathematics;
+using Shapoco.Calctus.Model.Functions.BuiltIns;
 
 namespace Shapoco.Calctus.Model.Expressions {
     /// <summary>二項演算</summary>
@@ -16,25 +18,54 @@ namespace Shapoco.Calctus.Model.Expressions {
             this.B = b;
         }
 
+        public override bool CausesValueChange() => Method != OpDef.Assign || B.CausesValueChange();
+
         protected override Val OnEval(EvalContext e) {
             if (Method == OpDef.Assign) {
-                if (A is VarRef aRef) {
+                if (A is IdExpr aRef) {
                     // 変数の参照
                     var val = B.Eval(e);
-                    e.Ref(aRef.RefName, allowCreate: true).Value = val;
+                    e.Ref(aRef.Id, allowCreate: true).Value = val;
                     return val;
                 }
-                else if (A is PartRef pRef && pRef.Target is VarRef tRef) {
+                else if (A is ArrayExpr aExpr) {
+                    // 配列形式の代入
+                    int n = aExpr.Elements.Length;
+                    if (n <= 0) throw new EvalError(e, aExpr.Token, "At least one variable name is required.");
+                    var refs = new IdExpr[n];
+                    for (int i = 0; i < n; i++) {
+                        if (aExpr.Elements[i] is IdExpr id) {
+                            refs[i] = id;
+                        }
+                        else {
+                            throw new EvalError(e, aExpr.Elements[i].Token, "Identifier is expected.");
+                        }
+                    }
+                    var val = B.Eval(e);
+                    if (!(val is ArrayVal arrayVal)) {
+                        throw new EvalError(e, B.Token, "Array is required.");
+                    }
+                    if (refs.Length != arrayVal.Length) {
+                        throw new EvalError(e, B.Token, "Array size mismatch.");
+                    }
+                    for (int i = 0; i < n; i++) {
+                        e.Ref(refs[i].Id, allowCreate: true).Value = arrayVal[i];
+                    }
+                    return val;
+                }
+                else if (A is PartRef pRef && pRef.Target is IdExpr tRef) {
                     // Part Select を使った参照
                     var from = pRef.IndexFrom.Eval(e).AsInt;
                     var to = pRef.IndexTo.Eval(e).AsInt;
-                    if (from < to) throw new ArgumentOutOfRangeException();
 
                     var val = B.Eval(e);
-                    var varRef = e.Ref(tRef.RefName, allowCreate: false);
+                    var varRef = e.Ref(tRef.Id, allowCreate: false);
                     var varVal = varRef.Value;
                     if (varVal is ArrayVal array) {
                         // 配列の書き換え
+                        if (from < 0) from = array.Length + from;
+                        if (to < 0) to = array.Length + to;
+                        if (from > to) throw new ArgumentOutOfRangeException();
                         if (from == to) {
                             array = array.Modify(from, to, new Val[] { val });
                         }
@@ -43,10 +74,21 @@ namespace Shapoco.Calctus.Model.Expressions {
                         }
                         varVal = array;
                     }
+                    else if (varVal is StrVal strVal) {
+                        // 部分文字列の書き換え
+                        var str = strVal.AsString;
+                        if (from < 0) from = str.Length + from;
+                        if (to < 0) to = str.Length + to;
+                        if (from > to) throw new ArgumentOutOfRangeException();
+                        if (from < 0) throw new ArgumentOutOfRangeException();
+                        if (to > str.Length) throw new ArgumentOutOfRangeException();
+                        varVal = new StrVal(str.Substring(0, from) + val.AsString + str.Substring(to));
+                    }
                     else {
                         // ビットフィールドの書き換え
-                        if (from < 0 || 63 < from) throw new ArgumentOutOfRangeException();
-                        if (to < 0 || 63 < to) throw new ArgumentOutOfRangeException();
+                        if (from < to) throw new ArgumentOutOfRangeException();
+                        if (from < 0) throw new ArgumentOutOfRangeException();
+                        if (to > 63) throw new ArgumentOutOfRangeException();
                         var w = from - to + 1;
                         var mask = w < 64 ? ((1L << w) - 1L) : unchecked((long)0xffffffffffffffff);
                         mask <<= to;
@@ -56,16 +98,25 @@ namespace Shapoco.Calctus.Model.Expressions {
                         varVal = new RealVal(buff, varVal.FormatHint);
                     }
                     varRef.Value = varVal;
-                    return varVal;
+                    return val;
                 }
                 else {
                     throw new InvalidOperationException("Left hand of " + Token + " must be variant");
                 }
             }
-            if (Method == OpDef.Frac) {
+            else if (Method == OpDef.InclusiveRange || Method == OpDef.ExclusiveRange) {
+                bool inclusive = (Method == OpDef.InclusiveRange);
+                var aVal = A.Eval(e);
+                var bVal = B.Eval(e);
+                if (!aVal.IsInteger || !bVal.IsInteger) throw new CalctusError("Operand must be integer.");
+                var a = aVal.AsReal;
+                var b = bVal.AsReal;
+                return new ArrayVal(RMath.Range(a, b, a < b ? 1 : -1, inclusive));
+            }
+            else if (Method == OpDef.Frac) {
                 var a = A.Eval(e);
                 var b = B.Eval(e);
-                if (!e.Settings.FractionEnabled) {
+                if (!e.EvalSettings.FractionEnabled) {
                     return A.Eval(e).Div(e, B.Eval(e));
                 }
                 else if (b is FracVal) {
@@ -75,28 +126,66 @@ namespace Shapoco.Calctus.Model.Expressions {
                     return FracVal.Normalize(new frac(a.AsReal, b.AsReal), a.FormatHint);
                 }
             }
-            if (Method == OpDef.Pow) return FuncDef.pow.Call(e, new Val[] { A.Eval(e), B.Eval(e) });
-            if (Method == OpDef.Mul) return A.Eval(e).Mul(e, B.Eval(e));
-            if (Method == OpDef.Div) return A.Eval(e).Div(e, B.Eval(e));
-            if (Method == OpDef.IDiv) return A.Eval(e).IDiv(e, B.Eval(e));
-            if (Method == OpDef.Mod) return A.Eval(e).Mod(e, B.Eval(e));
-            if (Method == OpDef.Add) return A.Eval(e).Add(e, B.Eval(e));
-            if (Method == OpDef.Sub) return A.Eval(e).Sub(e, B.Eval(e));
-            if (Method == OpDef.LogicShiftL) return A.Eval(e).LogicShiftL(e, B.Eval(e));
-            if (Method == OpDef.LogicShiftR) return A.Eval(e).LogicShiftR(e, B.Eval(e));
-            if (Method == OpDef.ArithShiftL) return A.Eval(e).ArithShiftL(e, B.Eval(e));
-            if (Method == OpDef.ArithShiftR) return A.Eval(e).ArithShiftR(e, B.Eval(e));
-            if (Method == OpDef.Grater) return A.Eval(e).Grater(e, B.Eval(e));
-            if (Method == OpDef.GraterEqual) return A.Eval(e).GraterEqual(e, B.Eval(e));
-            if (Method == OpDef.Less) return A.Eval(e).Less(e, B.Eval(e));
-            if (Method == OpDef.LessEqual) return A.Eval(e).LessEqual(e, B.Eval(e));
-            if (Method == OpDef.Equal) return A.Eval(e).Equal(e, B.Eval(e));
-            if (Method == OpDef.NotEqual) return A.Eval(e).NotEqual(e, B.Eval(e));
-            if (Method == OpDef.BitAnd) return A.Eval(e).BitAnd(e, B.Eval(e));
-            if (Method == OpDef.BitXor) return A.Eval(e).BitXor(e, B.Eval(e));
-            if (Method == OpDef.BitOr) return A.Eval(e).BitOr(e, B.Eval(e));
-            if (Method == OpDef.LogicAnd) return A.Eval(e).LogicAnd(e, B.Eval(e));
-            if (Method == OpDef.LogicOr) return A.Eval(e).LogicOr(e, B.Eval(e));
+            else if (Method == OpDef.Pow) {
+                return ExponentialFuncs.pow.Call(e, new Val[] { A.Eval(e), B.Eval(e) });
+            }
+            else {
+                var a = A.Eval(e);
+                var b = B.Eval(e);
+                if (a is ArrayVal aArray && !(b is ArrayVal)) {
+                    var aVals = (Val[])aArray.Raw;
+                    var results = new Val[aVals.Length];
+                    for (int i = 0; i < aVals.Length; i++) {
+                        results[i] = scalarOperation(e, aVals[i], b);
+                    }
+                    return new ArrayVal(results).Format(a.FormatHint);
+                }
+                else if (!(a is ArrayVal) && b is ArrayVal bArray) {
+                    var bVals = (Val[])bArray.Raw;
+                    var results = new Val[bVals.Length];
+                    for (int i = 0; i < bVals.Length; i++) {
+                        results[i] = scalarOperation(e, a, bVals[i]);
+                    }
+                    return new ArrayVal(results).Format(b.FormatHint);
+                }
+                else if (a is ArrayVal aArray1 && b is ArrayVal bArray1) {
+                    var aVals = (Val[])aArray1.Raw;
+                    var bVals = (Val[])bArray1.Raw;
+                    if (aVals.Length != bVals.Length) throw new CalctusError("Array size mismatch.");
+                    var results = new Val[aVals.Length];
+                    for (int i = 0; i < aVals.Length; i++) {
+                        results[i] = scalarOperation(e, aVals[i], bVals[i]);
+                    }
+                    return new ArrayVal(results).Format(a.FormatHint);
+                }
+                else {
+                    return scalarOperation(e, a, b);
+                }
+            }
+        }
+
+        private Val scalarOperation(EvalContext e, Val a, Val b) {
+            if (Method == OpDef.Mul) return a.Mul(e, b);
+            if (Method == OpDef.Div) return a.Div(e, b);
+            if (Method == OpDef.IDiv) return a.IDiv(e, b);
+            if (Method == OpDef.Mod) return a.Mod(e, b);
+            if (Method == OpDef.Add) return a.Add(e, b);
+            if (Method == OpDef.Sub) return a.Sub(e, b);
+            if (Method == OpDef.LogicShiftL) return a.LogicShiftL(e, b);
+            if (Method == OpDef.LogicShiftR) return a.LogicShiftR(e, b);
+            if (Method == OpDef.ArithShiftL) return a.ArithShiftL(e, b);
+            if (Method == OpDef.ArithShiftR) return a.ArithShiftR(e, b);
+            if (Method == OpDef.Grater) return a.Grater(e, b);
+            if (Method == OpDef.GraterEqual) return a.GraterEqual(e, b);
+            if (Method == OpDef.Less) return a.Less(e, b);
+            if (Method == OpDef.LessEqual) return a.LessEqual(e, b);
+            if (Method == OpDef.Equal) return a.Equals(e, b);
+            if (Method == OpDef.NotEqual) return a.NotEqual(e, b);
+            if (Method == OpDef.BitAnd) return a.BitAnd(e, b);
+            if (Method == OpDef.BitXor) return a.BitXor(e, b);
+            if (Method == OpDef.BitOr) return a.BitOr(e, b);
+            if (Method == OpDef.LogicAnd) return a.LogicAnd(e, b);
+            if (Method == OpDef.LogicOr) return a.LogicOr(e, b);
             throw new NotImplementedException();
         }
 

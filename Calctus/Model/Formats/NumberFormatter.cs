@@ -20,8 +20,8 @@ namespace Shapoco.Calctus.Model.Formats {
 
         public abstract Val Parse(Match m);
 
-        public virtual string Format(Val val, FormatSettingss fs) => OnFormat(val, fs);
-        protected virtual string OnFormat(Val val, FormatSettingss fs) {
+        public virtual string Format(Val val, FormatSettings fs) => OnFormat(val, fs);
+        protected virtual string OnFormat(Val val, FormatSettings fs) {
             if (val is ArrayVal aval) {
                 var raw = (Val[])aval.Raw;
                 var sb = new StringBuilder();
@@ -36,16 +36,19 @@ namespace Shapoco.Calctus.Model.Formats {
             else if (val is BoolVal) {
                 return val.AsBool ? BoolVal.TrueKeyword : BoolVal.FalseKeyword;
             }
+            else if (val is StrVal) {
+                return StringFormatter.FormatAsStringLiteral(val.AsString);
+            }
             else {
                 return RealToString(val.AsReal, fs, true);
             }
         }
 
-        public static readonly IntFormatter CStyleInt = new IntFormatter(10, "", new Regex(@"([1-9][0-9]*|0)([eE][+-]?[0-9]+)?"), 0, FormatPriority.Weak);
+        public static readonly IntFormatter CStyleInt = new IntFormatter(10, "", new Regex(@"(?<digits>([1-9][0-9]*(_[0-9]+)*|0)([eE][+-]?[0-9]+(_[0-9]+)*)?)"), FormatPriority.Weak);
         public static readonly RealFormatter CStyleReal = new RealFormatter();
-        public static readonly IntFormatter CStyleHex = new IntFormatter(16, "0x", new Regex(@"0[xX]([0-9a-fA-F]+)"), 1, FormatPriority.AlwaysLeft);
-        public static readonly IntFormatter CStyleOct = new IntFormatter(8, "0", new Regex(@"0([0-7]+)"), 1, FormatPriority.AlwaysLeft);
-        public static readonly IntFormatter CStyleBin = new IntFormatter(2, "0b", new Regex(@"0[bB]([01]+)"), 1, FormatPriority.AlwaysLeft);
+        public static readonly IntFormatter CStyleHex = new IntFormatter(16, "0x", new Regex(@"0[xX](?<digits>[0-9a-fA-F]+(_[0-9a-fA-F]+)*)"), FormatPriority.AlwaysLeft);
+        public static readonly IntFormatter CStyleOct = new IntFormatter(8, "0", new Regex(@"0(?<digits>[0-7]+(_[0-7]+)*)"), FormatPriority.AlwaysLeft);
+        public static readonly IntFormatter CStyleBin = new IntFormatter(2, "0b", new Regex(@"0[bB](?<digits>[01]+(_[01]+)*)"), FormatPriority.AlwaysLeft);
         public static readonly CharFormatter CStyleChar = new CharFormatter();
         public static readonly StringFormatter CStyleString = new StringFormatter();
         public static readonly SiPrefixFormatter SiPrefixed = new SiPrefixFormatter();
@@ -67,7 +70,7 @@ namespace Shapoco.Calctus.Model.Formats {
             WebColor,
         };
 
-        public static string RealToString(real val, FormatSettingss fs, bool allowENotation) {
+        public static string RealToString(real val, FormatSettings fs, bool allowENotation) {
             if (val == 0.0m) return "0";
 
             var sbDecFormat = new StringBuilder("0.");
@@ -76,7 +79,7 @@ namespace Shapoco.Calctus.Model.Formats {
             }
             var decFormat = sbDecFormat.ToString();
 
-            int exp = RMath.FLog10(val);
+            int exp = RMath.FLog10Abs(val);
             if (allowENotation && fs.ENotationEnabled && exp >= fs.ENotationExpPositiveMin) {
                 if (fs.ENotationAlignment) {
                     exp = (int)Math.Floor((double)exp / 3) * 3;
@@ -96,14 +99,14 @@ namespace Shapoco.Calctus.Model.Formats {
             }
         }
 
-        public static void Test(FormatSettingss s, Val val, string str) {
+        public static void Test(FormatSettings s, Val val, string str) {
             Assert.Equal(nameof(NumberFormatter), val.ToString(s), str);
         }
 
         public static void Test() {
             var cint = new FormatHint(CStyleInt);
             {
-                var fs = new FormatSettingss();
+                var fs = new FormatSettings();
                 fs.DecimalLengthToDisplay = 28;
                 fs.ENotationEnabled = false;
                 fs.ENotationExpPositiveMin = 4;
@@ -127,7 +130,7 @@ namespace Shapoco.Calctus.Model.Formats {
                 Test(fs, new RealVal(-0.0000000000000012345m, cint), "-0.0000000000000012345");
             }
             {
-                var fs = new FormatSettingss();
+                var fs = new FormatSettings();
                 fs.DecimalLengthToDisplay = 28;
                 fs.ENotationEnabled = true;
                 fs.ENotationExpPositiveMin = 4;
@@ -157,7 +160,7 @@ namespace Shapoco.Calctus.Model.Formats {
                 Test(fs, new RealVal(-0.0000000000000012345m, cint), "-1.2345e-15");
             }
             {
-                var fs = new FormatSettingss();
+                var fs = new FormatSettings();
                 fs.DecimalLengthToDisplay = 28;
                 fs.ENotationEnabled = true;
                 fs.ENotationExpPositiveMin = 4;
@@ -198,7 +201,7 @@ namespace Shapoco.Calctus.Model.Formats {
                 Test(fs, new RealVal(-0.0000000000000012345m, cint), "-1.2345e-15");
             }
             {
-                var fs = new FormatSettingss();
+                var fs = new FormatSettings();
                 fs.DecimalLengthToDisplay = 5;
                 fs.ENotationEnabled = false;
                 Test(fs, new RealVal(10000, cint), "10000");

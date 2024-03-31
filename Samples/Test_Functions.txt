@@ -1,0 +1,20 @@
+def f(x)=x+1
+g=(x)=>x+2
+h=x=>x+3
+h=(x=>x+3)
+x=h
+p=prime
+q=p
+def add(a,b)=a+b
+mult=(a,b)=>a*b
+assert(f(3)==4)
+assert(g(3)==5)
+assert(h(3)==6)
+assert(x(3)==h(3))
+assert(p(3)==prime(3))
+assert(p(3)==q(3))
+assert(add(2,3)==5)
+assert(mult(2,3)==6)
+assert(solve(f)==-1)
+assert(solve(g)==-2)
+assert(solve(h)==-3)

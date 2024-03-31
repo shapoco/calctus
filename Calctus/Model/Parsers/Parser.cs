@@ -7,6 +7,8 @@ using System.IO;
 
 using Shapoco.Calctus.Model;
 using Shapoco.Calctus.Model.Expressions;
+using Shapoco.Calctus.Model.Functions;
+using Shapoco.Calctus.Model.Types;
 
 namespace Shapoco.Calctus.Model.Parsers {
     class Parser {
@@ -16,23 +18,23 @@ namespace Shapoco.Calctus.Model.Parsers {
         public TokenQueue Queue => _queue;
 
         public static Expr Parse(string s) => Parse(new Lexer(s).PopToEnd());
-        public static Expr Parse(TokenQueue q) => new Parser(q).Pop(last: true);
+        public static Expr Parse(TokenQueue q) => new Parser(q).Pop(root: true);
 
         public Parser(TokenQueue queue) {
             _queue = queue;
         }
 
-        public Expr Pop(bool last = true) {
+        public Expr Pop(bool root) {
             Token tok;
             if (ReadIf("def", out tok)) {
                 return Def(tok);
             }
             else {
-                return Expr(last);
+                return Expr(root);
             }
         }
 
-        public Expr Expr(bool last = false) {
+        public Expr Expr(bool root = false) {
             var vals = new Stack<Expr>();
             var ops = new Stack<BinaryOp>();
 
@@ -69,16 +71,30 @@ namespace Shapoco.Calctus.Model.Parsers {
                 expr = new CondOp(tok, expr, trueVal, falseVal);
             }
 
-            if (last && !Eos) {
+            if (root && !Eos) {
                 throw new ParserError(_lastToken, "Operator missing");
             }
             return expr;
         }
 
         public Expr UnaryOpExpr() {
-            var peek = Peek();
-            if (ReadIf(TokenType.OperatorSymbol, out Token tok)) {
-                return new UnaryOp(UnaryOpExpr(), tok);
+            Token tok;
+            if (ReadIf("*", out tok)) {
+                Expect(TokenType.Word, out Token id);
+                return new AsterExpr(tok, new IdExpr(id));
+            }
+            else if (ReadIf(TokenType.OperatorSymbol, out tok)) {
+                var expr = UnaryOpExpr();
+                if (expr is Number num && num.Value is RealVal val) {
+                    // 単純な
+                    if (tok.Text == OpDef.Plus.Symbol) {
+                        return expr;
+                    }
+                    else if (tok.Text == OpDef.ArithInv.Symbol) {
+                        return new Number(new RealVal(-val.AsReal));
+                    }
+                }
+                return new UnaryOp(expr, tok);
             }
             else {
                 return ElemRefExpr();
@@ -103,10 +119,8 @@ namespace Shapoco.Calctus.Model.Parsers {
 
         public Expr Operand() {
             Token tok;
-            if (ReadIf("(")) {
-                var ret = Expr();
-                Expect(")");
-                return ret;
+            if (ReadIf("(", out tok)) {
+                return Parenthesis(tok);
             }
             else if (ReadIf("[", out tok)) {
                 var elms = new List<Expr>();
@@ -118,12 +132,6 @@ namespace Shapoco.Calctus.Model.Parsers {
                     Expect("]");
                 }
                 return new ArrayExpr(tok, elms.ToArray());
-            }
-            else if (ReadIf("solve", out tok)) {
-                return Solve(tok);
-            }
-            else if (ReadIf("plot", out tok)) {
-                return Plot(tok);
             }
             else if (ReadIf(TokenType.NumericLiteral, out tok)) {
                 return new Number(tok);
@@ -141,10 +149,13 @@ namespace Shapoco.Calctus.Model.Parsers {
                         }
                         Expect(")");
                     }
-                    return new FuncRef(tok, args.ToArray());
+                    return new CallExpr(tok, args.ToArray());
+                }
+                else if (ReadIf("=>", out Token t)) {
+                    return Lambda(new IdExpr[] { new IdExpr(tok) }, t);
                 }
                 else {
-                    return new VarRef(tok);
+                    return new IdExpr(tok);
                 }
             }
             else if (EndOfExpr) {
@@ -156,50 +167,81 @@ namespace Shapoco.Calctus.Model.Parsers {
             }
         }
 
+        public Expr Parenthesis(Token first) {
+            var exprs = new List<Expr>();
+            Token t;
+            Token firstComma = null;
+            if (!ReadIf(")")) {
+                exprs.Add(Expr());
+                while (ReadIf(",", out t)) {
+                    if (firstComma == null) firstComma = t;
+                    exprs.Add(Expr());
+                }
+                Expect(")");
+            }
+            if (ReadIf("=>", out t)) {
+                return Lambda(exprs.ToArray(), t);
+            }
+            else if (exprs.Count == 1) {
+                return exprs[0];
+            }
+            else {
+                return new ParenthesisExpr(first, firstComma, exprs.ToArray());
+            }
+        }
+
+        public Expr Lambda(Expr[] argExprs, Token arrow) {
+            ArgDef[] args = new ArgDef[argExprs.Length];
+            int vecArgIndex = -1;
+            for (int i = 0; i < argExprs.Length; i++) {
+                if (argExprs[i] is IdExpr id) {
+                    args[i] = new ArgDef(id.Token);
+                }
+                else if (argExprs[i] is AsterExpr aster) {
+                    if (vecArgIndex >= 0) throw new ParserError(aster.Token, "Only one argument is vectorizable.");
+                    vecArgIndex = i;
+                    args[i] = new ArgDef(aster.Id.Token);
+                }
+                else {
+                    throw new ParserError(argExprs[i].Token, "Single identifier is expected.");
+                }
+            }
+            var argDefs = new ArgDefList(args, VariadicMode.None, vecArgIndex);
+            var body = Expr();
+            return new LambdaExpr(arrow, new UserFuncDef(Token.Empty, argDefs, body));
+        }
+
         public Expr Def(Token first) {
             Expect(TokenType.Word, out Token name);
             Expect("(");
-            var args = new List<Token>();
-            if (!ReadIf(")")) {
-                do {
-                    Expect(TokenType.Word, out Token arg);
-                    args.Add(arg);
-                } while (ReadIf(","));
-                Expect(")");
-            }
+            var args = ArgDefList();
+            Expect(")");
             Expect("=");
             var body = Expr(true);
-            return new UserFuncExpr(first, name, args.ToArray(), body);
+            return new DefExpr(first, name, args, body);
         }
 
-        public Expr Solve(Token first) {
-            Expect("(");
-            var equation = Expr(false);
-            Expect(",");
-            Expect(TokenType.Word, out Token variant);
-            Expr param0 = null;
-            Expr param1 = null;
-            if (ReadIf(",")) {
-                param0 = Expr(false);
-                if (ReadIf(",")) {
-                    param1 = Expr(false);
+        public ArgDefList ArgDefList() {
+            var args = new List<ArgDef>();
+            var mode = VariadicMode.None;
+            var vecArgIndex = -1;
+            if (Peek().Text != ")") {
+                do {
+                    if (ReadIf("*", out Token aster)) {
+                        if (vecArgIndex >= 0) throw new ParserError(aster, "Only one argument is vectorizable.");
+                        vecArgIndex = args.Count;
+                    }
+                    Expect(TokenType.Word, out Token arg);
+                    args.Add(new ArgDef(arg));
+                } while (ReadIf(","));
+                if (args.Count > 0 && ReadIf("[")) {
+                    Expect("]");
+                    Expect("...");
+                    if (vecArgIndex >= 0) throw new CalctusError("Variadic argument and vectorizable argument cannot coexist.");
+                    mode = VariadicMode.Array;
                 }
             }
-            Expect(")");
-            return new SolveExpr(first, equation, variant, param0, param1);
-        }
-
-        public Expr Plot(Token first) {
-            Expect("(");
-            Expr windowName = null;
-            var equation = Expr(false);
-            Expect(",");
-            Expect(TokenType.Word, out Token variant);
-            if (ReadIf(",")) {
-                windowName = Expr(false);
-            }
-            Expect(")");
-            return new PlotExpr(first, windowName, equation, variant);
+            return new ArgDefList(args.ToArray(), mode, vecArgIndex);
         }
 
         public Token Peek() {
@@ -250,8 +292,10 @@ namespace Shapoco.Calctus.Model.Parsers {
         public bool EndOfExpr
             => Eos || (Peek().Text == ")") || (Peek().Text == "]") || (Peek().Text == ",") || (Peek().Text == ":") || (Peek().Text == "?");
 
-        public void Expect(string s) {
-            if (!ReadIf(s)) {
+        public void Expect(string s) => Expect(s, out _);
+
+        public void Expect(string s, out Token tok) {
+            if (!ReadIf(s, out tok)) {
                 throw new ParserError(Peek(), "Missing: '" + s + "'");
             }
         }

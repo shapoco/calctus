@@ -23,8 +23,8 @@
         /// the contents of this method with the code editor.
         /// </summary>
         private void InitializeComponent() {
-            Shapoco.Calctus.Model.Graphs.AxisSettings axisSettings1 = new Shapoco.Calctus.Model.Graphs.AxisSettings();
-            Shapoco.Calctus.Model.Graphs.AxisSettings axisSettings2 = new Shapoco.Calctus.Model.Graphs.AxisSettings();
+            Shapoco.Calctus.Model.Graphs.AxisSettings axisSettings3 = new Shapoco.Calctus.Model.Graphs.AxisSettings();
+            Shapoco.Calctus.Model.Graphs.AxisSettings axisSettings4 = new Shapoco.Calctus.Model.Graphs.AxisSettings();
             System.ComponentModel.ComponentResourceManager resources = new System.ComponentModel.ComponentResourceManager(typeof(GraphForm));
             this.toolStrip = new System.Windows.Forms.ToolStrip();
             this.copyButton = new System.Windows.Forms.ToolStripButton();
@@ -39,9 +39,6 @@
             // 
             // toolStrip
             // 
-            this.toolStrip.Items.AddRange(new System.Windows.Forms.ToolStripItem[] {
-            this.copyButton,
-            this.whiteBackModeButton});
             this.toolStrip.Location = new System.Drawing.Point(0, 0);
             this.toolStrip.Name = "toolStrip";
             this.toolStrip.Size = new System.Drawing.Size(380, 25);
@@ -65,7 +62,7 @@
             this.whiteBackModeButton.ImageTransparentColor = System.Drawing.Color.Magenta;
             this.whiteBackModeButton.Name = "whiteBackModeButton";
             this.whiteBackModeButton.Size = new System.Drawing.Size(23, 22);
-            this.whiteBackModeButton.Text = "White Back Mode";
+            this.whiteBackModeButton.Text = "Invert Color";
             // 
             // panel1
             // 
@@ -80,18 +77,18 @@
             // 
             // axisSettingsY
             // 
-            axisSettings1.PosBottom = new decimal(new int[] {
+            axisSettings3.PosBottom = new decimal(new int[] {
             105,
             0,
             0,
             -2147418112});
-            axisSettings1.PosRange = new decimal(new int[] {
+            axisSettings3.PosRange = new decimal(new int[] {
             21,
             0,
             0,
             0});
-            axisSettings1.Type = Shapoco.Calctus.Model.Graphs.AxisType.Linear;
-            this.axisSettingsY.AxisSettings = axisSettings1;
+            axisSettings3.Type = Shapoco.Calctus.Model.Graphs.AxisType.Linear;
+            this.axisSettingsY.AxisSettings = axisSettings3;
             this.axisSettingsY.Dock = System.Windows.Forms.DockStyle.Top;
             this.axisSettingsY.Location = new System.Drawing.Point(0, 92);
             this.axisSettingsY.Name = "axisSettingsY";
@@ -100,18 +97,18 @@
             // 
             // axisSettingsX
             // 
-            axisSettings2.PosBottom = new decimal(new int[] {
+            axisSettings4.PosBottom = new decimal(new int[] {
             105,
             0,
             0,
             -2147418112});
-            axisSettings2.PosRange = new decimal(new int[] {
+            axisSettings4.PosRange = new decimal(new int[] {
             21,
             0,
             0,
             0});
-            axisSettings2.Type = Shapoco.Calctus.Model.Graphs.AxisType.Linear;
-            this.axisSettingsX.AxisSettings = axisSettings2;
+            axisSettings4.Type = Shapoco.Calctus.Model.Graphs.AxisType.Linear;
+            this.axisSettingsX.AxisSettings = axisSettings4;
             this.axisSettingsX.Dock = System.Windows.Forms.DockStyle.Top;
             this.axisSettingsX.Location = new System.Drawing.Point(0, 0);
             this.axisSettingsX.Name = "axisSettingsX";

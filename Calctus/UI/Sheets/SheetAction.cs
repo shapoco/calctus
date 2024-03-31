@@ -30,18 +30,16 @@ namespace Shapoco.Calctus.UI.Sheets {
     class InsertAction : SheetAction {
         public readonly int Index;
         public readonly string Expression;
-        public readonly RadixMode Radix;
         public readonly InsertOptions Options;
 
-        public InsertAction(int index, string expr, RadixMode radix, InsertOptions opts = InsertOptions.None) {
+        public InsertAction(int index, string expr,  InsertOptions opts = InsertOptions.None) {
             Index = index;
             Expression = expr;
-            Radix = radix;
             Options = opts;
         }
 
         public override void Apply(SheetView view) {
-            var item = new SheetItem(Expression, Radix);
+            var item = new SheetItem(Expression);
             view.Sheet.Items.Insert(Index, item);
             var viewItem = ((SheetViewItem)item.Tag);
             viewItem.IsFreshAnswer = Options.HasFlag(InsertOptions.FreshAnswer);
@@ -76,21 +74,6 @@ namespace Shapoco.Calctus.UI.Sheets {
 
         public override void Apply(SheetView view) {
             view.Sheet.Items[Index].ExprText = Expression;
-        }
-    }
-
-    /// <summary>基数の変更アクション</summary>
-    class RadixChangeAction : SheetAction {
-        public readonly int Index;
-        public readonly RadixMode Radix;
-
-        public RadixChangeAction(int index, RadixMode radix) {
-            Index = index;
-            Radix = radix;
-        }
-
-        public override void Apply(SheetView view) {
-            view.Sheet.Items[Index].RadixMode = Radix;
         }
     }
 }

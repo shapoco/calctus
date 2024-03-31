@@ -37,10 +37,13 @@ namespace Shapoco.Calctus.UI
             this.settingsButton = new System.Windows.Forms.ToolStripButton();
             this.undoButton = new System.Windows.Forms.ToolStripButton();
             this.redoButton = new System.Windows.Forms.ToolStripButton();
+            this.toolStripSeparator1 = new System.Windows.Forms.ToolStripSeparator();
             this.copyButton = new System.Windows.Forms.ToolStripButton();
             this.pasteButton = new System.Windows.Forms.ToolStripButton();
+            this.toolStripSeparator2 = new System.Windows.Forms.ToolStripSeparator();
             this.insertButton = new System.Windows.Forms.ToolStripButton();
             this.deleteButton = new System.Windows.Forms.ToolStripButton();
+            this.toolStripSeparator3 = new System.Windows.Forms.ToolStripSeparator();
             this.moveUpButton = new System.Windows.Forms.ToolStripButton();
             this.moveDownButton = new System.Windows.Forms.ToolStripButton();
             this.notifyIcon = new System.Windows.Forms.NotifyIcon(this.components);
@@ -49,22 +52,24 @@ namespace Shapoco.Calctus.UI
             this.toolStripMenuItem1 = new System.Windows.Forms.ToolStripSeparator();
             this.contextExit = new System.Windows.Forms.ToolStripMenuItem();
             this.bottomPanel = new System.Windows.Forms.Panel();
-            this.radixCharButton = new Shapoco.Calctus.UI.FlatRadioButton();
-            this.radixKibiButton = new Shapoco.Calctus.UI.FlatRadioButton();
-            this.radixSiButton = new Shapoco.Calctus.UI.FlatRadioButton();
-            this.radixOctButton = new Shapoco.Calctus.UI.FlatRadioButton();
-            this.radixBinButton = new Shapoco.Calctus.UI.FlatRadioButton();
-            this.radixHexButton = new Shapoco.Calctus.UI.FlatRadioButton();
-            this.radixDecButton = new Shapoco.Calctus.UI.FlatRadioButton();
-            this.radixAutoButton = new Shapoco.Calctus.UI.FlatRadioButton();
+            this.radixCharButton = new Shapoco.Calctus.UI.FlatButton();
+            this.radixKibiButton = new Shapoco.Calctus.UI.FlatButton();
+            this.radixSiButton = new Shapoco.Calctus.UI.FlatButton();
+            this.radixOctButton = new Shapoco.Calctus.UI.FlatButton();
+            this.radixBinButton = new Shapoco.Calctus.UI.FlatButton();
+            this.radixHexButton = new Shapoco.Calctus.UI.FlatButton();
+            this.radixDecButton = new Shapoco.Calctus.UI.FlatButton();
+            this.radixAutoButton = new Shapoco.Calctus.UI.FlatButton();
             this.toolTip = new System.Windows.Forms.ToolTip(this.components);
-            this.sheetView = new Shapoco.Calctus.UI.Sheets.SheetView();
-            this.toolStripSeparator1 = new System.Windows.Forms.ToolStripSeparator();
-            this.toolStripSeparator2 = new System.Windows.Forms.ToolStripSeparator();
-            this.toolStripSeparator3 = new System.Windows.Forms.ToolStripSeparator();
+            this.sidePaneHeaderPanel = new System.Windows.Forms.Panel();
+            this.sidePaneOpenButton = new Shapoco.Calctus.UI.FlatButton();
+            this.bookTreeView = new Shapoco.Calctus.UI.Books.BookTreeView();
+            this.sidePaneBodyPanel = new System.Windows.Forms.Panel();
             this.toolStrip.SuspendLayout();
             this.trayMenuStrip.SuspendLayout();
             this.bottomPanel.SuspendLayout();
+            this.sidePaneHeaderPanel.SuspendLayout();
+            this.sidePaneBodyPanel.SuspendLayout();
             this.SuspendLayout();
             // 
             // toolStrip
@@ -86,7 +91,7 @@ namespace Shapoco.Calctus.UI
             this.moveDownButton});
             this.toolStrip.Location = new System.Drawing.Point(0, 0);
             this.toolStrip.Name = "toolStrip";
-            this.toolStrip.Size = new System.Drawing.Size(402, 25);
+            this.toolStrip.Size = new System.Drawing.Size(577, 25);
             this.toolStrip.TabIndex = 4;
             this.toolStrip.Text = "toolStrip1";
             // 
@@ -140,6 +145,11 @@ namespace Shapoco.Calctus.UI
             this.redoButton.Text = "toolStripButton2";
             this.redoButton.ToolTipText = "Redo";
             // 
+            // toolStripSeparator1
+            // 
+            this.toolStripSeparator1.Name = "toolStripSeparator1";
+            this.toolStripSeparator1.Size = new System.Drawing.Size(6, 25);
+            // 
             // copyButton
             // 
             this.copyButton.DisplayStyle = System.Windows.Forms.ToolStripItemDisplayStyle.Image;
@@ -160,6 +170,11 @@ namespace Shapoco.Calctus.UI
             this.pasteButton.Text = "toolStripButton2";
             this.pasteButton.ToolTipText = "Paste";
             // 
+            // toolStripSeparator2
+            // 
+            this.toolStripSeparator2.Name = "toolStripSeparator2";
+            this.toolStripSeparator2.Size = new System.Drawing.Size(6, 25);
+            // 
             // insertButton
             // 
             this.insertButton.DisplayStyle = System.Windows.Forms.ToolStripItemDisplayStyle.Image;
@@ -179,6 +194,11 @@ namespace Shapoco.Calctus.UI
             this.deleteButton.Size = new System.Drawing.Size(23, 22);
             this.deleteButton.Text = "toolStripButton4";
             this.deleteButton.ToolTipText = "Delete";
+            // 
+            // toolStripSeparator3
+            // 
+            this.toolStripSeparator3.Name = "toolStripSeparator3";
+            this.toolStripSeparator3.Size = new System.Drawing.Size(6, 25);
             // 
             // moveUpButton
             // 
@@ -243,151 +263,147 @@ namespace Shapoco.Calctus.UI
             this.bottomPanel.Controls.Add(this.radixDecButton);
             this.bottomPanel.Controls.Add(this.radixAutoButton);
             this.bottomPanel.Dock = System.Windows.Forms.DockStyle.Bottom;
-            this.bottomPanel.Location = new System.Drawing.Point(0, 231);
+            this.bottomPanel.Location = new System.Drawing.Point(220, 231);
             this.bottomPanel.Name = "bottomPanel";
-            this.bottomPanel.Size = new System.Drawing.Size(402, 15);
+            this.bottomPanel.Size = new System.Drawing.Size(357, 15);
             this.bottomPanel.TabIndex = 5;
             // 
             // radixCharButton
             // 
-            this.radixCharButton.BackColor = System.Drawing.Color.FromArgb(((int)(((byte)(76)))), ((int)(((byte)(88)))), ((int)(((byte)(72)))));
             this.radixCharButton.Dock = System.Windows.Forms.DockStyle.Left;
             this.radixCharButton.ForeColor = System.Drawing.Color.White;
             this.radixCharButton.Location = new System.Drawing.Point(210, 0);
             this.radixCharButton.Name = "radixCharButton";
             this.radixCharButton.Size = new System.Drawing.Size(30, 15);
             this.radixCharButton.TabIndex = 10;
-            this.radixCharButton.TabStop = true;
             this.radixCharButton.Text = "Char";
             this.radixCharButton.UseVisualStyleBackColor = false;
             // 
             // radixKibiButton
             // 
-            this.radixKibiButton.BackColor = System.Drawing.Color.FromArgb(((int)(((byte)(76)))), ((int)(((byte)(88)))), ((int)(((byte)(72)))));
             this.radixKibiButton.Dock = System.Windows.Forms.DockStyle.Left;
             this.radixKibiButton.ForeColor = System.Drawing.Color.White;
             this.radixKibiButton.Location = new System.Drawing.Point(180, 0);
             this.radixKibiButton.Name = "radixKibiButton";
             this.radixKibiButton.Size = new System.Drawing.Size(30, 15);
             this.radixKibiButton.TabIndex = 9;
-            this.radixKibiButton.TabStop = true;
             this.radixKibiButton.Text = "Kibi";
             this.radixKibiButton.UseVisualStyleBackColor = false;
             // 
             // radixSiButton
             // 
-            this.radixSiButton.BackColor = System.Drawing.Color.FromArgb(((int)(((byte)(76)))), ((int)(((byte)(88)))), ((int)(((byte)(72)))));
             this.radixSiButton.Dock = System.Windows.Forms.DockStyle.Left;
             this.radixSiButton.ForeColor = System.Drawing.Color.White;
             this.radixSiButton.Location = new System.Drawing.Point(150, 0);
             this.radixSiButton.Name = "radixSiButton";
             this.radixSiButton.Size = new System.Drawing.Size(30, 15);
             this.radixSiButton.TabIndex = 8;
-            this.radixSiButton.TabStop = true;
             this.radixSiButton.Text = "SI";
             this.radixSiButton.UseVisualStyleBackColor = false;
             // 
             // radixOctButton
             // 
-            this.radixOctButton.BackColor = System.Drawing.Color.FromArgb(((int)(((byte)(76)))), ((int)(((byte)(88)))), ((int)(((byte)(72)))));
             this.radixOctButton.Dock = System.Windows.Forms.DockStyle.Left;
             this.radixOctButton.ForeColor = System.Drawing.Color.White;
             this.radixOctButton.Location = new System.Drawing.Point(120, 0);
             this.radixOctButton.Name = "radixOctButton";
             this.radixOctButton.Size = new System.Drawing.Size(30, 15);
             this.radixOctButton.TabIndex = 7;
-            this.radixOctButton.TabStop = true;
             this.radixOctButton.Text = "Oct";
             this.radixOctButton.UseVisualStyleBackColor = false;
             // 
             // radixBinButton
             // 
-            this.radixBinButton.BackColor = System.Drawing.Color.FromArgb(((int)(((byte)(76)))), ((int)(((byte)(88)))), ((int)(((byte)(72)))));
             this.radixBinButton.Dock = System.Windows.Forms.DockStyle.Left;
             this.radixBinButton.ForeColor = System.Drawing.Color.White;
             this.radixBinButton.Location = new System.Drawing.Point(90, 0);
             this.radixBinButton.Name = "radixBinButton";
             this.radixBinButton.Size = new System.Drawing.Size(30, 15);
             this.radixBinButton.TabIndex = 6;
-            this.radixBinButton.TabStop = true;
             this.radixBinButton.Text = "Bin";
             this.radixBinButton.UseVisualStyleBackColor = false;
             // 
             // radixHexButton
             // 
-            this.radixHexButton.BackColor = System.Drawing.Color.FromArgb(((int)(((byte)(76)))), ((int)(((byte)(88)))), ((int)(((byte)(72)))));
             this.radixHexButton.Dock = System.Windows.Forms.DockStyle.Left;
             this.radixHexButton.ForeColor = System.Drawing.Color.White;
             this.radixHexButton.Location = new System.Drawing.Point(60, 0);
             this.radixHexButton.Name = "radixHexButton";
             this.radixHexButton.Size = new System.Drawing.Size(30, 15);
             this.radixHexButton.TabIndex = 5;
-            this.radixHexButton.TabStop = true;
             this.radixHexButton.Text = "Hex";
             this.radixHexButton.UseVisualStyleBackColor = false;
             // 
             // radixDecButton
             // 
-            this.radixDecButton.BackColor = System.Drawing.Color.FromArgb(((int)(((byte)(76)))), ((int)(((byte)(88)))), ((int)(((byte)(72)))));
             this.radixDecButton.Dock = System.Windows.Forms.DockStyle.Left;
             this.radixDecButton.ForeColor = System.Drawing.Color.White;
             this.radixDecButton.Location = new System.Drawing.Point(30, 0);
             this.radixDecButton.Name = "radixDecButton";
             this.radixDecButton.Size = new System.Drawing.Size(30, 15);
             this.radixDecButton.TabIndex = 4;
-            this.radixDecButton.TabStop = true;
             this.radixDecButton.Text = "Dec";
             this.radixDecButton.UseVisualStyleBackColor = false;
             // 
             // radixAutoButton
             // 
-            this.radixAutoButton.BackColor = System.Drawing.Color.FromArgb(((int)(((byte)(76)))), ((int)(((byte)(88)))), ((int)(((byte)(72)))));
-            this.radixAutoButton.Checked = true;
             this.radixAutoButton.Dock = System.Windows.Forms.DockStyle.Left;
             this.radixAutoButton.ForeColor = System.Drawing.Color.White;
             this.radixAutoButton.Location = new System.Drawing.Point(0, 0);
             this.radixAutoButton.Name = "radixAutoButton";
             this.radixAutoButton.Size = new System.Drawing.Size(30, 15);
             this.radixAutoButton.TabIndex = 3;
-            this.radixAutoButton.TabStop = true;
             this.radixAutoButton.Text = "Auto";
             this.radixAutoButton.UseVisualStyleBackColor = false;
             // 
-            // sheetView
+            // sidePaneHeaderPanel
             // 
-            this.sheetView.ActiveRadixMode = Shapoco.Calctus.Model.Sheets.RadixMode.Auto;
-            this.sheetView.BackColor = System.Drawing.Color.FromArgb(((int)(((byte)(32)))), ((int)(((byte)(32)))), ((int)(((byte)(32)))));
-            this.sheetView.Dock = System.Windows.Forms.DockStyle.Fill;
-            this.sheetView.FocusedBox = null;
-            this.sheetView.Location = new System.Drawing.Point(0, 25);
-            this.sheetView.Name = "sheetView";
-            this.sheetView.Size = new System.Drawing.Size(402, 206);
-            this.sheetView.TabIndex = 0;
-            this.sheetView.Text = "bookView1";
+            this.sidePaneHeaderPanel.Controls.Add(this.sidePaneOpenButton);
+            this.sidePaneHeaderPanel.Dock = System.Windows.Forms.DockStyle.Left;
+            this.sidePaneHeaderPanel.Location = new System.Drawing.Point(200, 25);
+            this.sidePaneHeaderPanel.Name = "sidePaneHeaderPanel";
+            this.sidePaneHeaderPanel.Size = new System.Drawing.Size(20, 221);
+            this.sidePaneHeaderPanel.TabIndex = 6;
             // 
-            // toolStripSeparator1
+            // sidePaneOpenButton
             // 
-            this.toolStripSeparator1.Name = "toolStripSeparator1";
-            this.toolStripSeparator1.Size = new System.Drawing.Size(6, 25);
+            this.sidePaneOpenButton.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Right)));
+            this.sidePaneOpenButton.Location = new System.Drawing.Point(0, 0);
+            this.sidePaneOpenButton.Name = "sidePaneOpenButton";
+            this.sidePaneOpenButton.Size = new System.Drawing.Size(20, 20);
+            this.sidePaneOpenButton.TabIndex = 1;
+            this.sidePaneOpenButton.TabStop = false;
+            this.sidePaneOpenButton.Text = ">";
+            this.sidePaneOpenButton.UseVisualStyleBackColor = true;
             // 
-            // toolStripSeparator2
+            // sideTreeView
             // 
-            this.toolStripSeparator2.Name = "toolStripSeparator2";
-            this.toolStripSeparator2.Size = new System.Drawing.Size(6, 25);
+            this.bookTreeView.BackColor = System.Drawing.Color.FromArgb(((int)(((byte)(64)))), ((int)(((byte)(64)))), ((int)(((byte)(64)))));
+            this.bookTreeView.BorderStyle = System.Windows.Forms.BorderStyle.None;
+            this.bookTreeView.Dock = System.Windows.Forms.DockStyle.Fill;
+            this.bookTreeView.Location = new System.Drawing.Point(0, 0);
+            this.bookTreeView.Name = "sideTreeView";
+            this.bookTreeView.Size = new System.Drawing.Size(200, 221);
+            this.bookTreeView.TabIndex = 0;
             // 
-            // toolStripSeparator3
+            // sidePaneBodyPanel
             // 
-            this.toolStripSeparator3.Name = "toolStripSeparator3";
-            this.toolStripSeparator3.Size = new System.Drawing.Size(6, 25);
+            this.sidePaneBodyPanel.Controls.Add(this.bookTreeView);
+            this.sidePaneBodyPanel.Dock = System.Windows.Forms.DockStyle.Left;
+            this.sidePaneBodyPanel.Location = new System.Drawing.Point(0, 25);
+            this.sidePaneBodyPanel.Name = "sidePaneBodyPanel";
+            this.sidePaneBodyPanel.Size = new System.Drawing.Size(150, 221);
+            this.sidePaneBodyPanel.TabIndex = 7;
             // 
             // MainForm
             // 
             this.AutoScaleDimensions = new System.Drawing.SizeF(6F, 12F);
             this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
             this.BackColor = System.Drawing.Color.FromArgb(((int)(((byte)(64)))), ((int)(((byte)(64)))), ((int)(((byte)(64)))));
-            this.ClientSize = new System.Drawing.Size(402, 246);
-            this.Controls.Add(this.sheetView);
+            this.ClientSize = new System.Drawing.Size(577, 246);
             this.Controls.Add(this.bottomPanel);
+            this.Controls.Add(this.sidePaneHeaderPanel);
+            this.Controls.Add(this.sidePaneBodyPanel);
             this.Controls.Add(this.toolStrip);
             this.ForeColor = System.Drawing.Color.White;
             this.Icon = ((System.Drawing.Icon)(resources.GetObject("$this.Icon")));
@@ -397,6 +413,8 @@ namespace Shapoco.Calctus.UI
             this.toolStrip.PerformLayout();
             this.trayMenuStrip.ResumeLayout(false);
             this.bottomPanel.ResumeLayout(false);
+            this.sidePaneHeaderPanel.ResumeLayout(false);
+            this.sidePaneBodyPanel.ResumeLayout(false);
             this.ResumeLayout(false);
             this.PerformLayout();
 
@@ -412,12 +430,12 @@ namespace Shapoco.Calctus.UI
         private System.Windows.Forms.ToolStripSeparator toolStripMenuItem1;
         private System.Windows.Forms.ToolStripMenuItem contextExit;
         private System.Windows.Forms.Panel bottomPanel;
-        private FlatRadioButton radixBinButton;
-        private FlatRadioButton radixHexButton;
-        private FlatRadioButton radixDecButton;
-        private FlatRadioButton radixAutoButton;
+        private FlatButton radixBinButton;
+        private FlatButton radixHexButton;
+        private FlatButton radixDecButton;
+        private FlatButton radixAutoButton;
         private System.Windows.Forms.ToolStripButton topMostButton;
-        private FlatRadioButton radixOctButton;
+        private FlatButton radixOctButton;
         private System.Windows.Forms.ToolTip toolTip;
         private System.Windows.Forms.ToolStripButton copyButton;
         private System.Windows.Forms.ToolStripButton pasteButton;
@@ -425,15 +443,18 @@ namespace Shapoco.Calctus.UI
         private System.Windows.Forms.ToolStripButton deleteButton;
         private System.Windows.Forms.ToolStripButton moveUpButton;
         private System.Windows.Forms.ToolStripButton moveDownButton;
-        private UI.Sheets.SheetView sheetView;
         private System.Windows.Forms.ToolStripButton undoButton;
         private System.Windows.Forms.ToolStripButton redoButton;
-        private FlatRadioButton radixCharButton;
-        private FlatRadioButton radixKibiButton;
-        private FlatRadioButton radixSiButton;
+        private FlatButton radixCharButton;
+        private FlatButton radixKibiButton;
+        private FlatButton radixSiButton;
         private System.Windows.Forms.ToolStripSeparator toolStripSeparator1;
         private System.Windows.Forms.ToolStripSeparator toolStripSeparator2;
         private System.Windows.Forms.ToolStripSeparator toolStripSeparator3;
+        private System.Windows.Forms.Panel sidePaneHeaderPanel;
+        private FlatButton sidePaneOpenButton;
+        private Shapoco.Calctus.UI.Books.BookTreeView bookTreeView;
+        private System.Windows.Forms.Panel sidePaneBodyPanel;
     }
 }
 

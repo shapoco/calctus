@@ -205,7 +205,7 @@ namespace Shapoco.Calctus.UI {
         private void zoom(AxisSettings axis, int offset, int size, int px, int delta) {
             try {
                 var ps = PlotSettings;
-                var flog10 = RMath.FLog10(axis.PosRange);
+                var flog10 = RMath.FLog10Abs(axis.PosRange);
                 var scale = Math.Max(0.5f, 1f - (float)delta / 1000);
                 if ((flog10 > 24 && scale > 1) || (flog10 < -24 && scale < 1)) return;
                 var graphArea = getGraphArea();
@@ -363,7 +363,7 @@ namespace Shapoco.Calctus.UI {
 
                     // X座標
                     var valX = ps.XAxis.PosToValue(posX);
-                    var textX = siPrefix(valX, RMath.FLog10(valX), 3);
+                    var textX = siPrefix(valX, RMath.FLog10Abs(valX), 3);
                     paintBalloon(g, textX, px, graphArea.Bottom, textColor, backColor);
 
                     // Y座標
@@ -372,10 +372,9 @@ namespace Shapoco.Calctus.UI {
                         foreach(var graph in graphs) {
                             try {
                                 var e = new EvalContext(graph.Call.Context);
-                                e.Ref(graph.Call.Variants[0], true).Value = new RealVal(valX);
-                                var valY = graph.Call.Expression.Eval(e).AsReal;
+                                var valY = graph.Call.Function.Call(e, new RealVal(valX)).AsReal;
                                 if (project(ps.YAxis, valY, graphArea.Bottom, -graphArea.Height, out float py)) {
-                                    var textY = siPrefix(valY, RMath.FLog10(valY), 3);
+                                    var textY = siPrefix(valY, RMath.FLog10Abs(valY), 3);
                                     paintBalloon(g, textY, px, py, palette[colorIndex], backColor);
                                 }
                             }
@@ -429,7 +428,7 @@ namespace Shapoco.Calctus.UI {
                         else if (step * 8 > range) step /= 2;
 
                         // 目盛りの桁数
-                        var flog10 = RMath.FLog10(Math.Max(Math.Abs(axis.PosBottom), Math.Abs(max)));
+                        var flog10 = RMath.FLog10Abs(Math.Max(Math.Abs(axis.PosBottom), Math.Abs(max)));
                         var logStep = (int)RMath.Floor(RMath.Log10(step));
                         var fracDigits = Math.Max(0, (int)Math.Floor((double)flog10 / 3) * 3 - logStep);
 
@@ -464,7 +463,7 @@ namespace Shapoco.Calctus.UI {
                                 var pos = RMath.Log10(val);
                                 if (axis.PosBottom <= pos && pos <= axis.PosTop) {
                                     bool isSub = (sub % 10 != 0);
-                                    var text = isSub ? null : siPrefix(val, RMath.FLog10(val), 0);
+                                    var text = isSub ? null : siPrefix(val, RMath.FLog10Abs(val), 0);
                                     lines.Add(new Gridline(val, text, isSub));
                                 }
                             }

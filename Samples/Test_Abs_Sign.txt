@@ -1,0 +1,6 @@
+assert(abs(-12.34)==12.34)
+assert(abs(12.34)==12.34)
+assert(abs(mag(2,3,4)-sqrt(2*2+3*3+4*4))<1e-10)
+assert(sign(-10)==-1)
+assert(sign(0)==0)
+assert(sign(10)==1)
