@@ -106,6 +106,12 @@ namespace Shapoco.Calctus.Model.Functions.BuiltIns {
             return BoolVal.FromBool(array.Any(p => func.Call(e, p).AsBool));
         }, "Returns true if tester function `func(x)` returns true for at least one element of the `array`.");
 
+        public static readonly BuiltInFuncDef concat = new BuiltInFuncDef("concat(array0,array1)", (e, a) => {
+            var array0 = (Val[])a[0].AsArrayVal().Raw;
+            var array1 = (Val[])a[1].AsArrayVal().Raw;
+            return new ArrayVal(array0.Concat(array1).ToArray(), a[0].FormatHint);
+        }, "Concatenate array0 and array1.");
+
         public static readonly BuiltInFuncDef unique_1 = new BuiltInFuncDef("unique(array)", (e, a) => {
             var array = (Val[])a[0].AsArrayVal().Raw;
             return new ArrayVal(array.Distinct(new ValEqualityComparer(e)).ToArray(), a[0].FormatHint);

@@ -75,11 +75,7 @@ namespace Shapoco.Calctus.Model.Sheets {
             }
             else {
                 try {
-                    var val = ExprTree.Eval(e);
-                    if (ExprTree.CausesValueChange() && !(val is NullVal) && !val.IsSerializable) {
-                        throw new EvalError(e, null, "Value cannot be stringified.");
-                    }
-                    SetStatus(val, null, null);
+                    SetStatus(ExprTree.Eval(e), null, null);
                 }
                 catch (Exception ex) {
                     SetStatus(NullVal.Instance, null, ex);

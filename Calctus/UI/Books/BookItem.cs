@@ -12,25 +12,29 @@ namespace Shapoco.Calctus.UI.Books {
     class BookItem : TreeNode {
         private string _fileName = null;
         private SheetView _view = null;
-        private bool _isChanged = false;
+        private bool _hasUnsavedChanges = false;
         private bool _isTouched = false;
 
-        public BookItem(string name, string fileName, SheetView view) : base(name) {
+        public BookItem(string name, string filePath, SheetView view) : base(name) {
             Name = name;
-            _fileName = fileName;
+            _fileName = filePath == null ? null : Path.GetFileName(filePath);
             View = view;
             SelectedImageIndex = ImageIndex = view != null ? 2 : 1;
             try {
-                if (HasFileName && File.Exists(FullPath)) {
-                    LastModified = new FileInfo(FullPath).LastWriteTime;
+                if (HasFileName && File.Exists(filePath)) {
+                    LastModified = File.GetLastWriteTime(filePath);
                 }
             }
             catch { }
+            if (View != null) {
+                LastSynchronized = DateTime.Now;
+            }
         }
 
-        public bool IsChanged => _isChanged;
+        public bool HasUnsavedChanges => _hasUnsavedChanges;
         public bool IsTouched => _isTouched;
         public DateTime LastModified { get; private set; } = DateTime.Now;
+        public DateTime LastSynchronized { get; private set; } = DateTime.MinValue;
 
         public string FileName {
             get => _fileName;
@@ -73,12 +77,19 @@ namespace Shapoco.Calctus.UI.Books {
             var view = new SheetView();
             view.Sheet = new Sheet(FilePath);
             this.View = view;
+            LastSynchronized = DateTime.Now;
             SelectedImageIndex = ImageIndex = 2;
         }
 
-        public void CloseView() {
+        public void Reload() {
             if (_view == null) return;
-            if (_isChanged) Save();
+            CloseView(false);
+            CreateView();
+        }
+
+        public void CloseView(bool saveChange) {
+            if (_view == null) return;
+            if (saveChange && _hasUnsavedChanges) Save();
             View.Dispose();
             this.View = null;
             _isTouched = false;
@@ -86,7 +97,7 @@ namespace Shapoco.Calctus.UI.Books {
         }
 
         private void _view_Changed(object sender, EventArgs e) {
-            _isChanged = true;
+            _hasUnsavedChanges = true;
             _isTouched = true;
             LastModified = DateTime.Now;
         }
@@ -94,7 +105,8 @@ namespace Shapoco.Calctus.UI.Books {
         public void Save() {
             if (_view != null && HasFileName) {
                 View.Sheet.Save(FilePath);
-                _isChanged = false;
+                LastSynchronized = DateTime.Now;
+                _hasUnsavedChanges = false;
             }
         }
     }

@@ -32,7 +32,7 @@ namespace Shapoco.Calctus.UI.Books {
 
         public new Book Parent => (Book)base.Parent;
 
-        public string DirectoryPath => (Parent == null) ?
+        public virtual string DirectoryPath => (Parent == null) ?
             Path.Combine(AppDataManager.ActiveDataPath, FolderName) :
             Path.Combine(Parent.DirectoryPath, FolderName);
 
@@ -57,11 +57,12 @@ namespace Shapoco.Calctus.UI.Books {
             foreach (var filePath in existingFiles) {
                 var filename = Path.GetFileName(filePath);
                 var node = deletedNodes.FirstOrDefault(p => p.FileName == filename);
-                if (node != null) {
-                    deletedNodes.Remove(node);
+                if (node == null) {
+                    node = new BookItem(Path.GetFileNameWithoutExtension(filePath), filePath, null);
+                    tempNodes.Add(node);
                 }
                 else {
-                    tempNodes.Add(new BookItem(Path.GetFileNameWithoutExtension(filePath), filename, null));
+                    deletedNodes.Remove(node);
                 }
             }
             foreach (var node in deletedNodes) {

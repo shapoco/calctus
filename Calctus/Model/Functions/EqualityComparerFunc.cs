@@ -18,6 +18,9 @@ namespace Shapoco.Calctus.Model.Functions {
 
         public bool Equals(Val x, Val y) => Func.Call(Context, x, y).AsBool; 
 
-        public int GetHashCode(Val obj) => obj.GetHashCode();
+        public int GetHashCode(Val obj) {
+            // ハッシュコードが違った時点で値が異なると判定されてしまい Equals() が使われないので常に 0 を返す
+            return 0;
+        }
     }
 }

@@ -6,6 +6,7 @@ using System.Threading.Tasks;
 using Shapoco.Calctus.Model.Formats;
 using Shapoco.Calctus.Model.Evaluations;
 using Shapoco.Calctus.Model.Functions;
+using Shapoco.Calctus.Model.Parsers;
 
 namespace Shapoco.Calctus.Model.Types {
     class FuncVal : Val {
@@ -37,7 +38,14 @@ namespace Shapoco.Calctus.Model.Types {
         public override int[] AsIntArray => throw new InvalidCastException();
         public override byte[] AsByteArray => throw new InvalidCastException();
 
-        public override string ToString(FormatSettings fs) => _raw.Name + "()";
+        public override string ToString(FormatSettings fs) {
+            if (Token.IsNullOrEmpty(_raw.Name)) {
+                return "(unnamed_function)";
+            }
+            else {
+                return _raw.Name.Text;
+            }
+        }
 
         protected override RealVal OnAsRealVal() => throw new InvalidCastException();
 

@@ -70,12 +70,12 @@ namespace Shapoco.Calctus.UI.Sheets {
 
         public int SelectionStart {
             get => _edit.SelectionStart;
-            set => _edit.SelectionStart = value;
+            set => _edit.SetSelection(value);
         }
 
         public int SelectionLength {
             get => _edit.SelectionLength;
-            set => _edit.SelectionLength = value;
+            set => _edit.SetSelection(_edit.SelectionStart, _edit.SelectionStart + value);
         }
 
         public string SelectedText {
@@ -242,7 +242,11 @@ namespace Shapoco.Calctus.UI.Sheets {
         /// <summary>現在のカーソルの矩形を返す</summary>
         private Rectangle getCursorRectangle() {
             var cursorLoc = getCursorLocation();
-            return new Rectangle(cursorLoc.X - 1, cursorLoc.Y, 2, _layout.CharHeight);
+            return new Rectangle(
+                Math.Max(1, cursorLoc.X - 1),
+                cursorLoc.Y, 
+                2,
+                _layout.CharHeight);
         }
 
         /// <summary>選択領域の矩形を返す</summary>

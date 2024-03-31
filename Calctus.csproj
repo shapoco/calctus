@@ -154,6 +154,7 @@
       <SubType>Component</SubType>
     </Compile>
     <Compile Include="Calctus\UI\Books\Book.cs" />
+    <Compile Include="Calctus\UI\Books\SampleBook.cs" />
     <Compile Include="Calctus\UI\Books\Types.cs" />
     <Compile Include="Calctus\UI\Books\BookTreeView.cs">
       <SubType>Component</SubType>

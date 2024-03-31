@@ -62,12 +62,13 @@ namespace Shapoco.Calctus.Model.Functions {
         }
 
         public static void GenerateDocumentation() {
+            Console.WriteLine("AppDataManager.AssemblyPath = '" + AppDataManager.AssemblyPath + "'");
             if (!AppDataManager.AssemblyPath.EndsWith(@"\bin\Debug")) return;
             Console.WriteLine("Generating embedded function documentation...");
 
             int numFuncs = 0;
 
-            using (var writer = new StreamWriter("../../FUNCTIONS.md")) {
+            using (var writer = new StreamWriter(@"..\..\FUNCTIONS.md")) {
                 writer.WriteLine("# Built-In Functions");
                 writer.WriteLine();
                 foreach (var categoryType in Assembly.GetExecutingAssembly().GetTypes().Where(p => p.Name.EndsWith("Funcs")).OrderBy(p => p.Name)) {

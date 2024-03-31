@@ -90,14 +90,14 @@ User-defined constants can also be used.
 See [Built-In Functions](FUNCTIONS.md) for details.
 
 <!-- START_OF_BUILT_IN_FUNCTION_TABLE -->
-Now Calctus has 147 built-in functions.
+Now Calctus has 151 built-in functions.
 
 |Category|Functions|
 |:--:|:--|
 |Absolute/Sign|`abs(*x)`, `mag(x[]...)`, `sign(*x)`|
-|Array|`aggregate(array,func)`, `all(array)`, `all(array,func)`, `any(array)`, `any(array,func)`, `contains(array,*val)`, `count(array,func)`, `except(array0,array1)`, `extend(array,func,count)`, `filter(array,func)`, `indexOf(array,*val)`, `intersect(array0,array1)`, `lastIndexOf(array,*val)`, `len(array)`, `map(array,func)`, `range(start,stop)`, `range(start,stop,step)`, `rangeInclusive(start,stop)`, `rangeInclusive(start,stop,step)`, `reverseArray(array)`, `sort(array)`, `sort(array,func)`, `union(array0,array1)`, `unique(array)`, `unique(array,func)`|
+|Array|`aggregate(array,func)`, `all(array)`, `all(array,func)`, `any(array)`, `any(array,func)`, `concat(array0,array1)`, `contains(array,*val)`, `count(array,func)`, `except(array0,array1)`, `extend(array,func,count)`, `filter(array,func)`, `indexOf(array,*val)`, `intersect(array0,array1)`, `lastIndexOf(array,*val)`, `len(array)`, `map(array,func)`, `range(start,stop)`, `range(start,stop,step)`, `rangeInclusive(start,stop)`, `rangeInclusive(start,stop,step)`, `reverseArray(array)`, `sort(array)`, `sort(array,func)`, `union(array0,array1)`, `unique(array)`, `unique(array,func)`|
 |Assertion|`assert(x)`|
-|Bit/Byte Operation|`count1(*x)`, `pack(b,array[]...)`, `reverseBits(b,*x)`, `reverseBytewise(*x)`, `rotateL(b,*x)`, `rotateR(b,*x)`, `swap2(*x)`, `swap4(*x)`, `swap8(*x)`, `swapNib(*x)`, `unpack(b,x)`|
+|Bit/Byte Operation|`count1(*x)`, `pack(b,array[]...)`, `reverseBits(b,*x)`, `reverseBytes(b,*x)`, `rotateL(b,*x)`, `rotateL(b,n,*x)`, `rotateR(b,*x)`, `rotateR(b,n,*x)`, `swap2(*x)`, `swap4(*x)`, `swap8(*x)`, `swapNib(*x)`, `unpack(array,x)`, `unpack(b,n,x)`|
 |Cast|`array(s)`, `rat(*x)`, `rat(*x,max)`, `real(*x)`, `str(array)`|
 |Color|`hsl2rgb(h,s,l)`, `hsv2rgb(h,s,v)`, `pack565(x,y,z)`, `rgb(r,g,b)`, `rgb(*rgb)`, `rgb2hsl(*rgb)`, `rgb2hsv(*rgb)`, `rgb2yuv(r,g,b)`, `rgb2yuv(*rgb)`, `rgbFrom565(*rgb)`, `rgbTo565(*rgb)`, `unpack565(*x)`, `yuv2rgb(y,u,v)`, `yuv2rgb(*yuv)`|
 |Date Time|`fromDays(*x)`, `fromHours(*x)`, `fromMinutes(*x)`, `fromSeconds(*x)`, `now()`, `toDays(*x)`, `toHours(*x)`, `toMinutes(*x)`, `toSeconds(*x)`|
@@ -124,9 +124,9 @@ Now Calctus has 147 built-in functions.
 Variables can be assigned using the equal sign.
 
 ```c++
-a = 2 [Return]
-b = 3 [Return]
-a * b [Return] // --> 6.
+a = 2
+b = 3
+a * b // --> 6.
 ```
 
 ### User Defined Function 
@@ -143,7 +143,14 @@ f(3) // --> 9.
 Rust-style lambda function is available.
 
 ```c++
-f=(x)=>x^2
+f=(a,b)=>a*b
+f(3,4) // --> 12.
+```
+
+If there is only one argument, the parentheses can be omitted
+
+```c++
+f=x=>x^2
 f(3) // --> 9.
 ```
 
@@ -154,7 +161,7 @@ Use the `solve` function to solve equations numerically by Newton's method.
 ```c++
 def f(x)=x^2-2
 solve(f) // --> [-1.414213562, 1.414213562].
-solve((x)=>x^2-2) // This gives the same result.
+solve(x=>x^2-2) // This gives the same result.
 ```
 
 By default, the Newton's method is performed based on automatically generated initial values. Therefore, it may produce inaccurate results if the solution is concentrated in a small area or exists far from the origin.
@@ -315,6 +322,7 @@ If you wish to use a scripting language other than Python, please register the e
 |:--|:--|
 |`Shift` + `Return`|Insert a new line before current expression|
 |`Shift` + `Delete`|Delete current expression|
+|`Ctrl` + `S`|Overwrite current sheet|
 |`Ctrl` + `Z`|Undo|
 |`Ctrl` + `Y`|Redo|
 |`Ctrl` + `X`|Cut|

@@ -9,6 +9,8 @@ namespace Shapoco.Calctus.Model.Parsers {
     class Token {
         public static readonly Token Empty = new Token(TokenType.Empty, TextPosition.Nowhere, "");
 
+        public static bool IsNullOrEmpty(Token t) => t == null || string.IsNullOrEmpty(t.Text);
+
         public readonly TokenType Type;
         public readonly TextPosition Position;
         public readonly string Text;

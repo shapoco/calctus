@@ -368,7 +368,7 @@ namespace Shapoco.Calctus.Model.Mathematics {
         /// <summary>等差数列の生成</summary>
         public static decimal[] Range(decimal start, decimal stop, decimal step = 0, bool inclusive = false) {
             if (step == 0) step = start < stop ? 1 : -1;
-            int n = (int)((stop - start) / step);
+            int n = (int)Math.Ceiling((stop - start) / step);
             if (n < 0) throw new ArgumentOutOfRangeException();
             if (inclusive && start + n * step == stop) n++;
             var array = new decimal[n];

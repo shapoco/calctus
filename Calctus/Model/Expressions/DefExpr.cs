@@ -30,7 +30,7 @@ namespace Shapoco.Calctus.Model.Expressions {
         public override bool CausesValueChange() => false;
 
         protected override Val OnEval(EvalContext e) {
-            e.DefFunc(new UserFuncDef(Name, Args, Body));
+            e.Ref(Name, true).Value = new FuncVal(new UserFuncDef(Name, Args, Body));
             return NullVal.Instance;
         }
     }

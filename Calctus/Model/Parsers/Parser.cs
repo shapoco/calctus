@@ -151,6 +151,9 @@ namespace Shapoco.Calctus.Model.Parsers {
                     }
                     return new CallExpr(tok, args.ToArray());
                 }
+                else if (ReadIf("=>", out Token t)) {
+                    return Lambda(new IdExpr[] { new IdExpr(tok) }, t);
+                }
                 else {
                     return new IdExpr(tok);
                 }

@@ -45,6 +45,7 @@ namespace Shapoco.Calctus.UI.Sheets {
                 if (value == _text) return;
                 _undoBuff = _text;
                 _text = value;
+                SetSelection(_selStart, _selEnd);
                 TextChanged?.Invoke(this, EventArgs.Empty);
             }
         }

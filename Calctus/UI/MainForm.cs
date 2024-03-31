@@ -135,6 +135,7 @@ namespace Shapoco.Calctus.UI {
             ExternalFuncDef.ScanScripts();
             //GraphForm.ReshowAll();
             setSubWindowTopMost(true);
+            checkActiveFileChange();
         }
 
         private void MainForm_Deactivate(object sender, EventArgs e) {
@@ -173,7 +174,7 @@ namespace Shapoco.Calctus.UI {
             if (!bookTreeView.ScratchPad.View.Sheet.IsEmpty) {
                 saveScratchPadToHistory();
             }
-            if (_activeBookItem != bookTreeView.ScratchPad && _activeBookItem.HasFileName && _activeBookItem.IsChanged) {
+            if (_activeBookItem != bookTreeView.ScratchPad && _activeBookItem.HasFileName && _activeBookItem.HasUnsavedChanges) {
                 try {
                     _activeBookItem.Save();
                 }
@@ -315,7 +316,7 @@ namespace Shapoco.Calctus.UI {
             if (newBookItem == _activeBookItem) return;
             var lastBookItem = _activeBookItem;
             
-            if (lastBookItem != null && lastBookItem.View != null && lastBookItem.HasFileName && lastBookItem.IsChanged) {
+            if (lastBookItem != null && lastBookItem.View != null && lastBookItem.HasFileName && lastBookItem.HasUnsavedChanges) {
                 // 以前開いていたシートを保存する
                 try {
                     lastBookItem.Save();
@@ -326,6 +327,7 @@ namespace Shapoco.Calctus.UI {
                 }
             }
 
+            bool requestCheckFileChange = false;
             try {
                 var newView = newBookItem.View;
                 var oldView = lastBookItem != null ? lastBookItem.View : null;
@@ -334,25 +336,17 @@ namespace Shapoco.Calctus.UI {
                     newBookItem.CreateView();
                     newView = newBookItem.View;
                 }
-
-                if (!Controls.Contains(newView)) {
-                    // SheetView コントロールをフォームに追加
-                    newView.Dock = DockStyle.Fill;
-                    newView.DialogOpening += SheetView_DialogOpening;
-                    newView.DialogClosed += SheetView_DialogClosed;
-                    Controls.Add(newView);
-                    setViewAppearance(newView);
+                else {
+                    requestCheckFileChange = true;
                 }
 
-                newView.BringToFront();
-                newView.Visible = true;
+                // SheetView コントロールをフォームに追加
+                addView(newView);
 
                 if (oldView != null) {
                     if (lastBookItem.HasFileName && !lastBookItem.IsTouched) {
-                        if (Controls.Contains(oldView)) Controls.Remove(oldView);
-                        oldView.DialogOpening -= SheetView_DialogOpening;
-                        oldView.DialogClosed -= SheetView_DialogClosed;
-                        lastBookItem.CloseView();
+                        removeView(oldView, true);
+                        lastBookItem.CloseView(true);
                     }
                     else {
                         oldView.Visible = false;
@@ -368,6 +362,28 @@ namespace Shapoco.Calctus.UI {
                 Application.ProductName +
                 " (v" + System.Reflection.Assembly.GetExecutingAssembly().GetName().Version + ") - " +
                 (_activeBookItem != null ? _activeBookItem.Name : "(null)");
+
+            if (requestCheckFileChange) {
+                checkActiveFileChange();
+            }
+        }
+
+        private void addView(SheetView view) {
+            view.Dock = DockStyle.Fill;
+            if (!Controls.Contains(view)) {
+                view.DialogOpening += SheetView_DialogOpening;
+                view.DialogClosed += SheetView_DialogClosed;
+                Controls.Add(view);
+            }
+            view.BringToFront();
+            view.Visible = true;
+            setViewAppearance(view);
+        }
+
+        private void removeView(SheetView view, bool saveChanges) {
+            if (Controls.Contains(view)) Controls.Remove(view);
+            view.DialogOpening -= SheetView_DialogOpening;
+            view.DialogClosed -= SheetView_DialogClosed;
         }
 
         private void SheetView_DialogOpening(object sender, EventArgs e) {
@@ -396,17 +412,15 @@ namespace Shapoco.Calctus.UI {
             try {
                 if (Directory.Exists(Book.HistoryDirectory)) {
                     var files = Directory.GetFiles(Book.HistoryDirectory, "*.txt");
-                    foreach(var file in files) {
+                    foreach (var file in files) {
                         if ((DateTime.Now - new FileInfo(file).LastWriteTime).TotalDays > Settings.Instance.History_KeepPeriod) {
                             File.Delete(file);
                         }
                     }
                 }
             }
-            catch(Exception ex) {
-#if DEBUG
+            catch (Exception ex) {
                 Console.WriteLine("Failed to delete old history: " + ex.Message);
-#endif
             }
         }
 
@@ -486,6 +500,31 @@ namespace Shapoco.Calctus.UI {
             Microsoft.VisualBasic.Interaction.AppActivate(this.Text);
         }
 
+        private void checkActiveFileChange() {
+            var bookItem = _activeBookItem;
+            if (!bookItem.HasFileName) return;
+            try {
+                var lastSync = bookItem.LastSynchronized;
+                var lastMod = File.GetLastWriteTime(bookItem.FilePath);
+#if DEBUG
+                Console.WriteLine("Last Synchronized: " + lastSync);
+                Console.WriteLine("Last Modified    : " + lastMod);
+#endif
+                if (lastMod > lastSync) {
+                    if (!bookItem.HasUnsavedChanges || DialogResult.Yes == MessageBox.Show(
+                            "The sheet file '" + Path.GetFileName(bookItem.FilePath) + "' has been modified externally. Ignore local changes and reload ?",
+                            Application.ProductName, MessageBoxButtons.YesNo, MessageBoxIcon.Exclamation)) {
+                        removeView(bookItem.View, false);
+                        bookItem.Reload();
+                        addView(bookItem.View);
+                    }
+                }
+            }
+            catch(Exception ex) {
+                Console.WriteLine(ex.Message);
+            }
+        }
+
         private void refocus() {
             // イベントハンドラ内でコントロールにフォーカスしてもなぜか反映されないことがあるため
             // タイマで遅延させてフォーカスを実施する
@@ -510,54 +549,38 @@ namespace Shapoco.Calctus.UI {
             _activeBookItem.View.Focus();
         }
 
-        private void scanFiles(TreeNode parentNode, string folderName) {
-            var dirPath = Path.Combine(AppDataManager.ActiveDataPath, folderName);
-#if DEBUG
-            Console.WriteLine("Scanning directory: '" + dirPath + "'");
-#endif
-            var existingFiles = Directory.GetFiles(dirPath, "*.txt").ToList();
-            var loadedNodes = new List<BookItem>();
-            foreach (var node in parentNode.Nodes) {
-                loadedNodes.Add((BookItem)node);
-            }
-            foreach (var existingPath in existingFiles) {
-                var relPath = Path.Combine(folderName, Path.GetFileName(existingPath));
-                var node = loadedNodes.FirstOrDefault(p => p.FileName == relPath);
-                if (node != null) {
-                    loadedNodes.Remove(node);
-                }
-                else {
-                    parentNode.Nodes.Add(new BookItem(Path.GetFileNameWithoutExtension(existingPath), relPath, null));
-                }
-            }
-            foreach (var node in loadedNodes) {
-                parentNode.Nodes.Remove(node);
-                node.View?.Dispose();
-            }
-        }
-
         private void MainForm_KeyDown(object sender, KeyEventArgs e) {
             e.SuppressKeyPress = true;
-            if (e.KeyCode == Keys.F1) {
+            if (e.Modifiers == Keys.Control && e.KeyCode == Keys.S) {
+                if (_activeBookItem.HasFileName) {
+                    _activeBookItem.Save();
+                }
+                else {
+                    System.Media.SystemSounds.Beep.Play();
+                }
+            }
+            else if (e.Modifiers == Keys.None && e.KeyCode == Keys.F1) {
                 helpButton.PerformClick();
             }
-            else if (e.KeyCode == Keys.F5) {
+            else if (e.Modifiers == Keys.None && e.KeyCode == Keys.F5) {
                 ExternalFuncDef.ScanScripts();
                 _activeBookItem.View.RequestRecalc();
+                bookTreeView.RequestScanFiles();
+                checkActiveFileChange();
             }
-            else if (e.KeyCode == Keys.F8) {
+            else if (e.Modifiers == Keys.None && e.KeyCode == Keys.F8) {
                 _activeBookItem.View.ReplaceFormatterFunction(null);
             }
-            else if (e.KeyCode == Keys.F9) {
+            else if (e.Modifiers == Keys.None && e.KeyCode == Keys.F9) {
                 _activeBookItem.View.ReplaceFormatterFunction(RepresentaionFuncs.dec);
             }
-            else if (e.KeyCode == Keys.F10) {
+            else if (e.Modifiers == Keys.None && e.KeyCode == Keys.F10) {
                 _activeBookItem.View.ReplaceFormatterFunction(RepresentaionFuncs.hex);
             }
-            else if (e.KeyCode == Keys.F11) {
+            else if (e.Modifiers == Keys.None && e.KeyCode == Keys.F11) {
                 _activeBookItem.View.ReplaceFormatterFunction(RepresentaionFuncs.bin);
             }
-            else if (e.KeyCode == Keys.F12) {
+            else if (e.Modifiers == Keys.None && e.KeyCode == Keys.F12) {
                 _activeBookItem.View.ReplaceFormatterFunction(RepresentaionFuncs.si);
             }
             else {

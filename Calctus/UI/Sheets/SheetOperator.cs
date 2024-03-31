@@ -59,9 +59,14 @@ namespace Shapoco.Calctus.UI.Sheets {
         }
 
         public void UndoUntil(UndoEntry entry) {
-            int i = _undoBuffer.IndexOf(entry);
-            if (i < 0 || _undoBufferIndex <= i) throw new InvalidOperationException();
-            while (i + 1 < _undoBufferIndex) Undo();
+            if (entry == null) {
+                while (CanUndo) Undo();
+            }
+            else {
+                int i = _undoBuffer.IndexOf(entry);
+                if (i < 0 || _undoBufferIndex <= i) throw new InvalidOperationException();
+                while (i + 1 < _undoBufferIndex) Undo();
+            }
         }
 
         /// <summary>新しい行の挿入</summary>

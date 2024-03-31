@@ -16,12 +16,14 @@ namespace Shapoco.Calctus.UI.Books {
         public readonly BookItem ScratchPad;
         public readonly Book Notebook;
         public readonly Book History;
+        public readonly Book Samples;
 
         private FileSystemWatcher _fileSystemWatcher = new FileSystemWatcher();
         private ContextMenuStrip _sidePaneContextMenu = new ContextMenuStrip();
-        private ToolStripMenuItem _saveButton = new ToolStripMenuItem("Save to Notebook");
+        private ToolStripMenuItem _copyToNotebookButton = new ToolStripMenuItem("Copy to Notebook");
         private ToolStripMenuItem _renameButton = new ToolStripMenuItem("Rename");
         private ToolStripMenuItem _removeButton = new ToolStripMenuItem("Remove");
+        private ToolStripMenuItem _openWithAppButton = new ToolStripMenuItem("Open with External Application");
 
         private Timer _fileScanTimer = new Timer();
         private bool _suppressSelectedChange = false;
@@ -49,14 +51,25 @@ namespace Shapoco.Calctus.UI.Books {
             this.Nodes.Add(History);
             Notebook.Expand();
             History.Expand();
+            if (SampleBook.FindSampleFolder(out _)) {
+                Samples = new SampleBook();
+                this.Nodes.Add(Samples);
+                Samples.Expand();
+                Console.WriteLine("Sample book directory: '" + Samples.DirectoryPath + "'");
+            }
             _sidePaneContextMenu.Items.AddRange(new ToolStripItem[] {
-                _saveButton, _renameButton, _removeButton
+                _copyToNotebookButton,
+                _renameButton,
+                _removeButton,
+                new ToolStripSeparator(),
+                _openWithAppButton
             });
 
-            _saveButton.Click += _saveButton_Click;
+            _copyToNotebookButton.Click += _copyToNotebookButton_Click;
             _renameButton.Click += _renameButton_Click;
             _removeButton.Click += _removeButton_Click;
-            _saveButton.ShortcutKeys = Keys.Control | Keys.S;
+            _openWithAppButton.Click += _openWithAppButton_Click;
+            _copyToNotebookButton.ShortcutKeys = Keys.Control | Keys.S;
             _renameButton.ShortcutKeys = Keys.F2;
             _removeButton.ShortcutKeys = Keys.Delete;
             _fileSystemWatcher.Changed += delegate { RequestScanFiles(); };
@@ -120,7 +133,7 @@ namespace Shapoco.Calctus.UI.Books {
             base.OnKeyDown(e);
             e.SuppressKeyPress = true;
             if (e.Modifiers == Keys.Control && e.KeyCode == Keys.S) {
-                _saveButton.PerformClick();
+                _copyToNotebookButton.PerformClick();
             }
             else if (e.Modifiers == Keys.None && e.KeyCode == Keys.F2) {
                 _renameButton.PerformClick();
@@ -187,16 +200,26 @@ namespace Shapoco.Calctus.UI.Books {
         }
 
         private void showSidePaneContextMenu(Point p) {
-            if (SelectedNode == null || !(SelectedNode is BookItem node)) return;
-            _renameButton.Enabled = _removeButton.Enabled = node.HasFileName;
-            _sidePaneContextMenu.Show(p);
+            var selectedNode = SelectedNode;
+            if (selectedNode == null) return;
+            if (selectedNode is BookItem bookItem) {
+                _copyToNotebookButton.Enabled = true;
+                _renameButton.Enabled = _removeButton.Enabled = _openWithAppButton.Enabled = bookItem.HasFileName;
+                _sidePaneContextMenu.Show(p);
+            }
+            else if (selectedNode is Book book) {
+                _copyToNotebookButton.Enabled = _renameButton.Enabled = _removeButton.Enabled = false;
+                _openWithAppButton.Enabled = true;
+                _sidePaneContextMenu.Show(p);
+            }
         }
 
-        private void _saveButton_Click(object sender, EventArgs e) {
-            if (SelectedNode == null || !(SelectedNode is BookItem node)) return;
+        private void _copyToNotebookButton_Click(object sender, EventArgs e) {
+            var selectedNode = SelectedNode;
+            if (selectedNode == null || !(selectedNode is BookItem bookItem)) return;
 
             try {
-                var nameBase = node.HasFileName ? node.Name : DateTime.Now.ToString("yyyy-MM-dd-hh-mm-ss"); ;
+                var nameBase = bookItem.HasFileName ? bookItem.Name : DateTime.Now.ToString("yyyy-MM-dd-hh-mm-ss"); ;
                 var newPath = Path.Combine(Notebook.DirectoryPath, nameBase + ".txt");
                 var suffixNumber = 1;
                 if (File.Exists(newPath)) {
@@ -205,7 +228,7 @@ namespace Shapoco.Calctus.UI.Books {
                         suffixNumber++;
                     } while (File.Exists(newPath));
                 }
-                node.View.Sheet.Save(newPath);
+                bookItem.View.Sheet.Save(newPath);
             }
             catch (Exception ex) {
                 MessageBox.Show("Failed to save file:\r\n\r\n" + ex.Message, Application.ProductName,
@@ -214,26 +237,49 @@ namespace Shapoco.Calctus.UI.Books {
         }
 
         private void _renameButton_Click(object sender, EventArgs e) {
-            if (SelectedNode == null || !(SelectedNode is BookItem node) || !node.HasFileName) return;
-            node.BeginEdit();
+            var selectedNode = SelectedNode;
+            if (selectedNode == null || !(selectedNode is BookItem bookItem) || !bookItem.HasFileName) return;
+            bookItem.BeginEdit();
         }
 
         private void _removeButton_Click(object sender, EventArgs e) {
-            if (SelectedNode == null || !(SelectedNode is BookItem node) || !node.HasFileName) return;
+            var selectedNode = SelectedNode;
+            if (selectedNode == null || !(selectedNode is BookItem bookItem) || !bookItem.HasFileName) return;
 
-            if (DialogResult.OK != MessageBox.Show("Are you sure you want to delete this file?:\r\n\r\n" + node.FileName, Application.ProductName,
+            if (DialogResult.OK != MessageBox.Show("Are you sure you want to delete this file?:\r\n\r\n" + bookItem.FileName, Application.ProductName,
                 MessageBoxButtons.OKCancel, MessageBoxIcon.Exclamation)) {
                 return;
             }
 
             try {
-                File.Delete(node.FilePath);
-                node.Remove();
+                File.Delete(bookItem.FilePath);
+                bookItem.Remove();
                 SelectedNode = ScratchPad;
             }
             catch (Exception ex) {
                 MessageBox.Show("Failed to delete file:\r\n\r\n" + ex.Message, Application.ProductName,
                     MessageBoxButtons.OK, MessageBoxIcon.Error);
+            }
+        }
+
+        private void _openWithAppButton_Click(object sender, EventArgs e) {
+            var selectedNode = SelectedNode;
+            if (selectedNode == null) return;
+            if (selectedNode is BookItem node) {
+                try {
+                    System.Diagnostics.Process.Start(node.FilePath);
+                }
+                catch (Exception ex) {
+                    MessageBox.Show(ex.Message, Application.ProductName, MessageBoxButtons.OK, MessageBoxIcon.Error);
+                }
+            }
+            else if (selectedNode is Book book) {
+                try {
+                    System.Diagnostics.Process.Start(book.DirectoryPath);
+                }
+                catch (Exception ex) {
+                    MessageBox.Show(ex.Message, Application.ProductName, MessageBoxButtons.OK, MessageBoxIcon.Error);
+                }
             }
         }
 
@@ -249,14 +295,20 @@ namespace Shapoco.Calctus.UI.Books {
         private void _fileScanTimer_Tick(object sender, EventArgs e) {
             _fileScanTimer.Stop();
             _suppressSelectedChange = true;
+            var selectedNode = SelectedNode;
             try {
                 Notebook.ScanFiles();
                 History.ScanFiles();
+                Samples.ScanFiles();
             }
             catch (Exception ex) {
                 Console.WriteLine("File scan failed: " + ex.Message);
             }
             _suppressSelectedChange = false;
+            if (selectedNode != null && selectedNode.TreeView == null) {
+                // 更新前に選択されていたファイルを見失ったら ScratchPad を選択し直す
+                SelectedNode = ScratchPad;
+            }
         }
     }
 }

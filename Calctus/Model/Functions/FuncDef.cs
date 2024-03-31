@@ -59,10 +59,8 @@ namespace Shapoco.Calctus.Model.Functions {
             this.Description = desc;
         }
 
-        public bool HasName => Name != null && !string.IsNullOrEmpty(Name.Text);
-
         public FuncMatch Match(string name, Val[] args) {
-            if (string.IsNullOrEmpty(name) && !HasName || (this.Name != null && name == this.Name.Text)) {
+            if (string.IsNullOrEmpty(name) || (!Token.IsNullOrEmpty(Name) && name == this.Name.Text)) {
                 if (Args.Mode != VariadicMode.None) {
                     if (args.Length >= this.Args.Items.Length - 1) {
                         return new FuncMatch(this, FuncMatchLevel.Matched);
@@ -149,12 +147,23 @@ namespace Shapoco.Calctus.Model.Functions {
 
         public override string ToString() {
             var sb = new StringBuilder();
-            if (HasName) {
-                sb.Append(Name.Text);
-            }
-            else {
+            if (Token.IsNullOrEmpty(Name)) {
                 sb.Append("<unnamed>");
             }
+            else {
+                sb.Append(Name.Text);
+            }
+            GetArgListString(sb);
+            return sb.ToString();
+        }
+
+        public string GetArgListString() {
+            var sb = new StringBuilder();
+            GetArgListString(sb);
+            return sb.ToString(); ;
+        }
+
+        public void GetArgListString(StringBuilder sb) {
             sb.Append('(');
             for (int i = 0; i < Args.Count; i++) {
                 if (i > 0) sb.Append(", ");
@@ -166,7 +175,6 @@ namespace Shapoco.Calctus.Model.Functions {
                 case VariadicMode.Array: sb.Append("[]..."); break;
             }
             sb.Append(')');
-            return sb.ToString();
         }
 
     }

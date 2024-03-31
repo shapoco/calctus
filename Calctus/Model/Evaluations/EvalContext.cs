@@ -12,20 +12,12 @@ using Shapoco.Calctus.Model.Functions;
 namespace Shapoco.Calctus.Model.Evaluations {
     class EvalContext {
         private Dictionary<string, Var> _vars = new Dictionary<string, Var>();
-        private List<UserFuncDef> _userFuncs = new List<UserFuncDef>();
         public readonly EvalSettings EvalSettings;
         public readonly List<PlotCall> PlotCalls = new List<PlotCall>();
         public readonly int Depth;
 
         public void DefConst(string name, Val val, string desc) {
             _vars.Add(name, new Var(new Token(TokenType.Word, TextPosition.Nowhere, name), val, true, desc));
-        }
-
-        public void DefFunc(UserFuncDef func) {
-            if (string.IsNullOrEmpty(func.Name.Text)) {
-                throw new CalctusError("Function name is required.");
-            }
-            _userFuncs.Add(func);
         }
 
         private void AddConstantReal(string name, real value, string desc) {
@@ -61,7 +53,6 @@ namespace Shapoco.Calctus.Model.Evaluations {
             foreach (var k in src._vars.Keys) {
                 _vars.Add(k, (Var)src._vars[k].Clone());
             }
-            _userFuncs.AddRange(src._userFuncs);
             EvalSettings = (EvalSettings)src.EvalSettings.Clone();
         }
 
@@ -107,10 +98,8 @@ namespace Shapoco.Calctus.Model.Evaluations {
 
         public IEnumerable<Var> EnumVars() => _vars.Values;
 
-        public IEnumerable<UserFuncDef> EnumUserFuncs() => _userFuncs;
-
         public IEnumerable<FuncDef> AllNamedFuncs() =>
-            BuiltInFuncDef.NativeFunctions.Select(p => (FuncDef)p).Concat(ExternalFuncDef.ExternalFunctions).Concat(_userFuncs);
+            BuiltInFuncDef.NativeFunctions.Select(p => (FuncDef)p).Concat(ExternalFuncDef.ExternalFunctions);
 
         public bool SolveFunc(string name , out FuncDef func) {
             func = AllNamedFuncs().FirstOrDefault(p => p.Name != null && p.Name.Text == name);
@@ -122,7 +111,7 @@ namespace Shapoco.Calctus.Model.Evaluations {
             FuncMatchLevel level = FuncMatchLevel.NameUnmatched;
             scanFunc(matches, ref level, AllNamedFuncs(), name, args);
             if (_vars.TryGetValue(name, out Var v) && v.Value is FuncVal funcVal) {
-                matchFunc(matches, ref level, (UserFuncDef)funcVal.Raw, "", args);
+                matchFunc(matches, ref level, (FuncDef)funcVal.Raw, "", args);
             }
             func = null;
             message = null;

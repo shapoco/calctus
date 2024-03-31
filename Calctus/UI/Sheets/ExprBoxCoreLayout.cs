@@ -270,7 +270,9 @@ namespace Shapoco.Calctus.UI.Sheets {
             }
             _segments = segs.ToArray();
 
-            PreferredSize = new Size(CursorPosToX(text.Length), _charHeight);
+            PreferredSize = new Size(
+                Math.Max(100, CursorPosToX(text.Length)),
+                _charHeight);
         }
         
         /// <summary>カーソル位置からX座標を返す</summary>
@@ -345,14 +347,14 @@ namespace Shapoco.Calctus.UI.Sheets {
                 }
                 else if (error is ParserError parserError) {
                     // 構文解析エラー
-                    if (parserError.Token != null && !string.IsNullOrEmpty(parserError.Token.Text)) {
+                    if (!Token.IsNullOrEmpty(parserError.Token)) {
                         errorStart = parserError.Token.Position.Index;
                         errorEnd = errorStart + parserError.Token.Text.Length;
                     }
                 }
                 else if (error is EvalError evalError) {
                     // 評価エラー
-                    if (evalError.Token != null && !string.IsNullOrEmpty(evalError.Token.Text)) {
+                    if (!Token.IsNullOrEmpty(evalError.Token)) {
                         errorStart = evalError.Token.Position.Index;
                         errorEnd = errorStart + evalError.Token.Text.Length;
                     }

@@ -27,7 +27,7 @@ namespace Shapoco.Calctus.UI.Sheets {
         public bool IsFreshAnswer = false;
         private bool _isRpnOperand = false;
         private bool _disposed = false;
-        private int _preferredHeight = 0;
+        private Size _lastPreferredSize = Size.Empty;
         private bool _ignoreExprChanged = false;
 
         public SheetViewItem(SheetView view, SheetItem bookItem) : base(view) {
@@ -127,10 +127,10 @@ namespace Shapoco.Calctus.UI.Sheets {
             if (_ignoreExprChanged) return;
             _view.Operator.ChangeExpression(_view.IndexOf(this), ExprBox.Text);
             IsFreshAnswer = false;
-            int prefHeight = GetPreferredSize().Height;
-            if (prefHeight != _preferredHeight) {
+            var prefSize = GetPreferredSize();
+            if (prefSize != _lastPreferredSize) {
                 _view.InvalidateLayout();
-                _preferredHeight = prefHeight;
+                _lastPreferredSize = prefSize;
             }
         }
 
@@ -182,11 +182,12 @@ namespace Shapoco.Calctus.UI.Sheets {
             }
             bool ansVisible;
             if (err == null) {
-                var ans = SheetItem.AnsText;
-                ans = ans == "null" ? "" : ans; ;
-                AnsBox.Text = ans;
+                var ansVal = SheetItem.AnsVal;
+                var ansText = SheetItem.AnsText;
+                ansText = (ansVal != null && ansVal.IsSerializable) ? ansText : "";
+                AnsBox.Text = ansText;
                 AnsBox.PlaceHolder = "";
-                ansVisible = SheetItem.ExprTree.CausesValueChange() && !(SheetItem.AnsVal is NullVal);
+                ansVisible = SheetItem.ExprTree.CausesValueChange() && !(SheetItem.AnsVal is NullVal) && !(SheetItem.AnsVal is FuncVal);
             }
             else {
                 AnsBox.Text = "";
@@ -203,8 +204,8 @@ namespace Shapoco.Calctus.UI.Sheets {
         public override Size GetPreferredSize() {
             var exprSize = ExprBox.GetPreferredSize();
             var ansSize = AnsBox.GetPreferredSize();
-            var indent = _view.Indent;
-            if (exprSize.Width < indent || !AnsBox.Visible) {
+            var indent = _view.EqualPosition;
+            if (exprSize.Width <= indent || !AnsBox.Visible) {
                 return new Size(exprSize.Width + ansSize.Width, Math.Max(exprSize.Height, ansSize.Height));
             }
             else {
@@ -217,9 +218,11 @@ namespace Shapoco.Calctus.UI.Sheets {
             relayout();
         }
 
+        public void Relayout() => relayout();
+
         private void relayout() {
             var exprSize = ExprBox.GetPreferredSize();
-            var indent = _view.Indent;
+            var indent = _view.EqualPosition;
             var equalWidth = _view.EqualWidth;
             var ansLeft = indent + equalWidth;
             if (!AnsBox.Visible) {

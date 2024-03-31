@@ -37,6 +37,10 @@ Returns true if at least one element is true.
 
 Returns true if tester function `func(x)` returns true for at least one element of the `array`.
 
+### `concat(array0, array1)`
+
+Concatenate array0 and array1.
+
 ### `contains(array, *val)`
 
 Returns whether the `array` contains `val`.
@@ -139,17 +143,25 @@ Packs array values at b-bit intervals.
 
 Reverses the lower `b` bits of `x`.
 
-### `reverseBytewise(*x)`
+### `reverseBytes(b, *x)`
 
-Reverses the order of bits of each byte of `x`.
+Reverses the lower `b` bytes of `x`.
 
 ### `rotateL(b, *x)`
 
-Rotates left the lower `b` bits of `x`.
+Rotates the lower `b` bits of `x` to the left by 1 bit.
+
+### `rotateL(b, n, *x)`
+
+Rotates the lower `b` bits of `x` to the left by `n` bits.
 
 ### `rotateR(b, *x)`
 
-Rotates right the lower `b` bits of `x`.
+Rotates the lower `b` bits of `x` to the right by 1 bit.
+
+### `rotateR(b, n, *x)`
+
+Rotates the lower `b` bits of `x` to the right by `n` bits.
 
 ### `swap2(*x)`
 
@@ -161,15 +173,19 @@ Reverses the order of each 4 bytes of `x`.
 
 ### `swap8(*x)`
 
-Reverses the order of each 8 bytes of `x`.
+Reverses the byte-order of `x`.
 
 ### `swapNib(*x)`
 
 Swaps the nibble of each byte of `x`.
 
-### `unpack(b, x)`
+### `unpack(array, x)`
 
-Returns an array of `x` values divided into `b` bits.
+Divide the value of `x` into `n` elements of `b` bit width.
+
+### `unpack(b, n, x)`
+
+Separate the value of `x` into `n` elements of `b` bit width.
 
 ----
 ## Cast
