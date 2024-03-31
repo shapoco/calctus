@@ -58,6 +58,7 @@
     <Compile Include="Calctus\Model\Evaluations\EvalError.cs" />
     <Compile Include="Calctus\Model\Evaluations\ValComparer.cs" />
     <Compile Include="Calctus\Model\Evaluations\ValEqualityComparer.cs" />
+    <Compile Include="Calctus\Model\Expressions\ArrayExpr.cs" />
     <Compile Include="Calctus\Model\Expressions\AsterExpr.cs" />
     <Compile Include="Calctus\Model\Expressions\LambdaExpr.cs" />
     <Compile Include="Calctus\Model\Expressions\ParenthesisExpr.cs" />
@@ -245,7 +246,6 @@
     <Compile Include="Calctus\UI\Sheets\UndoEntry.cs" />
     <Compile Include="Calctus\UI\Books\BookItem.cs" />
     <Compile Include="Calctus\UI\Types.cs" />
-    <Compile Include="Calctus\Model\Expressions\ArrayExpr.cs" />
     <Compile Include="Calctus\Model\Expressions\BinaryOp.cs" />
     <Compile Include="Calctus\Model\Expressions\BoolLiteral.cs" />
     <Compile Include="Calctus\Model\Expressions\CondOp.cs" />

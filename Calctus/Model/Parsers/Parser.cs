@@ -18,23 +18,23 @@ namespace Shapoco.Calctus.Model.Parsers {
         public TokenQueue Queue => _queue;
 
         public static Expr Parse(string s) => Parse(new Lexer(s).PopToEnd());
-        public static Expr Parse(TokenQueue q) => new Parser(q).Pop(last: true);
+        public static Expr Parse(TokenQueue q) => new Parser(q).Pop(root: true);
 
         public Parser(TokenQueue queue) {
             _queue = queue;
         }
 
-        public Expr Pop(bool last = true) {
+        public Expr Pop(bool root) {
             Token tok;
             if (ReadIf("def", out tok)) {
                 return Def(tok);
             }
             else {
-                return Expr(last);
+                return Expr(root);
             }
         }
 
-        public Expr Expr(bool last = false) {
+        public Expr Expr(bool root = false) {
             var vals = new Stack<Expr>();
             var ops = new Stack<BinaryOp>();
 
@@ -71,7 +71,7 @@ namespace Shapoco.Calctus.Model.Parsers {
                 expr = new CondOp(tok, expr, trueVal, falseVal);
             }
 
-            if (last && !Eos) {
+            if (root && !Eos) {
                 throw new ParserError(_lastToken, "Operator missing");
             }
             return expr;

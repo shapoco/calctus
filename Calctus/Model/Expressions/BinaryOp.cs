@@ -28,6 +28,31 @@ namespace Shapoco.Calctus.Model.Expressions {
                     e.Ref(aRef.Id, allowCreate: true).Value = val;
                     return val;
                 }
+                else if (A is ArrayExpr aExpr) {
+                    // 配列形式の代入
+                    int n = aExpr.Elements.Length;
+                    if (n <= 0) throw new EvalError(e, aExpr.Token, "At least one variable name is required.");
+                    var refs = new IdExpr[n];
+                    for (int i = 0; i < n; i++) {
+                        if (aExpr.Elements[i] is IdExpr id) {
+                            refs[i] = id;
+                        }
+                        else {
+                            throw new EvalError(e, aExpr.Elements[i].Token, "Identifier is expected.");
+                        }
+                    }
+                    var val = B.Eval(e);
+                    if (!(val is ArrayVal arrayVal)) {
+                        throw new EvalError(e, B.Token, "Array is required.");
+                    }
+                    if (refs.Length != arrayVal.Length) {
+                        throw new EvalError(e, B.Token, "Array size mismatch.");
+                    }
+                    for (int i = 0; i < n; i++) {
+                        e.Ref(refs[i].Id, allowCreate: true).Value = arrayVal[i];
+                    }
+                    return val;
+                }
                 else if (A is PartRef pRef && pRef.Target is IdExpr tRef) {
                     // Part Select を使った参照
                     var from = pRef.IndexFrom.Eval(e).AsInt;

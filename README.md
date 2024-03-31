@@ -129,6 +129,15 @@ b = 3
 a * b // --> 6.
 ```
 
+JavaScript-style multiple assignment is available.
+
+```c++
+[a,b,c]=[10,20,30]
+a // --> 10
+b // --> 20
+c // --> 30
+```
+
 ### User Defined Function 
 
 User functions can be defined using the `def` keyword.
