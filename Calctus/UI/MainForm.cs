@@ -41,8 +41,17 @@ namespace Shapoco.Calctus.UI {
             // フォントの設定が反映されたときにウィンドウサイズも変わってしまうので
             // 起動時のウィンドウサイズ設定値は先に保持しておいて最後に反映する
             var s = Settings.Instance;
-            _startupWindowPos = new Point(s.Window_X, s.Window_Y);
-            _startupWindowSize = new Size(s.Window_Width, s.Window_Height);
+
+            // 設定保存時の DPI から起動時の DPI へのスケーリングを行う
+            var startupScalingFactor = (float)this.DeviceDpi / Settings.Instance.Window_Dpi;
+            _startupWindowPos = Point.Round(new PointF(
+                s.Window_X * startupScalingFactor,
+                s.Window_Y * startupScalingFactor
+            ));
+            _startupWindowSize = Size.Round(new SizeF(
+                s.Window_Width * startupScalingFactor,
+                s.Window_Height * startupScalingFactor
+            ));
 
             InitializeComponent();
             if (this.DesignMode) return;
@@ -190,6 +199,7 @@ namespace Shapoco.Calctus.UI {
         private void MainForm_Resize(object sender, EventArgs e) {
             if (this.WindowState == FormWindowState.Normal) {
                 var s = Settings.Instance;
+                s.Window_Dpi = this.DeviceDpi;
                 s.Window_Width = this.Width;
                 s.Window_Height = this.Height;
             }
@@ -207,6 +217,7 @@ namespace Shapoco.Calctus.UI {
         private void MainForm_LocationChanged(object sender, EventArgs e) {
             if (this.WindowState == FormWindowState.Normal) {
                 var s = Settings.Instance;
+                s.Window_Dpi = this.DeviceDpi;
                 s.Window_X = this.Left;
                 s.Window_Y = this.Top;
             }

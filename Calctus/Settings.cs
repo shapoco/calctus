@@ -118,6 +118,7 @@ namespace Shapoco.Calctus {
         }
 
         public bool Window_RememberPosition { get; set; } = true;
+        public int Window_Dpi { get; set; } = 96;
         public int Window_X { get; set; } = 100;
         public int Window_Y { get; set; } = 100;
         public int Window_Width { get; set; } = 640;
