@@ -1072,7 +1072,7 @@
             // SettingsDialog
             // 
             this.AcceptButton = this.closeButton;
-            this.AutoScaleDimensions = new System.Drawing.SizeF(96F, 96F);
+            this.AutoScaleDimensions = new System.Drawing.SizeF(82.29F, 76.80F);
             this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Dpi;
             this.CancelButton = this.closeButton;
             this.ClientSize = new System.Drawing.Size(467, 401);
