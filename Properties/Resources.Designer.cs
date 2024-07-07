@@ -22,7 +22,7 @@ namespace Shapoco.Properties {
     [global::System.CodeDom.Compiler.GeneratedCodeAttribute("System.Resources.Tools.StronglyTypedResourceBuilder", "17.0.0.0")]
     [global::System.Diagnostics.DebuggerNonUserCodeAttribute()]
     [global::System.Runtime.CompilerServices.CompilerGeneratedAttribute()]
-    internal class Resources {
+    public class Resources {
         
         private static global::System.Resources.ResourceManager resourceMan;
         
@@ -36,7 +36,7 @@ namespace Shapoco.Properties {
         ///   このクラスで使用されているキャッシュされた ResourceManager インスタンスを返します。
         /// </summary>
         [global::System.ComponentModel.EditorBrowsableAttribute(global::System.ComponentModel.EditorBrowsableState.Advanced)]
-        internal static global::System.Resources.ResourceManager ResourceManager {
+        public static global::System.Resources.ResourceManager ResourceManager {
             get {
                 if (object.ReferenceEquals(resourceMan, null)) {
                     global::System.Resources.ResourceManager temp = new global::System.Resources.ResourceManager("Shapoco.Properties.Resources", typeof(Resources).Assembly);
@@ -51,7 +51,7 @@ namespace Shapoco.Properties {
         ///   現在のスレッドの CurrentUICulture プロパティをオーバーライドします。
         /// </summary>
         [global::System.ComponentModel.EditorBrowsableAttribute(global::System.ComponentModel.EditorBrowsableState.Advanced)]
-        internal static global::System.Globalization.CultureInfo Culture {
+        public static global::System.Globalization.CultureInfo Culture {
             get {
                 return resourceCulture;
             }
@@ -61,9 +61,19 @@ namespace Shapoco.Properties {
         }
         
         /// <summary>
+        ///   (アイコン) に類似した型 System.Drawing.Icon のローカライズされたリソースを検索します。
+        /// </summary>
+        public static System.Drawing.Icon Icon_Debug {
+            get {
+                object obj = ResourceManager.GetObject("Icon_Debug", resourceCulture);
+                return ((System.Drawing.Icon)(obj));
+            }
+        }
+        
+        /// <summary>
         ///   型 System.Drawing.Bitmap のローカライズされたリソースを検索します。
         /// </summary>
-        internal static System.Drawing.Bitmap ToolIcon_Copy {
+        public static System.Drawing.Bitmap ToolIcon_Copy {
             get {
                 object obj = ResourceManager.GetObject("ToolIcon_Copy", resourceCulture);
                 return ((System.Drawing.Bitmap)(obj));
@@ -73,7 +83,7 @@ namespace Shapoco.Properties {
         /// <summary>
         ///   型 System.Drawing.Bitmap のローカライズされたリソースを検索します。
         /// </summary>
-        internal static System.Drawing.Bitmap ToolIcon_Delete {
+        public static System.Drawing.Bitmap ToolIcon_Delete {
             get {
                 object obj = ResourceManager.GetObject("ToolIcon_Delete", resourceCulture);
                 return ((System.Drawing.Bitmap)(obj));
@@ -83,7 +93,7 @@ namespace Shapoco.Properties {
         /// <summary>
         ///   型 System.Drawing.Bitmap のローカライズされたリソースを検索します。
         /// </summary>
-        internal static System.Drawing.Bitmap ToolIcon_Folder {
+        public static System.Drawing.Bitmap ToolIcon_Folder {
             get {
                 object obj = ResourceManager.GetObject("ToolIcon_Folder", resourceCulture);
                 return ((System.Drawing.Bitmap)(obj));
@@ -93,7 +103,7 @@ namespace Shapoco.Properties {
         /// <summary>
         ///   型 System.Drawing.Bitmap のローカライズされたリソースを検索します。
         /// </summary>
-        internal static System.Drawing.Bitmap ToolIcon_Help {
+        public static System.Drawing.Bitmap ToolIcon_Help {
             get {
                 object obj = ResourceManager.GetObject("ToolIcon_Help", resourceCulture);
                 return ((System.Drawing.Bitmap)(obj));
@@ -103,7 +113,7 @@ namespace Shapoco.Properties {
         /// <summary>
         ///   型 System.Drawing.Bitmap のローカライズされたリソースを検索します。
         /// </summary>
-        internal static System.Drawing.Bitmap ToolIcon_Insert {
+        public static System.Drawing.Bitmap ToolIcon_Insert {
             get {
                 object obj = ResourceManager.GetObject("ToolIcon_Insert", resourceCulture);
                 return ((System.Drawing.Bitmap)(obj));
@@ -113,7 +123,7 @@ namespace Shapoco.Properties {
         /// <summary>
         ///   型 System.Drawing.Bitmap のローカライズされたリソースを検索します。
         /// </summary>
-        internal static System.Drawing.Bitmap ToolIcon_InvertBrightness {
+        public static System.Drawing.Bitmap ToolIcon_InvertBrightness {
             get {
                 object obj = ResourceManager.GetObject("ToolIcon_InvertBrightness", resourceCulture);
                 return ((System.Drawing.Bitmap)(obj));
@@ -123,7 +133,7 @@ namespace Shapoco.Properties {
         /// <summary>
         ///   型 System.Drawing.Bitmap のローカライズされたリソースを検索します。
         /// </summary>
-        internal static System.Drawing.Bitmap ToolIcon_MoveDown {
+        public static System.Drawing.Bitmap ToolIcon_MoveDown {
             get {
                 object obj = ResourceManager.GetObject("ToolIcon_MoveDown", resourceCulture);
                 return ((System.Drawing.Bitmap)(obj));
@@ -133,7 +143,7 @@ namespace Shapoco.Properties {
         /// <summary>
         ///   型 System.Drawing.Bitmap のローカライズされたリソースを検索します。
         /// </summary>
-        internal static System.Drawing.Bitmap ToolIcon_MoveUp {
+        public static System.Drawing.Bitmap ToolIcon_MoveUp {
             get {
                 object obj = ResourceManager.GetObject("ToolIcon_MoveUp", resourceCulture);
                 return ((System.Drawing.Bitmap)(obj));
@@ -143,7 +153,7 @@ namespace Shapoco.Properties {
         /// <summary>
         ///   型 System.Drawing.Bitmap のローカライズされたリソースを検索します。
         /// </summary>
-        internal static System.Drawing.Bitmap ToolIcon_Paste {
+        public static System.Drawing.Bitmap ToolIcon_Paste {
             get {
                 object obj = ResourceManager.GetObject("ToolIcon_Paste", resourceCulture);
                 return ((System.Drawing.Bitmap)(obj));
@@ -153,7 +163,7 @@ namespace Shapoco.Properties {
         /// <summary>
         ///   型 System.Drawing.Bitmap のローカライズされたリソースを検索します。
         /// </summary>
-        internal static System.Drawing.Bitmap ToolIcon_Redo {
+        public static System.Drawing.Bitmap ToolIcon_Redo {
             get {
                 object obj = ResourceManager.GetObject("ToolIcon_Redo", resourceCulture);
                 return ((System.Drawing.Bitmap)(obj));
@@ -163,7 +173,7 @@ namespace Shapoco.Properties {
         /// <summary>
         ///   型 System.Drawing.Bitmap のローカライズされたリソースを検索します。
         /// </summary>
-        internal static System.Drawing.Bitmap ToolIcon_Settings {
+        public static System.Drawing.Bitmap ToolIcon_Settings {
             get {
                 object obj = ResourceManager.GetObject("ToolIcon_Settings", resourceCulture);
                 return ((System.Drawing.Bitmap)(obj));
@@ -173,7 +183,7 @@ namespace Shapoco.Properties {
         /// <summary>
         ///   型 System.Drawing.Bitmap のローカライズされたリソースを検索します。
         /// </summary>
-        internal static System.Drawing.Bitmap ToolIcon_Sheet_Close {
+        public static System.Drawing.Bitmap ToolIcon_Sheet_Close {
             get {
                 object obj = ResourceManager.GetObject("ToolIcon_Sheet_Close", resourceCulture);
                 return ((System.Drawing.Bitmap)(obj));
@@ -183,7 +193,7 @@ namespace Shapoco.Properties {
         /// <summary>
         ///   型 System.Drawing.Bitmap のローカライズされたリソースを検索します。
         /// </summary>
-        internal static System.Drawing.Bitmap ToolIcon_Sheet_Open {
+        public static System.Drawing.Bitmap ToolIcon_Sheet_Open {
             get {
                 object obj = ResourceManager.GetObject("ToolIcon_Sheet_Open", resourceCulture);
                 return ((System.Drawing.Bitmap)(obj));
@@ -193,7 +203,7 @@ namespace Shapoco.Properties {
         /// <summary>
         ///   型 System.Drawing.Bitmap のローカライズされたリソースを検索します。
         /// </summary>
-        internal static System.Drawing.Bitmap ToolIcon_TopMostOff {
+        public static System.Drawing.Bitmap ToolIcon_TopMostOff {
             get {
                 object obj = ResourceManager.GetObject("ToolIcon_TopMostOff", resourceCulture);
                 return ((System.Drawing.Bitmap)(obj));
@@ -203,7 +213,7 @@ namespace Shapoco.Properties {
         /// <summary>
         ///   型 System.Drawing.Bitmap のローカライズされたリソースを検索します。
         /// </summary>
-        internal static System.Drawing.Bitmap ToolIcon_TopMostOn {
+        public static System.Drawing.Bitmap ToolIcon_TopMostOn {
             get {
                 object obj = ResourceManager.GetObject("ToolIcon_TopMostOn", resourceCulture);
                 return ((System.Drawing.Bitmap)(obj));
@@ -213,7 +223,7 @@ namespace Shapoco.Properties {
         /// <summary>
         ///   型 System.Drawing.Bitmap のローカライズされたリソースを検索します。
         /// </summary>
-        internal static System.Drawing.Bitmap ToolIcon_Undo {
+        public static System.Drawing.Bitmap ToolIcon_Undo {
             get {
                 object obj = ResourceManager.GetObject("ToolIcon_Undo", resourceCulture);
                 return ((System.Drawing.Bitmap)(obj));

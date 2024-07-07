@@ -24,17 +24,24 @@ namespace Shapoco.Calctus.UI {
         public SettingsDialog() {
             InitializeComponent();
 
-            {
-                var scaleFactor = this.DeviceDpi / 96;
+            try {
+                this.Font = new Font("Arial", SystemFonts.DefaultFont.Size);
+            }
+            catch { }
+
+            using (var g = this.CreateGraphics()) {
+                var colorTextSize = Size.Ceiling(g.MeasureString("#AAAAAA", this.Font));
+                var scaleFactor = (float)this.DeviceDpi / 96;
                 var colorLabels = new List<Label>();
-                var xPadding = 12 * scaleFactor;
-                var centerPadding = 35 * scaleFactor;
-                var yPadding = 19 * scaleFactor;
+                var xPadding = (int)Math.Ceiling(10 * scaleFactor);
+                var centerPadding = (int)Math.Ceiling(30 * scaleFactor);
+                var yPadding = (int)Math.Ceiling(20 * scaleFactor);
                 var x = xPadding;
                 var y = yPadding;
-                var wColor = 70 * scaleFactor;
+                var wColor = (int)(colorTextSize.Width * 1.25f);
                 var wName = (colorGroup.ClientSize.Width - centerPadding - xPadding * 2) / 2 - wColor;
-                var hLabel = 19 * scaleFactor;
+                var hLabel = (int)(colorTextSize.Height * 1.25f);
+                var yStride = (int)(colorTextSize.Height * 1.5f);
                 foreach (var prop in typeof(Settings).GetProperties()) {
                     if (prop.Name.StartsWith(ColorSettingNamePrefix)) {
                         var colorName = prop.Name.Substring(ColorSettingNamePrefix.Length);
@@ -54,11 +61,11 @@ namespace Shapoco.Calctus.UI {
                         colorLabel.AutoSize = false;
                         colorLabel.TextAlign = ContentAlignment.MiddleCenter;
                         colorLabel.BorderStyle = BorderStyle.Fixed3D;
-                        colorLabel.SetBounds(x + wName, y, wColor, hLabel);                        
+                        colorLabel.SetBounds(x + wName, y, wColor, hLabel);
                         colorLabel.Click += ColorBox_Click;
                         colorGroup.Controls.Add(colorLabel);
                         colorLabels.Add(colorLabel);
-                        y += hLabel + 2;
+                        y += yStride;
                         if (y + hLabel > toggleLightDarkModeButton.Top) {
                             x += wName + wColor + centerPadding;
                             y = yPadding;
@@ -67,11 +74,6 @@ namespace Shapoco.Calctus.UI {
                 }
                 _colorLabels = colorLabels.ToArray();
             }
-
-            try {
-                this.Font = new Font("Arial", SystemFonts.DefaultFont.Size);
-            }
-            catch { }
 
             tabControl.SelectedIndex = 0;
 

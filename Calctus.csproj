@@ -160,6 +160,7 @@
     <Compile Include="Calctus\UI\Books\BookTreeView.cs">
       <SubType>Component</SubType>
     </Compile>
+    <Compile Include="Calctus\UI\ToolIconGenerator.cs" />
     <Compile Include="Calctus\UI\ValuePickupDialog.cs">
       <SubType>Form</SubType>
     </Compile>
@@ -283,7 +284,7 @@
       <DependentUpon>SettingsDialog.cs</DependentUpon>
     </EmbeddedResource>
     <EmbeddedResource Include="Properties\Resources.resx">
-      <Generator>ResXFileCodeGenerator</Generator>
+      <Generator>PublicResXFileCodeGenerator</Generator>
       <LastGenOutput>Resources.Designer.cs</LastGenOutput>
       <SubType>Designer</SubType>
     </EmbeddedResource>
@@ -307,6 +308,7 @@
   </ItemGroup>
   <ItemGroup>
     <Content Include="icon.ico" />
+    <None Include="Resources\Icon_Debug.ico" />
     <None Include="Resources\ToolIcon_Sheet_Open.png" />
     <None Include="Resources\ToolIcon_Sheet_Close.png" />
     <None Include="Resources\ToolIcon_Sheet.png" />

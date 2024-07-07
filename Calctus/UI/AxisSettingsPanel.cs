@@ -54,6 +54,14 @@ namespace Shapoco.Calctus.UI {
             AxisSettings = new AxisSettings();
         }
 
+        public override Size GetPreferredSize(Size proposedSize) {
+            using (var g = this.CreateGraphics()) {
+                return new Size(
+                    (int)(Math.Ceiling(g.MeasureString("Axis", this.Font).Width * 3)), 
+                    Label.Height + axisType.Height + topValue.Height + bottomValue.Height);
+            }
+        }
+
         public AxisSettings AxisSettings {
             get => _axisSettings;
             set {

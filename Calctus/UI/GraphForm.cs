@@ -134,6 +134,16 @@ namespace Shapoco.Calctus.UI {
             }
             catch { }
 
+            var iconWidth = 16 * this.DeviceDpi / 96;
+            var iconSize = new Size(iconWidth, iconWidth);
+            copyButton.Image = ToolIconGenerator.GenerateToolIcon(iconSize, Properties.Resources.ToolIcon_Copy);
+            whiteBackModeButton.Image = ToolIconGenerator.GenerateToolIcon(iconSize, Properties.Resources.ToolIcon_InvertBrightness);
+
+            var size = axisSettingsX.PreferredSize;
+            sidePanel.Width = size.Width;
+            axisSettingsX.Height = size.Height;
+            axisSettingsY.Height = size.Height;
+
             BackColor = s.Appearance_Color_Background;
             ForeColor = s.Appearance_Color_Text;
             graphPanel.Invalidate();

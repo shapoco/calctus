@@ -367,7 +367,7 @@ namespace Shapoco.Calctus.UI
             // 
             // sidePaneOpenButton
             // 
-            this.sidePaneOpenButton.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Right)));
+            this.sidePaneOpenButton.Dock = System.Windows.Forms.DockStyle.Top;
             this.sidePaneOpenButton.Location = new System.Drawing.Point(0, 0);
             this.sidePaneOpenButton.Name = "sidePaneOpenButton";
             this.sidePaneOpenButton.Size = new System.Drawing.Size(20, 20);

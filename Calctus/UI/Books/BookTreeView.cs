@@ -32,13 +32,7 @@ namespace Shapoco.Calctus.UI.Books {
             if (DesignMode) return;
 
             if (IconImageList == null) { 
-                var scaleFactor = this.DeviceDpi / 96;
                 IconImageList = new ImageList();
-                IconImageList.ColorDepth = ColorDepth.Depth32Bit;
-                IconImageList.ImageSize = new Size(16 * scaleFactor, 16 * scaleFactor);
-                IconImageList.Images.Add(Properties.Resources.ToolIcon_Folder);
-                IconImageList.Images.Add(Properties.Resources.ToolIcon_Sheet_Close);
-                IconImageList.Images.Add(Properties.Resources.ToolIcon_Sheet_Open);
             }
             this.ImageList = IconImageList;
 
@@ -83,6 +77,15 @@ namespace Shapoco.Calctus.UI.Books {
         }
 
         public void ReloadSettings() {
+            var iconWidth = 16 * this.DeviceDpi / 96;
+            var iconSize = new Size(iconWidth, iconWidth);
+            IconImageList.ColorDepth = ColorDepth.Depth32Bit;
+            IconImageList.ImageSize = iconSize;
+            IconImageList.Images.Clear();
+            IconImageList.Images.Add(ToolIconGenerator.GenerateToolIcon(iconSize, Properties.Resources.ToolIcon_Folder));
+            IconImageList.Images.Add(ToolIconGenerator.GenerateToolIcon(iconSize, Properties.Resources.ToolIcon_Sheet_Close));
+            IconImageList.Images.Add(ToolIconGenerator.GenerateToolIcon(iconSize, Properties.Resources.ToolIcon_Sheet_Open));
+
             _fileSystemWatcher.Filter = "*.txt";
             _fileSystemWatcher.Path = AppDataManager.ActiveDataPath;
             _fileSystemWatcher.SynchronizingObject = this;

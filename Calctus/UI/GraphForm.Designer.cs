@@ -29,16 +29,19 @@
             this.toolStrip = new System.Windows.Forms.ToolStrip();
             this.copyButton = new System.Windows.Forms.ToolStripButton();
             this.whiteBackModeButton = new System.Windows.Forms.ToolStripButton();
-            this.panel1 = new System.Windows.Forms.Panel();
+            this.sidePanel = new System.Windows.Forms.Panel();
             this.axisSettingsY = new Shapoco.Calctus.UI.AxisSettingsPanel();
             this.axisSettingsX = new Shapoco.Calctus.UI.AxisSettingsPanel();
             this.graphPanel = new Shapoco.Calctus.UI.GraphPanel();
             this.toolStrip.SuspendLayout();
-            this.panel1.SuspendLayout();
+            this.sidePanel.SuspendLayout();
             this.SuspendLayout();
             // 
             // toolStrip
             // 
+            this.toolStrip.Items.AddRange(new System.Windows.Forms.ToolStripItem[] {
+            this.copyButton,
+            this.whiteBackModeButton});
             this.toolStrip.Location = new System.Drawing.Point(0, 0);
             this.toolStrip.Name = "toolStrip";
             this.toolStrip.Size = new System.Drawing.Size(380, 25);
@@ -66,14 +69,14 @@
             // 
             // panel1
             // 
-            this.panel1.Controls.Add(this.axisSettingsY);
-            this.panel1.Controls.Add(this.axisSettingsX);
-            this.panel1.Dock = System.Windows.Forms.DockStyle.Left;
-            this.panel1.Location = new System.Drawing.Point(0, 25);
-            this.panel1.Name = "panel1";
-            this.panel1.Padding = new System.Windows.Forms.Padding(0, 0, 5, 0);
-            this.panel1.Size = new System.Drawing.Size(100, 211);
-            this.panel1.TabIndex = 4;
+            this.sidePanel.Controls.Add(this.axisSettingsY);
+            this.sidePanel.Controls.Add(this.axisSettingsX);
+            this.sidePanel.Dock = System.Windows.Forms.DockStyle.Left;
+            this.sidePanel.Location = new System.Drawing.Point(0, 25);
+            this.sidePanel.Name = "panel1";
+            this.sidePanel.Padding = new System.Windows.Forms.Padding(0, 0, 5, 0);
+            this.sidePanel.Size = new System.Drawing.Size(100, 211);
+            this.sidePanel.TabIndex = 4;
             // 
             // axisSettingsY
             // 
@@ -131,7 +134,7 @@
             this.BackColor = System.Drawing.Color.FromArgb(((int)(((byte)(64)))), ((int)(((byte)(64)))), ((int)(((byte)(64)))));
             this.ClientSize = new System.Drawing.Size(380, 236);
             this.Controls.Add(this.graphPanel);
-            this.Controls.Add(this.panel1);
+            this.Controls.Add(this.sidePanel);
             this.Controls.Add(this.toolStrip);
             this.Icon = ((System.Drawing.Icon)(resources.GetObject("$this.Icon")));
             this.MaximizeBox = false;
@@ -141,7 +144,7 @@
             this.Text = "GraphForm";
             this.toolStrip.ResumeLayout(false);
             this.toolStrip.PerformLayout();
-            this.panel1.ResumeLayout(false);
+            this.sidePanel.ResumeLayout(false);
             this.ResumeLayout(false);
             this.PerformLayout();
 
@@ -155,6 +158,6 @@
         private System.Windows.Forms.ToolStripButton whiteBackModeButton;
         private AxisSettingsPanel axisSettingsX;
         private AxisSettingsPanel axisSettingsY;
-        private System.Windows.Forms.Panel panel1;
+        private System.Windows.Forms.Panel sidePanel;
     }
 }

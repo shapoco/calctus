@@ -71,7 +71,10 @@ namespace Shapoco.Calctus.UI {
             this.LocationChanged += MainForm_LocationChanged;
 
 #if DEBUG
+            // デバッグ実行中のウィンドウをタスクバー上で見分けられるようにする
             notifyIcon.Text = Application.ProductName + " (Debug)";
+            this.Icon = Properties.Resources.Icon_Debug;
+            this.notifyIcon.Icon = Properties.Resources.Icon_Debug;
 #else
             notifyIcon.Text = Application.ProductName;
 #endif
@@ -238,6 +241,30 @@ namespace Shapoco.Calctus.UI {
                 var font_mono_normal = new Font(s.Appearance_Font_Expr_Name, s.Appearance_Font_Size, font_style);
                 this.Font = font_ui_normal;
                 _sheetViewFont = new Font(s.Appearance_Font_Expr_Name, s.Appearance_Font_Size * font_large_coeff, font_style);
+
+                using (var g = this.CreateGraphics()) {
+                    var bottomButtonTextSize = Size.Ceiling(g.MeasureString("AAAA", font_ui_normal));
+                    this.bottomPanel.Height = bottomButtonTextSize.Height;
+                    foreach (var btn in bottomPanel.Controls) {
+                        ((Control)btn).Width = bottomButtonTextSize.Width;
+                    }
+                    this.sidePaneBodyPanel.Width = bottomButtonTextSize.Width * 4;
+                    this.sidePaneHeaderPanel.Width = bottomButtonTextSize.Height;
+                    this.sidePaneOpenButton.Height = bottomButtonTextSize.Height;
+                }
+
+                var iconSize = getToolIconSize();
+                undoButton.Image = ToolIconGenerator.GenerateToolIcon(iconSize, Properties.Resources.ToolIcon_Undo);
+                redoButton.Image = ToolIconGenerator.GenerateToolIcon(iconSize, Properties.Resources.ToolIcon_Redo);
+                copyButton.Image = ToolIconGenerator.GenerateToolIcon(iconSize, Properties.Resources.ToolIcon_Copy);
+                pasteButton.Image = ToolIconGenerator.GenerateToolIcon(iconSize, Properties.Resources.ToolIcon_Paste);
+                insertButton.Image = ToolIconGenerator.GenerateToolIcon(iconSize, Properties.Resources.ToolIcon_Insert);
+                deleteButton.Image = ToolIconGenerator.GenerateToolIcon(iconSize, Properties.Resources.ToolIcon_Delete);
+                moveUpButton.Image = ToolIconGenerator.GenerateToolIcon(iconSize, Properties.Resources.ToolIcon_MoveUp);
+                moveDownButton.Image = ToolIconGenerator.GenerateToolIcon(iconSize, Properties.Resources.ToolIcon_MoveDown);
+                settingsButton.Image = ToolIconGenerator.GenerateToolIcon(iconSize, Properties.Resources.ToolIcon_Settings);
+                updateTopMostButtonIcon();
+                helpButton.Image = ToolIconGenerator.GenerateToolIcon(iconSize, Properties.Resources.ToolIcon_Help);
 
                 ToolStripManager.Renderer = new ToolStripProfessionalRenderer(new CustomProfessionalColors());
 
@@ -447,12 +474,19 @@ namespace Shapoco.Calctus.UI {
         private void TopMostButton_Click(object sender, EventArgs e) {
             var btn = (ToolStripButton)sender;
             setTopMost(!_topMost);
-            if (_topMost) {
-                btn.Image = Properties.Resources.ToolIcon_TopMostOn;
-            }
-            else {
-                btn.Image = Properties.Resources.ToolIcon_TopMostOff;
-            }
+            updateTopMostButtonIcon();
+        }
+
+        private void updateTopMostButtonIcon() {
+            var img = _topMost ?
+                Properties.Resources.ToolIcon_TopMostOn :
+                Properties.Resources.ToolIcon_TopMostOff;
+            topMostButton.Image = ToolIconGenerator.GenerateToolIcon(getToolIconSize(), img);
+        }
+
+        private Size getToolIconSize() {
+            var width = 16 * this.DeviceDpi / 96;
+            return new Size(width, width);
         }
 
         private void NotifyIcon_MouseClick(object sender, MouseEventArgs e) {
