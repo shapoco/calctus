@@ -88,6 +88,10 @@ namespace Shapoco.Calctus {
         public Color Appearance_Color_Parenthesis_3 { get; set; } = Color.FromArgb(255, 128, 192);
         public Color Appearance_Color_Parenthesis_4 { get; set; } = Color.FromArgb(255, 192, 64);
         public Color Appearance_Color_Error { get; set; } = Color.FromArgb(255, 128, 128);
+        public bool GetIsDarkMode() {
+            var col = Appearance_Color_Background;
+            return col.R + col.G + col.B < 128 * 3;
+        }
 
         public string UserConstants { get; set; } = "";
         public UserConstant[] GetUserConstants() {

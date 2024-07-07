@@ -260,6 +260,7 @@
     <Compile Include="Calctus\Model\Expressions\IdExpr.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
     <Compile Include="Windows\ClipboardListener.cs" />
+    <Compile Include="Windows\DwmApi.cs" />
     <Compile Include="Windows\StartupShortcut.cs" />
     <Compile Include="Windows\WinUser.cs" />
     <EmbeddedResource Include="Calctus\UI\ValuePickupDialog.resx">

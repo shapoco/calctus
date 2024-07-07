@@ -235,6 +235,8 @@ namespace Shapoco.Calctus.UI {
                 disableHotkey();
                 enableHotkey();
 
+                Windows.DwmApi.SetDarkModeEnable(this, s.GetIsDarkMode());
+
                 var font_large_coeff = 1.25f;
                 var font_style = s.Appearance_Font_Bold ? FontStyle.Bold : FontStyle.Regular;
                 var font_ui_normal = new Font(s.Appearance_Font_Button_Name, s.Appearance_Font_Size, font_style);

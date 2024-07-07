@@ -8,8 +8,7 @@ using System.Drawing;
 namespace Shapoco.Calctus.UI {
     static class ToolIconGenerator {
         public static Image GenerateToolIcon(Size size, Image image) {
-            var backColor = Settings.Instance.Appearance_Color_Background;
-            var darkMode = backColor.R + backColor.G + backColor.B < 128 * 3;
+            var darkMode = Settings.Instance.GetIsDarkMode();
             if (!darkMode && size == image.Size) {
                 return image;
             }

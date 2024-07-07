@@ -36,6 +36,8 @@ namespace Shapoco.Calctus.UI {
 
             joinOperatorComboBox.Items.AddRange(new string[] { "+", "*", "&", "|", "+|", "&&", "||", "," });
 
+            Windows.DwmApi.SetDarkModeEnable(this, Settings.Instance.GetIsDarkMode());
+
             try {
                 this.Font = new Font("Arial", SystemFonts.DefaultFont.Size);
             }
