@@ -32,8 +32,10 @@ namespace Shapoco.Calctus.UI.Books {
             if (DesignMode) return;
 
             if (IconImageList == null) { 
+                var scaleFactor = this.DeviceDpi / 96;
                 IconImageList = new ImageList();
                 IconImageList.ColorDepth = ColorDepth.Depth32Bit;
+                IconImageList.ImageSize = new Size(16 * scaleFactor, 16 * scaleFactor);
                 IconImageList.Images.Add(Properties.Resources.ToolIcon_Folder);
                 IconImageList.Images.Add(Properties.Resources.ToolIcon_Sheet_Close);
                 IconImageList.Images.Add(Properties.Resources.ToolIcon_Sheet_Open);

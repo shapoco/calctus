@@ -45,6 +45,9 @@ namespace Shapoco.Calctus.UI.Sheets {
             _desc.Height = 100;
             _desc.BackColor = Color.FromArgb(48, 48, 48);
             Controls.Add(_desc);
+
+            AutoScaleDimensions = new SizeF(96, 96);
+            AutoScaleMode = AutoScaleMode.Dpi;
         }
 
         public void SetKey(string key) {

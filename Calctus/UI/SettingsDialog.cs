@@ -25,15 +25,16 @@ namespace Shapoco.Calctus.UI {
             InitializeComponent();
 
             {
+                var scaleFactor = this.DeviceDpi / 96;
                 var colorLabels = new List<Label>();
-                var xPadding = 10;
-                var centerPadding = 30;
-                var yPadding = 15;
+                var xPadding = 12 * scaleFactor;
+                var centerPadding = 35 * scaleFactor;
+                var yPadding = 19 * scaleFactor;
                 var x = xPadding;
                 var y = yPadding;
-                var wColor = 60;
+                var wColor = 70 * scaleFactor;
                 var wName = (colorGroup.ClientSize.Width - centerPadding - xPadding * 2) / 2 - wColor;
-                var hLabel = 15;
+                var hLabel = 19 * scaleFactor;
                 foreach (var prop in typeof(Settings).GetProperties()) {
                     if (prop.Name.StartsWith(ColorSettingNamePrefix)) {
                         var colorName = prop.Name.Substring(ColorSettingNamePrefix.Length);
