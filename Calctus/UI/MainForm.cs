@@ -399,9 +399,9 @@ namespace Shapoco.Calctus.UI {
                     Application.ProductName, MessageBoxButtons.OK, MessageBoxIcon.Error);
             }
             this.Text =
-                Application.ProductName +
-                " (v" + System.Reflection.Assembly.GetExecutingAssembly().GetName().Version + ") - " +
-                (_activeBookItem != null ? _activeBookItem.Name : "(null)");
+                (_activeBookItem != null ? _activeBookItem.Name : "(null)") +
+                " - " + Application.ProductName +
+                " (v" + System.Reflection.Assembly.GetExecutingAssembly().GetName().Version + ")";
 
             if (requestCheckFileChange) {
                 checkActiveFileChange();
