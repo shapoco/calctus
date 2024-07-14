@@ -343,6 +343,8 @@ If you wish to use a scripting language other than Python, please register the e
 |`Ctrl` + `Shift` + `N`|Insert current time|
 |`Ctrl` + `Shift` + `Del`|Delete all expressions|
 |`Ctrl` + `Shift` + `Up`/`Down`|Item move up/down|
+|`Ctrl` + `Home`|Select first expression|
+|`Ctrl` + `End`|Select last expression|
 |`Alt` ( + `Shift` ) + `Left`/`Right`|Move decimal point|
 |`Alt` + `Up`/`Down`|Change SI prefix|
 |`F1`|Help|

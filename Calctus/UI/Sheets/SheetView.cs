@@ -51,7 +51,8 @@ namespace Shapoco.Calctus.UI.Sheets {
         private ToolStripMenuItem _cmenuMoveDown = new ToolStripMenuItem("Move down");
         private ToolStripMenuItem _cmenuItemInsert = new ToolStripMenuItem("Insert line");
         private ToolStripMenuItem _cmenuItemDelete = new ToolStripMenuItem("Delete line");
-        private ToolStripSeparator _cmenuTextSep2 = new ToolStripSeparator();
+        private ToolStripMenuItem _cmenuGotoHome = new ToolStripMenuItem("Goto Home");
+        private ToolStripMenuItem _cmenuGotoEnd = new ToolStripMenuItem("Goto End");
         private ToolStripMenuItem _cmenuClear = new ToolStripMenuItem("Clear");
 
         private InputCandidate[] _inputCandidates = new InputCandidate[0];
@@ -82,6 +83,8 @@ namespace Shapoco.Calctus.UI.Sheets {
             _cmenuMoveDown.ShortcutKeyDisplayString = "Ctrl+Shift+Down";
             _cmenuItemInsert.ShortcutKeyDisplayString = "Shift+Enter";
             _cmenuItemDelete.ShortcutKeyDisplayString = "Shift+Del";
+            _cmenuGotoHome.ShortcutKeyDisplayString = "Ctrl+Home";
+            _cmenuGotoEnd.ShortcutKeyDisplayString = "Ctrl+End";
             _cmenuClear.ShortcutKeyDisplayString = "Ctrl+Shift+Del";
 
             _cmenuUndo.Click += (sender, e) => { Undo(); };
@@ -97,29 +100,34 @@ namespace Shapoco.Calctus.UI.Sheets {
             _cmenuMoveDown.Click += (sender, e) => { ItemMoveDown(); };
             _cmenuItemInsert.Click += (sender, e) => { ItemInsert(); };
             _cmenuItemDelete.Click += (sender, e) => { ItemDelete(); };
+            _cmenuGotoHome.Click += (sender, e) => { GotoHome(); };
+            _cmenuGotoEnd.Click += (sender, e) => { GotoEnd(); };
             _cmenuClear.Click += (sender, e) => { Clear(); };
 
             _ctxMenu.Items.AddRange(new ToolStripItem[] {
                 _cmenuUndo,
                 _cmenuRedo,
-                 new ToolStripSeparator(),
+                new ToolStripSeparator(),
                 _cmenuTextCut,
                 _cmenuTextCopy,
                 _cmenuTextPaste,
                 _cmenuTextDelete,
-                 new ToolStripSeparator(),
+                new ToolStripSeparator(),
                 _cmenuCopyAll,
-                 new ToolStripSeparator(),
+                new ToolStripSeparator(),
                 _cmenuPickupValues,
-                 new ToolStripSeparator(),
+                new ToolStripSeparator(),
                 _cmenuInsertTime,
-                 new ToolStripSeparator(),
+                new ToolStripSeparator(),
                 _cmenuMoveUp,
                 _cmenuMoveDown,
-                 new ToolStripSeparator(),
+                new ToolStripSeparator(),
                 _cmenuItemInsert,
                 _cmenuItemDelete,
-                _cmenuTextSep2,
+                new ToolStripSeparator(),
+                _cmenuGotoHome,
+                _cmenuGotoEnd,
+                new ToolStripSeparator(),
                 _cmenuClear
             });
         }
@@ -334,6 +342,22 @@ namespace Shapoco.Calctus.UI.Sheets {
             }
         }
 
+        public void GotoHome() {
+            if (_sheet.Items.Count <= 0) return;
+            var box = ((SheetViewItem)_sheet.Items[0].Tag).ExprBox;
+            box.Focus();
+            box.SelectionStart = 0;
+            box.SelectionLength = 0;
+        }
+
+        public void GotoEnd() {
+            if (_sheet.Items.Count <= 0) return;
+            var box = ((SheetViewItem)_sheet.Items[_sheet.Items.Count - 1].Tag).ExprBox;
+            box.Focus();
+            box.SelectionStart = box.Text.Length;
+            box.SelectionLength = 0;
+        }
+
         public void ReplaceFormatterFunction(FuncDef func) {
             FocusedViewItem?.ReplaceFormatterFunction(func);
         }
@@ -421,6 +445,14 @@ namespace Shapoco.Calctus.UI.Sheets {
             else if (e.Modifiers == Keys.Control && e.KeyCode == Keys.Y) {
                 e.Handled = true;
                 Redo();
+            }
+            else if (e.Modifiers == Keys.Control && e.KeyCode == Keys.Home) {
+                e.Handled = true;
+                GotoHome();
+            }
+            else if (e.Modifiers == Keys.Control && e.KeyCode == Keys.End) {
+                e.Handled = true;
+                GotoEnd();
             }
             else if (e.Modifiers == Keys.Alt && e.KeyCode == Keys.C) {
                 e.Handled = true;
