@@ -315,6 +315,7 @@ namespace Shapoco.Calctus.Model.Mathematics {
         // 最大最小
         public static real Max(real a, real b) => a > b ? a : b;
         public static real Min(real a, real b) => a < b ? a : b;
+        public static real Clip(real min, real max, real x) => x < min ? min : (x > max ? max : x);
 
         public static bool IsInteger(decimal a) => a == Floor(a);
 
