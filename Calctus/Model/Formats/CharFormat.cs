@@ -5,49 +5,10 @@ using System.Text;
 using System.Text.RegularExpressions;
 using System.Threading.Tasks;
 using Shapoco.Calctus.Model.Types;
-using Shapoco.Calctus.Model.Evaluations;
+using Shapoco.Calctus.Model.Parsers;
 
 namespace Shapoco.Calctus.Model.Formats {
-    class CharFormatter : NumberFormatter {
-        public CharFormatter() : base(new Regex("'(?<char>[^'\\\\]|\\\\[abfnrtv\\\\\'0]|\\\\o[0-7]{3}|\\\\x[0-9a-fA-F]{2}|\\\\u[0-9a-fA-F]{4})'"), FormatPriority.AlwaysLeft) { }
-
-        public static void Escape(StringBuilder sb, char c, bool stringMode) {
-            switch (c) {
-                case '\a': sb.Append( "\\a"); break;
-                case '\b':sb.Append("\\b"); break;
-                case '\f': sb.Append("\\f"); break;
-                case '\n': sb.Append("\\n"); break;
-                case '\r': sb.Append("\\r"); break;
-                case '\t': sb.Append("\\t"); break;
-                case '\v': sb.Append("\\v"); break;
-                case '\\': sb.Append("\\\\"); break;
-                case '\'':
-                    if (stringMode) {
-                        sb.Append(c); break;
-                    }
-                    else {
-                        sb.Append("\\'"); break;
-                    }
-                case '"':
-                    if (stringMode) {
-                        sb.Append("\\\""); break;
-                    }
-                    else {
-                        sb.Append(c); break;
-                    }
-                case '\0': sb.Append("\\0"); break;
-                default:
-                    if (char.IsLetterOrDigit(c) || char.IsPunctuation(c) || char.IsSeparator(c) || char.IsSymbol(c)) {
-                        sb.Append(c);
-                    }
-                    else {
-                        var hex = "0000" + Convert.ToString(c, 16);
-                        sb.Append("\\u").Append(hex.Substring(hex.Length - 4, 4));
-                    }
-                    break;
-            }
-        }
-
+    class CharFormat : ValFormat {
         public static char Unescape(string tok) {
             switch (tok) {
                 case "\\a": return '\a';
@@ -82,7 +43,52 @@ namespace Shapoco.Calctus.Model.Formats {
             }
         }
 
-        public override Val Parse(Match m) {
+        public static void Escape(StringBuilder sb, char c, bool stringMode) {
+            switch (c) {
+                case '\a': sb.Append("\\a"); break;
+                case '\b': sb.Append("\\b"); break;
+                case '\f': sb.Append("\\f"); break;
+                case '\n': sb.Append("\\n"); break;
+                case '\r': sb.Append("\\r"); break;
+                case '\t': sb.Append("\\t"); break;
+                case '\v': sb.Append("\\v"); break;
+                case '\\': sb.Append("\\\\"); break;
+                case '\'':
+                    if (stringMode) {
+                        sb.Append(c); break;
+                    }
+                    else {
+                        sb.Append("\\'"); break;
+                    }
+                case '"':
+                    if (stringMode) {
+                        sb.Append("\\\""); break;
+                    }
+                    else {
+                        sb.Append(c); break;
+                    }
+                case '\0': sb.Append("\\0"); break;
+                default:
+                    if (char.IsLetterOrDigit(c) || char.IsPunctuation(c) || char.IsSeparator(c) || char.IsSymbol(c)) {
+                        sb.Append(c);
+                    }
+                    else {
+                        var hex = "0000" + Convert.ToString(c, 16);
+                        sb.Append("\\u").Append(hex.Substring(hex.Length - 4, 4));
+                    }
+                    break;
+            }
+        }
+
+        private static readonly Regex pattern
+            = new Regex("'(?<char>[^'\\\\]|\\\\[abfnrtv\\\\\'0]|\\\\o[0-7]{3}|\\\\x[0-9a-fA-F]{2}|\\\\u[0-9a-fA-F]{4})'");
+
+        private static CharFormat _instance;
+        public static CharFormat Instance => (_instance != null) ? _instance : (_instance = new CharFormat());
+
+        private CharFormat() : base(TokenType.SpecialLiteral, pattern, FormatPriority.AlwaysLeft) { }
+
+        protected override Val OnParse(Match m) {
             return new RealVal(Unescape(m.Groups["char"].Value), new FormatHint(this));
         }
 
@@ -105,5 +111,6 @@ namespace Shapoco.Calctus.Model.Formats {
             sb.Append("'");
             return sb.ToString();
         }
+
     }
 }

@@ -75,7 +75,7 @@ namespace Shapoco.Calctus.UI.Sheets {
                     text = text.Insert(selStart, value);
                 }
                 Text = text;
-                SetSelection(selStart);
+                SetSelection(selStart + value.Length);
             }
         }
 
@@ -425,7 +425,7 @@ namespace Shapoco.Calctus.UI.Sheets {
                 if (token == null) return;
 
                 if (real.TryParse(token.Text, out frac, out eChar, out exp)) { }
-                else if (SiPrefixFormatter.TryParse(token.Text, out frac, out var prefixIndex)) {
+                else if (SiPrefixFormat.TryParse(token.Text, out frac, out var prefixIndex)) {
                     exp = prefixIndex * 3;
                 }
                 else {
@@ -466,10 +466,10 @@ namespace Shapoco.Calctus.UI.Sheets {
                 var token = queryTokenArgs.Result;
                 if (token == null) return;
 
-                if (SiPrefixFormatter.TryParse(token.Text, out frac, out prefixIndex)) {
+                if (SiPrefixFormat.TryParse(token.Text, out frac, out prefixIndex)) {
                     isBinaryPrefix = false;
                 }
-                else if (BinaryPrefixFormatter.TryParse(token.Text, out frac, out prefixIndex)) {
+                else if (BinaryPrefixFormat.TryParse(token.Text, out frac, out prefixIndex)) {
                     isBinaryPrefix = true;
                 }
                 else if (real.TryParse(token.Text, out frac, out _, out int exp)) {
@@ -488,14 +488,14 @@ namespace Shapoco.Calctus.UI.Sheets {
                 if (isBinaryPrefix) {
                     frac *= (decimal)Math.Pow(1024, -amount);
                     prefixIndex += amount;
-                    if (prefixIndex < BinaryPrefixFormatter.MinPrefixIndex || BinaryPrefixFormatter.MaxPrefixIndex < prefixIndex) {
+                    if (prefixIndex < BinaryPrefixFormat.MinPrefixIndex || BinaryPrefixFormat.MaxPrefixIndex < prefixIndex) {
                         return;
                     }
                 }
                 else {
                     frac *= RMath.Pow10(-amount * 3);
                     prefixIndex += amount;
-                    if (prefixIndex < SiPrefixFormatter.MinPrefixIndex || SiPrefixFormatter.MaxPrefixIndex < prefixIndex) {
+                    if (prefixIndex < SiPrefixFormat.MinPrefixIndex || SiPrefixFormat.MaxPrefixIndex < prefixIndex) {
                         return;
                     }
                 }
@@ -503,10 +503,10 @@ namespace Shapoco.Calctus.UI.Sheets {
                 // 文字列に変換
                 string changedStr = frac.ToString("0.##############################", CultureInfo.InvariantCulture);
                 if (isBinaryPrefix) {
-                    changedStr += BinaryPrefixFormatter.GetPrefixString(prefixIndex);
+                    changedStr += BinaryPrefixFormat.GetPrefixString(prefixIndex);
                 }
                 else if (prefixIndex != 0) {
-                    changedStr += SiPrefixFormatter.GetPrefixChar(prefixIndex);
+                    changedStr += SiPrefixFormat.GetPrefixChar(prefixIndex);
                 }
 
                 // 再度文字列に変換して元のトークンと差し替える

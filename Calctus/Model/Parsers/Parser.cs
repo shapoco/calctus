@@ -85,13 +85,13 @@ namespace Shapoco.Calctus.Model.Parsers {
             }
             else if (ReadIf(TokenType.OperatorSymbol, out tok)) {
                 var expr = UnaryOpExpr();
-                if (expr is Number num && num.Value is RealVal val) {
+                if (expr is Literal num && num.Value is RealVal val) {
                     // 単純な
                     if (tok.Text == OpDef.Plus.Symbol) {
                         return expr;
                     }
                     else if (tok.Text == OpDef.ArithInv.Symbol) {
-                        return new Number(new RealVal(-val.AsReal));
+                        return new Literal(new RealVal(-val.AsReal));
                     }
                 }
                 return new UnaryOp(expr, tok);
@@ -133,11 +133,8 @@ namespace Shapoco.Calctus.Model.Parsers {
                 }
                 return new ArrayExpr(tok, elms.ToArray());
             }
-            else if (ReadIf(TokenType.NumericLiteral, out tok)) {
-                return new Number(tok);
-            }
-            else if (ReadIf(TokenType.BoolLiteral, out tok)) {
-                return new BoolLiteral(tok);
+            else if (ReadIf(TokenType.NumericLiteral, out tok) || ReadIf(TokenType.SpecialLiteral, out tok)) {
+                return new Literal(tok);
             }
             else if (ReadIf(TokenType.Word, out tok)) {
                 var args = new List<Expr>();

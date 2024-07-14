@@ -26,7 +26,7 @@ namespace Shapoco.Calctus.Model.Functions.BuiltIns {
             }
         }, "Converts string `s` to an array of character code.");
 
-        public static readonly BuiltInFuncDef str = new BuiltInFuncDef("str(array)", (e, a) => {
+        public static readonly BuiltInFuncDef str = new BuiltInFuncDef("str(x)", (e, a) => {
             if (a[0] is ArrayVal arrayVal) {
                 var vals = (Val[])arrayVal.Raw;
                 var sb = new StringBuilder();
@@ -41,7 +41,7 @@ namespace Shapoco.Calctus.Model.Functions.BuiltIns {
             else {
                 return new StrVal(a[0].AsString);
             }
-        }, "Converts `array` to a string.");
+        }, "Converts `x` to a string.");
 
     }
 }

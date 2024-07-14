@@ -7,7 +7,7 @@ using System.Threading.Tasks;
 namespace Shapoco.Calctus.Model.Parsers {
     enum TokenType {
         NumericLiteral,
-        BoolLiteral,
+        SpecialLiteral,
         OperatorSymbol,
         GeneralSymbol,
         Keyword,

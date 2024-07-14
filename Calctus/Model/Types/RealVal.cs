@@ -12,6 +12,18 @@ namespace Shapoco.Calctus.Model.Types {
         public static readonly RealVal Zero = new RealVal(0);
         public static readonly RealVal One = new RealVal(1);
 
+        public const int WeekdayMin = 0;
+        public const int WeekdayMax = 6;
+        public static readonly RealVal Sunday = (RealVal)(new RealVal(0).FormatDayOfWeek());
+        public static readonly RealVal Monday = (RealVal)(new RealVal(1).FormatDayOfWeek());
+        public static readonly RealVal Tuesday = (RealVal)(new RealVal(2).FormatDayOfWeek());
+        public static readonly RealVal Wednesday = (RealVal)(new RealVal(3).FormatDayOfWeek());
+        public static readonly RealVal Thursday = (RealVal)(new RealVal(4).FormatDayOfWeek());
+        public static readonly RealVal Friday = (RealVal)(new RealVal(5).FormatDayOfWeek());
+        public static readonly RealVal Saturday = (RealVal)(new RealVal(6).FormatDayOfWeek());
+        public static readonly RealVal[] Weekdays
+            = { Sunday, Monday, Tuesday, Wednesday, Thursday, Friday, Saturday };
+
         private real _raw;
         public RealVal(real val, FormatHint fmt = null) : base(fmt) {
             this._raw = val;
@@ -76,7 +88,7 @@ namespace Shapoco.Calctus.Model.Types {
         public override bool AsBool => throw new InvalidCastException();
         public override string AsString {
             get {
-                if (FormatHint.Formatter == NumberFormatter.CStyleChar && char.MinValue <= _raw && _raw <= char.MaxValue) {
+                if (FormatHint.Format == CharFormat.Instance && char.MinValue <= _raw && _raw <= char.MaxValue) {
                     return ((char)_raw).ToString();
                 }
                 else {
@@ -90,7 +102,7 @@ namespace Shapoco.Calctus.Model.Types {
         public override int[] AsIntArray => new int[] { (int)_raw };
         public override byte[] AsByteArray => new byte[] { (byte)_raw };
 
-        public override string ToString(FormatSettings fs) => FormatHint.Formatter.Format(this, fs);
+        public override string ToString(FormatSettings fs) => FormatHint.Format.Format(this, fs);
         //public static implicit operator double(RealVal val) => val.AsDouble();
         //public static implicit operator RealVal(double val) => new RealVal(val);
 

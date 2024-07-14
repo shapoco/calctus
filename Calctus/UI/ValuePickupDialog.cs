@@ -119,7 +119,7 @@ namespace Shapoco.Calctus.UI {
                     str = str.Replace(",", "");
                 }
                 if (valueAsStringCheckBox.Checked) {
-                    str = Model.Formats.StringFormatter.FormatAsStringLiteral(str);
+                    str = Model.Formats.StringFormat.FormatAsStringLiteral(str);
                 }
                 else {
                     str = str.Trim();

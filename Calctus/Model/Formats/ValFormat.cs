@@ -2,25 +2,29 @@
 using System.Collections.Generic;
 using System.Linq;
 using System.Text;
-using System.Text.RegularExpressions;
 using System.Threading.Tasks;
+using System.Text.RegularExpressions;
 using Shapoco.Calctus.Model.Types;
+using Shapoco.Calctus.Model.Parsers;
 using Shapoco.Calctus.Model.Mathematics;
 using Shapoco.Calctus.Model.Evaluations;
 
 namespace Shapoco.Calctus.Model.Formats {
-    abstract class NumberFormatter {
+    abstract class ValFormat {
+        public readonly TokenType TokenType;
         public readonly Regex Pattern;
         public readonly FormatPriority Priority;
 
-        public NumberFormatter(Regex ptn, FormatPriority priority) {
-            Pattern = ptn;
-            Priority = priority;
+        public ValFormat(TokenType tokenType, Regex pattern, FormatPriority priority) {
+            this.TokenType = tokenType;
+            this.Pattern = pattern;
+            this.Priority = priority;
         }
 
-        public abstract Val Parse(Match m);
+        public Val Parse(Match m) => OnParse(m);
+        protected abstract Val OnParse(Match m);
 
-        public virtual string Format(Val val, FormatSettings fs) => OnFormat(val, fs);
+        public string Format(Val val, FormatSettings fs) => OnFormat(val, fs);
         protected virtual string OnFormat(Val val, FormatSettings fs) {
             if (val is ArrayVal aval) {
                 var raw = (Val[])aval.Raw;
@@ -34,73 +38,48 @@ namespace Shapoco.Calctus.Model.Formats {
                 return sb.ToString();
             }
             else if (val is BoolVal) {
-                return val.AsBool ? BoolVal.TrueKeyword : BoolVal.FalseKeyword;
+                return BoolFormat.FormatAsStringLiteral(val.AsBool);
             }
             else if (val is StrVal) {
-                return StringFormatter.FormatAsStringLiteral(val.AsString);
+                return StringFormat.FormatAsStringLiteral(val.AsString);
             }
             else {
-                return RealToString(val.AsReal, fs, true);
+                return RealFormat.RealToString(val.AsReal, fs, true);
             }
         }
 
-        public static readonly IntFormatter CStyleInt = new IntFormatter(10, "", new Regex(@"(?<digits>([1-9][0-9]*(_[0-9]+)*|0)([eE][+-]?[0-9]+(_[0-9]+)*)?)"), FormatPriority.Weak);
-        public static readonly RealFormatter CStyleReal = new RealFormatter();
-        public static readonly IntFormatter CStyleHex = new IntFormatter(16, "0x", new Regex(@"0[xX](?<digits>[0-9a-fA-F]+(_[0-9a-fA-F]+)*)"), FormatPriority.AlwaysLeft);
-        public static readonly IntFormatter CStyleOct = new IntFormatter(8, "0", new Regex(@"0(?<digits>[0-7]+(_[0-7]+)*)"), FormatPriority.AlwaysLeft);
-        public static readonly IntFormatter CStyleBin = new IntFormatter(2, "0b", new Regex(@"0[bB](?<digits>[01]+(_[01]+)*)"), FormatPriority.AlwaysLeft);
-        public static readonly CharFormatter CStyleChar = new CharFormatter();
-        public static readonly StringFormatter CStyleString = new StringFormatter();
-        public static readonly SiPrefixFormatter SiPrefixed = new SiPrefixFormatter();
-        public static readonly BinaryPrefixFormatter BinaryPrefixed = new BinaryPrefixFormatter();
-        public static readonly DateTimeFormatter DateTime = new DateTimeFormatter();
-        public static readonly WebColorFormatter WebColor = new WebColorFormatter();
+        public static IntFormat CStyleInt => IntFormat.Instance_CStyleInt;
+        public static RealFormat CStyleReal => RealFormat.Instance;
+        public static IntFormat CStyleHex => IntFormat.Instance_CStyleHex;
+        public static IntFormat CStyleOct => IntFormat.Instance_CStyleOct;
+        public static IntFormat CStyleBin => IntFormat.Instance_CStyleBin;
+        public static CharFormat CStyleChar => CharFormat.Instance;
+        public static StringFormat CStyleString => StringFormat.Instance;
+        public static BoolFormat CStyleBool => BoolFormat.Instance;
+        public static SiPrefixFormat SiPrefixed => SiPrefixFormat.Instance;
+        public static BinaryPrefixFormat BinaryPrefixed => BinaryPrefixFormat.Instance;
+        public static DateTimeFormat DateTime => DateTimeFormat.Instance;
+        public static WeekdayFormat Weekday => WeekdayFormat.Instance;
+        public static WebColorFormat WebColor => WebColorFormat.Instance;
 
-        public static NumberFormatter[] NativeFormats => new NumberFormatter[] {
-            CStyleInt, 
-            CStyleReal, 
-            CStyleHex, 
-            CStyleOct, 
+        public static readonly ValFormat[] NativeFormats = {
+            CStyleInt,
+            CStyleReal,
+            CStyleHex,
+            CStyleOct,
             CStyleBin,
             CStyleChar,
             CStyleString,
+            CStyleBool,
             SiPrefixed,
             BinaryPrefixed,
             DateTime,
+            Weekday,
             WebColor,
         };
 
-        public static string RealToString(real val, FormatSettings fs, bool allowENotation) {
-            if (val == 0.0m) return "0";
-
-            var sbDecFormat = new StringBuilder("0.");
-            for (int i = 0; i < fs.DecimalLengthToDisplay; i++) {
-                sbDecFormat.Append('#');
-            }
-            var decFormat = sbDecFormat.ToString();
-
-            int exp = RMath.FLog10Abs(val);
-            if (allowENotation && fs.ENotationEnabled && exp >= fs.ENotationExpPositiveMin) {
-                if (fs.ENotationAlignment) {
-                    exp = (int)Math.Floor((double)exp / 3) * 3;
-                }
-                var frac = val / RMath.Pow10(exp);
-                return frac.ToString(decFormat) + "e" + exp;
-            }
-            else if (allowENotation && fs.ENotationEnabled && exp <= fs.ENotationExpNegativeMax) {
-                if (fs.ENotationAlignment) {
-                    exp = (int)Math.Floor((double)exp / 3) * 3;
-                }
-                var frac = val * RMath.Pow10(-exp);
-                return frac.ToString(decFormat) + "e" + exp;
-            }
-            else {
-                return val.ToString(decFormat);
-            }
-        }
-
         public static void Test(FormatSettings s, Val val, string str) {
-            Assert.Equal(nameof(NumberFormatter), val.ToString(s), str);
+            Assert.Equal(nameof(ValFormat), val.ToString(s), str);
         }
 
         public static void Test() {

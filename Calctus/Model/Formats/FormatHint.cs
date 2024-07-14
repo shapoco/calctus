@@ -7,16 +7,17 @@ using System.Threading.Tasks;
 namespace Shapoco.Calctus.Model.Formats {
     /// <summary>Val の表現に関するヒントを格納するクラス</summary>
     class FormatHint {
-        public static readonly FormatHint Default = new FormatHint(NumberFormatter.CStyleReal);
+        public static readonly FormatHint Default = new FormatHint(ValFormat.CStyleReal);
 
-        public readonly NumberFormatter Formatter;
+        public readonly ValFormat Format;
 
-        public FormatHint(NumberFormatter f) {
-            this.Formatter = f;
+        public FormatHint(ValFormat f) {
+            System.Diagnostics.Debug.Assert(f != null);
+            this.Format = f;
         }
 
         public FormatHint Select(FormatHint b) {
-            if (Formatter.Priority == FormatPriority.Weak && b.Formatter.Priority == FormatPriority.Strong) {
+            if (Format.Priority == FormatPriority.Weak && b.Format.Priority == FormatPriority.Strong) {
                 // 左辺が標準の整数または実数で右辺が接頭語付きの場合は接頭語を優先する
                 return b;
             }

@@ -37,7 +37,7 @@ namespace Shapoco.Calctus.Model.Types {
                 return thisArray;
             }
             else if (this is StrVal thisStr) {
-                return new ArrayVal(thisStr.AsString.Select(p => (real)p).ToArray(), new FormatHint(NumberFormatter.CStyleChar));
+                return new ArrayVal(thisStr.AsString.Select(p => (real)p).ToArray(), new FormatHint(ValFormat.CStyleChar));
             }
             else {
                 throw new InvalidCastException();
@@ -78,17 +78,18 @@ namespace Shapoco.Calctus.Model.Types {
         //public static explicit operator int(Val val) => val.AsInt();
 
         public Val FormatDefault() => Format(FormatHint.Default);
-        public Val FormatInt() => Format(new FormatHint(NumberFormatter.CStyleInt));
-        public Val FormatReal() => Format(new FormatHint(NumberFormatter.CStyleReal));
-        public Val FormatHex() => Format(new FormatHint(NumberFormatter.CStyleHex));
-        public Val FormatBin() => Format(new FormatHint(NumberFormatter.CStyleBin));
-        public Val FormatOct() => Format(new FormatHint(NumberFormatter.CStyleOct));
-        public Val FormatChar() => Format(new FormatHint(NumberFormatter.CStyleChar));
-        public Val FormatString() => Format(new FormatHint(NumberFormatter.CStyleString));
-        public Val FormatSiPrefix() => Format(new FormatHint(NumberFormatter.SiPrefixed));
-        public Val FormatBinaryPrefix() => Format(new FormatHint(NumberFormatter.BinaryPrefixed));
-        public Val FormatDateTime() => Format(new FormatHint(NumberFormatter.DateTime));
-        public Val FormatWebColor() => Format(new FormatHint(NumberFormatter.WebColor));
+        public Val FormatInt() => Format(new FormatHint(ValFormat.CStyleInt));
+        public Val FormatReal() => Format(new FormatHint(ValFormat.CStyleReal));
+        public Val FormatHex() => Format(new FormatHint(ValFormat.CStyleHex));
+        public Val FormatBin() => Format(new FormatHint(ValFormat.CStyleBin));
+        public Val FormatOct() => Format(new FormatHint(ValFormat.CStyleOct));
+        public Val FormatChar() => Format(new FormatHint(ValFormat.CStyleChar));
+        public Val FormatString() => Format(new FormatHint(ValFormat.CStyleString));
+        public Val FormatSiPrefix() => Format(new FormatHint(ValFormat.SiPrefixed));
+        public Val FormatBinaryPrefix() => Format(new FormatHint(ValFormat.BinaryPrefixed));
+        public Val FormatDateTime() => Format(new FormatHint(ValFormat.DateTime));
+        public Val FormatDayOfWeek() => Format(new FormatHint(ValFormat.Weekday));
+        public Val FormatWebColor() => Format(new FormatHint(ValFormat.WebColor));
 
         public Val Format(FormatHint fmt) {
             if (this.FormatHint.Equals(fmt)) 

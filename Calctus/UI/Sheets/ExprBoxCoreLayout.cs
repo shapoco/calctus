@@ -123,7 +123,7 @@ namespace Shapoco.Calctus.UI.Sheets {
                 // 各文字の位置を割り出す
                 // クリック座標からカーソル位置を割り出したりするのに使う
                 for (int i = 0; i < text.Length; i++) {
-                    using (var sf = new StringFormat()) {
+                    using (var sf = new System.Drawing.StringFormat()) {
                         if (_chars[i].Shifted) xShift += numericSepWidth;
 
                         // 両端の空白も含めて位置を知るのに MeasureTrailingSpaces が必要
@@ -168,56 +168,42 @@ namespace Shapoco.Calctus.UI.Sheets {
                 switch (t.Type) {
                     case TokenType.Word:
                         // 識別子の強調表示
-                        for (int i = 0; i < t.Text.Length; i++) {
-                            _chars[t.Position.Index + i].Style.ForeColor = s.Appearance_Color_Identifiers;
-                        }
+                        setForeColor(t, s.Appearance_Color_Identifiers);
                         break;
 
-                    case TokenType.BoolLiteral:
-                        // 真偽値の強調表示
-                        for (int i = 0; i < t.Text.Length; i++) {
-                            _chars[t.Position.Index + i].Style.ForeColor = s.Appearance_Color_Special_Literals;
-                        }
+                    case TokenType.SpecialLiteral:
+                        // 特殊リテラルの強調表示
+                        setForeColor(t, s.Appearance_Color_Special_Literals);
                         break;
 
                     case TokenType.NumericLiteral:
-                        if (t.Hint is NumberTokenHint nth) {
-                            if (nth.Value.FormatHint.Formatter == NumberFormatter.SiPrefixed) {
+                        if (t.Hint is LiteralTokenHint nth) {
+                            if (nth.Value.FormatHint.Format == ValFormat.SiPrefixed) {
                                 // SI接頭語の強調表示
-                                _chars[t.Position.Index + t.Text.Length - 1].Style.ForeColor = s.Appearance_Color_SI_Prefix;
+                                setForeColor(t.Position.Index + t.Text.Length - 1, 1, s.Appearance_Color_SI_Prefix);
                             }
-                            else if (nth.Value.FormatHint.Formatter == NumberFormatter.BinaryPrefixed) {
+                            else if (nth.Value.FormatHint.Format == ValFormat.BinaryPrefixed) {
                                 // 二進接頭語の強調表示
-                                _chars[t.Position.Index + t.Text.Length - 2].Style.ForeColor = s.Appearance_Color_SI_Prefix;
-                                _chars[t.Position.Index + t.Text.Length - 1].Style.ForeColor = s.Appearance_Color_SI_Prefix;
+                                setForeColor(t.Position.Index + t.Text.Length - 2, 2, s.Appearance_Color_SI_Prefix);
                             }
-                            else if (nth.Value.FormatHint.Formatter == NumberFormatter.WebColor) {
+                            else if (nth.Value.FormatHint.Format == ValFormat.WebColor) {
                                 // WebColorの強調表示
                                 var back = Color.FromArgb((0xff << 24) | nth.Value.AsInt);
                                 var gray = ColorUtils.GrayScale(back);
                                 var fore = gray.R < 128 ? Color.White : Color.Black;
-                                for (int i = 0; i < t.Text.Length; i++) {
-                                    _chars[t.Position.Index + i].Style.BackColor = back;
-                                    _chars[t.Position.Index + i].Style.ForeColor = fore;
-                                }
+                                setBackColor(t, back);
+                                setForeColor(t, fore);
                             }
-                            else if (nth.Value.FormatHint.Formatter == NumberFormatter.CStyleChar || 
-                                    nth.Value.FormatHint.Formatter == NumberFormatter.CStyleString || 
-                                    nth.Value.FormatHint.Formatter == NumberFormatter.DateTime ||
-                                    nth.Value is StrVal) {
+                            else if (nth.Value.FormatHint.Format == ValFormat.CStyleChar) {
                                 // その他の特殊リテラルの強調表示
-                                for (int i = 0; i < t.Text.Length; i++) {
-                                    _chars[t.Position.Index + i].Style.ForeColor = s.Appearance_Color_Special_Literals;
-                                }
+                                setForeColor(t, s.Appearance_Color_Special_Literals);
                             }
-                            else if (nth.Value.FormatHint.Formatter == NumberFormatter.CStyleInt || 
-                                    nth.Value.FormatHint.Formatter == NumberFormatter.CStyleReal) {
+                            else if (nth.Value.FormatHint.Format == ValFormat.CStyleInt || 
+                                    nth.Value.FormatHint.Format == ValFormat.CStyleReal) {
                                 Match m;
                                 if ((m = ExponentPattern.Match(t.Text)).Success) {
                                     // 指数の強調表示
-                                    for (int i = 0; i < m.Length; i++) {
-                                        _chars[t.Position.Index + m.Index + i].Style.ForeColor = s.Appearance_Color_SI_Prefix;
-                                    }
+                                    setForeColor(t.Position.Index + m.Index, m.Length, s.Appearance_Color_SI_Prefix);
                                 }
                             }
                         }
@@ -272,7 +258,21 @@ namespace Shapoco.Calctus.UI.Sheets {
 
             PreferredSize = new Size(CursorPosToX(text.Length), _charHeight);
         }
-        
+
+        private void setForeColor(Token t, Color color) => setForeColor(t.Position.Index, t.Text.Length, color);
+        private void setForeColor(int start, int length, Color color) {
+            for (int i = 0; i < length; i++) {
+                _chars[start + i].Style.ForeColor = color;
+            }
+        }
+
+        private void setBackColor(Token t, Color color) => setBackColor(t.Position.Index, t.Text.Length, color);
+        private void setBackColor(int start, int length, Color color) {
+            for (int i = 0; i < length; i++) {
+                _chars[start + i].Style.BackColor = color;
+            }
+        }
+
         /// <summary>カーソル位置からX座標を返す</summary>
         public int CursorPosToX(int i) {
             if (_chars.Length == 0 || i < 0) {

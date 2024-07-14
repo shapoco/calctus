@@ -18,7 +18,7 @@ namespace Shapoco.Calctus.Model.Mathematics {
 
         public static Val Solve(EvalContext e, FuncDef f, Val paramVal0 = null, Val paramVal1 = null) {
             // パラメータの評価
-            var formatHint = new FormatHint(NumberFormatter.CStyleReal);
+            var formatHint = new FormatHint(ValFormat.CStyleReal);
 
             // スコープの生成
             var scope = new EvalContext(e);

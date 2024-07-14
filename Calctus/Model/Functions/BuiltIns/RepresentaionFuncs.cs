@@ -13,6 +13,6 @@ namespace Shapoco.Calctus.Model.Functions.BuiltIns {
         public static readonly BuiltInFuncDef si = new BuiltInFuncDef("si(*x)", (e, a) => a[0].FormatSiPrefix(), "Converts `x` to SI prefixed representation.");
         public static readonly BuiltInFuncDef kibi = new BuiltInFuncDef("kibi(*x)", (e, a) => a[0].FormatBinaryPrefix(), "Converts `x` to binary prefixed representation.");
         public static readonly BuiltInFuncDef char_1 = new BuiltInFuncDef("char(*x)", (e, a) => a[0].FormatChar(), "Converts `x` to character representation.");
-        public static readonly BuiltInFuncDef datetime = new BuiltInFuncDef("datetime(*x)", (e, a) => a[0].FormatDateTime(), "Converts `x` to datetime representation.");
+        public static readonly BuiltInFuncDef datetime = new BuiltInFuncDef("datetime(*x)", (e, a) => a[0].FormatDateTime(), "Converts UNIX time `x` to datetime representation.");
     }
 }

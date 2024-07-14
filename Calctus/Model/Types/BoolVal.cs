@@ -8,9 +8,6 @@ using Shapoco.Calctus.Model.Evaluations;
 
 namespace Shapoco.Calctus.Model.Types {
     class BoolVal : Val {
-        public const string TrueKeyword = "true";
-        public const string FalseKeyword = "false";
-
         public static readonly BoolVal True  = new BoolVal(true);
         public static readonly BoolVal False = new BoolVal(false);
 
@@ -42,7 +39,7 @@ namespace Shapoco.Calctus.Model.Types {
         public override int[] AsIntArray => throw new InvalidCastException();
         public override byte[] AsByteArray => throw new InvalidCastException();
 
-        public override string ToString(FormatSettings e) => _raw ? TrueKeyword : FalseKeyword;
+        public override string ToString(FormatSettings fs) => BoolFormat.FormatAsStringLiteral(_raw);
 
         protected override RealVal OnAsRealVal() => throw new InvalidCastException();
 

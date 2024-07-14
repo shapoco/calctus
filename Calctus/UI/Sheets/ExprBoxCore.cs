@@ -8,7 +8,7 @@ using System.Windows.Forms;
 using System.Drawing;
 using Shapoco.Calctus.Model;
 using Shapoco.Calctus.Model.Formats;
-using Shapoco.Calctus.Model.Sheets;
+using Shapoco.Calctus.Model.Standards;
 using Shapoco.Calctus.Model.Expressions;
 
 namespace Shapoco.Calctus.UI.Sheets {
@@ -97,10 +97,16 @@ namespace Shapoco.Calctus.UI.Sheets {
                 _edit.SelectedText = "";
             }
         }
+        public void InsertToday() {
+            if (!ReadOnly) {
+                CandidateHide();
+                _edit.SelectedText = DateTimeFormat.FormatAsStringLiteral(UnixTime.Today);
+            }
+        }
         public void InsertCurrentTime() {
             if (!ReadOnly) {
                 CandidateHide();
-                _edit.SelectedText = DateTimeFormatter.ToString(DateTime.Now);
+                _edit.SelectedText = DateTimeFormat.FormatAsStringLiteral(UnixTime.Now);
             }
         }
 

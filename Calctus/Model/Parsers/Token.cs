@@ -33,14 +33,5 @@ namespace Shapoco.Calctus.Model.Parsers {
         }
 
         public static Token FromWord(string s) => new Token(TokenType.Word, TextPosition.Nowhere, s);
-
     }
-
-    class NumberTokenHint {
-        public readonly Val Value;
-        public NumberTokenHint(Val v) {
-            this.Value = v;
-        }
-    }
-
 }

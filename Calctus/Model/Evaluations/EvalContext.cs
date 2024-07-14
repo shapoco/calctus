@@ -11,6 +11,7 @@ using Shapoco.Calctus.Model.Functions;
 
 namespace Shapoco.Calctus.Model.Evaluations {
     class EvalContext {
+
         private Dictionary<string, Var> _vars = new Dictionary<string, Var>();
         public readonly EvalSettings EvalSettings;
         public readonly List<PlotCall> PlotCalls = new List<PlotCall>();
@@ -20,29 +21,12 @@ namespace Shapoco.Calctus.Model.Evaluations {
             _vars.Add(name, new Var(new Token(TokenType.Word, TextPosition.Nowhere, name), val, true, desc));
         }
 
-        private void AddConstantReal(string name, real value, string desc) {
-            DefConst(name, new RealVal(value), desc);
-        }
-
-        private void AddConstantHex(string name, decimal value, string desc) {
-            DefConst(name, new RealVal((real)value).FormatHex(), desc);
-        }
-
         public EvalContext() {
             EvalSettings = new EvalSettings();
             Depth = 0;
-            this.AddConstantReal("PI", RMath.PI, "circle ratio");
-            this.AddConstantReal("E", RMath.E, "base of natural logarithm");
-            this.AddConstantHex("INT_MIN", Int32.MinValue, "minimum value of 32 bit signed integer");
-            this.AddConstantHex("INT_MAX", Int32.MaxValue, "maximum value of 32 bit signed integer");
-            this.AddConstantHex("UINT_MIN", UInt32.MinValue, "minimum value of 32 bit unsigned integer");
-            this.AddConstantHex("UINT_MAX", UInt32.MaxValue, "maximum value of 32 bit unsigned integer");
-            this.AddConstantHex("LONG_MIN", Int64.MinValue, "minimum value of 64 bit signed integer");
-            this.AddConstantHex("LONG_MAX", Int64.MaxValue, "maximum value of 64 bit signed integer");
-            this.AddConstantHex("ULONG_MIN", UInt64.MinValue, "minimum value of 64 bit unsigned integer");
-            this.AddConstantHex("ULONG_MAX", UInt64.MaxValue, "maximum value of 64 bit unsigned integer");
-            this.AddConstantReal("DECIMAL_MIN", real.MinValue, "minimum value of Decimal");
-            this.AddConstantReal("DECIMAL_MAX", real.MaxValue, "maximum value of Decimal");
+            foreach(var constVar in BuiltInConstants.EnumConstants()) {
+                _vars.Add(constVar.Name.Text, constVar);
+            }
         }
 
         public EvalContext(EvalContext src) {

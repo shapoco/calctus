@@ -105,7 +105,7 @@ namespace Shapoco.Calctus.Model.Types {
         public override int[] AsIntArray => _raw.Select(p => p.AsInt).ToArray();
         public override byte[] AsByteArray => _raw.Select(p => p.AsByte).ToArray();
 
-        public override string ToString(FormatSettings fs) => FormatHint.Formatter.Format(this, fs);
+        public override string ToString(FormatSettings fs) => FormatHint.Format.Format(this, fs);
 
         protected override RealVal OnAsRealVal() => throw new InvalidCastException();
 

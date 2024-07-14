@@ -46,6 +46,7 @@ namespace Shapoco.Calctus.UI.Sheets {
         private ToolStripMenuItem _cmenuTextPaste = new ToolStripMenuItem("Paste text");
         private ToolStripMenuItem _cmenuTextDelete = new ToolStripMenuItem("Delete text");
         private ToolStripMenuItem _cmenuCopyAll = new ToolStripMenuItem("Copy all");
+        private ToolStripMenuItem _cmenuInsertToday = new ToolStripMenuItem("Insert today's date");
         private ToolStripMenuItem _cmenuInsertTime = new ToolStripMenuItem("Insert current time");
         private ToolStripMenuItem _cmenuMoveUp = new ToolStripMenuItem("Move up");
         private ToolStripMenuItem _cmenuMoveDown = new ToolStripMenuItem("Move down");
@@ -78,6 +79,7 @@ namespace Shapoco.Calctus.UI.Sheets {
             _cmenuTextPaste.ShortcutKeyDisplayString = "Ctrl+V";
             _cmenuCopyAll.ShortcutKeyDisplayString = "Ctrl+Shift+C";
             _cmenuPickupValues.ShortcutKeyDisplayString = "Alt+C";
+            _cmenuInsertToday.ShortcutKeyDisplayString = "Ctrl+Shift+T";
             _cmenuInsertTime.ShortcutKeyDisplayString = "Ctrl+Shift+N";
             _cmenuMoveUp.ShortcutKeyDisplayString = "Ctrl+Shift+Up";
             _cmenuMoveDown.ShortcutKeyDisplayString = "Ctrl+Shift+Down";
@@ -95,6 +97,7 @@ namespace Shapoco.Calctus.UI.Sheets {
             _cmenuPickupValues.Click += (sender, e) => { PickupValuesUsingClipboard(); };
             _cmenuTextDelete.Click += (sender, e) => { getFocusedExprBox()?.Delete(); };
             _cmenuCopyAll.Click += (sender, e) => { CopyAll(); };
+            _cmenuInsertToday.Click += (sender, e) => { getFocusedExprBox()?.InsertToday(); };
             _cmenuInsertTime.Click += (sender, e) => { getFocusedExprBox()?.InsertCurrentTime(); };
             _cmenuMoveUp.Click += (sender, e) => { ItemMoveUp(); };
             _cmenuMoveDown.Click += (sender, e) => { ItemMoveDown(); };
@@ -117,6 +120,7 @@ namespace Shapoco.Calctus.UI.Sheets {
                 new ToolStripSeparator(),
                 _cmenuPickupValues,
                 new ToolStripSeparator(),
+                _cmenuInsertToday,
                 _cmenuInsertTime,
                 new ToolStripSeparator(),
                 _cmenuMoveUp,
@@ -525,6 +529,10 @@ namespace Shapoco.Calctus.UI.Sheets {
             else if (e.Modifiers == (Keys.Control | Keys.Shift) && e.KeyCode == Keys.Delete) {
                 e.Handled = true;
                 Clear();
+            }
+            else if (e.Modifiers == (Keys.Control | Keys.Shift) && e.KeyCode == Keys.T) {
+                e.Handled = true;
+                _cmenuInsertToday.PerformClick();
             }
             else if (e.Modifiers == (Keys.Control | Keys.Shift) && e.KeyCode == Keys.N) {
                 e.Handled = true;
@@ -994,9 +1002,9 @@ namespace Shapoco.Calctus.UI.Sheets {
                 }
             }
             list.Add(new InputCandidate(Sheet.LastAnsId, Sheet.LastAnsId, "last answer", false));
-            list.Add(new InputCandidate(BoolVal.TrueKeyword, BoolVal.TrueKeyword, "true value", false));
-            list.Add(new InputCandidate(BoolVal.FalseKeyword, BoolVal.FalseKeyword, "false value", false));
-            list.Add(new InputCandidate("def", "def", "user function definition", false));
+            foreach (var k in Keyword.EnumKeywords()) {
+                list.Add(new InputCandidate(k.Token, k.Token, k.Description, false));
+            }
             _inputCandidates = list.OrderBy(p => p.Id).ToArray();
             _recalcRequested = false;
 

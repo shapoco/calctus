@@ -15,20 +15,21 @@ namespace Shapoco.Calctus.Model.Parsers {
         public const string IdPattern = @"[\p{L}_][\p{L}\p{N}_]*";
         private static readonly Regex _wordRegexes = new Regex(IdPattern);
 
+        // 演算子以外の記号
+        private static readonly Regex GeneralSymbolRule = new Regex(@"[()\[\],:?]");
+
+        // キーワード
+        private static readonly Regex KeywordRule
+            = new Regex(@"(" + String.Join("|", Keyword.EnumKeywords().Select(p => p.Token)) + @")\b");
+
         private StringMatchReader _tr;
         private bool _eosReaded = false;
 
         // 長い順に並べた演算子記号
         private readonly Regex OpSymbolRule;
 
-        // 演算子以外の記号
-        private readonly Regex GeneralSymbolRule = new Regex(@"[()\[\],:?]");
-
-        // キーワード
-        private readonly Regex KeywordRule = new Regex(@"(def)\b");
-
         // 数値リテラル
-        private readonly NumberFormatter[] _numberFormatters;
+        private readonly ValFormat[] _numberFormatters;
         private readonly Regex[] _literalRegexes;
 
         public Lexer(string exprStr, int pos = 0) {
@@ -39,7 +40,7 @@ namespace Shapoco.Calctus.Model.Parsers {
                 .ToArray();
             OpSymbolRule = new Regex("(" + string.Join("|", opSymbols) + ")");
 
-            _numberFormatters = NumberFormatter.NativeFormats;
+            _numberFormatters = ValFormat.NativeFormats;
             _literalRegexes = _numberFormatters.Select(p => p.Pattern).ToArray();
 
             _tr = new StringMatchReader(exprStr, pos);
@@ -73,26 +74,20 @@ namespace Shapoco.Calctus.Model.Parsers {
 
             int capIndex;
             Match m;
-            if (_tr.Pop(_literalRegexes, out capIndex, out m )) {
+            if (_tr.Pop(_literalRegexes, out capIndex, out m)) {
                 // リテラル
                 var f = _numberFormatters[capIndex];
                 var val = f.Parse(m);
                 tok = m.Value;
-                return new Token(TokenType.NumericLiteral, pos, tok, new NumberTokenHint(val));
+                return new Token(f.TokenType, pos, tok, new LiteralTokenHint(val));
             }
             else if (_tr.Pop(KeywordRule, out tok)) {
-                // キーワード
+                // その他のキーワード
                 return new Token(TokenType.Keyword, pos, tok);
             }
             else if (_tr.Pop(_wordRegexes, out tok)) {
-                if (tok == BoolVal.TrueKeyword || tok == BoolVal.FalseKeyword) {
-                    // 真偽値
-                    return new Token(TokenType.BoolLiteral, pos, tok);
-                }
-                else {
-                    // ワード
-                    return new Token(TokenType.Word, pos, tok);
-                }
+                // ワード
+                return new Token(TokenType.Word, pos, tok);
             }
             else if (_tr.Pop(OpSymbolRule, out tok)) {
                 // 演算子記号

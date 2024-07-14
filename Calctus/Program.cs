@@ -16,7 +16,7 @@ namespace Shapoco.Calctus
         static void Main()
         {
 #if DEBUG
-            Model.Formats.NumberFormatter.Test();
+            //Model.Formats.ValFormat.Test();
             Model.Standards.PreferredNumbers.Test();
             Model.Types.ufixed113.Test();
             Model.Types.quad.Test();

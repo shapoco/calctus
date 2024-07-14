@@ -90,7 +90,7 @@ User-defined constants can also be used.
 See [Built-In Functions](FUNCTIONS.md) for details.
 
 <!-- START_OF_BUILT_IN_FUNCTION_TABLE -->
-Now Calctus has 152 built-in functions.
+Now Calctus has 163 built-in functions.
 
 |Category|Functions|
 |:--:|:--|
@@ -98,9 +98,9 @@ Now Calctus has 152 built-in functions.
 |Array|`aggregate(array,func)`, `all(array)`, `all(array,func)`, `any(array)`, `any(array,func)`, `concat(array0,array1)`, `contains(array,*val)`, `count(array,func)`, `except(array0,array1)`, `extend(array,func,count)`, `filter(array,func)`, `indexOf(array,*val)`, `intersect(array0,array1)`, `lastIndexOf(array,*val)`, `len(array)`, `map(array,func)`, `range(start,stop)`, `range(start,stop,step)`, `rangeInclusive(start,stop)`, `rangeInclusive(start,stop,step)`, `reverseArray(array)`, `sort(array)`, `sort(array,func)`, `union(array0,array1)`, `unique(array)`, `unique(array,func)`|
 |Assertion|`assert(x)`|
 |Bit/Byte Operation|`count1(*x)`, `pack(b,array[]...)`, `reverseBits(b,*x)`, `reverseBytes(b,*x)`, `rotateL(b,*x)`, `rotateL(b,n,*x)`, `rotateR(b,*x)`, `rotateR(b,n,*x)`, `swap2(*x)`, `swap4(*x)`, `swap8(*x)`, `swapNib(*x)`, `unpack(array,x)`, `unpack(b,n,x)`|
-|Cast|`array(s)`, `rat(*x)`, `rat(*x,max)`, `real(*x)`, `str(array)`|
+|Cast|`array(s)`, `rat(*x)`, `rat(*x,max)`, `real(*x)`, `str(x)`|
 |Color|`hsl2rgb(h,s,l)`, `hsv2rgb(h,s,v)`, `pack565(x,y,z)`, `rgb(r,g,b)`, `rgb(*rgb)`, `rgb2hsl(*rgb)`, `rgb2hsv(*rgb)`, `rgb2yuv(r,g,b)`, `rgb2yuv(*rgb)`, `rgbFrom565(*rgb)`, `rgbTo565(*rgb)`, `unpack565(*x)`, `yuv2rgb(y,u,v)`, `yuv2rgb(*yuv)`|
-|Date Time|`fromDays(*x)`, `fromHours(*x)`, `fromMinutes(*x)`, `fromSeconds(*x)`, `now()`, `toDays(*x)`, `toHours(*x)`, `toMinutes(*x)`, `toSeconds(*x)`|
+|Date Time|`datetime(year,mon,day)`, `datetime(year,mon,day,hour,min,sec)`, `dayOfMonth(*t)`, `dayOfWeek(*t)`, `dayOfYear(*t)`, `fromDays(*x)`, `fromHours(*x)`, `fromMinutes(*x)`, `fromSeconds(*x)`, `hourOf(*t)`, `minuteOf(*t)`, `monthOf(*t)`, `now()`, `secondOf(*t)`, `today()`, `toDays(*x)`, `toHours(*x)`, `toMinutes(*x)`, `toSeconds(*x)`, `yearOf(*t)`|
 |Encoding|`base64Dec(str)`, `base64DecBytes(str)`, `base64Enc(str)`, `base64EncBytes(bytes[]...)`, `urlDec(str)`, `urlEnc(str)`, `utf8Dec(bytes[]...)`, `utf8Enc(str)`|
 |E Series|`esCeil(series,*x)`, `esFloor(series,*x)`, `esRatio(series,*x)`, `esRound(series,*x)`|
 |Exponential|`clog10(*x)`, `clog2(*x)`, `exp(*x)`, `log(*x)`, `log10(*x)`, `log2(*x)`, `pow(*x,y)`, `sqrt(*x)`|

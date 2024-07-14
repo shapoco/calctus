@@ -45,7 +45,7 @@ namespace Shapoco.Calctus.Model.Types {
         public override int[] AsIntArray => throw new InvalidCastException();
         public override byte[] AsByteArray => throw new InvalidCastException();
 
-        public override string ToString(FormatSettings e) => StringFormatter.FormatAsStringLiteral(_raw);
+        public override string ToString(FormatSettings e) => StringFormat.FormatAsStringLiteral(_raw);
 
         protected override RealVal OnAsRealVal() => throw new InvalidCastException();
 

@@ -7,13 +7,18 @@ using System.Threading.Tasks;
 using Shapoco.Calctus.Model.Standards;
 using Shapoco.Calctus.Model.Types;
 using Shapoco.Calctus.Model.Mathematics;
-using Shapoco.Calctus.Model.Evaluations;
+using Shapoco.Calctus.Model.Parsers;
 
 namespace Shapoco.Calctus.Model.Formats {
-    class WebColorFormatter : NumberFormatter {
-        public WebColorFormatter() : base(new Regex(@"#(?<hex>[0-9a-fA-F]+)"), FormatPriority.AlwaysLeft) { }
+    class WebColorFormat : ValFormat {
+        private static readonly Regex pattern = new Regex(@"#(?<hex>[0-9a-fA-F]+)");
 
-        public override Val Parse(Match m) {
+        private static WebColorFormat _instance;
+        public static WebColorFormat Instance => (_instance != null) ? _instance : (_instance = new WebColorFormat());
+
+        private WebColorFormat() : base(TokenType.NumericLiteral, pattern, FormatPriority.AlwaysLeft) { }
+
+        protected override Val OnParse(Match m) {
             var tok = m.Groups["hex"].Value;
             if (tok.Length == 3) {
                 var rgb = ColorSpace.Rgb444ToRgb888(Convert.ToInt32(tok, 16));
