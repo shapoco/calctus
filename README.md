@@ -147,7 +147,7 @@ def f(x) = x^2
 f(3) // --> 9.
 ```
 
-### Lambda Function :new:
+### Lambda Function
 
 Rust-style lambda function is available.
 
@@ -200,9 +200,10 @@ solve(sin,-5,5) // --> [-3.141592654, 0, 3.141592654].
 Verilog-style part selection is available for arrays and scalar values.
 
 ```c++
-array=[1,2,3]
-array[1]   // --> 2.
-array[1]=5 // --> [1, 5, 3].
+a=[1,2,3]
+a[1]   // --> 2
+a[1]=5
+a      // --> [1, 5, 3]
 ```
 
 ```c++
@@ -212,7 +213,7 @@ x[11:4]=0xab
 x            // --> 0x1ab4.
 ```
 
-Negative indexes represents distance from the end of the array. :new:
+Negative indexes represents distance from the end of the array.
 
 ```c++
 array=[1,2,3,4,5]
@@ -220,7 +221,7 @@ array[-2]    // --> 4.
 array[-3:-1] // --> [3, 4, 5].
 ```
 
-### Range operator and range function :new:
+### Range operator and range function
 
 Rust-style range operators can be used to generate sequences of numbers.
 
@@ -238,7 +239,7 @@ rangeInclusive(1,5)     // --> [1, 2, 3, 4, 5]
 rangeInclusive(1,5,0.5) // --> [1, 1.5, 2, 2.5, 3, 3.5, 4, 4.5, 5]
 ```
 
-### Vectorization :new:
+### Vectorization
 
 Many unary and binary operators can be applied to arrays to perform operations on its individual elements.
 
