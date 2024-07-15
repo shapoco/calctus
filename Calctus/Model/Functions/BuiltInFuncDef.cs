@@ -44,21 +44,39 @@ namespace Shapoco.Calctus.Model.Functions {
         }
 
 #if DEBUG
-        private static string categoryNameOf(Type type) {
-            var typeName = type.Name.Substring(0, type.Name.Length - 5);
-            var sb = new StringBuilder();
-            foreach (var c in typeName) {
-                if (c == '_') {
-                    sb.Append('/');
+        private class FuncCategory {
+            public readonly string Name;
+            public readonly FuncDescription[] Functions;
+            public FuncCategory(Type categoryType) {
+                var typeName = categoryType.Name.Substring(0, categoryType.Name.Length - 5);
+                var sb = new StringBuilder();
+                foreach (var c in typeName) {
+                    if (c == '_') {
+                        sb.Append('/');
+                    }
+                    else if (sb.Length > 0 && sb[sb.Length - 1] != '/' && 'A' <= c && c <= 'Z') {
+                        sb.Append(' ').Append(c);
+                    }
+                    else {
+                        sb.Append(c);
+                    }
                 }
-                else if (sb.Length > 0 && sb[sb.Length - 1] != '/' && 'A' <= c && c <= 'Z') {
-                    sb.Append(' ').Append(c);
-                }
-                else {
-                    sb.Append(c);
-                }
+                this.Name = sb.ToString();
+
+                this.Functions = EnumFunctions(categoryType)
+                    .OrderBy(p => p.Name.Text)
+                    .Select(p => new FuncDescription(p))
+                    .ToArray();
             }
-            return sb.ToString();
+        }
+
+        private class FuncDescription {
+            public readonly string DeclText;
+            public readonly string Description;
+            public FuncDescription(BuiltInFuncDef funcDef) {
+                this.DeclText = funcDef.ToString();
+                this.Description = funcDef.Description;
+            }
         }
 
         public static void GenerateDocumentation() {
@@ -66,20 +84,25 @@ namespace Shapoco.Calctus.Model.Functions {
             if (!AppDataManager.AssemblyPath.EndsWith(@"\bin\Debug")) return;
             Console.WriteLine("Generating embedded function documentation...");
 
-            int numFuncs = 0;
+            var categories = Assembly.GetExecutingAssembly().GetTypes()
+                .Where(p => p.Name.EndsWith("Funcs"))
+                .OrderBy(p => p.Name)
+                .Select(p => new FuncCategory(p))
+                .ToArray();
+
+            int numFuncs = categories.Sum(p => p.Functions.Length);
 
             using (var writer = new StreamWriter(@"..\..\FUNCTIONS.md")) {
                 writer.WriteLine("# Built-In Functions");
                 writer.WriteLine();
-                foreach (var categoryType in Assembly.GetExecutingAssembly().GetTypes().Where(p => p.Name.EndsWith("Funcs")).OrderBy(p => p.Name)) {
-                    writer.WriteLine("## " + categoryNameOf(categoryType));
+                foreach (var cat in categories) {
+                    writer.WriteLine("## " + cat.Name);
                     writer.WriteLine();
-                    foreach (var func in EnumFunctions(categoryType).OrderBy(p => p.Name.Text)) {
-                        writer.WriteLine("### `" + func.ToString() + "`");
+                    foreach (var f in cat.Functions) {
+                        writer.WriteLine("### `" + f.DeclText + "`");
                         writer.WriteLine();
-                        writer.WriteLine(func.Description);
+                        writer.WriteLine(f.Description);
                         writer.WriteLine();
-                        numFuncs++;
                     }
                     writer.WriteLine("----");
                 }
@@ -116,12 +139,12 @@ namespace Shapoco.Calctus.Model.Functions {
                 writer.WriteLine();
                 writer.WriteLine("|Category|Functions|");
                 writer.WriteLine("|:--:|:--|");
-                foreach (var categoryType in Assembly.GetExecutingAssembly().GetTypes().Where(p => p.Name.EndsWith("Funcs")).OrderBy(p => p.Name)) {
-                    writer.Write("|" + categoryNameOf(categoryType) + "|");
+                foreach (var cat in categories) {
+                    writer.Write("|" + cat.Name + "|");
                     bool first = true;
-                    foreach (var func in EnumFunctions(categoryType).OrderBy(p => p.Name.Text)) {
+                    foreach (var f in cat.Functions) {
                         if (!first) writer.Write(", ");
-                        writer.Write("`" + func.ToString().Replace(" ", "") + "`");
+                        writer.Write("`" + f.DeclText.Replace(" ", "") + "`");
                         first = false;
                     }
                     writer.WriteLine("|");
