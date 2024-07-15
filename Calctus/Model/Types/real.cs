@@ -11,6 +11,8 @@ namespace Shapoco.Calctus.Model.Types {
         public static readonly Regex Pattern = new Regex(@"^(?<frac>-?([1-9][0-9]*(_[0-9]+)*|0)*(\.[0-9]+(_[0-9]+)*)?)(?<exppart>(?<echar>e|E)(?<exp>[+\-]?[0-9]+(_[0-9]+)*))?$");
         public static readonly real MaxValue = (real)decimal.MaxValue;
         public static readonly real MinValue = (real)decimal.MinValue;
+        public static readonly real Zero = (real)0;
+        public static readonly real One = (real)1;
 
         public readonly decimal Raw;
 

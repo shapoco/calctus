@@ -7,9 +7,37 @@ using Shapoco.Calctus.Model.Types;
 using Shapoco.Calctus.Model.Mathematics;
 
 namespace Shapoco.Calctus.Model.Functions.BuiltIns {
-    static class Absolute_SignFuncs {
-        public static readonly BuiltInFuncDef abs = new BuiltInFuncDef("abs(*x)", (e, a) => new RealVal(RMath.Abs(a[0].AsReal), a[0].FormatHint), "Absolute value of `x`");
-        public static readonly BuiltInFuncDef sign = new BuiltInFuncDef("sign(*x)", (e, a) => new RealVal(RMath.Sign(a[0].AsReal)).FormatInt(), "Returns 1 for positives, -1 for negatives, 0 otherwise.");
-        public static readonly BuiltInFuncDef mag = new BuiltInFuncDef("mag(x[]...)", (e, a) => new RealVal(RMath.Sqrt(a[0].AsRealArray.Sum(p => p * p)), a[0].FormatHint), "Magnitude of vector `x`");
+    class Absolute_SignFuncs : BuiltInFuncCategory {
+        private static Absolute_SignFuncs _instance = null;
+        public static Absolute_SignFuncs Instance => _instance != null ? _instance : _instance = new Absolute_SignFuncs();
+        private Absolute_SignFuncs() { }
+
+        public readonly BuiltInFuncDef abs = new BuiltInFuncDef("abs(*x@)",
+            "Absolute value of `x`",
+            FuncDef.ArgToReal((e, a) => {
+                return RMath.Abs(a[0]);
+            }),
+            new FuncTest("-12.34", "12.34"),
+            new FuncTest("0", "0"),
+            new FuncTest("56.78", "56.78"));
+
+        public readonly BuiltInFuncDef sign = new BuiltInFuncDef("sign(*x)",
+            "Returns 1 for positives, -1 for negatives, 0 otherwise.",
+            FuncDef.ArgToReal((e, a) => {
+                return RMath.Sign(a[0]);
+            }),
+            new FuncTest("-12.34", "-1"),
+            new FuncTest("0", "0"),
+            new FuncTest("56.78", "1"));
+
+        public readonly BuiltInFuncDef mag = new BuiltInFuncDef("mag(x[]...)",
+            "Magnitude of vector `x`",
+            (e, a) => {
+                var arrayVal = a[0].AsArrayVal();
+                var fmtHint = arrayVal.Length > 0 ? arrayVal[0].FormatHint : null;
+                return RMath.Sqrt(arrayVal.AsRealArray.Sum(p => p * p)).ToRealVal(fmtHint);
+            },
+            new FuncTest("3,4", "5"),
+            new FuncTest("3,4,5", "sqrt(50)"));
     }
 }

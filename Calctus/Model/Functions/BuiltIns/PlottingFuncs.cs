@@ -7,12 +7,18 @@ using Shapoco.Calctus.Model.Graphs;
 using Shapoco.Calctus.Model.Types;
 
 namespace Shapoco.Calctus.Model.Functions.BuiltIns {
-    static class PlottingFuncs {
-        public static readonly BuiltInFuncDef plot = new BuiltInFuncDef("plot(func)", (e, a) => {
-            var func = (FuncDef)a[0].Raw;
-            var req = new PlotCall(e, PlotCall.DefaultWindowName, func);
-            e.PlotCalls.Add(req);
-            return NullVal.Instance;
-        }, "Plot graph of `func(x)`.");
+    class PlottingFuncs : BuiltInFuncCategory {
+        private static PlottingFuncs _instance = null;
+        public static PlottingFuncs Instance => _instance != null ? _instance : _instance = new PlottingFuncs();
+        private PlottingFuncs() { }
+
+        public readonly BuiltInFuncDef plot = new BuiltInFuncDef("plot(func)",
+            "Plot graph of `func(x)`.",
+            (e, a) => {
+                var func = (FuncDef)a[0].Raw;
+                var req = new PlotCall(e, PlotCall.DefaultWindowName, func);
+                e.PlotCalls.Add(req);
+                return NullVal.Instance;
+            });
     }
 }

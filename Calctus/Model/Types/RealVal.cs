@@ -14,13 +14,13 @@ namespace Shapoco.Calctus.Model.Types {
 
         public const int WeekdayMin = 0;
         public const int WeekdayMax = 6;
-        public static readonly RealVal Sunday = (RealVal)(new RealVal(0).FormatDayOfWeek());
-        public static readonly RealVal Monday = (RealVal)(new RealVal(1).FormatDayOfWeek());
-        public static readonly RealVal Tuesday = (RealVal)(new RealVal(2).FormatDayOfWeek());
-        public static readonly RealVal Wednesday = (RealVal)(new RealVal(3).FormatDayOfWeek());
-        public static readonly RealVal Thursday = (RealVal)(new RealVal(4).FormatDayOfWeek());
-        public static readonly RealVal Friday = (RealVal)(new RealVal(5).FormatDayOfWeek());
-        public static readonly RealVal Saturday = (RealVal)(new RealVal(6).FormatDayOfWeek());
+        public static readonly RealVal Sunday = (RealVal)(new RealVal(0, FormatHint.Weekday));
+        public static readonly RealVal Monday = (RealVal)(new RealVal(1, FormatHint.Weekday));
+        public static readonly RealVal Tuesday = (RealVal)(new RealVal(2, FormatHint.Weekday));
+        public static readonly RealVal Wednesday = (RealVal)(new RealVal(3, FormatHint.Weekday));
+        public static readonly RealVal Thursday = (RealVal)(new RealVal(4, FormatHint.Weekday));
+        public static readonly RealVal Friday = (RealVal)(new RealVal(5, FormatHint.Weekday));
+        public static readonly RealVal Saturday = (RealVal)(new RealVal(6, FormatHint.Weekday));
         public static readonly RealVal[] Weekdays
             = { Sunday, Monday, Tuesday, Wednesday, Thursday, Friday, Saturday };
 
@@ -103,10 +103,8 @@ namespace Shapoco.Calctus.Model.Types {
         public override byte[] AsByteArray => new byte[] { (byte)_raw };
 
         public override string ToString(FormatSettings fs) => FormatHint.Format.Format(this, fs);
-        //public static implicit operator double(RealVal val) => val.AsDouble();
-        //public static implicit operator RealVal(double val) => new RealVal(val);
 
-        //public static explicit operator long(RealVal val) => val.AsLong();
-        //public static explicit operator RealVal(long val) => new RealVal(val);
+        public static implicit operator real(RealVal val) => (real)val.Raw;
+        public static implicit operator RealVal(real val) => new RealVal(val);
     }
 }

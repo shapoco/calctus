@@ -78,7 +78,7 @@ namespace Shapoco.Calctus.UI.Sheets {
         }
 
         public void ReplaceFormatterFunction(FuncDef newFunc) {
-            var funcs = BuiltInFuncDef.EnumFunctions(typeof(RepresentaionFuncs)).Select(p => p.Name.Text).ToArray();
+            var funcs = RepresentaionFuncs.Instance.Functions.Select(p => p.Name.Text).ToArray();
             var prefixPattern = new Regex(@"^ *(?<func>" + String.Join("|", funcs) + @") *\( *(?<body>.+)");
             var suffixPattern = new Regex(@" *\)$");
             var pm = prefixPattern.Match(ExprBox.Text);

@@ -83,7 +83,7 @@ namespace Shapoco.Calctus.Model.Evaluations {
         public IEnumerable<Var> EnumVars() => _vars.Values;
 
         public IEnumerable<FuncDef> AllNamedFuncs() =>
-            BuiltInFuncDef.NativeFunctions.Select(p => (FuncDef)p).Concat(ExternalFuncDef.ExternalFunctions);
+            BuiltInFuncLibrary.Instance.NativeFunctions.Select(p => (FuncDef)p).Concat(ExternalFuncDef.ExternalFunctions);
 
         public bool SolveFunc(string name , out FuncDef func) {
             func = AllNamedFuncs().FirstOrDefault(p => p.Name != null && p.Name.Text == name);

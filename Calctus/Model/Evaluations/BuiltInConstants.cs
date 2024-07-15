@@ -16,10 +16,10 @@ namespace Shapoco.Calctus.Model.Evaluations {
             => new Var(new Token(TokenType.Word, TextPosition.Nowhere, name), val, true, desc);
 
         private static Var constVarReal(string name, real value, string desc)
-            => constVar(name, new RealVal(value), desc);
+            => constVar(name, value.ToRealVal(), desc);
 
-        private static Var constVarHex(string name, decimal value, string desc)
-            => constVar(name, new RealVal((real)value).FormatHex(), desc);
+        private static Var constVarHex(string name, real value, string desc)
+            => constVar(name, value.ToHexVal(), desc);
 
         public static readonly Var PI = constVarReal("PI", RMath.PI, "Circle ratio");
         public static readonly Var E = constVarReal("E", RMath.E, "Base of natural logarithm");

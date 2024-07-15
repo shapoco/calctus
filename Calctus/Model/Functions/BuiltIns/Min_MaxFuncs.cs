@@ -7,17 +7,21 @@ using Shapoco.Calctus.Model.Types;
 using Shapoco.Calctus.Model.Mathematics;
 
 namespace Shapoco.Calctus.Model.Functions.BuiltIns {
-    static class Min_MaxFuncs {
-        public static readonly BuiltInFuncDef max = new BuiltInFuncDef("max(array...)", (e, a) => {
-            return new RealVal(a.Max(p => p.AsReal), a[0].FormatHint);
-        }, "Maximum value of elements of the `array`."); 
-        
-        public static readonly BuiltInFuncDef min = new BuiltInFuncDef("min(array...)", (e, a) => {
-            return new RealVal(a.Min(p => p.AsReal), a[0].FormatHint);
-        }, "Minimum value of elements of the `array`.");
+    class Min_MaxFuncs : BuiltInFuncCategory {
+        private static Min_MaxFuncs _instance = null;
+        public static Min_MaxFuncs Instance => _instance != null ? _instance : _instance = new Min_MaxFuncs();
+        private Min_MaxFuncs() { }
 
-        public static readonly BuiltInFuncDef clip = new BuiltInFuncDef("clip(a, b, *x)", (e, a) => {
-            return new RealVal(RMath.Clip(a[0].AsReal, a[1].AsReal, a[2].AsReal), a[0].FormatHint);
-        }, "Clips `x` to a range from `a` to `b`. Same as `max(a, min(b, x))`.");
+        public readonly BuiltInFuncDef max = new BuiltInFuncDef("max(array...)",
+            "Maximum value of elements of the `array`.",
+            (e, a) => a.ToRealArray().Max().ToRealVal(a[0].FormatHint));
+
+        public readonly BuiltInFuncDef min = new BuiltInFuncDef("min(array...)",
+            "Minimum value of elements of the `array`.",
+            (e, a) => a.ToRealArray().Min().ToRealVal(a[0].FormatHint));
+
+        public readonly BuiltInFuncDef clip = new BuiltInFuncDef("clip(a, b, *x@)",
+            "Clips `x` to a range from `a` to `b`. Same as `max(a, min(b, x))`.",
+            (e, a) => RMath.Clip(a[0].AsReal, a[1].AsReal, a[2].AsReal).ToRealVal(a[2].FormatHint));
     }
 }

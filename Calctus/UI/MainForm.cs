@@ -80,14 +80,15 @@ namespace Shapoco.Calctus.UI {
 #endif
             notifyIcon.MouseClick += NotifyIcon_MouseClick;
 
+            var repFuncs = RepresentaionFuncs.Instance;
             radixAutoButton.Click += (sender, e) => { _activeBookItem.View.ReplaceFormatterFunction(null); _activeBookItem.View.Focus(); }; 
-            radixDecButton.Click += (sender, e) => { _activeBookItem.View.ReplaceFormatterFunction(RepresentaionFuncs.dec); _activeBookItem.View.Focus(); };
-            radixHexButton.Click += (sender, e) => { _activeBookItem.View.ReplaceFormatterFunction(RepresentaionFuncs.hex); _activeBookItem.View.Focus(); };
-            radixBinButton.Click += (sender, e) => { _activeBookItem.View.ReplaceFormatterFunction(RepresentaionFuncs.bin); _activeBookItem.View.Focus(); };
-            radixOctButton.Click += (sender, e) => { _activeBookItem.View.ReplaceFormatterFunction(RepresentaionFuncs.oct); _activeBookItem.View.Focus(); };
-            radixSiButton.Click += (sender, e) => { _activeBookItem.View.ReplaceFormatterFunction(RepresentaionFuncs.si); _activeBookItem.View.Focus(); };
-            radixKibiButton.Click += (sender, e) => { _activeBookItem.View.ReplaceFormatterFunction(RepresentaionFuncs.kibi); _activeBookItem.View.Focus(); };
-            radixCharButton.Click += (sender, e) => { _activeBookItem.View.ReplaceFormatterFunction(RepresentaionFuncs.char_1); _activeBookItem.View.Focus(); };
+            radixDecButton.Click += (sender, e) => { _activeBookItem.View.ReplaceFormatterFunction(repFuncs.dec); _activeBookItem.View.Focus(); };
+            radixHexButton.Click += (sender, e) => { _activeBookItem.View.ReplaceFormatterFunction(repFuncs.hex); _activeBookItem.View.Focus(); };
+            radixBinButton.Click += (sender, e) => { _activeBookItem.View.ReplaceFormatterFunction(repFuncs.bin); _activeBookItem.View.Focus(); };
+            radixOctButton.Click += (sender, e) => { _activeBookItem.View.ReplaceFormatterFunction(repFuncs.oct); _activeBookItem.View.Focus(); };
+            radixSiButton.Click += (sender, e) => { _activeBookItem.View.ReplaceFormatterFunction(repFuncs.si); _activeBookItem.View.Focus(); };
+            radixKibiButton.Click += (sender, e) => { _activeBookItem.View.ReplaceFormatterFunction(repFuncs.kibi); _activeBookItem.View.Focus(); };
+            radixCharButton.Click += (sender, e) => { _activeBookItem.View.ReplaceFormatterFunction(repFuncs.char_1); _activeBookItem.View.Focus(); };
 
             toolTip.SetToolTip(radixAutoButton, "Automatic (F8)");
             toolTip.SetToolTip(radixDecButton, "Decimal (F9)");
@@ -398,10 +399,14 @@ namespace Shapoco.Calctus.UI {
                 MessageBox.Show("Failed to load sheet:\r\n\r\n" + ex.Message,
                     Application.ProductName, MessageBoxButtons.OK, MessageBoxIcon.Error);
             }
-            this.Text =
+            var windowTitle = this.Text =
                 (_activeBookItem != null ? _activeBookItem.Name : "(null)") +
                 " - " + Application.ProductName +
                 " (v" + System.Reflection.Assembly.GetExecutingAssembly().GetName().Version + ")";
+#if DEBUG
+            windowTitle += " (Debug)";
+#endif
+            this.Text = windowTitle;
 
             if (requestCheckFileChange) {
                 checkActiveFileChange();
@@ -598,6 +603,7 @@ namespace Shapoco.Calctus.UI {
 
         private void MainForm_KeyDown(object sender, KeyEventArgs e) {
             e.SuppressKeyPress = true;
+            var repFuncs = RepresentaionFuncs.Instance;
             if (e.Modifiers == Keys.Control && e.KeyCode == Keys.S) {
                 if (_activeBookItem.HasFileName) {
                     _activeBookItem.Save();
@@ -619,16 +625,16 @@ namespace Shapoco.Calctus.UI {
                 _activeBookItem.View.ReplaceFormatterFunction(null);
             }
             else if (e.Modifiers == Keys.None && e.KeyCode == Keys.F9) {
-                _activeBookItem.View.ReplaceFormatterFunction(RepresentaionFuncs.dec);
+                _activeBookItem.View.ReplaceFormatterFunction(repFuncs.dec);
             }
             else if (e.Modifiers == Keys.None && e.KeyCode == Keys.F10) {
-                _activeBookItem.View.ReplaceFormatterFunction(RepresentaionFuncs.hex);
+                _activeBookItem.View.ReplaceFormatterFunction(repFuncs.hex);
             }
             else if (e.Modifiers == Keys.None && e.KeyCode == Keys.F11) {
-                _activeBookItem.View.ReplaceFormatterFunction(RepresentaionFuncs.bin);
+                _activeBookItem.View.ReplaceFormatterFunction(repFuncs.bin);
             }
             else if (e.Modifiers == Keys.None && e.KeyCode == Keys.F12) {
-                _activeBookItem.View.ReplaceFormatterFunction(RepresentaionFuncs.si);
+                _activeBookItem.View.ReplaceFormatterFunction(repFuncs.si);
             }
             else {
                 e.SuppressKeyPress = false;

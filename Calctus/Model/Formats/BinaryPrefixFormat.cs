@@ -55,7 +55,7 @@ namespace Shapoco.Calctus.Model.Formats {
                 var r = val.AsReal;
                 int prefixIndex = 0;
                 if (r != 0) {
-                    prefixIndex = (int)RMath.Floor(RMath.Log2(RMath.Abs(r)) / 10);
+                    prefixIndex = (int)RMath.Floor(RMath.Log2(RMath.Abs(r), highAccuracy: true) / 10);
                 }
                 if (prefixIndex < MinPrefixIndex) {
                     prefixIndex = MinPrefixIndex;

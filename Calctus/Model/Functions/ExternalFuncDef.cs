@@ -19,7 +19,7 @@ namespace Shapoco.Calctus.Model.Functions {
 
         public ExternalFuncDef(string path) : base(
                 Token.FromWord(System.IO.Path.GetFileNameWithoutExtension(path)),
-                new ArgDefList(new ArgDef[] { new ArgDef("args") }, VariadicMode.Flatten, -1),
+                new ArgDefList(new ArgDef[] { new ArgDef("args") }, VariadicMode.Flatten, -1, -1),
                 "External Function \"" + System.IO.Path.GetFileName(path) + "\"") {
             Path = path;
         }

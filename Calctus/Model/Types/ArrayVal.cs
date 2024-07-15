@@ -12,52 +12,15 @@ namespace Shapoco.Calctus.Model.Types {
         private Val[] _raw;
 
         public static void CheckArrayLength(int length) {
-            if (length > Settings.Instance.Calculation_Limit_MaxArrayLength) throw new CalctusError("Array length exceeds limit.");
+            int limit = Settings.Instance.Calculation_Limit_MaxArrayLength;
+            if (length > limit) {
+                throw new CalctusError("Array length exceeds limit (" + length + " > " + limit + ").");
+            }
         }
 
         public ArrayVal(Val[] val, FormatHint fmt = null) : base(fmt) {
             CheckArrayLength(val.Length);
             this._raw = val;
-        }
-        public ArrayVal(real[] val, FormatHint fmt = null) : base(fmt) {
-            CheckArrayLength(val.Length);
-            var array = new Val[val.Length];
-            for (int i = 0; i < val.Length; i++) {
-                array[i] = new RealVal(val[i], fmt);
-            }
-            this._raw = array;
-        }
-        public ArrayVal(decimal[] val, FormatHint fmt = null) : base(fmt) {
-            CheckArrayLength(val.Length);
-            var array = new Val[val.Length];
-            for (int i = 0; i < val.Length; i++) {
-                array[i] = new RealVal(val[i], fmt);
-            }
-            this._raw = array;
-        }
-        public ArrayVal(long[] val, FormatHint fmt = null) : base(fmt) {
-            CheckArrayLength(val.Length);
-            var array = new Val[val.Length];
-            for (int i = 0; i < val.Length; i++) {
-                array[i] = new RealVal(val[i], fmt);
-            }
-            this._raw = array;
-        }
-        public ArrayVal(int[] val, FormatHint fmt = null) : base(fmt) {
-            CheckArrayLength(val.Length);
-            var array = new Val[val.Length];
-            for (int i = 0; i < val.Length; i++) {
-                array[i] = new RealVal(val[i], fmt);
-            }
-            this._raw = array;
-        }
-        public ArrayVal(byte[] val) {
-            CheckArrayLength(val.Length);
-            var array = new Val[val.Length];
-            for (int i = 0; i < val.Length; i++) {
-                array[i] = new RealVal(val[i]).FormatHex();
-            }
-            this._raw = array;
         }
 
         public Val this[int index] => _raw[index];

@@ -7,7 +7,20 @@ using System.Threading.Tasks;
 namespace Shapoco.Calctus.Model.Formats {
     /// <summary>Val の表現に関するヒントを格納するクラス</summary>
     class FormatHint {
-        public static readonly FormatHint Default = new FormatHint(ValFormat.CStyleReal);
+        public static readonly FormatHint CStyleInt = new FormatHint(ValFormat.CStyleInt);
+        public static readonly FormatHint CStyleHex = new FormatHint(ValFormat.CStyleHex);
+        public static readonly FormatHint CStyleOct = new FormatHint(ValFormat.CStyleOct);
+        public static readonly FormatHint CStyleBin = new FormatHint(ValFormat.CStyleBin);
+        public static readonly FormatHint CStyleString = new FormatHint(ValFormat.CStyleString);
+        public static readonly FormatHint CStyleChar = new FormatHint(ValFormat.CStyleChar);
+        public static readonly FormatHint CStyleReal = new FormatHint(ValFormat.CStyleReal);
+        public static readonly FormatHint SiPrefixed = new FormatHint(ValFormat.SiPrefixed);
+        public static readonly FormatHint BinaryPrefixed = new FormatHint(ValFormat.BinaryPrefixed);
+        public static readonly FormatHint WebColor = new FormatHint(ValFormat.WebColor);
+        public static readonly FormatHint DateTime = new FormatHint(ValFormat.DateTime);
+        public static readonly FormatHint Weekday = new FormatHint(ValFormat.Weekday);
+        
+        public static readonly FormatHint Default = CStyleReal;
 
         public readonly ValFormat Format;
 

@@ -203,7 +203,7 @@ namespace Shapoco.Calctus.Model.Parsers {
                     throw new ParserError(argExprs[i].Token, "Single identifier is expected.");
                 }
             }
-            var argDefs = new ArgDefList(args, VariadicMode.None, vecArgIndex);
+            var argDefs = new ArgDefList(args, VariadicMode.None, vecArgIndex, -1);
             var body = Expr();
             return new LambdaExpr(arrow, new UserFuncDef(Token.Empty, argDefs, body));
         }
@@ -238,7 +238,7 @@ namespace Shapoco.Calctus.Model.Parsers {
                     mode = VariadicMode.Array;
                 }
             }
-            return new ArgDefList(args.ToArray(), mode, vecArgIndex);
+            return new ArgDefList(args.ToArray(), mode, vecArgIndex, -1);
         }
 
         public Token Peek() {

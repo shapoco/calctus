@@ -37,7 +37,7 @@ namespace Shapoco.Calctus.Model.Types {
                 return thisArray;
             }
             else if (this is StrVal thisStr) {
-                return new ArrayVal(thisStr.AsString.Select(p => (real)p).ToArray(), new FormatHint(ValFormat.CStyleChar));
+                return thisStr.AsString.ToRealArray().ToArrayVal(FormatHint.CStyleChar, null);
             }
             else {
                 throw new InvalidCastException();
@@ -77,21 +77,8 @@ namespace Shapoco.Calctus.Model.Types {
         //public static explicit operator Val(int val) => new RealVal((double)val);
         //public static explicit operator int(Val val) => val.AsInt();
 
-        public Val FormatDefault() => Format(FormatHint.Default);
-        public Val FormatInt() => Format(new FormatHint(ValFormat.CStyleInt));
-        public Val FormatReal() => Format(new FormatHint(ValFormat.CStyleReal));
-        public Val FormatHex() => Format(new FormatHint(ValFormat.CStyleHex));
-        public Val FormatBin() => Format(new FormatHint(ValFormat.CStyleBin));
-        public Val FormatOct() => Format(new FormatHint(ValFormat.CStyleOct));
-        public Val FormatChar() => Format(new FormatHint(ValFormat.CStyleChar));
-        public Val FormatString() => Format(new FormatHint(ValFormat.CStyleString));
-        public Val FormatSiPrefix() => Format(new FormatHint(ValFormat.SiPrefixed));
-        public Val FormatBinaryPrefix() => Format(new FormatHint(ValFormat.BinaryPrefixed));
-        public Val FormatDateTime() => Format(new FormatHint(ValFormat.DateTime));
-        public Val FormatDayOfWeek() => Format(new FormatHint(ValFormat.Weekday));
-        public Val FormatWebColor() => Format(new FormatHint(ValFormat.WebColor));
-
         public Val Format(FormatHint fmt) {
+            if (fmt == null) fmt = FormatHint.Default;
             if (this.FormatHint.Equals(fmt)) 
                 return this;
             else

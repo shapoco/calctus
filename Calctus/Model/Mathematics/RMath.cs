@@ -16,7 +16,7 @@ namespace Shapoco.Calctus.Model.Mathematics {
         public const decimal FindFracMaxDeno = 1000000000000m;
 
         // 指数関数
-        public static decimal Pow(decimal a, decimal b) {
+        public static real Pow(real a, real b) {
             if (Floor(b) == b && int.MinValue <= b && b <= int.MaxValue) {
                 return PowN(a, (int)b);
             }
@@ -25,7 +25,8 @@ namespace Shapoco.Calctus.Model.Mathematics {
             }
         }
 
-        public static decimal PowN(decimal x, int y) {
+        public static real PowN(real xReal, int y) {
+            decimal x = xReal;
             decimal ret = 1;
             if (y > 0) {
                 while (true) {
@@ -47,7 +48,7 @@ namespace Shapoco.Calctus.Model.Mathematics {
             return ret;
         }
 
-        public static decimal Sqrt(decimal x) {
+        public static real Sqrt(real x) {
             var p = (decimal)Math.Sqrt((double)x);
             for (int i = 0; i < 100; i++) {
                 decimal tmp = (p * p + x) / (2 * p);
@@ -73,7 +74,7 @@ namespace Shapoco.Calctus.Model.Mathematics {
         }
 
         public static decimal Log(decimal x) {
-            var flog2x = Floor(Log2(x));
+            var flog2x = Floor(Log2(x, highAccuracy: true));
             if (flog2x < int.MinValue || int.MaxValue < flog2x) throw new OverflowException();
             var s = PowN(2, (int)flog2x);
             var t = x / s;
@@ -106,7 +107,7 @@ namespace Shapoco.Calctus.Model.Mathematics {
             return ret + (real)Math.Log10((double)a);
         }
 
-        public static real Log2(real a, bool highAccuracy = true) {
+        public static real Log2(real a, bool highAccuracy) {
             if (highAccuracy) {
                 return (real)(decimal)QMath.Log2((quad)(decimal)a);
             }
@@ -169,11 +170,11 @@ namespace Shapoco.Calctus.Model.Mathematics {
         }
 
         /// <summary>配列の全要素の最大公約数</summary>
-        public static decimal Gcd(decimal[] x) {
+        public static real Gcd(real[] x) {
             if (x.Length == 0) throw new ArgumentException("Empty array");
             return gcdRecursive(x, 0, x.Length - 1);
         }
-        private static decimal gcdRecursive(decimal[] x, int il, int ir) {
+        private static real gcdRecursive(real[] x, int il, int ir) {
             if (il == ir) {
                 return x[il];
             }
@@ -184,16 +185,16 @@ namespace Shapoco.Calctus.Model.Mathematics {
         }
 
         /// <summary>a と b の最小公倍数。a * b が非常に大きくなる場合、この関数は例外を投げる。</summary>
-        public static decimal Lcm(decimal a, decimal b) {
+        public static real Lcm(real a, real b) {
             return a * b / Gcd(a, b);
         }
 
         /// <summary>配列の全要素の最小公倍数</summary>
-        public static decimal Lcm(decimal[] x) {
+        public static real Lcm(real[] x) {
             if (x.Length == 0) throw new ArgumentException("Empty array");
             return lcmRecursive(x, 0, x.Length - 1);
         }
-        private static decimal lcmRecursive(decimal[] x, int il, int ir) {
+        private static real lcmRecursive(real[] x, int il, int ir) {
             if (il == ir) {
                 return x[il];
             }
@@ -367,12 +368,12 @@ namespace Shapoco.Calctus.Model.Mathematics {
         }
 
         /// <summary>等差数列の生成</summary>
-        public static decimal[] Range(decimal start, decimal stop, decimal step = 0, bool inclusive = false) {
+        public static real[] Range(real start, real stop, real step, bool inclusive = false) {
             if (step == 0) step = start < stop ? 1 : -1;
             int n = (int)Math.Ceiling((stop - start) / step);
             if (n < 0) throw new ArgumentOutOfRangeException();
             if (inclusive && start + n * step == stop) n++;
-            var array = new decimal[n];
+            var array = new real[n];
             for (int i = 0; i < n; i++) {
                 array[i] = start + step * i;
             }

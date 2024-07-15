@@ -21,7 +21,8 @@ namespace Shapoco.Calctus
             Model.Types.ufixed113.Test();
             Model.Types.quad.Test();
             Model.Mathematics.QMath.Test();
-            Model.Functions.BuiltInFuncDef.GenerateDocumentation();
+            Model.Functions.BuiltInFuncLibrary.Instance.DoTest();
+            DocumentGenerator.GenerateDocumentation();
 #endif
             Application.EnableVisualStyles();
             Application.SetCompatibleTextRenderingDefault(false);

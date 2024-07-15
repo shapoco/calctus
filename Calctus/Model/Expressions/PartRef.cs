@@ -36,7 +36,7 @@ namespace Shapoco.Calctus.Model.Expressions {
                 if (from < 0) from = str.Length + from;
                 if (to < 0) to = str.Length + to;
                 if (from == to) {
-                    return new RealVal(str.AsString[from]).FormatChar();
+                    return str.AsString[from].ToCharVal();
                 }
                 else {
                     return new StrVal(str.AsString.Substring(from, to - from));

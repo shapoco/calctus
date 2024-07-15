@@ -6,89 +6,96 @@ using System.Threading.Tasks;
 using Shapoco.Calctus.Model.Types;
 using Shapoco.Calctus.Model.Standards;
 using Shapoco.Calctus.Model.Mathematics;
+using Shapoco.Calctus.Model.Formats;
 
 namespace Shapoco.Calctus.Model.Functions.BuiltIns {
-    static class DateTimeFuncs {
-        public static readonly BuiltInFuncDef datetime_3 = new BuiltInFuncDef("datetime(year, mon, day)", (e, a) => {
-            return new RealVal(UnixTime.FromLocalTime(a[0].AsInt, a[1].AsInt, a[2].AsInt, 0, 0, 0)).FormatDateTime();
-        }, "Returns datetime from year, month, and day.");
+    class DateTimeFuncs : BuiltInFuncCategory {
+        private static DateTimeFuncs _instance = null;
+        public static DateTimeFuncs Instance => _instance != null ? _instance : _instance = new DateTimeFuncs();
+        private DateTimeFuncs() { }
 
-        public static readonly BuiltInFuncDef datetime_6 = new BuiltInFuncDef("datetime(year, mon, day, hour, min, sec)", (e, a) => {
-            return new RealVal(UnixTime.FromLocalTime(a[0].AsInt, a[1].AsInt, a[2].AsInt, a[3].AsInt, a[4].AsInt, a[5].AsReal)).FormatDateTime();
-        }, "Returns datetime from year, month, day, hour, minute, and second.");
+        public readonly BuiltInFuncDef datetime_3 = new BuiltInFuncDef("datetime(year, mon, day)",
+            "Returns datetime from year, month, and day.",
+            (e, a) => UnixTime.FromLocalTime(a[0].AsInt, a[1].AsInt, a[2].AsInt, 0, 0, 0).ToDateTimeVal());
 
-        public static readonly BuiltInFuncDef yearOf = new BuiltInFuncDef("yearOf(*t)", (e, a) => {
-            return new RealVal(UnixTime.ToLocalTime(a[0].AsReal).Year);
-        }, "Returns year component of datetime.");
+        public readonly BuiltInFuncDef datetime_6 = new BuiltInFuncDef("datetime(year, mon, day, hour, min, sec)",
+            "Returns datetime from year, month, day, hour, minute, and second.",
+            (e, a) => UnixTime.FromLocalTime(a[0].AsInt, a[1].AsInt, a[2].AsInt, a[3].AsInt, a[4].AsInt, a[5].AsReal).ToDateTimeVal());
 
-        public static readonly BuiltInFuncDef monthOf = new BuiltInFuncDef("monthOf(*t)", (e, a) => {
-            return new RealVal(UnixTime.ToLocalTime(a[0].AsReal).Month);
-        }, "Returns month component of datetime, expressed as 1..12.");
+        public readonly BuiltInFuncDef yearOf = new BuiltInFuncDef("yearOf(*t)",
+            "Returns year component of datetime.",
+            (e, a) => UnixTime.ToLocalTime(a[0].AsReal).Year.ToIntVal());
 
-        public static readonly BuiltInFuncDef dayOfYear = new BuiltInFuncDef("dayOfYear(*t)", (e, a) => {
-            return new RealVal(UnixTime.ToLocalTime(a[0].AsReal).DayOfYear);
-        }, "Returns day of year of datetime, expressed as 1..366.");
+        public readonly BuiltInFuncDef monthOf = new BuiltInFuncDef("monthOf(*t)",
+            "Returns month component of datetime, expressed as 1..12.",
+            (e, a) => UnixTime.ToLocalTime(a[0].AsReal).Month.ToIntVal());
 
-        public static readonly BuiltInFuncDef dayOfWeek = new BuiltInFuncDef("dayOfWeek(*t)", (e, a) => {
-            return new RealVal(((int)UnixTime.ToLocalTime(a[0].AsReal).DayOfWeek)).FormatDayOfWeek();
-        }, "Returns day of week of datetime, expressed as 0 (SUNDAY)..6 (SATURDAY).");
+        public readonly BuiltInFuncDef dayOfYear = new BuiltInFuncDef("dayOfYear(*t)",
+            "Returns day of year of datetime, expressed as 1..366.",
+            (e, a) => UnixTime.ToLocalTime(a[0].AsReal).DayOfYear.ToIntVal());
 
-        public static readonly BuiltInFuncDef dayOfMonth = new BuiltInFuncDef("dayOfMonth(*t)", (e, a) => {
-            return new RealVal(UnixTime.ToLocalTime(a[0].AsReal).Day);
-        }, "Returns day component of datetime, expressed as 1..31.");
+        public readonly BuiltInFuncDef dayOfWeek = new BuiltInFuncDef("dayOfWeek(*t)",
+            "Returns day of week of datetime, expressed as 0 (Sunday)..6 (Saturday).",
+            (e, a) => ((int)UnixTime.ToLocalTime(a[0].AsReal).DayOfWeek).ToRealVal(FormatHint.Weekday));
 
-        public static readonly BuiltInFuncDef hourOf = new BuiltInFuncDef("hourOf(*t)", (e, a) => {
-            return new RealVal(UnixTime.ToLocalTime(a[0].AsReal).Hour);
-        }, "Returns hour component of datetime, expressed as 0..23.");
+        public readonly BuiltInFuncDef dayOfMonth = new BuiltInFuncDef("dayOfMonth(*t)",
+            "Returns day component of datetime, expressed as 1..31.",
+            (e, a) => UnixTime.ToLocalTime(a[0].AsReal).Day.ToIntVal());
 
-        public static readonly BuiltInFuncDef minuteOf = new BuiltInFuncDef("minuteOf(*t)", (e, a) => {
-            return new RealVal(UnixTime.ToLocalTime(a[0].AsReal).Minute);
-        }, "Returns minute component of datetime, expressed as 0..59.");
+        public readonly BuiltInFuncDef hourOf = new BuiltInFuncDef("hourOf(*t)",
+            "Returns hour component of datetime, expressed as 0..23.",
+            (e, a) => UnixTime.ToLocalTime(a[0].AsReal).Hour.ToIntVal());
 
-        public static readonly BuiltInFuncDef secondOf = new BuiltInFuncDef("secondOf(*t)", (e, a) => {
-            var unixTime = a[0].AsReal;
-            var subSec = unixTime - RMath.Floor(unixTime);
-            return new RealVal(UnixTime.ToLocalTime(unixTime).Second + subSec);
-        }, "Returns second component of datetime, expressed as 0..60.");
+        public readonly BuiltInFuncDef minuteOf = new BuiltInFuncDef("minuteOf(*t)",
+            "Returns minute component of datetime, expressed as 0..59.",
+            (e, a) => UnixTime.ToLocalTime(a[0].AsReal).Minute.ToIntVal());
 
-        public static readonly BuiltInFuncDef now = new BuiltInFuncDef("now()", (e, a) => {
-            return new RealVal(UnixTime.FromLocalTime(DateTime.Now)).FormatDateTime();
-        }, "Current epoch time.");
+        public readonly BuiltInFuncDef secondOf = new BuiltInFuncDef("secondOf(*t)",
+            "Returns second component of datetime, expressed as 0..60.",
+            (e, a) => {
+                var unixTime = a[0].AsReal;
+                var subSec = unixTime - RMath.Floor(unixTime);
+                return (UnixTime.ToLocalTime(unixTime).Second + subSec).ToRealVal();
+            });
 
-        public static readonly BuiltInFuncDef today = new BuiltInFuncDef("today()", (e, a) => {
-            return new RealVal(UnixTime.FromLocalTime(DateTime.Today)).FormatDateTime();
-        }, "Returns datetime of today's 00:00:00.");
+        public readonly BuiltInFuncDef now = new BuiltInFuncDef("now()",
+            "Returns current datetime.",
+            (e, a) => UnixTime.FromLocalTime(DateTime.Now).ToDateTimeVal());
 
-        public static readonly BuiltInFuncDef toDays = new BuiltInFuncDef("toDays(*x)", (e, a) => {
-            return a[0].Div(e, new RealVal(24 * 60 * 60)).FormatReal();
-        }, "Converts from epoch time to days.");
+        public readonly BuiltInFuncDef today = new BuiltInFuncDef("today()",
+            "Returns datetime of today's 00:00:00.",
+            (e, a) => UnixTime.FromLocalTime(DateTime.Today).ToDateTimeVal());
 
-        public static readonly BuiltInFuncDef toHours = new BuiltInFuncDef("toHours(*x)", (e, a) => {
-            return a[0].Div(e, new RealVal(60 * 60)).FormatReal();
-        }, "Converts from epoch time to hours.");
+        public readonly BuiltInFuncDef toDays = new BuiltInFuncDef("toDays(*x)",
+            "Converts from epoch time to days.",
+            (e, a) => (a[0].AsReal / (24 * 60 * 60)).ToRealVal());
 
-        public static readonly BuiltInFuncDef toMinutes = new BuiltInFuncDef("toMinutes(*x)", (e, a) => {
-            return a[0].Div(e, new RealVal(60)).FormatReal();
-        }, "Converts from epoch time to minutes.");
+        public readonly BuiltInFuncDef toHours = new BuiltInFuncDef("toHours(*x)",
+            "Converts from epoch time to hours.",
+            (e, a) => (a[0].AsReal / (60 * 60)).ToRealVal());
 
-        public static readonly BuiltInFuncDef toSeconds = new BuiltInFuncDef("toSeconds(*x)", (e, a) => {
-            return a[0].FormatReal();
-        }, "Converts from epoch time to seconds.");
+        public readonly BuiltInFuncDef toMinutes = new BuiltInFuncDef("toMinutes(*x)",
+            "Converts from epoch time to minutes.",
+            (e, a) => (a[0].AsReal / 60).ToRealVal());
 
-        public static readonly BuiltInFuncDef fromDays = new BuiltInFuncDef("fromDays(*x)", (e, a) => {
-            return a[0].Mul(e, new RealVal(24 * 60 * 60)).FormatDateTime();
-        }, "Converts from days to epoch time.");
+        public readonly BuiltInFuncDef toSeconds = new BuiltInFuncDef("toSeconds(*x)",
+            "Converts from epoch time to seconds.",
+            (e, a) => a[0].Format(FormatHint.CStyleReal));
 
-        public static readonly BuiltInFuncDef fromHours = new BuiltInFuncDef("fromHours(*x)", (e, a) => {
-            return a[0].Mul(e, new RealVal(60 * 60)).FormatDateTime();
-        }, "Converts from hours to epoch time.");
+        public readonly BuiltInFuncDef fromDays = new BuiltInFuncDef("fromDays(*x)",
+            "Converts from days to epoch time.",
+            (e, a) => (a[0].AsReal * (24 * 60 * 60)).ToDateTimeVal());
 
-        public static readonly BuiltInFuncDef fromMinutes = new BuiltInFuncDef("fromMinutes(*x)", (e, a) => {
-            return a[0].Mul(e, new RealVal(60)).FormatDateTime();
-        }, "Converts from minutes to epoch time.");
+        public readonly BuiltInFuncDef fromHours = new BuiltInFuncDef("fromHours(*x)",
+            "Converts from hours to epoch time.",
+            (e, a) => (a[0].AsReal * (60 * 60)).ToDateTimeVal());
 
-        public static readonly BuiltInFuncDef fromSeconds = new BuiltInFuncDef("fromSeconds(*x)", (e, a) => {
-            return a[0].FormatDateTime();
-        }, "Converts from seconds to epoch time.");
+        public readonly BuiltInFuncDef fromMinutes = new BuiltInFuncDef("fromMinutes(*x)",
+            "Converts from minutes to epoch time.",
+            (e, a) => (a[0].AsReal * 60).ToDateTimeVal());
+
+        public readonly BuiltInFuncDef fromSeconds = new BuiltInFuncDef("fromSeconds(*x)",
+            "Converts from seconds to epoch time.",
+            (e, a) => a[0].Format(FormatHint.DateTime));
     }
 }

@@ -6,14 +6,28 @@
 
 Absolute value of `x`
 
+```
+abs(-12.34) //--> 12.34
+abs(0)      //--> 0
+abs(56.78)  //--> 56.78
+```
 ### `mag(x[]...)`
 
 Magnitude of vector `x`
 
+```
+mag(3,4)   //--> 5
+mag(3,4,5) //--> 7.071067812
+```
 ### `sign(*x)`
 
 Returns 1 for positives, -1 for negatives, 0 otherwise.
 
+```
+sign(-12.34) //--> -1
+sign(0)      //--> 0
+sign(56.78)  //--> 1
+```
 ----
 ## Array
 
@@ -21,18 +35,34 @@ Returns 1 for positives, -1 for negatives, 0 otherwise.
 
 Apply the aggregate function `func(a,b)` for the `array`.
 
+```
+aggregate([1,2,3,4,5],(a,b)=>a+b)
+                         //--> 15
+```
 ### `all(array)`
 
 Returns true if all `array` elements are true.
 
+```
+all([true,false,true]) //--> false
+all([true,true,true])  //--> true
+```
 ### `all(array, func)`
 
 Returns true if tester function `func(x)` returns true for all elements of the `array`.
 
+```
+all([2,3,5,7],isPrime)   //--> true
+all([2,3,5,7,9],isPrime) //--> false
+```
 ### `any(array)`
 
 Returns true if at least one element is true.
 
+```
+any([false,false,false]) //--> false
+any([false,true,false])  //--> true
+```
 ### `any(array, func)`
 
 Returns true if tester function `func(x)` returns true for at least one element of the `array`.
@@ -77,6 +107,11 @@ Returns the index of the last element in the `array` whose value matches `val`.
 
 Length of `array`
 
+```
+len([])            //--> 0
+len([12,34,56,78]) //--> 4
+len("Hello")       //--> 5
+```
 ### `map(array, func)`
 
 Map the `array` using a converter function `func(x)`.
@@ -85,22 +120,37 @@ Map the `array` using a converter function `func(x)`.
 
 Returns an array consists of sequence of numbers greater than or equal to `start` and less than `stop`.
 
+```
+range(3,9) //--> [3, 4, 5, 6, 7, 8]
+```
 ### `range(start, stop, step)`
 
 Returns an array consists of sequence of numbers greater than or equal to `start` and less than `stop` with common difference `step`.
 
+```
+range(3,9,2) //--> [3, 5, 7]
+```
 ### `rangeInclusive(start, stop)`
 
 Returns an array consists of sequence of numbers greater than or equal to `start` and less than or equal to `stop`.
 
+```
+rangeInclusive(3,9) //--> [3, 4, 5, 6, 7, 8, 9]
+```
 ### `rangeInclusive(start, stop, step)`
 
 Returns an array consists of sequence of numbers greater than or equal to `start` and less than or equal to `stop` with common difference `step`.
 
+```
+rangeInclusive(3,9,2) //--> [3, 5, 7, 9]
+```
 ### `reverseArray(array)`
 
 Reverses the order of elements of `array`
 
+```
+reverseArray([12,3,4567,890]) //--> [890, 4567, 3, 12]
+```
 ### `sort(array)`
 
 Sort the `array`.
@@ -225,13 +275,13 @@ Converts from H, S, V to 24 bit RGB color value.
 
 Packs the 3 values to an RGB565 color.
 
-### `rgb(r, g, b)`
-
-Generates 24 bit color value from R, G, B.
-
 ### `rgb(*rgb)`
 
 Converts the `rgb` to web-color representation.
+
+### `rgb(r, g, b)`
+
+Generates 24 bit color value from R, G, B.
 
 ### `rgb2hsl(*rgb)`
 
@@ -241,13 +291,13 @@ Converts the 24 bit RGB color value to HSL.
 
 Converts the 24 bit RGB color value to HSV.
 
-### `rgb2yuv(r, g, b)`
-
-Converts R, G, B to 24 bit YUV color.
-
 ### `rgb2yuv(*rgb)`
 
 Converts 24bit RGB color to 24 bit YUV.
+
+### `rgb2yuv(r, g, b)`
+
+Converts R, G, B to 24 bit YUV color.
 
 ### `rgbFrom565(*rgb)`
 
@@ -261,13 +311,13 @@ Downconverts RGB888 color to RGB565.
 
 Unpacks the RGB565 color to 3 values.
 
-### `yuv2rgb(y, u, v)`
-
-Converts Y, U, V to 24 bit RGB color.
-
 ### `yuv2rgb(*yuv)`
 
 Converts the 24 bit YUV color to 24 bit RGB.
+
+### `yuv2rgb(y, u, v)`
+
+Converts Y, U, V to 24 bit RGB color.
 
 ----
 ## Date Time
@@ -286,7 +336,7 @@ Returns day component of datetime, expressed as 1..31.
 
 ### `dayOfWeek(*t)`
 
-Returns day of week of datetime, expressed as 0 (SUNDAY)..6 (SATURDAY).
+Returns day of week of datetime, expressed as 0 (Sunday)..6 (Saturday).
 
 ### `dayOfYear(*t)`
 
@@ -322,7 +372,7 @@ Returns month component of datetime, expressed as 1..12.
 
 ### `now()`
 
-Current epoch time.
+Returns current datetime.
 
 ### `secondOf(*t)`
 
@@ -351,6 +401,25 @@ Converts from epoch time to seconds.
 ### `yearOf(*t)`
 
 Returns year component of datetime.
+
+----
+## E Series
+
+### `esCeil(series, *x)`
+
+Nearest E-series value greater than or equal to `x` (`series`=3, 6, 12, 24, 48, 96, or 192).
+
+### `esFloor(series, *x)`
+
+Nearest E-series value less than or equal to `x` (`series`=3, 6, 12, 24, 48, 96, or 192).
+
+### `esRatio(series, *x)`
+
+Two E-series resistor values that provide the closest value to the voltage divider ratio `x` (`series`=3, 6, 12, 24, 48, 96, or 192).
+
+### `esRound(series, *x)`
+
+Nearest E-series value (`series`=3, 6, 12, 24, 48, 96, or 192).
 
 ----
 ## Encoding
@@ -386,25 +455,6 @@ Decode UTF8 byte sequence.
 ### `utf8Enc(str)`
 
 Encode `str` to UTF8 byte sequence.
-
-----
-## E Series
-
-### `esCeil(series, *x)`
-
-Nearest E-series value greater than or equal to `x` (`series`=3, 6, 12, 24, 48, 96, or 192).
-
-### `esFloor(series, *x)`
-
-Nearest E-series value less than or equal to `x` (`series`=3, 6, 12, 24, 48, 96, or 192).
-
-### `esRatio(series, *x)`
-
-Two E-series resistor values that provide the closest value to the voltage divider ratio `x` (`series`=3, 6, 12, 24, 48, 96, or 192).
-
-### `esRound(series, *x)`
-
-Nearest E-series value (`series`=3, 6, 12, 24, 48, 96, or 192).
 
 ----
 ## Exponential

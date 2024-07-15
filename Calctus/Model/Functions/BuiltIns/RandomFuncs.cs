@@ -6,16 +6,35 @@ using System.Threading.Tasks;
 using Shapoco.Calctus.Model.Types;
 
 namespace Shapoco.Calctus.Model.Functions.BuiltIns {
-    static class RandomFuncs {
+    class RandomFuncs : BuiltInFuncCategory {
+        private static RandomFuncs _instance = null;
+        public static RandomFuncs Instance => _instance != null ? _instance : _instance = new RandomFuncs();
+        private RandomFuncs() { }
+
         private static readonly Random rng = new Random((int)DateTime.Now.Ticks);
 
-        public static readonly BuiltInFuncDef rand = new BuiltInFuncDef("rand()", (e, a) => new RealVal((real)rng.NextDouble()), "Generates a random value between 0.0 and 1.0.");
-        public static readonly BuiltInFuncDef rand_2 = new BuiltInFuncDef("rand(min,max)", (e, a) => {
-            var min = a[0].AsReal;
-            var max = a[1].AsReal;
-            return new RealVal(min + (real)rng.NextDouble() * (max - min));
-        }, "Generates a random value between min and max.");
-        public static readonly BuiltInFuncDef rand32 = new BuiltInFuncDef("rand32()", (e, a) => new RealVal(rng.Next()), "Generates a 32bit random integer.");
-        public static readonly BuiltInFuncDef rand64 = new BuiltInFuncDef("rand64()", (e, a) => new RealVal((((long)rng.Next()) << 32) | ((long)rng.Next())), "Generates a 64bit random integer.");
+        public readonly BuiltInFuncDef rand_0 = new BuiltInFuncDef("rand()",
+            "Generates a random value between 0.0 and 1.0.",
+            (e, a) => ((real)rng.NextDouble()).ToRealVal());
+
+        public readonly BuiltInFuncDef rand_2 = new BuiltInFuncDef("rand(min,max)",
+            "Generates a random value between min and max.",
+            (e, a) => {
+                var min = a[0].AsReal;
+                var max = a[1].AsReal;
+                return (min + (real)rng.NextDouble() * (max - min)).ToRealVal(a[0].FormatHint);
+            });
+
+        public readonly BuiltInFuncDef rand32 = new BuiltInFuncDef("rand32()",
+            "Generates a 32bit random integer.",
+            (e, a) => rng.Next().ToIntVal());
+
+        public readonly BuiltInFuncDef rand64 = new BuiltInFuncDef("rand64()",
+            "Generates a 64bit random integer.",
+            (e, a) => {
+                long lo = rng.Next();
+                long hi = rng.Next();
+                return ((hi << 32) | lo).ToIntVal();
+            });
     }
 }

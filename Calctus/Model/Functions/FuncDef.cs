@@ -6,13 +6,13 @@ using System.Text.RegularExpressions;
 using System.Threading.Tasks;
 using Shapoco.Calctus.Model.Standards;
 using Shapoco.Calctus.Model.Types;
-using Shapoco.Calctus.Model.Mathematics;
+using Shapoco.Calctus.Model.Formats;
 using Shapoco.Calctus.Model.Parsers;
 using Shapoco.Calctus.Model.Evaluations;
 
 namespace Shapoco.Calctus.Model.Functions {
     abstract class FuncDef {
-        public static readonly Regex PrototypePattern = new Regex(@"^(?<name>\w+)\((?<args>\*?\w+(, *\*?\w+)*((\[\])?\.\.\.)?)?\)$");
+        public static readonly Regex PrototypePattern = new Regex(@"^(?<name>\w+)\((?<args>\*?\w+@?(, *\*?\w+@?)*((\[\])?\.\.\.)?)?\)$");
 
         public readonly Token Name;
         public readonly ArgDefList Args;
@@ -30,6 +30,7 @@ namespace Shapoco.Calctus.Model.Functions {
             var args = new List<ArgDef>();
             VariadicMode mode = VariadicMode.None;
             var vecArgIndex = -1;
+            var fmtSrcArgIndex = -1;
             if (m.Groups["args"].Success) {
                 var argsStr = m.Groups["args"].Value;
                 if (argsStr.EndsWith("[]...")) {
@@ -42,20 +43,24 @@ namespace Shapoco.Calctus.Model.Functions {
                 }
                 var caps = argsStr.Split(',').Select(p => p.Trim()).ToArray();
                 for (int i = 0; i < caps.Length; i++) {
-                    var cap = caps[i];
-                    if (cap.StartsWith("*")) {
+                    var argName = caps[i];
+                    if (argName.StartsWith("*")) {
                         if (vecArgIndex >= 0) throw new CalctusError("Only one argument is vectorizable.");
                         if (mode != VariadicMode.None) throw new CalctusError("Variadic argument and vectorizable argument cannot coexist.");
                         vecArgIndex = i;
-                        args.Add(new ArgDef(cap.Substring(1)));
+                        argName = argName.Substring(1);
                     }
-                    else {
-                        args.Add(new ArgDef(cap));
+                    if (argName.EndsWith("@")) {
+                        if (fmtSrcArgIndex >= 0) throw new CalctusError("Only one argument is marked as format source.");
+                        fmtSrcArgIndex = i;
+                        argName = argName.Substring(0, argName.Length - 1);
                     }
+                    argName = argName.Trim();
+                    args.Add(new ArgDef(argName));
                 }
             }
             this.Name = new Token(TokenType.Word, TextPosition.Nowhere, m.Groups["name"].Value);
-            this.Args = new ArgDefList(args.ToArray(), mode, vecArgIndex);
+            this.Args = new ArgDefList(args.ToArray(), mode, vecArgIndex, fmtSrcArgIndex);
             this.Description = desc;
         }
 
@@ -94,11 +99,11 @@ namespace Shapoco.Calctus.Model.Functions {
                     var tempArgs = new Val[this.Args.Count - 1 + extVals.Length];
                     Array.Copy(args, tempArgs, args.Length - 1);
                     Array.Copy((Val[])extVals.Raw, 0, tempArgs, this.Args.Count - 1, extVals.Length);
-                    return OnCall(e, tempArgs);
+                    return OnCallWrap(e, tempArgs);
                 }
                 else {
                     // 上記以外はそのまま
-                    return OnCall(e, args);
+                    return OnCallWrap(e, args);
                 }
             }
             else if (Args.Mode == VariadicMode.Array) {
@@ -111,11 +116,11 @@ namespace Shapoco.Calctus.Model.Functions {
                     var tempArgs = new Val[this.Args.Count];
                     Array.Copy(args, tempArgs, Args.Count - 1);
                     tempArgs[this.Args.Count - 1] = new ArrayVal(new Val[0]);
-                    return OnCall(e, tempArgs);
+                    return OnCallWrap(e, tempArgs);
                 }
                 else if (Args.Count == args.Length && args[args.Length - 1] is ArrayVal) {
                     // 配列で渡された場合はそのまま
-                    return OnCall(e, args);
+                    return OnCallWrap(e, args);
                 }
                 else {
                     // 可変長配列部分を配列にまとめる
@@ -124,7 +129,7 @@ namespace Shapoco.Calctus.Model.Functions {
                     var array = new Val[args.Length - Args.Count + 1];
                     Array.Copy(args, Args.Count - 1, array, 0, array.Length);
                     tempArgs[Args.Count - 1] = new ArrayVal(array);
-                    return OnCall(e, tempArgs);
+                    return OnCallWrap(e, tempArgs);
                 }
             }
             else if (Args.VectorizableArgIndex >= 0 && args[Args.VectorizableArgIndex] is ArrayVal vecVals) {
@@ -134,13 +139,21 @@ namespace Shapoco.Calctus.Model.Functions {
                 var results = new Val[vecVals.Length];
                 for (int i = 0; i < vecVals.Length; i++) {
                     tempArgs[Args.VectorizableArgIndex] = vecVals[i];
-                    results[i] = OnCall(e, tempArgs);
+                    results[i] = OnCallWrap(e, tempArgs);
                 }
                 return new ArrayVal(results);
             }
             else {
-                return OnCall(e, args);
+                return OnCallWrap(e, args);
             }
+        }
+
+        private Val OnCallWrap(EvalContext e, Val[] args) {
+            var retVal = OnCall(e, args);
+            if (Args.FormatSourceArgIndex >= 0) {
+                retVal = retVal.Format(args[Args.FormatSourceArgIndex].FormatHint);
+            }
+            return retVal;
         }
 
         protected abstract Val OnCall(EvalContext e, Val[] args);
@@ -179,5 +192,19 @@ namespace Shapoco.Calctus.Model.Functions {
             sb.Append(')');
         }
 
+        /// <summary>
+        /// 関数本体の実装をシンプルにするために引数を Val と real の間で変換する。
+        /// </summary>
+        public static Func<EvalContext, Val[], Val> ArgToReal(Func<EvalContext, real[], real> func, FormatHint fh = null) {
+            return (e, a) => func(e, a.Select(p => p.AsReal).ToArray()).ToRealVal(fh);
+        }
+
+        /// <summary>
+        /// 関数本体の実装をシンプルにするために引数を Val と long の間で変換する。
+        /// </summary>
+        public static Func<EvalContext, Val[], Val> ArgToLong(Func<EvalContext, long[], long> func, FormatHint fh = null) {
+            if (fh == null) fh = FormatHint.CStyleInt;
+            return (e, a) => func(e, a.Select(p => p.AsLong).ToArray()).ToRealVal(fh);
+        }
     }
 }

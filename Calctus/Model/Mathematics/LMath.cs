@@ -138,7 +138,7 @@ namespace Shapoco.Calctus.Model.Mathematics {
 
         public static int EccWidth(int dataWidth) {
             if (dataWidth < 1 || 1024 < dataWidth) throw new ArgumentOutOfRangeException();
-            int eccWidth = (int)RMath.Ceiling(RMath.Log2(dataWidth + 1));
+            int eccWidth = (int)RMath.Ceiling(RMath.Log2(dataWidth + 1, highAccuracy: true));
             if (eccWidth + dataWidth >= (1 << eccWidth)) {
                 eccWidth += 1;
             }

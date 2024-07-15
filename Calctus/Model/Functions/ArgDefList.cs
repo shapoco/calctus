@@ -9,16 +9,18 @@ namespace Shapoco.Calctus.Model.Functions {
         public readonly ArgDef[] Items;
         public readonly VariadicMode Mode;
         public readonly int VectorizableArgIndex;
+        public readonly int FormatSourceArgIndex;
 
         public int Count => Items.Length;
         public ArgDef this[int index] => Items[index];
 
-        public ArgDefList() : this(new ArgDef[0], VariadicMode.None, -1) { }
+        public ArgDefList() : this(new ArgDef[0], VariadicMode.None, -1, -1) { }
 
-        public ArgDefList(ArgDef[] args, VariadicMode mode, int vecArgIndex) {
+        public ArgDefList(ArgDef[] args, VariadicMode mode, int vecArgIndex, int fmtSrcArgIndex) {
             Items = args;
             Mode = mode;
             VectorizableArgIndex = vecArgIndex;
+            FormatSourceArgIndex = fmtSrcArgIndex;
         }
     }
 }

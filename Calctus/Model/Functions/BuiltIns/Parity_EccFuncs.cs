@@ -5,14 +5,33 @@ using System.Text;
 using System.Threading.Tasks;
 using Shapoco.Calctus.Model.Types;
 using Shapoco.Calctus.Model.Mathematics;
+using Shapoco.Calctus.Model.Formats;
 
 namespace Shapoco.Calctus.Model.Functions.BuiltIns {
-    static class Parity_EccFuncs {
-        public static readonly BuiltInFuncDef xorReduce = new BuiltInFuncDef("xorReduce(*x)", (e, a) => new RealVal(LMath.XorReduce(a[0].AsLong)).FormatInt(), "Reduction XOR of `x` (Same as even parity).");
-        public static readonly BuiltInFuncDef oddParity = new BuiltInFuncDef("oddParity(*x)", (e, a) => new RealVal(LMath.OddParity(a[0].AsLong)).FormatInt(), "Odd parity of `x`.");
-        public static readonly BuiltInFuncDef eccWidth = new BuiltInFuncDef("eccWidth(*b)", (e, a) => new RealVal(LMath.EccWidth(a[0].AsInt)).FormatInt(), "Width of ECC for `b`-bit data.");
-        public static readonly BuiltInFuncDef eccEnc = new BuiltInFuncDef("eccEnc(b, *x)", (e, a) => new RealVal(LMath.EccEncode(a[0].AsInt, a[1].AsLong)).FormatHex(), "Generates ECC code (`b`: data width, `x`: data).");
-        public static readonly BuiltInFuncDef eccDec = new BuiltInFuncDef("eccDec(b, ecc, x)", (e, a) => new RealVal(LMath.EccDecode(a[0].AsInt, a[1].AsInt, a[2].AsLong)).FormatInt(), 
-            "Checks ECC code (`b`: data width, `ecc`: ECC code, `x`: data). Returns: 0 = no error, positive value = position of 1-bit error, negative value = 2-bit error.");
+    class Parity_EccFuncs : BuiltInFuncCategory {
+        private static Parity_EccFuncs _instance = null;
+        public static Parity_EccFuncs Instance => _instance != null ? _instance : _instance = new Parity_EccFuncs();
+        private Parity_EccFuncs() { }
+
+        public readonly BuiltInFuncDef xorReduce = new BuiltInFuncDef("xorReduce(*x)",
+                "Reduction XOR of `x` (Same as even parity).",
+                FuncDef.ArgToLong((e, a) => LMath.XorReduce(a[0])));
+
+        public readonly BuiltInFuncDef oddParity = new BuiltInFuncDef("oddParity(*x)",
+            "Odd parity of `x`.",
+            FuncDef.ArgToLong((e, a) => LMath.OddParity(a[0])));
+
+        public readonly BuiltInFuncDef eccWidth = new BuiltInFuncDef("eccWidth(*b)",
+            "Width of ECC for `b`-bit data.",
+            FuncDef.ArgToLong((e, a) => LMath.EccWidth((int)a[0])));
+
+        public readonly BuiltInFuncDef eccEnc = new BuiltInFuncDef("eccEnc(b, *x@)",
+            "Generates ECC code (`b`: data width, `x`: data).",
+            FuncDef.ArgToLong((e, a) => LMath.EccEncode((int)a[0], a[1])));
+
+        public readonly BuiltInFuncDef eccDec = new BuiltInFuncDef("eccDec(b, ecc, x)",
+            "Checks ECC code (`b`: data width, `ecc`: ECC code, `x`: data). " +
+            "Returns: 0 = no error, positive value = position of 1-bit error, negative value = 2-bit error.",
+            FuncDef.ArgToLong((e, a) => LMath.EccDecode((int)a[0], (int)a[1], a[2])));
     }
 }

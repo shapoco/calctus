@@ -111,7 +111,7 @@ namespace Shapoco.Calctus.Model.Expressions {
                 if (!aVal.IsInteger || !bVal.IsInteger) throw new CalctusError("Operand must be integer.");
                 var a = aVal.AsReal;
                 var b = bVal.AsReal;
-                return new ArrayVal(RMath.Range(a, b, a < b ? 1 : -1, inclusive));
+                return RMath.Range(a, b, a < b ? 1 : -1, inclusive).ToArrayVal(aVal.FormatHint, null);
             }
             else if (Method == OpDef.Frac) {
                 var a = A.Eval(e);
@@ -127,7 +127,7 @@ namespace Shapoco.Calctus.Model.Expressions {
                 }
             }
             else if (Method == OpDef.Pow) {
-                return ExponentialFuncs.pow.Call(e, new Val[] { A.Eval(e), B.Eval(e) });
+                return ExponentialFuncs.Instance.pow.Call(e, new Val[] { A.Eval(e), B.Eval(e) });
             }
             else {
                 var a = A.Eval(e);

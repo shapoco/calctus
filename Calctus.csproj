@@ -54,6 +54,7 @@
   <ItemGroup>
     <Compile Include="AppDataManager.cs" />
     <Compile Include="Calctus\Assert.cs" />
+    <Compile Include="Calctus\DocumentGenerator.cs" />
     <Compile Include="Calctus\Model\ArgDef.cs" />
     <Compile Include="Calctus\Model\Evaluations\BuiltInConstants.cs" />
     <Compile Include="Calctus\Model\Evaluations\EvalError.cs" />
@@ -68,6 +69,7 @@
     <Compile Include="Calctus\Model\Formats\FormatSettings.cs" />
     <Compile Include="Calctus\Model\Formats\ValFormat.cs" />
     <Compile Include="Calctus\Model\Functions\ArgDefList.cs" />
+    <Compile Include="Calctus\Model\Functions\BuiltInFuncLibrary.cs" />
     <Compile Include="Calctus\Model\Functions\BuiltIns\ArrayFuncs.cs" />
     <Compile Include="Calctus\Model\Functions\BuiltIns\AssertionFuncs.cs" />
     <Compile Include="Calctus\Model\Functions\BuiltIns\Bit_ByteOperationFuncs.cs" />
@@ -76,6 +78,7 @@
     <Compile Include="Calctus\Model\Functions\BuiltIns\DateTimeFuncs.cs" />
     <Compile Include="Calctus\Model\Functions\BuiltIns\EncodingFuncs.cs" />
     <Compile Include="Calctus\Model\Functions\BuiltIns\ESeriesFuncs.cs" />
+    <Compile Include="Calctus\Model\Functions\BuiltInFuncCategory.cs" />
     <Compile Include="Calctus\Model\Functions\BuiltIns\GrayCodeFuncs.cs" />
     <Compile Include="Calctus\Model\Functions\BuiltIns\Parity_EccFuncs.cs" />
     <Compile Include="Calctus\Model\Functions\BuiltIns\PlottingFuncs.cs" />
@@ -92,6 +95,8 @@
     <Compile Include="Calctus\Model\Functions\BuiltIns\Absolute_SignFuncs.cs" />
     <Compile Include="Calctus\Model\Functions\BuiltIns\Sum_AverageFuncs.cs" />
     <Compile Include="Calctus\Model\Functions\BuiltIns\TrigonometricFuncs.cs" />
+    <Compile Include="Calctus\Model\Functions\FuncTest.cs" />
+    <Compile Include="Calctus\Model\Functions\TestResult.cs" />
     <Compile Include="Calctus\Model\Functions\Types.cs" />
     <Compile Include="Calctus\Model\Graphs\AxisSettings.cs" />
     <Compile Include="Calctus\Model\Graphs\PlotCall.cs" />
@@ -155,6 +160,7 @@
     <Compile Include="Calctus\Model\Evaluations\Var.cs" />
     <Compile Include="Calctus\Model\Parsers\TokenQueue.cs" />
     <Compile Include="Calctus\Model\Functions\UserFuncDef.cs" />
+    <Compile Include="Calctus\Model\Types\ValExtensions.cs" />
     <Compile Include="Calctus\Settings.cs" />
     <Compile Include="Calctus\UI\AxisSettingsPanel.cs">
       <SubType>Component</SubType>
