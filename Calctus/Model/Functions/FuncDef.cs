@@ -145,7 +145,9 @@ namespace Shapoco.Calctus.Model.Functions {
 
         protected abstract Val OnCall(EvalContext e, Val[] args);
 
-        public override string ToString() {
+        public override string ToString() => GetDeclarationText();
+
+        public string GetDeclarationText() {
             var sb = new StringBuilder();
             if (Token.IsNullOrEmpty(Name)) {
                 sb.Append("<unnamed>");

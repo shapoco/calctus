@@ -13,8 +13,8 @@ namespace Shapoco.Calctus.Model.Functions {
 
         public Func<EvalContext, Val[], Val> Method { get; protected set; }
 
-        public BuiltInFuncDef(string prototype, Func<EvalContext, Val[], Val> method, string desc) 
-            : base(prototype , desc){
+        public BuiltInFuncDef(string prototype, Func<EvalContext, Val[], Val> method, string desc)
+            : base(prototype, desc) {
             this.Method = method;
         }
 
@@ -44,10 +44,25 @@ namespace Shapoco.Calctus.Model.Functions {
         }
 
 #if DEBUG
+        private static string generateMarkdownLinkId(string title) {
+            var sb = new StringBuilder("./FUNCTIONS.md#");
+            foreach (var c in title.ToLower()) {
+                if (('a' <= c && c <= 'z') || ('0' <= c && c <= '9') || c == '_') {
+                    sb.Append(c);
+                }
+                else if (c == ' ') {
+                    sb.Append('-');
+                }
+            }
+            return sb.ToString();
+        }
+
         private class FuncCategory {
             public readonly string Name;
+            public readonly string LinkTarget;
             public readonly FuncDescription[] Functions;
             public FuncCategory(Type categoryType) {
+                // カテゴリクラス名からカテゴリ名を生成する
                 var typeName = categoryType.Name.Substring(0, categoryType.Name.Length - 5);
                 var sb = new StringBuilder();
                 foreach (var c in typeName) {
@@ -62,7 +77,9 @@ namespace Shapoco.Calctus.Model.Functions {
                     }
                 }
                 this.Name = sb.ToString();
+                this.LinkTarget = generateMarkdownLinkId(this.Name);
 
+                // 関数定義の列挙
                 this.Functions = EnumFunctions(categoryType)
                     .OrderBy(p => p.Name.Text)
                     .Select(p => new FuncDescription(p))
@@ -72,9 +89,13 @@ namespace Shapoco.Calctus.Model.Functions {
 
         private class FuncDescription {
             public readonly string DeclText;
+            public readonly string MarkdownEscapedDeclText;
+            public readonly string LinkTarget;
             public readonly string Description;
             public FuncDescription(BuiltInFuncDef funcDef) {
-                this.DeclText = funcDef.ToString();
+                this.DeclText = funcDef.GetDeclarationText();
+                this.MarkdownEscapedDeclText = this.DeclText.Replace("*", "\\*");
+                this.LinkTarget = generateMarkdownLinkId(this.DeclText);
                 this.Description = funcDef.Description;
             }
         }
@@ -140,11 +161,11 @@ namespace Shapoco.Calctus.Model.Functions {
                 writer.WriteLine("|Category|Functions|");
                 writer.WriteLine("|:--:|:--|");
                 foreach (var cat in categories) {
-                    writer.Write("|" + cat.Name + "|");
+                    writer.Write("|[" + cat.Name + "](" + cat.LinkTarget + ")|");
                     bool first = true;
                     foreach (var f in cat.Functions) {
                         if (!first) writer.Write(", ");
-                        writer.Write("`" + f.DeclText.Replace(" ", "") + "`");
+                        writer.Write("[" + f.MarkdownEscapedDeclText + "](" + f.LinkTarget + ")");
                         first = false;
                     }
                     writer.WriteLine("|");
