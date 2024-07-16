@@ -17,6 +17,7 @@ namespace Shapoco.Calctus.Model.Formats {
         private static DateTimeFormat _instance;
         public static DateTimeFormat Instance => (_instance != null) ? _instance : (_instance = new DateTimeFormat());
 
+        // todo datetime は表現形式ではなく型にすべき
         private DateTimeFormat() : base(TokenType.SpecialLiteral, pattern, FormatPriority.AlwaysLeft) { }
 
         protected override Val OnParse(Match m) {
