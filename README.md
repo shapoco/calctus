@@ -26,6 +26,8 @@ Calctus (カルクタス) is a calculator application for Windows developed for 
 
 ## Features
 
+<!-- TODO: 表現形式と型は分けて書く -->
+
 ### Numeric Representations
 
 |Representation|Example|
