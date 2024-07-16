@@ -47,7 +47,6 @@ namespace Shapoco.Calctus.UI {
                 foreach (var prop in typeof(Settings).GetProperties()) {
                     if (prop.Name.StartsWith(ColorSettingNamePrefix)) {
                         var colorName = prop.Name.Substring(ColorSettingNamePrefix.Length);
-                        // todo カラーピッカー
                         var nameLabel = new Label();
                         if (colorName == "SI_Prefix") {
                             nameLabel.Text = "Exponent / SI Prefix";
