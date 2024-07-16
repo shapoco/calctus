@@ -20,6 +20,7 @@ Calctus (カルクタス) is a calculator application for Windows developed for 
 - The formula history can be modified, and the calculation results are immediately regenerated.
 - Built-in constants and built-in functions. Constants and functions can also be user-defined.
 - Numerical solution of equations by Newton's method.
+- :new: High DPI support.
 
 ----
 
