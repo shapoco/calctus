@@ -59,6 +59,7 @@ namespace Shapoco.Calctus.Model.Formats {
         public static SiPrefixFormat SiPrefixed => SiPrefixFormat.Instance;
         public static BinaryPrefixFormat BinaryPrefixed => BinaryPrefixFormat.Instance;
         public static DateTimeFormat DateTime => DateTimeFormat.Instance;
+        public static RelativeTimeFormat RelativeTime => RelativeTimeFormat.Instance;
         public static WeekdayFormat Weekday => WeekdayFormat.Instance;
         public static WebColorFormat WebColor => WebColorFormat.Instance;
 
@@ -74,6 +75,7 @@ namespace Shapoco.Calctus.Model.Formats {
             SiPrefixed,
             BinaryPrefixed,
             DateTime,
+            RelativeTime,
             Weekday,
             WebColor,
         };

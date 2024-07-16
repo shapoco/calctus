@@ -65,6 +65,7 @@
     <Compile Include="Calctus\Model\Expressions\LambdaExpr.cs" />
     <Compile Include="Calctus\Model\Expressions\ParenthesisExpr.cs" />
     <Compile Include="Calctus\Model\Formats\BoolFormat.cs" />
+    <Compile Include="Calctus\Model\Formats\RelativeTimeFormat.cs" />
     <Compile Include="Calctus\Model\Formats\WeekdayFormat.cs" />
     <Compile Include="Calctus\Model\Formats\FormatSettings.cs" />
     <Compile Include="Calctus\Model\Formats\ValFormat.cs" />

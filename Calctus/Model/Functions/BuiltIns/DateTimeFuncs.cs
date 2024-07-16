@@ -68,34 +68,42 @@ namespace Shapoco.Calctus.Model.Functions.BuiltIns {
 
         public readonly BuiltInFuncDef toDays = new BuiltInFuncDef("toDays(*x)",
             "Converts from epoch time to days.",
-            (e, a) => (a[0].AsReal / (24 * 60 * 60)).ToRealVal());
+            (e, a) => (a[0].AsReal / (24 * 60 * 60)).ToRealVal(),
+            new FuncTest("#+123.12:34:56.789#", "123+(12+(34+56.789/60)/60)/24"));
 
         public readonly BuiltInFuncDef toHours = new BuiltInFuncDef("toHours(*x)",
             "Converts from epoch time to hours.",
-            (e, a) => (a[0].AsReal / (60 * 60)).ToRealVal());
+            (e, a) => (a[0].AsReal / (60 * 60)).ToRealVal(),
+            new FuncTest("#+123.12:34:56.789#", "(123*24)+12+(34+56.789/60)/60"));
 
         public readonly BuiltInFuncDef toMinutes = new BuiltInFuncDef("toMinutes(*x)",
             "Converts from epoch time to minutes.",
-            (e, a) => (a[0].AsReal / 60).ToRealVal());
+            (e, a) => (a[0].AsReal / 60).ToRealVal(),
+            new FuncTest("#+123.12:34:56.789#", "((123*24)+12)*60+34+56.789/60"));
 
         public readonly BuiltInFuncDef toSeconds = new BuiltInFuncDef("toSeconds(*x)",
             "Converts from epoch time to seconds.",
-            (e, a) => a[0].Format(FormatHint.CStyleReal));
+            (e, a) => a[0].Format(FormatHint.CStyleReal),
+            new FuncTest("#+123.12:34:56.789#", "(((123*24)+12)*60+34)*60+56.789"));
 
         public readonly BuiltInFuncDef fromDays = new BuiltInFuncDef("fromDays(*x)",
             "Converts from days to epoch time.",
-            (e, a) => (a[0].AsReal * (24 * 60 * 60)).ToDateTimeVal());
+            (e, a) => (a[0].AsReal * (24 * 60 * 60)).ToRelativeTimeVal(),
+            new FuncTest("123.45", "#+123.10:48:00#"));
 
         public readonly BuiltInFuncDef fromHours = new BuiltInFuncDef("fromHours(*x)",
             "Converts from hours to epoch time.",
-            (e, a) => (a[0].AsReal * (60 * 60)).ToDateTimeVal());
+            (e, a) => (a[0].AsReal * (60 * 60)).ToRelativeTimeVal(),
+            new FuncTest("123.45", "#+5.3:27:00#"));
 
         public readonly BuiltInFuncDef fromMinutes = new BuiltInFuncDef("fromMinutes(*x)",
             "Converts from minutes to epoch time.",
-            (e, a) => (a[0].AsReal * 60).ToDateTimeVal());
+            (e, a) => (a[0].AsReal * 60).ToRelativeTimeVal(),
+            new FuncTest("123.45", "#+2:03:27#"));
 
         public readonly BuiltInFuncDef fromSeconds = new BuiltInFuncDef("fromSeconds(*x)",
             "Converts from seconds to epoch time.",
-            (e, a) => a[0].Format(FormatHint.DateTime));
+            (e, a) => a[0].Format(FormatHint.RelativeTime),
+            new FuncTest("123.45", "#+0:02:03.45#"));
     }
 }

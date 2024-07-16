@@ -102,7 +102,16 @@ namespace Shapoco.Calctus.Model.Types {
         // 算術演算
         // 右項に精度を合わせるため UpConvert する
         public Val Add(EvalContext ctx, Val b) => this.UpConvert(ctx, b).OnAdd(ctx, b).Format(FormatHint.Select(b.FormatHint));
-        public Val Sub(EvalContext ctx, Val b) => this.UpConvert(ctx, b).OnSub(ctx, b).Format(FormatHint.Select(b.FormatHint));
+        public Val Sub(EvalContext ctx, Val b) {
+            var val = this.UpConvert(ctx, b).OnSub(ctx, b);
+            if (this.FormatHint.Format == DateTimeFormat.Instance && b.FormatHint.Format == DateTimeFormat.Instance) {
+                // 時刻同士の減算の結果は時間差にする
+                return val.Format(FormatHint.RelativeTime);
+            }
+            else {
+                return val.Format(FormatHint.Select(b.FormatHint));
+            }
+        }
         public Val Mul(EvalContext ctx, Val b) => this.UpConvert(ctx, b).OnMul(ctx, b).Format(FormatHint.Select(b.FormatHint));
         public Val Div(EvalContext ctx, Val b) => this.UpConvert(ctx, b).OnDiv(ctx, b).Format(FormatHint.Select(b.FormatHint));
         public Val IDiv(EvalContext ctx, Val b) => this.UpConvert(ctx, b).OnIDiv(ctx, b).Format(FormatHint.Select(b.FormatHint));

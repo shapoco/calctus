@@ -18,6 +18,7 @@ namespace Shapoco.Calctus.Model.Formats {
         public static readonly FormatHint BinaryPrefixed = new FormatHint(ValFormat.BinaryPrefixed);
         public static readonly FormatHint WebColor = new FormatHint(ValFormat.WebColor);
         public static readonly FormatHint DateTime = new FormatHint(ValFormat.DateTime);
+        public static readonly FormatHint RelativeTime = new FormatHint(ValFormat.RelativeTime);
         public static readonly FormatHint Weekday = new FormatHint(ValFormat.Weekday);
         
         public static readonly FormatHint Default = CStyleReal;

@@ -33,6 +33,10 @@ namespace Shapoco.Calctus.Model.Types {
         public static RealVal ToDateTimeVal(this int val) => new RealVal(val, FormatHint.DateTime);
         public static RealVal ToDateTimeVal(this long val) => new RealVal(val, FormatHint.DateTime);
 
+        public static RealVal ToRelativeTimeVal(this real val) => new RealVal(val, FormatHint.RelativeTime);
+        public static RealVal ToRelativeTimeVal(this int val) => new RealVal(val, FormatHint.RelativeTime);
+        public static RealVal ToRelativeTimeVal(this long val) => new RealVal(val, FormatHint.RelativeTime);
+
         public static RealVal ToColorVal(this real val) => new RealVal(val, FormatHint.WebColor);
         public static RealVal ToColorVal(this int val) => new RealVal(val, FormatHint.WebColor);
         public static RealVal ToColorVal(this long val) => new RealVal(val, FormatHint.WebColor);
