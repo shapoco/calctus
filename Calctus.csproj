@@ -172,6 +172,7 @@
     <Compile Include="Calctus\UI\Books\BookTreeView.cs">
       <SubType>Component</SubType>
     </Compile>
+    <Compile Include="Calctus\UI\CLI\Command.cs" />
     <Compile Include="Calctus\UI\ToolIconGenerator.cs" />
     <Compile Include="Calctus\UI\ValuePickupDialog.cs">
       <SubType>Form</SubType>
