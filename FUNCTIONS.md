@@ -728,6 +728,17 @@ Inverse of the sum of the inverses. Composite resistance of parallel resistors.
 Sum of elements of the `array`.
 
 ----
+## System
+
+### `isDebugBuild()`
+
+Whether or not the running Calctus is a debug build.
+
+### `version()`
+
+Returns current version of Calctus.
+
+----
 ## Trigonometric
 
 ### `acos(*x)`

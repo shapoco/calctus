@@ -25,12 +25,14 @@ namespace Shapoco.Calctus.UI.Sheets {
         public InputCandidateForm(IInputCandidateProvider provider) {
             _provider = provider;
 
+            var s = Settings.Instance;
+
             FormBorderStyle = FormBorderStyle.None;
             TopMost = true;
             Size = new Size(250, 250);
             Font = new Font(Settings.Instance.Appearance_Font_Button_Name, Settings.Instance.Appearance_Font_Size, FontStyle.Regular);
-            BackColor = Color.FromArgb(32, 32, 32);
-            ForeColor = Color.White;
+            BackColor = s.Appearance_Color_Background;
+            ForeColor = s.Appearance_Color_Text;
             Padding = new Padding(1, 1, 1, 1);
             DoubleBuffered = true;
 
@@ -43,7 +45,7 @@ namespace Shapoco.Calctus.UI.Sheets {
             _desc.Dock = DockStyle.Bottom;
             _desc.AutoSize = false;
             _desc.Height = 100;
-            _desc.BackColor = Color.FromArgb(48, 48, 48);
+            _desc.BackColor = s.Appearance_Color_Button_Face;
             Controls.Add(_desc);
 
             AutoScaleDimensions = new SizeF(96, 96);

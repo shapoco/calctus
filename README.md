@@ -90,7 +90,7 @@ User-defined constants can also be used.
 See [Built-In Functions](FUNCTIONS.md) for details.
 
 <!-- START_OF_BUILT_IN_FUNCTION_TABLE -->
-Now Calctus has 163 built-in functions.
+Now Calctus has 165 built-in functions.
 
 |Category|Functions|
 |:--:|:--|
@@ -116,6 +116,7 @@ Now Calctus has 163 built-in functions.
 |[Solve](./FUNCTIONS.md#solve)|[solve(func)](./FUNCTIONS.md#solvefunc), [solve(func, array)](./FUNCTIONS.md#solvefunc-array), [solve(func, min, max)](./FUNCTIONS.md#solvefunc-min-max)|
 |[String](./FUNCTIONS.md#string)|[endsWith(*s, key)](./FUNCTIONS.md#endswiths-key), [join(sep, array[]...)](./FUNCTIONS.md#joinsep-array), [replace(*s, old, new)](./FUNCTIONS.md#replaces-old-new), [split(sep, s)](./FUNCTIONS.md#splitsep-s), [startsWith(*s, key)](./FUNCTIONS.md#startswiths-key), [toLower(*s)](./FUNCTIONS.md#tolowers), [toUpper(*s)](./FUNCTIONS.md#touppers), [trim(*s)](./FUNCTIONS.md#trims), [trimEnd(*s)](./FUNCTIONS.md#trimends), [trimStart(*s)](./FUNCTIONS.md#trimstarts)|
 |[Sum/Average](./FUNCTIONS.md#sumaverage)|[ave(array...)](./FUNCTIONS.md#avearray), [geoMean(array...)](./FUNCTIONS.md#geomeanarray), [harMean(array...)](./FUNCTIONS.md#harmeanarray), [invSum(array...)](./FUNCTIONS.md#invsumarray), [sum(array...)](./FUNCTIONS.md#sumarray)|
+|[System](./FUNCTIONS.md#system)|[isDebugBuild()](./FUNCTIONS.md#isdebugbuild), [version()](./FUNCTIONS.md#version)|
 |[Trigonometric](./FUNCTIONS.md#trigonometric)|[acos(*x)](./FUNCTIONS.md#acosx), [asin(*x)](./FUNCTIONS.md#asinx), [atan(*x)](./FUNCTIONS.md#atanx), [atan2(a, b)](./FUNCTIONS.md#atan2a-b), [cos(*x)](./FUNCTIONS.md#cosx), [cosh(*x)](./FUNCTIONS.md#coshx), [sin(*x)](./FUNCTIONS.md#sinx), [sinh(*x)](./FUNCTIONS.md#sinhx), [tan(*x)](./FUNCTIONS.md#tanx), [tanh(*x)](./FUNCTIONS.md#tanhx)|
 <!-- END_OF_BUILT_IN_FUNCTION_TABLE -->
 
