@@ -68,9 +68,14 @@ namespace Shapoco.Windows {
             switch (m.Msg) {
                 case WinUser.WM_DRAWCLIPBOARD:
                     _parent.Invoke(new MethodInvoker(delegate {
-                        _eventTimer.Stop();
-                        _eventTimer.Interval = 100;
-                        _eventTimer.Start();
+                        try {
+                            _eventTimer.Stop();
+                            _eventTimer.Interval = 100;
+                            _eventTimer.Start();
+                        }
+                        catch (Exception ex) {
+                            Console.WriteLine("*ERROR: WndProc:" + ex.ToString());
+                        }
                     }));
                     if (_nextHandle != IntPtr.Zero) {
                         WinUser.SendMessage(_nextHandle, m.Msg, m.WParam, m.LParam);

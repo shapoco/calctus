@@ -42,7 +42,10 @@ namespace Shapoco.Calctus.Model.Formats {
         }
 
         public static string FormatAsStringLiteral(real unixTime) {
-            var dateTime = UnixTime.ToLocalTime(unixTime);
+            return FormatAsStringLiteral(UnixTime.ToLocalTime(unixTime));
+        }
+        
+        public static string FormatAsStringLiteral(DateTime dateTime) {
             if (dateTime.Hour == 0 && dateTime.Minute == 0 && dateTime.Second == 0 && dateTime.Millisecond == 0) {
                 return "#" + dateTime.ToString("yyyy/MM/dd", CultureInfo.InvariantCulture) + "#";
             }

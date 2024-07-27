@@ -9,6 +9,8 @@ using System.Threading.Tasks;
 using System.Windows.Forms;
 using Shapoco.Windows;
 using Shapoco.Calctus.UI.Sheets;
+using Shapoco.Calctus.Model.Formats;
+using Shapoco.Calctus.Model.Types;
 
 namespace Shapoco.Calctus.UI {
     partial class ValuePickupDialog : Form {
@@ -26,15 +28,24 @@ namespace Shapoco.Calctus.UI {
         private string _oldExprText;
         private ValuePickupJoinMethod _method = ValuePickupJoinMethod.WithOperator;
         private List<string> _collectedItems = new List<string>();
+        private bool _suppressTextBoxChanged = false;
+        private Timer _textUpdateTimer = new Timer();
+        private bool _isActive = false;
 
         public ValuePickupDialog(ExprBoxCore exprBox) {
             InitializeComponent();
             Instance = this;
 
+            _textUpdateTimer.Enabled = false;
+            _textUpdateTimer.Interval = 1000;
+
             _exprBox = exprBox;
             _oldExprText = exprBox.Text;
 
             joinOperatorComboBox.Items.AddRange(new string[] { "+", "*", "&", "|", "+|", "&&", "||", "," });
+            foreach(var item in Enum.GetValues(typeof(ValuePickupFormatting))) {
+                formattingComboBox.Items.Add((ValuePickupFormatting)item);
+            }
 
             Windows.DwmApi.SetDarkModeEnable(this, Settings.Instance.GetIsDarkMode());
 
@@ -45,13 +56,18 @@ namespace Shapoco.Calctus.UI {
 
             Load += ValueCollectionDialog_Load;
             FormClosed += ValueCollectionDialog_FormClosed;
+            Activated += delegate { _isActive = true; };
+            Deactivate += delegate { _isActive = false; };
             cancelButton.Click += CancelButton_Click;
             withOperatorRadioButton.CheckedChanged += delegate { _method = ValuePickupJoinMethod.WithOperator; updateExprBox(); };
             asArrayRadioButton.CheckedChanged += delegate { _method = ValuePickupJoinMethod.AsArray; updateExprBox(); };
             joinOperatorComboBox.TextChanged += delegate { updateExprBox(); };
             joinOperatorComboBox.SelectedIndexChanged += delegate { updateExprBox(); };
             removeCommaCheckBox.CheckedChanged += delegate { updateExprBox(); };
-            valueAsStringCheckBox.CheckedChanged += delegate { updateExprBox(); };
+            formattingComboBox.TextChanged += delegate { updateExprBox(); };
+            formattingComboBox.SelectedIndexChanged += delegate { updateExprBox(); };
+            collectedItemsTextBox.TextChanged += CollectedItemsTextBox_TextChanged;
+            _textUpdateTimer.Tick += _textUpdateTimer_Tick;
         }
 
         private void ValueCollectionDialog_Load(object sender, EventArgs e) {
@@ -63,7 +79,7 @@ namespace Shapoco.Calctus.UI {
             }
             joinOperatorComboBox.Text = s.ValuePickup_JoinOperator;
             removeCommaCheckBox.Checked = s.ValuePickup_RemoveComma;
-            valueAsStringCheckBox.Checked = s.ValuePickup_ValueAsString;
+            formattingComboBox.SelectedItem = s.ValuePickup_ValueFormatting;
             try {
                 _clipListener = new ClipboardListener(this);
                 _clipListener.ClipboardChanged += _clipListener_ClipboardChanged;
@@ -80,7 +96,7 @@ namespace Shapoco.Calctus.UI {
             s.ValuePickup_JoinMethod = _method;
             s.ValuePickup_JoinOperator = joinOperatorComboBox.Text;
             s.ValuePickup_RemoveComma = removeCommaCheckBox.Checked;
-            s.ValuePickup_ValueAsString = valueAsStringCheckBox.Checked;
+            s.ValuePickup_ValueFormatting = (ValuePickupFormatting)formattingComboBox.SelectedItem;
             try {
                 _clipListener.Dispose();
             }
@@ -95,12 +111,20 @@ namespace Shapoco.Calctus.UI {
         }
 
         private void _clipListener_ClipboardChanged(object sender, EventArgs e) {
+            if (_isActive) return;
             if ((DateTime.Now - _formLoadTime).TotalSeconds < 0.5) {
                 // クリップボード監視開始後いきなり発生したイベントは無視する
                 return;
             }
             try {
-                _collectedItems.Add(Clipboard.GetText());
+                var text = Clipboard.GetText()
+                    .Replace("\r", " ")
+                    .Replace("\n", " ")
+                    .Replace("\t", " ")
+                    .Trim();
+
+                _collectedItems.Add(text);
+                updateTextBox();
                 updateExprBox();
             }
             catch (Exception ex) {
@@ -109,30 +133,64 @@ namespace Shapoco.Calctus.UI {
             }
         }
 
+        private void CollectedItemsTextBox_TextChanged(object sender, EventArgs e) {
+            if (_suppressTextBoxChanged) return;
+            _textUpdateTimer.Start();
+        }
+
+        private void _textUpdateTimer_Tick(object sender, EventArgs e) {
+            _textUpdateTimer.Stop();
+            _collectedItems.Clear();
+            _collectedItems.AddRange(collectedItemsTextBox.Text.Split(
+                new char[] { '\r', '\n' }, StringSplitOptions.RemoveEmptyEntries));
+            updateExprBox();
+        }
+
+        private void updateTextBox() {
+            _suppressTextBoxChanged = true;
+            collectedItemsTextBox.Text = String.Join("\r\n", _collectedItems);
+            _suppressTextBoxChanged = false;
+        }
+
         private void updateExprBox() {
-            var sb = new StringBuilder();
-            var delimiter = _method == ValuePickupJoinMethod.AsArray ? ", " : (" " + joinOperatorComboBox.Text +  " ");
-            foreach (var item in _collectedItems) {
-                var str = item;
-                if (sb.Length > 0) sb.Append(delimiter);
-                if (removeCommaCheckBox.Checked) {
-                    str = str.Replace(",", "");
+            string selText = "";
+            try {
+                var sb = new StringBuilder();
+                var delimiter = _method == ValuePickupJoinMethod.AsArray ? ", " : (" " + joinOperatorComboBox.Text + " ");
+                foreach (var item in _collectedItems) {
+                    var str = item;
+                    if (sb.Length > 0) sb.Append(delimiter);
+                    if (removeCommaCheckBox.Checked) {
+                        str = str.Replace(",", "");
+                    }
+                    switch ((ValuePickupFormatting)formattingComboBox.SelectedItem) {
+                        case ValuePickupFormatting.NoChange:
+                            str = str.Trim();
+                            break;
+                        case ValuePickupFormatting.String:
+                            str = Model.Formats.StringFormat.FormatAsStringLiteral(str);
+                            break;
+                        case ValuePickupFormatting.DateTime:
+                            str = DateTimeFormat.FormatAsStringLiteral(DateTime.Parse(str.Trim()));
+                            break;
+                        case ValuePickupFormatting.RelativeTime:
+                            str = RelativeTimeFormat.FormatAsStringLiteral((real)TimeSpan.Parse(str.Trim()).TotalSeconds);
+                            break;
+                        default:
+                            throw new NotImplementedException();
+                    }
+                    sb.Append(str);
                 }
-                if (valueAsStringCheckBox.Checked) {
-                    str = Model.Formats.StringFormat.FormatAsStringLiteral(str);
+
+                if (_method == ValuePickupJoinMethod.AsArray) {
+                    selText = "[" + sb.ToString() + "]";
                 }
                 else {
-                    str = str.Trim();
+                    selText = sb.ToString();
                 }
-                sb.Append(str);
             }
+            catch (Exception ex) {
 
-            string selText;
-            if (_method == ValuePickupJoinMethod.AsArray) {
-                selText = "[" + sb.ToString()+ "]";
-            }
-            else {
-                selText = sb.ToString();
             }
 
             var selStart = _exprBox.SelectionStart;

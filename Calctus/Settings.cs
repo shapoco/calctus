@@ -171,6 +171,6 @@ namespace Shapoco.Calctus {
         public ValuePickupJoinMethod ValuePickup_JoinMethod { get; set; } = ValuePickupJoinMethod.WithOperator;
         public string ValuePickup_JoinOperator { get; set; } = "+";
         public bool ValuePickup_RemoveComma { get; set; } = true;
-        public bool ValuePickup_ValueAsString { get; set; } = false;
+        public ValuePickupFormatting ValuePickup_ValueFormatting { get; set; } = ValuePickupFormatting.NoChange;
     }
 }
