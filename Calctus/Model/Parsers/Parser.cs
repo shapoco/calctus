@@ -105,7 +105,7 @@ namespace Shapoco.Calctus.Model.Parsers {
             var operand = Operand();
             if (ReadIf("[", out Token tok)) {
                 var from = Expr();
-                var to = from;
+                Expr to = null;
                 if (ReadIf(":")) {
                     to = Expr();
                 }

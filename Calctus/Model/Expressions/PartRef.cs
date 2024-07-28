@@ -10,6 +10,8 @@ namespace Shapoco.Calctus.Model.Expressions {
         public readonly Expr IndexFrom;
         public readonly Expr IndexTo;
 
+        public PartRef(Token startBracket, Expr target, Expr index) : this(startBracket, target, index, null) { }
+
         public PartRef(Token startBracket, Expr target, Expr from, Expr to) : base(startBracket) {
             Target = target;
             IndexFrom = from;
@@ -20,7 +22,7 @@ namespace Shapoco.Calctus.Model.Expressions {
 
         protected override Val OnEval(EvalContext ctx) {
             var from = IndexFrom.Eval(ctx).AsInt;
-            var to = IndexTo.Eval(ctx).AsInt;
+            var to = IndexTo == null ? from : IndexTo.Eval(ctx).AsInt;
             var obj = Target.Eval(ctx);
             if (obj is ArrayVal array) {
                 if (from < 0) from = array.Length + from;
