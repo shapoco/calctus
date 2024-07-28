@@ -19,7 +19,7 @@ namespace Shapoco.Calctus.Model.Formats {
         private RealFormat() : base(TokenType.NumericLiteral, pattern, FormatPriority.Weak) { }
 
         protected override Val OnParse(Match m) {
-            return new RealVal(DMath.Parse(m.Value), new FormatHint(this));
+            return new RealVal(DecMath.Parse(m.Value), new FormatHint(this));
         }
 
         protected override string OnFormat(Val val, FormatSettings fs) {
@@ -40,19 +40,19 @@ namespace Shapoco.Calctus.Model.Formats {
             }
             var decFormat = sbDecFormat.ToString();
 
-            int exp = DMath.FLog10Abs(val);
+            int exp = MathEx.FLog10Abs(val);
             if (allowENotation && fs.ENotationEnabled && exp >= fs.ENotationExpPositiveMin) {
                 if (fs.ENotationAlignment) {
                     exp = (int)Math.Floor((double)exp / 3) * 3;
                 }
-                var frac = val / DMath.Pow10(exp);
+                var frac = val / MathEx.Pow10(exp);
                 return frac.ToString(decFormat) + "e" + exp;
             }
             else if (allowENotation && fs.ENotationEnabled && exp <= fs.ENotationExpNegativeMax) {
                 if (fs.ENotationAlignment) {
                     exp = (int)Math.Floor((double)exp / 3) * 3;
                 }
-                var frac = val * DMath.Pow10(-exp);
+                var frac = val * MathEx.Pow10(-exp);
                 return frac.ToString(decFormat) + "e" + exp;
             }
             else {

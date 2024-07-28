@@ -43,7 +43,7 @@ namespace Shapoco.Calctus.Model.Standards {
             }
 
             // 両方が 1 以上になるように桁合わせ
-            int exp = (int)Math.Floor(DMath.Log10(Math.Min(min_lo, min_hi)));
+            int exp = (int)Math.Floor(MathEx.Log10(Math.Min(min_lo, min_hi)));
             if (exp < 0) {
                 min_lo = Shift10(min_lo, -exp);
                 min_hi = Shift10(min_hi, -exp);
@@ -88,7 +88,7 @@ namespace Shapoco.Calctus.Model.Standards {
         /// 系列で最も近い値のペアを返す
         /// </summary>
         public static void FindNearests(decimal[] series, decimal value, out decimal floor, out decimal ceil) {
-            var exp = (int)Math.Floor(DMath.Log10(value));
+            var exp = (int)Math.Floor(MathEx.Log10(value));
             var key = Shift10(value, -exp);
             int i = BinarySearch(series, key);
             floor = Shift10(series[i], exp);
@@ -124,10 +124,10 @@ namespace Shapoco.Calctus.Model.Standards {
 
         public static decimal Shift10(decimal value, int exp) {
             if (exp >= 0) {
-                return value * DMath.Pow10(exp);
+                return value * MathEx.Pow10(exp);
             }
             else {
-                return value / DMath.Pow10(-exp);
+                return value / MathEx.Pow10(-exp);
             }
         }
 

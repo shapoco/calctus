@@ -5,7 +5,7 @@ using System.Text;
 using System.Threading.Tasks;
 
 namespace Shapoco.Calctus.Model.Maths {
-    class LMath {
+    class LongMath {
         public static long ToGray(long val) {
             return val ^ ((val >> 1) & 0x7fffffffffffffff);
         }
@@ -138,7 +138,7 @@ namespace Shapoco.Calctus.Model.Maths {
 
         public static int EccWidth(int dataWidth) {
             if (dataWidth < 1 || 1024 < dataWidth) throw new ArgumentOutOfRangeException();
-            int eccWidth = (int)Math.Ceiling(DMath.Log2(dataWidth + 1, highAccuracy: true));
+            int eccWidth = (int)Math.Ceiling(MathEx.Log2(dataWidth + 1, highAccuracy: true));
             if (eccWidth + dataWidth >= (1 << eccWidth)) {
                 eccWidth += 1;
             }

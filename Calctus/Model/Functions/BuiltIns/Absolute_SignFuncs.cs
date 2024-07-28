@@ -35,7 +35,7 @@ namespace Shapoco.Calctus.Model.Functions.BuiltIns {
             (e, a) => {
                 var arrayVal = a[0].AsArrayVal();
                 var fmtHint = arrayVal.Length > 0 ? arrayVal[0].FormatHint : null;
-                return DMath.Sqrt(arrayVal.AsDecimalArray.Sum(p => p * p)).ToRealVal(fmtHint);
+                return MathEx.Sqrt(arrayVal.AsDecimalArray.Sum(p => p * p)).ToRealVal(fmtHint);
             },
             new FuncTest("3,4", "5"),
             new FuncTest("3,4,5", "sqrt(50)"));

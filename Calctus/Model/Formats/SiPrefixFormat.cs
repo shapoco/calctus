@@ -40,7 +40,7 @@ namespace Shapoco.Calctus.Model.Formats {
         }
 
         private static void extractMatch(Match m, out decimal frac, out int prefixIndex) {
-            frac = DMath.Parse(m.Groups["frac"].Value);
+            frac = DecMath.Parse(m.Groups["frac"].Value);
             int i = Prefixes.IndexOf(m.Groups["prefix"].Value);
             System.Diagnostics.Debug.Assert(i >= 0);
             prefixIndex = i - PrefixIndexOffset;
@@ -57,7 +57,7 @@ namespace Shapoco.Calctus.Model.Formats {
         protected override Val OnParse(Match m) {
             extractMatch(m, out var frac, out var prefixIndex);
             var exp = prefixIndex * 3;
-            return new RealVal(frac * DMath.Pow10(exp) , new FormatHint(this));
+            return new RealVal(frac * MathEx.Pow10(exp) , new FormatHint(this));
         }
 
         protected override string OnFormat(Val val, FormatSettings fs) {
@@ -65,7 +65,7 @@ namespace Shapoco.Calctus.Model.Formats {
                 var r = val.AsDecimal;
                 int prefixIndex = 0;
                 if (r != 0) {
-                    prefixIndex = (int)Math.Floor(DMath.Log10(Math.Abs(r)) / 3);
+                    prefixIndex = (int)Math.Floor(MathEx.Log10(Math.Abs(r)) / 3);
                 }
                 if (prefixIndex < MinPrefixIndex) {
                     prefixIndex = MinPrefixIndex;
@@ -74,7 +74,7 @@ namespace Shapoco.Calctus.Model.Formats {
                     prefixIndex = MaxPrefixIndex;
                 }
                 var exp = prefixIndex * 3;
-                var frac = r / DMath.Pow10(exp);
+                var frac = r / MathEx.Pow10(exp);
                 if (prefixIndex == 0) {
                     return RealFormat.RealToString(frac, fs, false);
                 }

@@ -22,6 +22,6 @@ namespace Shapoco.Calctus.Model.Functions.BuiltIns {
 
         public readonly BuiltInFuncDef clip = new BuiltInFuncDef("clip(a, b, *x@)",
             "Clips `x` to a range from `a` to `b`. Same as `max(a, min(b, x))`.",
-            (e, a) => DMath.Clip(a[0].AsDecimal, a[1].AsDecimal, a[2].AsDecimal).ToRealVal(a[2].FormatHint));
+            (e, a) => MathEx.Clip(a[0].AsDecimal, a[1].AsDecimal, a[2].AsDecimal).ToRealVal(a[2].FormatHint));
     }
 }

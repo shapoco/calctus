@@ -14,14 +14,14 @@ namespace Shapoco.Calctus.Model.Functions.BuiltIns {
 
         public readonly BuiltInFuncDef prime = new BuiltInFuncDef("prime(*x)",
             "`x`-th prime number.",
-            (e, a) => DMath.Prime(a[0].AsInt).ToIntVal());
+            (e, a) => MathEx.Prime(a[0].AsInt).ToIntVal());
 
         public readonly BuiltInFuncDef isPrime = new BuiltInFuncDef("isPrime(*x)",
             "Returns whether `x` is prime or not.",
-            (e, a) => BoolVal.FromBool(DMath.IsPrime(a[0].AsDecimal)));
+            (e, a) => BoolVal.FromBool(MathEx.IsPrime(a[0].AsDecimal)));
 
         public readonly BuiltInFuncDef primeFact = new BuiltInFuncDef("primeFact(*x)",
             "Returns prime factors of `x`.",
-            (e, a) => DMath.PrimeFactors(a[0].AsDecimal).ToArrayVal(a[0].FormatHint, null));
+            (e, a) => MathEx.PrimeFactors(a[0].AsDecimal).ToArrayVal(a[0].FormatHint, null));
     }
 }

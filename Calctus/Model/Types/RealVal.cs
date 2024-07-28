@@ -76,10 +76,10 @@ namespace Shapoco.Calctus.Model.Types {
         public override decimal AsDecimal => _raw;
         public override frac AsFrac => (frac)_raw;
         public override double AsDouble => (double)_raw;
-        public override long AsLong => DMath.ToLong(_raw);
-        public override int AsInt => DMath.ToInt(_raw);
-        public override char AsChar => DMath.ToChar(_raw);
-        public override byte AsByte => DMath.ToByte(_raw);
+        public override long AsLong => MathEx.ToLong(_raw);
+        public override int AsInt => MathEx.ToInt(_raw);
+        public override char AsChar => MathEx.ToChar(_raw);
+        public override byte AsByte => MathEx.ToByte(_raw);
         public override bool AsBool => throw new InvalidCastException();
         public override string AsString {
             get {

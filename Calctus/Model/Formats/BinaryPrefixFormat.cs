@@ -39,7 +39,7 @@ namespace Shapoco.Calctus.Model.Formats {
         }
 
         private static void extractMatch(Match m, out decimal frac, out int prefixIndex) {
-            frac = DMath.Parse(m.Groups["frac"].Value);
+            frac = DecMath.Parse(m.Groups["frac"].Value);
             prefixIndex = Prefixes.IndexOf(m.Groups["prefix"].Value);
             System.Diagnostics.Debug.Assert(prefixIndex >= 0);
         }
@@ -56,7 +56,7 @@ namespace Shapoco.Calctus.Model.Formats {
                 var r = val.AsDecimal;
                 int prefixIndex = 0;
                 if (r != 0) {
-                    prefixIndex = (int)Math.Floor(DMath.Log2(Math.Abs(r), highAccuracy: true) / 10);
+                    prefixIndex = (int)Math.Floor(MathEx.Log2(Math.Abs(r), highAccuracy: true) / 10);
                 }
                 if (prefixIndex < MinPrefixIndex) {
                     prefixIndex = MinPrefixIndex;

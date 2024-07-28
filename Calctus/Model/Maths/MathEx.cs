@@ -1,23 +1,15 @@
 ﻿using System;
 using System.Collections.Generic;
-using System.Globalization;
-using System.Text.RegularExpressions;
 using Shapoco.Calctus.Model.Maths.Types;
 
 namespace Shapoco.Calctus.Model.Maths {
-    static class DMath {
-        public static readonly Regex Pattern = new Regex(@"^(?<frac>-?([1-9][0-9]*(_[0-9]+)*|0)*(\.[0-9]+(_[0-9]+)*)?)(?<exppart>(?<echar>e|E)(?<exp>[+\-]?[0-9]+(_[0-9]+)*))?$");
+    static class MathEx {
         public static bool IsInteger(this decimal x) => x == Math.Floor(x);
-
-        public const decimal PI = 3.1415926535897932384626433833m;
-        public const decimal E = 2.7182818284590452353602874714m;
-        public const decimal LogE2 = 0.6931471805599453094172321215m;
-        public const decimal LogE10 = 2.3025850929940456840179914547m;
 
         /// <summary>a と b の最大公約数</summary>
         public static decimal Gcd(decimal a, decimal b) {
-            if (!a.IsInteger()) throw new ArgumentException("Arguments must be integers");
-            if (!b.IsInteger()) throw new ArgumentException("Arguments must be integers");
+            Assert.ArgIsInteger(nameof(Gcd), nameof(a), a);
+            Assert.ArgIsInteger(nameof(Gcd), nameof(b), b);
             a = Math.Abs(a);
             b = Math.Abs(b);
             while (b != 0) {
@@ -26,39 +18,6 @@ namespace Shapoco.Calctus.Model.Maths {
                 b = tmp % b;
             }
             return a;
-        }
-
-        public static bool TryParse(string str, out decimal frac, out char eChar, out int exp) {
-            frac = 0;
-            eChar = '\0';
-            exp = 0;
-
-            var m = Pattern.Match(str);
-            if (!m.Success) {
-                return false;
-            }
-            frac = decimal.Parse(m.Groups["frac"].Value.Replace("_", ""), CultureInfo.InvariantCulture);
-            if (m.Groups["exppart"].Success) {
-                eChar = m.Groups["echar"].Value[0];
-                exp = int.Parse(m.Groups["exp"].Value.Replace("_", ""), CultureInfo.InvariantCulture);
-            }
-            return true;
-        }
-
-        public static void Parse(string str, out decimal frac, out char eChar, out int exp) {
-            if (!TryParse(str, out frac, out eChar, out exp)) {
-                throw new CalctusError("Invalid number format.");
-            }
-        }
-
-        public static decimal Parse(string str) {
-            Parse(str, out decimal frac, out _, out int exp);
-            if (exp >= 0) {
-                return frac * Math.Round((decimal)Math.Pow(10, exp));
-            }
-            else {
-                return frac / Math.Round((decimal)Math.Pow(10, -exp));
-            }
         }
 
         // 指数関数
@@ -106,7 +65,7 @@ namespace Shapoco.Calctus.Model.Maths {
 
         public static decimal Exp(decimal x) {
             var s = Math.Round(x);
-            if (s < int.MinValue || int.MaxValue < s) throw new OverflowException();
+            Assert.ArgInRange(nameof(Exp), int.MinValue <= s && s <= int.MaxValue);
             var t = x - s;
             var p = 1m;
             var oldExpT = 1m;
@@ -116,7 +75,7 @@ namespace Shapoco.Calctus.Model.Maths {
                 if (newExpT == oldExpT) break;
                 oldExpT = newExpT;
             }
-            return PowN(E, (int)s) * oldExpT;
+            return PowN(DecMath.E, (int)s) * oldExpT;
         }
 
         public static decimal Log(decimal x) {
@@ -136,11 +95,11 @@ namespace Shapoco.Calctus.Model.Maths {
                 dend *= aa;
                 dsor += 2;
             }
-            return flog2x * LogE2 + logT * 2;
+            return flog2x * DecMath.LogE2 + logT * 2;
         }
 
         public static decimal Log10(decimal a) {
-            if (a <= 0) throw new ArgumentOutOfRangeException();
+            Assert.ArgInRange(nameof(Log10), a > 0);
             decimal ret = 0;
             while (a >= 10) {
                 a /= 10;
@@ -155,7 +114,7 @@ namespace Shapoco.Calctus.Model.Maths {
 
         public static decimal Log2(decimal a, bool highAccuracy) {
             if (highAccuracy) {
-                return (decimal)(decimal)QMath.Log2((quad)(decimal)a);
+                return (decimal)(decimal)QuadMath.Log2((quad)(decimal)a);
             }
             else {
                 return (decimal)(Math.Log((double)a) / Math.Log(2));
@@ -202,7 +161,7 @@ namespace Shapoco.Calctus.Model.Maths {
 
         /// <summary>配列の全要素の最大公約数</summary>
         public static decimal Gcd(decimal[] x) {
-            if (x.Length == 0) throw new ArgumentException("Empty array");
+            Assert.AssertArgNonEmpty(nameof(Gcd), x);
             return gcdRecursive(x, 0, x.Length - 1);
         }
         private static decimal gcdRecursive(decimal[] x, int il, int ir) {
@@ -222,7 +181,7 @@ namespace Shapoco.Calctus.Model.Maths {
 
         /// <summary>配列の全要素の最小公倍数</summary>
         public static decimal Lcm(decimal[] x) {
-            if (x.Length == 0) throw new ArgumentException("Empty array");
+            Assert.AssertArgNonEmpty(nameof(Lcm), x);
             return lcmRecursive(x, 0, x.Length - 1);
         }
         private static decimal lcmRecursive(decimal[] x, int il, int ir) {
@@ -248,13 +207,27 @@ namespace Shapoco.Calctus.Model.Maths {
         public static decimal Cosh(decimal a) => (decimal)Math.Cosh((double)a);
         public static decimal Tanh(decimal a) => (decimal)Math.Tanh((double)a);
 
+        public static int CDiv(int a, int b) {
+            Assert.ArgInRange(nameof(CDiv), nameof(a), a < 0);
+            Assert.ArgInRange(nameof(CDiv), nameof(b), b < 1);
+            return (a + b - 1) / b;
+        }
+
         // 最大最小
-        public static decimal Clip(decimal min, decimal max, decimal x) => x < min ? min : (x > max ? max : x);
-        public static int Clip(int min, int max, int x) => x < min ? min : (x > max ? max : x);
+        public static decimal Clip(decimal min, decimal max, decimal x) {
+            Assert.ArgInRange(nameof(Clip), min <= max, "min > max");
+            return x < min ? min : (x > max ? max : x);
+        }
+        public static int Clip(int min, int max, int x) {
+            Assert.ArgInRange(nameof(Clip), min <= max, "min > max");
+            return x < min ? min : (x > max ? max : x);
+        }
+
+        private const long IsPrimeArgMax = 1L << 52;
 
         /// <summary>素数判定</summary>
         public static bool IsPrime(decimal a) {
-            if (a >= (1L << 52)) throw new ArgumentOutOfRangeException();
+            Assert.ArgInRange(nameof(IsPrime), 0m <= a && a <= IsPrimeArgMax);
             return IsPrime((long)a);
         }
 
@@ -263,7 +236,7 @@ namespace Shapoco.Calctus.Model.Maths {
             if (a < 2) return false;
             if (a == 2) return true;
             if (a % 2 == 0) return false;
-            if (a >= (1L << 52)) throw new ArgumentOutOfRangeException();
+            Assert.ArgInRange(nameof(IsPrime), a <= IsPrimeArgMax);
 
             long n = (long)Math.Sqrt(a);
             for (long i = 3; i <= n; i += 2) {
@@ -274,7 +247,7 @@ namespace Shapoco.Calctus.Model.Maths {
 
         /// <summary>n番目の素数</summary>
         public static decimal Prime(int n) {
-            if (n < 0 || n > 100000) throw new ArgumentOutOfRangeException();
+            Assert.ArgInRange(nameof(Prime), 0 <= n && n <= 100000);
             int a = 2;
             for (int i = 0; i < n; i++) {
                 a++;
@@ -286,8 +259,8 @@ namespace Shapoco.Calctus.Model.Maths {
         /// <summary>素因数分解</summary>
         public static decimal[] PrimeFactors(decimal realN) {
             var res = new List<decimal>();
-            if (realN.IsInteger()) throw new ArgumentException();
-            if (realN < 1 || 100000000000000 < realN) throw new ArgumentOutOfRangeException();
+            Assert.ArgIsInteger(nameof(PrimeFactors), realN);
+            Assert.ArgInRange(nameof(PrimeFactors), 1m <= realN && realN <= 1e14m);
             long n = (long)realN;
             for (long a = 2; a * a <= n; ++a) {
                 while (n % a == 0) {
@@ -303,7 +276,7 @@ namespace Shapoco.Calctus.Model.Maths {
         public static decimal[] Range(decimal start, decimal stop, decimal step, bool inclusive = false) {
             if (step == 0) step = start < stop ? 1 : -1;
             int n = (int)Math.Ceiling((stop - start) / step);
-            if (n < 0) throw new ArgumentOutOfRangeException();
+            Assert.ArgInRange(nameof(Range), n >= 0, "Range broken");
             if (inclusive && start + n * step == stop) n++;
             var array = new decimal[n];
             for (int i = 0; i < n; i++) {

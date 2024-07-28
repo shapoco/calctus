@@ -34,7 +34,7 @@ namespace Shapoco.Calctus.Model.Functions.BuiltIns {
             (e, a) => {
                 var prod = 1m;
                 foreach (var p in a) prod *= p.AsDecimal;
-                return DMath.Pow(prod, 1m / a.Length).ToRealVal(a[0].FormatHint);
+                return MathEx.Pow(prod, 1m / a.Length).ToRealVal(a[0].FormatHint);
             });
     }
 }

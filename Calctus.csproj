@@ -13,6 +13,7 @@
     <AutoGenerateBindingRedirects>true</AutoGenerateBindingRedirects>
     <Deterministic>false</Deterministic>
     <TargetFrameworkProfile />
+    <LangVersion>8.0</LangVersion>
   </PropertyGroup>
   <PropertyGroup Condition=" '$(Configuration)|$(Platform)' == 'Debug|AnyCPU' ">
     <PlatformTarget>AnyCPU</PlatformTarget>
@@ -23,6 +24,7 @@
     <DefineConstants>DEBUG;TRACE</DefineConstants>
     <ErrorReport>prompt</ErrorReport>
     <WarningLevel>4</WarningLevel>
+    <LangVersion>8.0</LangVersion>
   </PropertyGroup>
   <PropertyGroup Condition=" '$(Configuration)|$(Platform)' == 'Release|AnyCPU' ">
     <PlatformTarget>AnyCPU</PlatformTarget>
@@ -32,6 +34,7 @@
     <DefineConstants>TRACE</DefineConstants>
     <ErrorReport>prompt</ErrorReport>
     <WarningLevel>4</WarningLevel>
+    <LangVersion>8.0</LangVersion>
   </PropertyGroup>
   <PropertyGroup>
     <ApplicationIcon>icon.ico</ApplicationIcon>
@@ -54,6 +57,7 @@
   <ItemGroup>
     <Compile Include="AppDataManager.cs" />
     <Compile Include="Calctus\Assert.cs" />
+    <Compile Include="Calctus\CalctusUtils.cs" />
     <Compile Include="Calctus\DocumentGenerator.cs" />
     <Compile Include="Calctus\Model\ArgDef.cs" />
     <Compile Include="Calctus\Model\Evaluations\BuiltInConstants.cs" />
@@ -108,9 +112,11 @@
     <Compile Include="Calctus\Model\Graphs\PlotRequest.cs" />
     <Compile Include="Calctus\Model\Graphs\Types.cs" />
     <Compile Include="Calctus\Model\Functions\FuncDef.cs" />
-    <Compile Include="Calctus\Model\Maths\DMath.cs" />
-    <Compile Include="Calctus\Model\Maths\FMath.cs" />
+    <Compile Include="Calctus\Model\Maths\DecMath.cs" />
+    <Compile Include="Calctus\Model\Maths\MathEx.cs" />
+    <Compile Include="Calctus\Model\Maths\FracMath.cs" />
     <Compile Include="Calctus\Model\Maths\NewtonsMethod.cs" />
+    <Compile Include="Calctus\Model\Maths\Types\apfixed.cs" />
     <Compile Include="Calctus\Model\Parsers\Keyword.cs" />
     <Compile Include="Calctus\Model\Parsers\LiteralTokenHint.cs" />
     <Compile Include="Calctus\Model\Parsers\Types.cs" />
@@ -121,10 +127,10 @@
     <Compile Include="Calctus\Model\Types\BoolVal.cs" />
     <Compile Include="Calctus\Model\Evaluations\EvalSettings.cs" />
     <Compile Include="Calctus\Model\Functions\ExternalFuncDef.cs" />
-    <Compile Include="Calctus\Model\Maths\LMath.cs" />
+    <Compile Include="Calctus\Model\Maths\LongMath.cs" />
     <Compile Include="Calctus\Model\Sheets\Sheet.cs" />
     <Compile Include="Calctus\Model\Sheets\SheetItem.cs" />
-    <Compile Include="Calctus\Model\Maths\QMath.cs" />
+    <Compile Include="Calctus\Model\Maths\QuadMath.cs" />
     <Compile Include="Calctus\Model\Types\FuncVal.cs" />
     <Compile Include="Calctus\Model\Maths\Types\quad.cs" />
     <Compile Include="Calctus\Model\ScriptFilter.cs" />
@@ -136,7 +142,7 @@
     <Compile Include="Calctus\Model\Maths\Types\ufixed113.cs" />
     <Compile Include="Calctus\Model\Maths\Types\frac.cs" />
     <Compile Include="Calctus\Model\Types\FracVal.cs" />
-    <Compile Include="Calctus\Model\CalctusErrors.cs" />
+    <Compile Include="Calctus\CalctusError.cs" />
     <Compile Include="Calctus\Model\Evaluations\EvalContext.cs" />
     <Compile Include="Calctus\Model\Expressions\Expr.cs" />
     <Compile Include="Calctus\Model\Functions\BuiltInFuncDef.cs" />

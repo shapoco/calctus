@@ -22,8 +22,8 @@ namespace Shapoco.Calctus.Model.Evaluations {
         private static Var constVarHex(string name, decimal value, string desc)
             => constVar(name, value.ToHexVal(), desc);
 
-        public static readonly Var PI = constVarReal("PI", DMath.PI, "Circle ratio");
-        public static readonly Var E = constVarReal("E", DMath.E, "Base of natural logarithm");
+        public static readonly Var PI = constVarReal("PI", DecMath.PI, "Circle ratio");
+        public static readonly Var E = constVarReal("E", DecMath.E, "Base of natural logarithm");
         public static readonly Var IntMin = constVarHex("INT_MIN", Int32.MinValue, "Minimum value of 32 bit signed integer");
         public static readonly Var IntMax = constVarHex("INT_MAX", Int32.MaxValue, "Maximum value of 32 bit signed integer");
         public static readonly Var UIntMin = constVarHex("UINT_MIN", UInt32.MinValue, "Minimum value of 32 bit unsigned integer");

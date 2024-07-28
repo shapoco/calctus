@@ -7,10 +7,11 @@ using Shapoco.Calctus.Model.Types;
 using Shapoco.Calctus.Model.Maths.Types;
 
 namespace Shapoco.Calctus.Model.Maths {
-    // todo Delete
-    [Obsolete("Deprecated", false)]
-    static class QMath {
+    // todo Delete QMath
+    //[Obsolete("Deprecated", false)]
+    static class QuadMath {
         public static quad Log2(quad a) {
+            //CalctusError.CheckArgMin(nameof(Log2), 0, )
             if (a <= 0) throw new ArgumentOutOfRangeException();
 
             // 整数部
@@ -40,13 +41,13 @@ namespace Shapoco.Calctus.Model.Maths {
         }
 
         public static void Test() {
-            Assert.Equal(nameof(QMath) + "." + nameof(Log2), Log2(1), 0);
-            Assert.Equal(nameof(QMath) + "." + nameof(Log2), Log2(2), 1);
-            Assert.Equal(nameof(QMath) + "." + nameof(Log2), Log2(4), 2);
-            Assert.Equal(nameof(QMath) + "." + nameof(Log2), Log2(8), 3);
-            Assert.Equal(nameof(QMath) + "." + nameof(Log2), Log2((quad)0.5m), -1);
-            Assert.Equal(nameof(QMath) + "." + nameof(Log2), Log2((quad)0.25m), -2);
-            Assert.Equal(nameof(QMath) + "." + nameof(Log2), Log2((quad)0.125m), -3);
+            Assert.Equal(nameof(QuadMath) + "." + nameof(Log2), Log2(1), 0);
+            Assert.Equal(nameof(QuadMath) + "." + nameof(Log2), Log2(2), 1);
+            Assert.Equal(nameof(QuadMath) + "." + nameof(Log2), Log2(4), 2);
+            Assert.Equal(nameof(QuadMath) + "." + nameof(Log2), Log2(8), 3);
+            Assert.Equal(nameof(QuadMath) + "." + nameof(Log2), Log2((quad)0.5m), -1);
+            Assert.Equal(nameof(QuadMath) + "." + nameof(Log2), Log2((quad)0.25m), -2);
+            Assert.Equal(nameof(QuadMath) + "." + nameof(Log2), Log2((quad)0.125m), -3);
         }
     }
 }

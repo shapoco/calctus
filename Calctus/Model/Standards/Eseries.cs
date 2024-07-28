@@ -70,7 +70,7 @@ namespace Shapoco.Calctus.Model.Standards {
                 case 48: return E48;
                 case 96: return E96;
                 case 192: return E192;
-                default: throw new CalctusError("Invalid E-series number.");
+                default: throw new CalctusArgError(nameof(GetSeries), "Invalid E-series number.");
             }
         }
     }

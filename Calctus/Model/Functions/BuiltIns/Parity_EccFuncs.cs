@@ -15,23 +15,23 @@ namespace Shapoco.Calctus.Model.Functions.BuiltIns {
 
         public readonly BuiltInFuncDef xorReduce = new BuiltInFuncDef("xorReduce(*x)",
                 "Reduction XOR of `x` (Same as even parity).",
-                FuncDef.ArgToLong((e, a) => LMath.XorReduce(a[0])));
+                FuncDef.ArgToLong((e, a) => LongMath.XorReduce(a[0])));
 
         public readonly BuiltInFuncDef oddParity = new BuiltInFuncDef("oddParity(*x)",
             "Odd parity of `x`.",
-            FuncDef.ArgToLong((e, a) => LMath.OddParity(a[0])));
+            FuncDef.ArgToLong((e, a) => LongMath.OddParity(a[0])));
 
         public readonly BuiltInFuncDef eccWidth = new BuiltInFuncDef("eccWidth(*b)",
             "Width of ECC for `b`-bit data.",
-            FuncDef.ArgToLong((e, a) => LMath.EccWidth((int)a[0])));
+            FuncDef.ArgToLong((e, a) => LongMath.EccWidth((int)a[0])));
 
         public readonly BuiltInFuncDef eccEnc = new BuiltInFuncDef("eccEnc(b, *x@)",
             "Generates ECC code (`b`: data width, `x`: data).",
-            FuncDef.ArgToLong((e, a) => LMath.EccEncode((int)a[0], a[1])));
+            FuncDef.ArgToLong((e, a) => LongMath.EccEncode((int)a[0], a[1])));
 
         public readonly BuiltInFuncDef eccDec = new BuiltInFuncDef("eccDec(b, ecc, x)",
             "Checks ECC code (`b`: data width, `ecc`: ECC code, `x`: data). " +
             "Returns: 0 = no error, positive value = position of 1-bit error, negative value = 2-bit error.",
-            FuncDef.ArgToLong((e, a) => LMath.EccDecode((int)a[0], (int)a[1], a[2])));
+            FuncDef.ArgToLong((e, a) => LongMath.EccDecode((int)a[0], (int)a[1], a[2])));
     }
 }

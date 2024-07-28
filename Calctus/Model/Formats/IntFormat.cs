@@ -38,7 +38,7 @@ namespace Shapoco.Calctus.Model.Formats {
             System.Diagnostics.Debug.Assert(m.Groups["digits"].Length > 0);
             var tok = m.Groups["digits"].Value;
             if (Radix == 10) {
-                return new RealVal(DMath.Parse(tok.Replace("_", "")), new FormatHint(this));
+                return new RealVal(DecMath.Parse(tok.Replace("_", "")), new FormatHint(this));
             }
             else {
                 return new RealVal(Convert.ToInt64(tok.Replace("_", ""), Radix), new FormatHint(this));
@@ -51,7 +51,7 @@ namespace Shapoco.Calctus.Model.Formats {
                 var ival = Math.Truncate(fval);
 
                 // 10進表記、かつ指数表記対象に該当する場合はデフォルトの数値表現を使う
-                int exp = DMath.FLog10Abs(val.AsDecimal);
+                int exp = MathEx.FLog10Abs(val.AsDecimal);
                 bool enotation =
                     Radix == 10 &&
                     fs.ENotationEnabled &&

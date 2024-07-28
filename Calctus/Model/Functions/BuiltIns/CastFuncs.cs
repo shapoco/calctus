@@ -22,11 +22,11 @@ namespace Shapoco.Calctus.Model.Functions.BuiltIns {
 
         public readonly BuiltInFuncDef rat_1 = new BuiltInFuncDef("rat(*x)",
             "Rational fraction approximation of `x`.",
-            (e, a) => FMath.FindFrac(a[0].AsDecimal).ToFracVal());
+            (e, a) => FracMath.FindFrac(a[0].AsDecimal).ToFracVal());
 
         public readonly BuiltInFuncDef rat_2 = new BuiltInFuncDef("rat(*x, max)",
             "Rational fraction approximation of `x`.",
-            (e, a) => FMath.FindFrac(a[0].AsDecimal, a[1].AsDecimal, a[1].AsDecimal).ToFracVal());
+            (e, a) => FracMath.FindFrac(a[0].AsDecimal, a[1].AsDecimal, a[1].AsDecimal).ToFracVal());
 
         public readonly BuiltInFuncDef array = new BuiltInFuncDef("array(s)",
             "Converts string `s` to an array of character code.",

@@ -11,7 +11,7 @@ namespace Shapoco.Calctus.Model.Maths.Types {
         public readonly decimal Deno;
 
         public frac(decimal val) {
-            FMath.FindFrac(val, out Nume, out Deno);
+            FracMath.FindFrac(val, out Nume, out Deno);
         }
 
         public frac(decimal n, decimal d) {
@@ -21,7 +21,7 @@ namespace Shapoco.Calctus.Model.Maths.Types {
                 d = Math.Abs(d);
 
                 // 約分
-                var gcd = DMath.Gcd(n, d);
+                var gcd = MathEx.Gcd(n, d);
                 n /= gcd;
                 d /= gcd;
 
@@ -29,7 +29,7 @@ namespace Shapoco.Calctus.Model.Maths.Types {
                 Deno = d;
             }
             else {
-                FMath.FindFrac(n / d, out Nume, out Deno);
+                FracMath.FindFrac(n / d, out Nume, out Deno);
             }
         }
 
@@ -43,7 +43,7 @@ namespace Shapoco.Calctus.Model.Maths.Types {
                 else {
                     objFrac = (frac)obj;
                 }
-                if (FMath.Reduce(this, objFrac, out decimal an, out decimal bn, out _)) {
+                if (FracMath.Reduce(this, objFrac, out decimal an, out decimal bn, out _)) {
                     return an == bn;
                 }
                 else {
@@ -71,21 +71,21 @@ namespace Shapoco.Calctus.Model.Maths.Types {
 
         public static frac operator -(frac val) => new frac(-val.Nume, val.Deno);
         public static frac operator +(frac a, frac b) {
-            FMath.Reduce(a, b, out decimal an, out decimal bn, out decimal deno);
+            FracMath.Reduce(a, b, out decimal an, out decimal bn, out decimal deno);
             return new frac(an + bn, deno);
         }
         public static frac operator -(frac a, frac b) {
-            FMath.Reduce(a, b, out decimal an, out decimal bn, out decimal deno);
+            FracMath.Reduce(a, b, out decimal an, out decimal bn, out decimal deno);
             return new frac(an - bn, deno);
         }
         public static frac operator *(frac a, frac b) {
-            var g0 = DMath.Gcd(a.Nume, b.Deno);
-            var g1 = DMath.Gcd(b.Nume, a.Deno);
+            var g0 = MathEx.Gcd(a.Nume, b.Deno);
+            var g1 = MathEx.Gcd(b.Nume, a.Deno);
             return new frac((a.Nume / g0) * (b.Nume / g1), (a.Deno / g1) * (b.Deno / g0));
         }
         public static frac operator /(frac a, frac b) {
-            var gn = DMath.Gcd(a.Nume, b.Nume);
-            var gd = DMath.Gcd(b.Deno, a.Deno);
+            var gn = MathEx.Gcd(a.Nume, b.Nume);
+            var gd = MathEx.Gcd(b.Deno, a.Deno);
             return new frac((a.Nume / gn) * (b.Deno / gd), (a.Deno / gd) * (b.Nume / gn));
         }
 

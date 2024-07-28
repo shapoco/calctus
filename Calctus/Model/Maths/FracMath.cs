@@ -6,13 +6,13 @@ using System.Threading.Tasks;
 using Shapoco.Calctus.Model.Maths.Types;
 
 namespace Shapoco.Calctus.Model.Maths {
-    static class FMath {
+    static class FracMath {
         public const decimal FindFracMaxDeno = 1000000000000m;
 
         /// <summary>通分</summary>
         public static bool Reduce(frac a, frac b, out decimal aNume, out decimal bNume, out decimal deno) {
             try {
-                var d = DMath.Gcd(a.Deno, b.Deno);
+                var d = MathEx.Gcd(a.Deno, b.Deno);
                 deno = a.Deno * b.Deno / d;
                 aNume = a.Nume * deno / a.Deno;
                 bNume = b.Nume * deno / b.Deno;
@@ -74,7 +74,7 @@ namespace Shapoco.Calctus.Model.Maths {
                         var tmp = n;
                         n = n * xis[i] + d;
                         d = tmp;
-                        var gcd = DMath.Gcd(d, n);
+                        var gcd = MathEx.Gcd(d, n);
                         d /= gcd;
                         n /= gcd;
                     }

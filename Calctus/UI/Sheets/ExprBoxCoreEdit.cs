@@ -424,7 +424,7 @@ namespace Shapoco.Calctus.UI.Sheets {
                 var token = queryTokenArgs.Result;
                 if (token == null) return;
 
-                if (DMath.TryParse(token.Text, out frac, out eChar, out exp)) { }
+                if (DecMath.TryParse(token.Text, out frac, out eChar, out exp)) { }
                 else if (SiPrefixFormat.TryParse(token.Text, out frac, out var prefixIndex)) {
                     exp = prefixIndex * 3;
                 }
@@ -436,7 +436,7 @@ namespace Shapoco.Calctus.UI.Sheets {
                 if (eChar != 'e' && eChar != 'E') eChar = 'e';
 
                 // 指数を変更
-                frac *= DMath.Pow10(-amount);
+                frac *= MathEx.Pow10(-amount);
                 exp += amount;
                 if (exp < -28 || 28 < exp) return;
 
@@ -472,10 +472,10 @@ namespace Shapoco.Calctus.UI.Sheets {
                 else if (BinaryPrefixFormat.TryParse(token.Text, out frac, out prefixIndex)) {
                     isBinaryPrefix = true;
                 }
-                else if (DMath.TryParse(token.Text, out frac, out _, out int exp)) {
+                else if (DecMath.TryParse(token.Text, out frac, out _, out int exp)) {
                     prefixIndex = exp / 3;
                     int alignedExp = prefixIndex * 3;
-                    frac *= DMath.Pow10(exp - alignedExp);
+                    frac *= MathEx.Pow10(exp - alignedExp);
                     isBinaryPrefix = false;
                 }
                 else {
@@ -493,7 +493,7 @@ namespace Shapoco.Calctus.UI.Sheets {
                     }
                 }
                 else {
-                    frac *= DMath.Pow10(-amount * 3);
+                    frac *= MathEx.Pow10(-amount * 3);
                     prefixIndex += amount;
                     if (prefixIndex < SiPrefixFormat.MinPrefixIndex || SiPrefixFormat.MaxPrefixIndex < prefixIndex) {
                         return;

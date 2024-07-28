@@ -35,9 +35,9 @@ namespace Shapoco.Calctus.Model.Standards {
 
         public static int Pack565(int r, int g, int b) {
             return
-                (DMath.Clip(0, 31, r) << 11) |
-                (DMath.Clip(0, 63, g) << 5) |
-                DMath.Clip(0, 31, b);
+                (MathEx.Clip(0, 31, r) << 11) |
+                (MathEx.Clip(0, 63, g) << 5) |
+                MathEx.Clip(0, 31, b);
         }
 
         public static int[] Unpack565(int rgb) {
@@ -102,8 +102,8 @@ namespace Shapoco.Calctus.Model.Standards {
 
         public static void HsvToRgb(decimal h, decimal s, decimal v, out decimal r, out decimal g, out decimal b) {
             h = h % 360;
-            s = DMath.Clip(0, 100, s) / 100;
-            v = DMath.Clip(0, 100, v) / 100;
+            s = MathEx.Clip(0, 100, s) / 100;
+            v = MathEx.Clip(0, 100, v) / 100;
 
             var f = (h / 60) % 1;
             var x = v * 255;
@@ -160,8 +160,8 @@ namespace Shapoco.Calctus.Model.Standards {
 
         public static void HslToRgb(decimal h, decimal s, decimal l, out decimal r, out decimal g, out decimal b) {
             h = h % 360;
-            s = DMath.Clip(0, 100, s) / 100;
-            l = DMath.Clip(0, 100, l) / 100;
+            s = MathEx.Clip(0, 100, s) / 100;
+            l = MathEx.Clip(0, 100, l) / 100;
 
             var f = (h / 60) % 1;
             var max = 255 * (l + s * (1 - Math.Abs(2 * l - 1)) / 2);

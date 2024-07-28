@@ -112,7 +112,7 @@ namespace Shapoco.Calctus.Model.Expressions {
                 if (!aVal.IsInteger || !bVal.IsInteger) throw new CalctusError("Operand must be integer.");
                 var a = aVal.AsDecimal;
                 var b = bVal.AsDecimal;
-                return DMath.Range(a, b, a < b ? 1 : -1, inclusive).ToArrayVal(aVal.FormatHint, null);
+                return MathEx.Range(a, b, a < b ? 1 : -1, inclusive).ToArrayVal(aVal.FormatHint, null);
             }
             else if (Method == OpDef.Frac) {
                 var a = A.Eval(e);

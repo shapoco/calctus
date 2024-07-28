@@ -21,10 +21,10 @@ namespace Shapoco.Calctus.Model.Types {
         public override decimal AsDecimal => (decimal)_raw;
         public override frac AsFrac => _raw;
         public override double AsDouble => (double)_raw;
-        public override long AsLong => DMath.ToLong((decimal)_raw);
-        public override int AsInt => DMath.ToInt((decimal)_raw);
-        public override char AsChar => DMath.ToChar((decimal)_raw);
-        public override byte AsByte => DMath.ToByte((decimal)_raw);
+        public override long AsLong => MathEx.ToLong((decimal)_raw);
+        public override int AsInt => MathEx.ToInt((decimal)_raw);
+        public override char AsChar => MathEx.ToChar((decimal)_raw);
+        public override byte AsByte => MathEx.ToByte((decimal)_raw);
         public override bool AsBool => throw new InvalidCastException();
 
         public override decimal[] AsDecimalArray => new decimal[] { (decimal)_raw };

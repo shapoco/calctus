@@ -14,10 +14,10 @@ namespace Shapoco.Calctus.Model.Functions.BuiltIns {
 
         public readonly BuiltInFuncDef toGray = new BuiltInFuncDef("toGray(*x@)",
             "Converts the value from binary to gray-code.",
-            FuncDef.ArgToLong((e, a) => LMath.ToGray(a[0])));
+            FuncDef.ArgToLong((e, a) => LongMath.ToGray(a[0])));
 
         public readonly BuiltInFuncDef fromGray = new BuiltInFuncDef("fromGray(*x@)",
             "Converts the value from gray-code to binary.",
-            FuncDef.ArgToLong((e, a) => LMath.FromGray(a[0])));
+            FuncDef.ArgToLong((e, a) => LongMath.FromGray(a[0])));
     }
 }

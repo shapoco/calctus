@@ -79,7 +79,7 @@ namespace Shapoco.Calctus.Model.Graphs {
         public decimal PosToValue(decimal pos) {
             switch (_type) {
                 case AxisType.Linear: return pos;
-                case AxisType.Log10: return DMath.Pow10(pos);
+                case AxisType.Log10: return MathEx.Pow10(pos);
                 default: throw new NotImplementedException();
             }
         }
@@ -97,7 +97,7 @@ namespace Shapoco.Calctus.Model.Graphs {
                     }
                 case AxisType.Log10:
                     if (val > 0) {
-                        pos = DMath.Log10(val);
+                        pos = MathEx.Log10(val);
                         return true;
                     }
                     else {
