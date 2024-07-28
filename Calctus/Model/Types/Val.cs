@@ -6,6 +6,7 @@ using System.Threading.Tasks;
 using Shapoco.Calctus.Model;
 using Shapoco.Calctus.Model.Formats;
 using Shapoco.Calctus.Model.Evaluations;
+using Shapoco.Calctus.Model.Maths.Types;
 
 namespace Shapoco.Calctus.Model.Types {
     abstract class Val {
@@ -16,7 +17,8 @@ namespace Shapoco.Calctus.Model.Types {
         }
 
         public string ValTypeName => this.GetType().Name;
-        public abstract object Raw { get; }
+        public object Raw => OnGetRaw();
+        protected abstract object OnGetRaw();
 
         public abstract bool IsScalar { get; }
         public abstract bool IsInteger { get; }
@@ -37,7 +39,7 @@ namespace Shapoco.Calctus.Model.Types {
                 return thisArray;
             }
             else if (this is StrVal thisStr) {
-                return thisStr.AsString.ToRealArray().ToArrayVal(FormatHint.CStyleChar, null);
+                return thisStr.AsString.ToDecimalArray().ToArrayVal(FormatHint.CStyleChar, null);
             }
             else {
                 throw new InvalidCastException();
@@ -53,7 +55,7 @@ namespace Shapoco.Calctus.Model.Types {
             }
         }
 
-        public abstract real AsReal { get; }
+        public abstract decimal AsDecimal { get; }
         public abstract frac AsFrac { get; }
         public abstract double AsDouble { get; }
         public abstract long AsLong { get; }
@@ -63,7 +65,7 @@ namespace Shapoco.Calctus.Model.Types {
         public abstract bool AsBool { get; }
         public virtual string AsString => ToString();
 
-        public abstract real[] AsRealArray { get; }
+        public abstract decimal[] AsDecimalArray { get; }
         public abstract long[] AsLongArray { get; }
         public abstract int[] AsIntArray { get; }
         public abstract byte[] AsByteArray { get; }

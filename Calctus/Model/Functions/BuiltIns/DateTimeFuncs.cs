@@ -5,7 +5,7 @@ using System.Text;
 using System.Threading.Tasks;
 using Shapoco.Calctus.Model.Types;
 using Shapoco.Calctus.Model.Standards;
-using Shapoco.Calctus.Model.Mathematics;
+using Shapoco.Calctus.Model.Maths;
 using Shapoco.Calctus.Model.Formats;
 
 namespace Shapoco.Calctus.Model.Functions.BuiltIns {
@@ -20,41 +20,41 @@ namespace Shapoco.Calctus.Model.Functions.BuiltIns {
 
         public readonly BuiltInFuncDef datetime_6 = new BuiltInFuncDef("datetime(year, mon, day, hour, min, sec)",
             "Returns datetime from year, month, day, hour, minute, and second.",
-            (e, a) => UnixTime.FromLocalTime(a[0].AsInt, a[1].AsInt, a[2].AsInt, a[3].AsInt, a[4].AsInt, a[5].AsReal).ToDateTimeVal());
+            (e, a) => UnixTime.FromLocalTime(a[0].AsInt, a[1].AsInt, a[2].AsInt, a[3].AsInt, a[4].AsInt, a[5].AsDecimal).ToDateTimeVal());
 
         public readonly BuiltInFuncDef yearOf = new BuiltInFuncDef("yearOf(*t)",
             "Returns year component of datetime.",
-            (e, a) => UnixTime.ToLocalTime(a[0].AsReal).Year.ToIntVal());
+            (e, a) => UnixTime.ToLocalTime(a[0].AsDecimal).Year.ToIntVal());
 
         public readonly BuiltInFuncDef monthOf = new BuiltInFuncDef("monthOf(*t)",
             "Returns month component of datetime, expressed as 1..12.",
-            (e, a) => UnixTime.ToLocalTime(a[0].AsReal).Month.ToIntVal());
+            (e, a) => UnixTime.ToLocalTime(a[0].AsDecimal).Month.ToIntVal());
 
         public readonly BuiltInFuncDef dayOfYear = new BuiltInFuncDef("dayOfYear(*t)",
             "Returns day of year of datetime, expressed as 1..366.",
-            (e, a) => UnixTime.ToLocalTime(a[0].AsReal).DayOfYear.ToIntVal());
+            (e, a) => UnixTime.ToLocalTime(a[0].AsDecimal).DayOfYear.ToIntVal());
 
         public readonly BuiltInFuncDef dayOfWeek = new BuiltInFuncDef("dayOfWeek(*t)",
             "Returns day of week of datetime, expressed as 0 (Sunday)..6 (Saturday).",
-            (e, a) => ((int)UnixTime.ToLocalTime(a[0].AsReal).DayOfWeek).ToRealVal(FormatHint.Weekday));
+            (e, a) => ((int)UnixTime.ToLocalTime(a[0].AsDecimal).DayOfWeek).ToRealVal(FormatHint.Weekday));
 
         public readonly BuiltInFuncDef dayOfMonth = new BuiltInFuncDef("dayOfMonth(*t)",
             "Returns day component of datetime, expressed as 1..31.",
-            (e, a) => UnixTime.ToLocalTime(a[0].AsReal).Day.ToIntVal());
+            (e, a) => UnixTime.ToLocalTime(a[0].AsDecimal).Day.ToIntVal());
 
         public readonly BuiltInFuncDef hourOf = new BuiltInFuncDef("hourOf(*t)",
             "Returns hour component of datetime, expressed as 0..23.",
-            (e, a) => UnixTime.ToLocalTime(a[0].AsReal).Hour.ToIntVal());
+            (e, a) => UnixTime.ToLocalTime(a[0].AsDecimal).Hour.ToIntVal());
 
         public readonly BuiltInFuncDef minuteOf = new BuiltInFuncDef("minuteOf(*t)",
             "Returns minute component of datetime, expressed as 0..59.",
-            (e, a) => UnixTime.ToLocalTime(a[0].AsReal).Minute.ToIntVal());
+            (e, a) => UnixTime.ToLocalTime(a[0].AsDecimal).Minute.ToIntVal());
 
         public readonly BuiltInFuncDef secondOf = new BuiltInFuncDef("secondOf(*t)",
             "Returns second component of datetime, expressed as 0..60.",
             (e, a) => {
-                var unixTime = a[0].AsReal;
-                var subSec = unixTime - RMath.Floor(unixTime);
+                var unixTime = a[0].AsDecimal;
+                var subSec = unixTime - Math.Floor(unixTime);
                 return (UnixTime.ToLocalTime(unixTime).Second + subSec).ToRealVal();
             });
 
@@ -68,17 +68,17 @@ namespace Shapoco.Calctus.Model.Functions.BuiltIns {
 
         public readonly BuiltInFuncDef toDays = new BuiltInFuncDef("toDays(*x)",
             "Converts from epoch time to days.",
-            (e, a) => (a[0].AsReal / (24 * 60 * 60)).ToRealVal(),
+            (e, a) => (a[0].AsDecimal / (24 * 60 * 60)).ToRealVal(),
             new FuncTest("#+123.12:34:56.789#", "123+(12+(34+56.789/60)/60)/24"));
 
         public readonly BuiltInFuncDef toHours = new BuiltInFuncDef("toHours(*x)",
             "Converts from epoch time to hours.",
-            (e, a) => (a[0].AsReal / (60 * 60)).ToRealVal(),
+            (e, a) => (a[0].AsDecimal / (60 * 60)).ToRealVal(),
             new FuncTest("#+123.12:34:56.789#", "(123*24)+12+(34+56.789/60)/60"));
 
         public readonly BuiltInFuncDef toMinutes = new BuiltInFuncDef("toMinutes(*x)",
             "Converts from epoch time to minutes.",
-            (e, a) => (a[0].AsReal / 60).ToRealVal(),
+            (e, a) => (a[0].AsDecimal / 60).ToRealVal(),
             new FuncTest("#+123.12:34:56.789#", "((123*24)+12)*60+34+56.789/60"));
 
         public readonly BuiltInFuncDef toSeconds = new BuiltInFuncDef("toSeconds(*x)",
@@ -88,17 +88,17 @@ namespace Shapoco.Calctus.Model.Functions.BuiltIns {
 
         public readonly BuiltInFuncDef fromDays = new BuiltInFuncDef("fromDays(*x)",
             "Converts from days to epoch time.",
-            (e, a) => (a[0].AsReal * (24 * 60 * 60)).ToRelativeTimeVal(),
+            (e, a) => (a[0].AsDecimal * (24 * 60 * 60)).ToRelativeTimeVal(),
             new FuncTest("123.45", "#+123.10:48:00#"));
 
         public readonly BuiltInFuncDef fromHours = new BuiltInFuncDef("fromHours(*x)",
             "Converts from hours to epoch time.",
-            (e, a) => (a[0].AsReal * (60 * 60)).ToRelativeTimeVal(),
+            (e, a) => (a[0].AsDecimal * (60 * 60)).ToRelativeTimeVal(),
             new FuncTest("123.45", "#+5.3:27:00#"));
 
         public readonly BuiltInFuncDef fromMinutes = new BuiltInFuncDef("fromMinutes(*x)",
             "Converts from minutes to epoch time.",
-            (e, a) => (a[0].AsReal * 60).ToRelativeTimeVal(),
+            (e, a) => (a[0].AsDecimal * 60).ToRelativeTimeVal(),
             new FuncTest("123.45", "#+2:03:27#"));
 
         public readonly BuiltInFuncDef fromSeconds = new BuiltInFuncDef("fromSeconds(*x)",

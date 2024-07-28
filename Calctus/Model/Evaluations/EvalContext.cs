@@ -5,7 +5,7 @@ using System.Text;
 using System.Threading.Tasks;
 using Shapoco.Calctus.Model.Types;
 using Shapoco.Calctus.Model.Parsers;
-using Shapoco.Calctus.Model.Mathematics;
+using Shapoco.Calctus.Model.Maths;
 using Shapoco.Calctus.Model.Graphs;
 using Shapoco.Calctus.Model.Functions;
 

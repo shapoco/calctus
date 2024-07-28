@@ -5,18 +5,18 @@ using System.Text;
 using System.Threading.Tasks;
 using System.Drawing;
 using Shapoco.Calctus.Model.Types;
-using Shapoco.Calctus.Model.Mathematics;
+using Shapoco.Calctus.Model.Maths;
 
 namespace Shapoco.Calctus.Model.Standards {
     static class ColorSpace {
-        public static int SatPack(real x, real y, real z) {
+        public static int SatPack(decimal x, decimal y, decimal z) {
             int ix = Math.Max(0, Math.Min(255, (int)Math.Round(x)));
             int iy = Math.Max(0, Math.Min(255, (int)Math.Round(y)));
             int iz = Math.Max(0, Math.Min(255, (int)Math.Round(z)));
             return (ix << 16) | (iy << 8) | iz;
         }
 
-        public static void Unpack(real xyz, out int x, out int y, out int z) {
+        public static void Unpack(decimal xyz, out int x, out int y, out int z) {
             int ixyz = (int)xyz;
             x = (ixyz >> 16) & 0xff;
             y = (ixyz >> 8) & 0xff;
@@ -35,9 +35,9 @@ namespace Shapoco.Calctus.Model.Standards {
 
         public static int Pack565(int r, int g, int b) {
             return
-                (Math.Max(0, Math.Min(31, r)) << 11) |
-                (Math.Max(0, Math.Min(63, g)) << 5) |
-                Math.Max(0, Math.Min(31, b));
+                (DMath.Clip(0, 31, r) << 11) |
+                (DMath.Clip(0, 63, g) << 5) |
+                DMath.Clip(0, 31, b);
         }
 
         public static int[] Unpack565(int rgb) {
@@ -66,7 +66,7 @@ namespace Shapoco.Calctus.Model.Standards {
             return SatPack(r, g, b);
         }
 
-        private static real rgbToHue(real r, real g, real b, real min, real max) {
+        private static decimal rgbToHue(decimal r, decimal g, decimal b, decimal min, decimal max) {
             if (min == max) {
                 return 0;
             }
@@ -81,10 +81,10 @@ namespace Shapoco.Calctus.Model.Standards {
             }
         }
 
-        public static real[] RgbToHsv(real r, real g, real b) {
-            var min = RMath.Min(r, RMath.Min(g, b));
-            var max = RMath.Max(r, RMath.Max(g, b));
-            real h, s, v;
+        public static decimal[] RgbToHsv(decimal r, decimal g, decimal b) {
+            var min = Math.Min(r, Math.Min(g, b));
+            var max = Math.Max(r, Math.Max(g, b));
+            decimal h, s, v;
             h = rgbToHue(r, g, b, min, max);
             if (max == 0) {
                 s = 0;
@@ -93,17 +93,17 @@ namespace Shapoco.Calctus.Model.Standards {
                 s = 100 * (max - min) / max;
             }
             v = max * 100 / 255;
-            return new real[]{h, s, v};
+            return new decimal[]{h, s, v};
         }
-        public static real[] RgbToHsv(real rgb) {
+        public static decimal[] RgbToHsv(decimal rgb) {
             Unpack(rgb, out int r, out int g, out int b);
             return RgbToHsv(r, g, b);
         }
 
-        public static void HsvToRgb(real h, real s, real v, out real r, out real g, out real b) {
+        public static void HsvToRgb(decimal h, decimal s, decimal v, out decimal r, out decimal g, out decimal b) {
             h = h % 360;
-            s = RMath.Max(0, RMath.Min(100, s)) / 100;
-            v = RMath.Max(0, RMath.Min(100, v)) / 100;
+            s = DMath.Clip(0, 100, s) / 100;
+            v = DMath.Clip(0, 100, v) / 100;
 
             var f = (h / 60) % 1;
             var x = v * 255;
@@ -133,17 +133,17 @@ namespace Shapoco.Calctus.Model.Standards {
                 r = x; g = y; b = z;
             }
         }
-        public static int HsvToRgb(real h, real s, real v) { HsvToRgb(h, s, v, out real r, out real g, out real b); return SatPack(r, g, b); }
-        public static real HsvToRgb_R(real h, real s, real v) { HsvToRgb(h, s, v, out real r, out _, out _); return r; }
-        public static real HsvToRgb_G(real h, real s, real v) { HsvToRgb(h, s, v, out _, out real g, out _); return g; }
-        public static real HsvToRgb_B(real h, real s, real v) { HsvToRgb(h, s, v, out _, out _, out real b); return b; }
+        public static int HsvToRgb(decimal h, decimal s, decimal v) { HsvToRgb(h, s, v, out decimal r, out decimal g, out decimal b); return SatPack(r, g, b); }
+        public static decimal HsvToRgb_R(decimal h, decimal s, decimal v) { HsvToRgb(h, s, v, out decimal r, out _, out _); return r; }
+        public static decimal HsvToRgb_G(decimal h, decimal s, decimal v) { HsvToRgb(h, s, v, out _, out decimal g, out _); return g; }
+        public static decimal HsvToRgb_B(decimal h, decimal s, decimal v) { HsvToRgb(h, s, v, out _, out _, out decimal b); return b; }
 
-        public static real[] RgbToHsl(real r, real g, real b) {
-            var min = RMath.Min(r, RMath.Min(g, b));
-            var max = RMath.Max(r, RMath.Max(g, b));
-            real h, s, l;
+        public static decimal[] RgbToHsl(decimal r, decimal g, decimal b) {
+            var min = Math.Min(r, Math.Min(g, b));
+            var max = Math.Max(r, Math.Max(g, b));
+            decimal h, s, l;
             h = rgbToHue(r, g, b, min, max);
-            var p = (255 - RMath.Abs(max + min - 255));
+            var p = (255 - Math.Abs(max + min - 255));
             if (p == 0) {
                 s = 0;
             }
@@ -153,19 +153,19 @@ namespace Shapoco.Calctus.Model.Standards {
             l = 100 * (max + min) / (255 * 2);
             return new[] { h, s, l };
         }
-        public static real[] RgbToHsl(real rgb) {
+        public static decimal[] RgbToHsl(decimal rgb) {
             Unpack(rgb, out int r, out int g, out int b);
             return RgbToHsl(r, g, b);
         }
 
-        public static void HslToRgb(real h, real s, real l, out real r, out real g, out real b) {
+        public static void HslToRgb(decimal h, decimal s, decimal l, out decimal r, out decimal g, out decimal b) {
             h = h % 360;
-            s = RMath.Max(0, RMath.Min(100, s)) / 100;
-            l = RMath.Max(0, RMath.Min(100, l)) / 100;
+            s = DMath.Clip(0, 100, s) / 100;
+            l = DMath.Clip(0, 100, l) / 100;
 
             var f = (h / 60) % 1;
-            var max = 255 * (l + s * (1 - RMath.Abs(2 * l - 1)) / 2);
-            var min = 255 * (l - s * (1 - RMath.Abs(2 * l - 1)) / 2);
+            var max = 255 * (l + s * (1 - Math.Abs(2 * l - 1)) / 2);
+            var min = 255 * (l - s * (1 - Math.Abs(2 * l - 1)) / 2);
             var x = min + (max - min) * f;
             var y = min + (max - min) * (1 - f);
 
@@ -191,27 +191,27 @@ namespace Shapoco.Calctus.Model.Standards {
                 r = max; g = min; b = y;
             }
         }
-        public static int HslToRgb(real h, real s, real l) { HslToRgb(h, s, l, out real r, out real g, out real b); return SatPack(r, g, b); }
-        public static real HslToRgb_R(real h, real s, real l) { HslToRgb(h, s, l, out real r, out _, out _); return r; }
-        public static real HslToRgb_G(real h, real s, real l) { HslToRgb(h, s, l, out _, out real g, out _); return g; }
-        public static real HslToRgb_B(real h, real s, real l) { HslToRgb(h, s, l, out _, out _, out real b); return b; }
+        public static int HslToRgb(decimal h, decimal s, decimal l) { HslToRgb(h, s, l, out decimal r, out decimal g, out decimal b); return SatPack(r, g, b); }
+        public static decimal HslToRgb_R(decimal h, decimal s, decimal l) { HslToRgb(h, s, l, out decimal r, out _, out _); return r; }
+        public static decimal HslToRgb_G(decimal h, decimal s, decimal l) { HslToRgb(h, s, l, out _, out decimal g, out _); return g; }
+        public static decimal HslToRgb_B(decimal h, decimal s, decimal l) { HslToRgb(h, s, l, out _, out _, out decimal b); return b; }
 
-        public static void RgbToYuv(real r, real g, real b, out real y, out real u, out real v) {
+        public static void RgbToYuv(decimal r, decimal g, decimal b, out decimal y, out decimal u, out decimal v) {
             y = 0.257m * r + 0.504m * g + 0.098m * b + 16;
             u = -0.148m * r - 0.291m * g + 0.439m * b + 128;
             v = 0.439m * r - 0.368m * g - 0.071m * b + 128;
         }
-        public static void RgbToYuv(real rgb, out real y, out real u, out real v) {
+        public static void RgbToYuv(decimal rgb, out decimal y, out decimal u, out decimal v) {
             Unpack(rgb, out int r, out int g, out int b);
             RgbToYuv(r, g, b, out y, out u, out v);
         }
-        public static int RgbToYuv(real r, real g, real b) { RgbToYuv(r, g, b, out real y, out real u, out real v); return SatPack(y, u, v); }
-        public static int RgbToYuv(real rgb) { Unpack(rgb, out int r, out int g, out int b); return RgbToYuv(r, g, b); }
-        public static real RgbToYuv_Y(real rgb) { RgbToYuv(rgb, out real y, out _, out _); return y; }
-        public static real RgbToYuv_U(real rgb) { RgbToYuv(rgb, out _, out real u, out _); return u; }
-        public static real RgbToYuv_V(real rgb) { RgbToYuv(rgb, out _, out _, out real v); return v; }
+        public static int RgbToYuv(decimal r, decimal g, decimal b) { RgbToYuv(r, g, b, out decimal y, out decimal u, out decimal v); return SatPack(y, u, v); }
+        public static int RgbToYuv(decimal rgb) { Unpack(rgb, out int r, out int g, out int b); return RgbToYuv(r, g, b); }
+        public static decimal RgbToYuv_Y(decimal rgb) { RgbToYuv(rgb, out decimal y, out _, out _); return y; }
+        public static decimal RgbToYuv_U(decimal rgb) { RgbToYuv(rgb, out _, out decimal u, out _); return u; }
+        public static decimal RgbToYuv_V(decimal rgb) { RgbToYuv(rgb, out _, out _, out decimal v); return v; }
 
-        public static void YuvToRgb(real y, real u, real v, out real r, out real g, out real b) {
+        public static void YuvToRgb(decimal y, decimal u, decimal v, out decimal r, out decimal g, out decimal b) {
             y -= 16;
             u -= 128;
             v -= 128;
@@ -219,15 +219,15 @@ namespace Shapoco.Calctus.Model.Standards {
             g = 1.164383m * y - 0.391762m * u - 0.812968m * v;
             b = 1.164383m * y + 2.017232m * u;
         }
-        public static void YuvToRgb(real yuv, out real r, out real g, out real b) {
+        public static void YuvToRgb(decimal yuv, out decimal r, out decimal g, out decimal b) {
             Unpack(yuv, out int y, out int u, out int v);
             YuvToRgb(y, u, v, out r, out g, out b);
         }
-        public static int YuvToRgb(real y, real u, real v) { YuvToRgb(y, u, v, out real r, out real g, out real b); return SatPack(r, g, b); }
-        public static int YuvToRgb(real yuv) { YuvToRgb(yuv, out real r, out real g, out real b); return SatPack(r, g, b); }
-        public static real YuvToRgb_R(real yuv) { YuvToRgb(yuv, out real r, out _, out _); return r; }
-        public static real YuvToRgb_G(real yuv) { YuvToRgb(yuv, out _, out real g, out _); return g; }
-        public static real YuvToRgb_B(real yuv) { YuvToRgb(yuv, out _, out _, out real b); return b; }
+        public static int YuvToRgb(decimal y, decimal u, decimal v) { YuvToRgb(y, u, v, out decimal r, out decimal g, out decimal b); return SatPack(r, g, b); }
+        public static int YuvToRgb(decimal yuv) { YuvToRgb(yuv, out decimal r, out decimal g, out decimal b); return SatPack(r, g, b); }
+        public static decimal YuvToRgb_R(decimal yuv) { YuvToRgb(yuv, out decimal r, out _, out _); return r; }
+        public static decimal YuvToRgb_G(decimal yuv) { YuvToRgb(yuv, out _, out decimal g, out _); return g; }
+        public static decimal YuvToRgb_B(decimal yuv) { YuvToRgb(yuv, out _, out _, out decimal b); return b; }
 
     }
 }

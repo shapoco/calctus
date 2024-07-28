@@ -195,8 +195,8 @@ namespace Shapoco.Calctus.Model.Functions {
         /// <summary>
         /// 関数本体の実装をシンプルにするために引数を Val と real の間で変換する。
         /// </summary>
-        public static Func<EvalContext, Val[], Val> ArgToReal(Func<EvalContext, real[], real> func, FormatHint fh = null) {
-            return (e, a) => func(e, a.Select(p => p.AsReal).ToArray()).ToRealVal(fh);
+        public static Func<EvalContext, Val[], Val> ArgToDecimal(Func<EvalContext, decimal[], decimal> func, FormatHint fh = null) {
+            return (e, a) => func(e, a.Select(p => p.AsDecimal).ToArray()).ToRealVal(fh);
         }
 
         /// <summary>

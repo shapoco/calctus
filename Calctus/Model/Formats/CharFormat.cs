@@ -98,7 +98,7 @@ namespace Shapoco.Calctus.Model.Formats {
                 return base.OnFormat(val, fs);
             }
 
-            var ival = val.AsReal;
+            var ival = val.AsDecimal;
             if (ival < char.MinValue || char.MaxValue < ival) {
                 // 小数やcharの範囲外の値はデフォルトの数値表現を使用
                 return base.OnFormat(val, fs);

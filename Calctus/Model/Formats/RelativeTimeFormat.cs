@@ -7,7 +7,8 @@ using System.Threading.Tasks;
 using System.Globalization;
 using Shapoco.Calctus.Model.Types;
 using Shapoco.Calctus.Model.Parsers;
-using Shapoco.Calctus.Model.Mathematics;
+using Shapoco.Calctus.Model.Maths;
+using Shapoco.Calctus.Model.Maths.Types;
 
 namespace Shapoco.Calctus.Model.Formats {
     class RelativeTimeFormat : ValFormat {
@@ -21,7 +22,7 @@ namespace Shapoco.Calctus.Model.Formats {
         protected override Val OnParse(Match m) {
             var tok = m.Groups["time"].Value;
             if (tok[0] == '+') tok = tok.Substring(1);
-            var timeSpan = (real)TimeSpan.Parse(tok).TotalSeconds;
+            var timeSpan = (decimal)TimeSpan.Parse(tok).TotalSeconds;
             return new RealVal(timeSpan, new FormatHint(this));
         }
 
@@ -29,15 +30,15 @@ namespace Shapoco.Calctus.Model.Formats {
             if (!(val is RealVal)) {
                 return base.OnFormat(val, fs);
             }
-            return FormatAsStringLiteral(val.AsReal);
+            return FormatAsStringLiteral(val.AsDecimal);
         }
 
-        public static string FormatAsStringLiteral(real t) {
+        public static string FormatAsStringLiteral(decimal t) {
             var minus = t < 0;
             if (minus) t = -t;
             var ts = TimeSpan.FromSeconds((double)t);
             var days = t / (24 * 60 * 60);
-            var daysOnly = days == RMath.Floor(days);
+            var daysOnly = days.IsInteger();
 
             var sb = new StringBuilder("#");
             sb.Append(minus ? '-' : '+');
@@ -47,7 +48,7 @@ namespace Shapoco.Calctus.Model.Formats {
             else {
                 string fmt = @"h\:mm\:ss";
                 if (t >= 24 * 60 * 60) fmt = @"d\." + fmt;
-                if (t != RMath.Floor(t)) fmt = fmt + @"\.fff";
+                if (t.IsInteger()) fmt = fmt + @"\.fff";
                 sb.Append(ts.ToString(fmt, CultureInfo.InvariantCulture));
             }
             sb.Append('#');

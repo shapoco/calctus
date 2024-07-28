@@ -4,7 +4,7 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 using Shapoco.Calctus.Model.Types;
-using Shapoco.Calctus.Model.Mathematics;
+using Shapoco.Calctus.Model.Maths;
 
 namespace Shapoco.Calctus.Model.Functions.BuiltIns {
     class PrimeNumberFuncs : BuiltInFuncCategory {
@@ -14,14 +14,14 @@ namespace Shapoco.Calctus.Model.Functions.BuiltIns {
 
         public readonly BuiltInFuncDef prime = new BuiltInFuncDef("prime(*x)",
             "`x`-th prime number.",
-            (e, a) => RMath.Prime(a[0].AsInt).ToIntVal());
+            (e, a) => DMath.Prime(a[0].AsInt).ToIntVal());
 
         public readonly BuiltInFuncDef isPrime = new BuiltInFuncDef("isPrime(*x)",
             "Returns whether `x` is prime or not.",
-            (e, a) => BoolVal.FromBool(RMath.IsPrime(a[0].AsReal)));
+            (e, a) => BoolVal.FromBool(DMath.IsPrime(a[0].AsDecimal)));
 
         public readonly BuiltInFuncDef primeFact = new BuiltInFuncDef("primeFact(*x)",
             "Returns prime factors of `x`.",
-            (e, a) => RMath.PrimeFactors(a[0].AsReal).ToArrayVal(a[0].FormatHint, null));
+            (e, a) => DMath.PrimeFactors(a[0].AsDecimal).ToArrayVal(a[0].FormatHint, null));
     }
 }

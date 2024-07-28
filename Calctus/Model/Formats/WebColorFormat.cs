@@ -6,7 +6,7 @@ using System.Text.RegularExpressions;
 using System.Threading.Tasks;
 using Shapoco.Calctus.Model.Standards;
 using Shapoco.Calctus.Model.Types;
-using Shapoco.Calctus.Model.Mathematics;
+using Shapoco.Calctus.Model.Maths;
 using Shapoco.Calctus.Model.Parsers;
 
 namespace Shapoco.Calctus.Model.Formats {
@@ -38,8 +38,8 @@ namespace Shapoco.Calctus.Model.Formats {
                 return base.OnFormat(val, fs);
             }
 
-            var fval = val.AsReal;
-            var ival = RMath.Truncate(fval);
+            var fval = val.AsDecimal;
+            var ival = Math.Truncate(fval);
             if (fval != ival || ival < long.MinValue || long.MaxValue < ival) {
                 // 小数やlongの範囲外の値はデフォルトの数値表現を使用
                 return base.OnFormat(val, fs);

@@ -4,7 +4,7 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 
-namespace Shapoco.Calctus.Model.Types {
+namespace Shapoco.Calctus.Model.Maths.Types {
     struct quad {
         private const int ExpBias = 0x3fff;
         public static readonly quad PositiveZero = new quad(false, 0, ufixed113.Zero);

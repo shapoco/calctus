@@ -4,7 +4,7 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 using Shapoco.Calctus.Model.Types;
-using Shapoco.Calctus.Model.Mathematics;
+using Shapoco.Calctus.Model.Maths;
 
 namespace Shapoco.Calctus.Model.Functions.BuiltIns {
     class Min_MaxFuncs : BuiltInFuncCategory {
@@ -22,6 +22,6 @@ namespace Shapoco.Calctus.Model.Functions.BuiltIns {
 
         public readonly BuiltInFuncDef clip = new BuiltInFuncDef("clip(a, b, *x@)",
             "Clips `x` to a range from `a` to `b`. Same as `max(a, min(b, x))`.",
-            (e, a) => RMath.Clip(a[0].AsReal, a[1].AsReal, a[2].AsReal).ToRealVal(a[2].FormatHint));
+            (e, a) => DMath.Clip(a[0].AsDecimal, a[1].AsDecimal, a[2].AsDecimal).ToRealVal(a[2].FormatHint));
     }
 }

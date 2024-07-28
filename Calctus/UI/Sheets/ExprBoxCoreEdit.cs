@@ -12,7 +12,7 @@ using Shapoco.Calctus.Model.Formats;
 using Shapoco.Calctus.Model.Sheets;
 using Shapoco.Calctus.Model.Parsers;
 using Shapoco.Calctus.Model.Evaluations;
-using Shapoco.Calctus.Model.Mathematics;
+using Shapoco.Calctus.Model.Maths;
 using Shapoco.Calctus.Model.Types;
 
 namespace Shapoco.Calctus.UI.Sheets {
@@ -424,19 +424,19 @@ namespace Shapoco.Calctus.UI.Sheets {
                 var token = queryTokenArgs.Result;
                 if (token == null) return;
 
-                if (real.TryParse(token.Text, out frac, out eChar, out exp)) { }
+                if (DMath.TryParse(token.Text, out frac, out eChar, out exp)) { }
                 else if (SiPrefixFormat.TryParse(token.Text, out frac, out var prefixIndex)) {
                     exp = prefixIndex * 3;
                 }
                 else {
-                    frac = Parser.Parse(token.Text).Eval(new EvalContext()).AsReal;
+                    frac = Parser.Parse(token.Text).Eval(new EvalContext()).AsDecimal;
                     exp = 0;
                 }
 
                 if (eChar != 'e' && eChar != 'E') eChar = 'e';
 
                 // 指数を変更
-                frac *= RMath.Pow10(-amount);
+                frac *= DMath.Pow10(-amount);
                 exp += amount;
                 if (exp < -28 || 28 < exp) return;
 
@@ -472,14 +472,14 @@ namespace Shapoco.Calctus.UI.Sheets {
                 else if (BinaryPrefixFormat.TryParse(token.Text, out frac, out prefixIndex)) {
                     isBinaryPrefix = true;
                 }
-                else if (real.TryParse(token.Text, out frac, out _, out int exp)) {
+                else if (DMath.TryParse(token.Text, out frac, out _, out int exp)) {
                     prefixIndex = exp / 3;
                     int alignedExp = prefixIndex * 3;
-                    frac *= RMath.Pow10(exp - alignedExp);
+                    frac *= DMath.Pow10(exp - alignedExp);
                     isBinaryPrefix = false;
                 }
                 else {
-                    frac = Parser.Parse(token.Text).Eval(new EvalContext()).AsReal;
+                    frac = Parser.Parse(token.Text).Eval(new EvalContext()).AsDecimal;
                     prefixIndex = 0;
                     isBinaryPrefix = false;
                 }
@@ -493,7 +493,7 @@ namespace Shapoco.Calctus.UI.Sheets {
                     }
                 }
                 else {
-                    frac *= RMath.Pow10(-amount * 3);
+                    frac *= DMath.Pow10(-amount * 3);
                     prefixIndex += amount;
                     if (prefixIndex < SiPrefixFormat.MinPrefixIndex || SiPrefixFormat.MaxPrefixIndex < prefixIndex) {
                         return;

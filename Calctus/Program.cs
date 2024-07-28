@@ -24,9 +24,9 @@ namespace Shapoco.Calctus
 #if DEBUG
                 //Model.Formats.ValFormat.Test();
                 Model.Standards.PreferredNumbers.Test();
-                Model.Types.ufixed113.Test();
-                Model.Types.quad.Test();
-                Model.Mathematics.QMath.Test();
+                Model.Maths.Types.ufixed113.Test();
+                Model.Maths.Types.quad.Test();
+                Model.Maths.QMath.Test();
                 Model.Functions.BuiltInFuncLibrary.Instance.DoTest();
                 DocumentGenerator.GenerateDocumentation();
 #endif

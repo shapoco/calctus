@@ -5,7 +5,7 @@ using System.Text;
 using System.Threading.Tasks;
 using System.Windows.Forms;
 using Shapoco.Calctus.Model.Types;
-using Shapoco.Calctus.Model.Mathematics;
+using Shapoco.Calctus.Model.Maths;
 
 namespace Shapoco.Calctus.Model.Functions.BuiltIns {
     class SystemFuncs : BuiltInFuncCategory {

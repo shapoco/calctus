@@ -5,7 +5,9 @@ using System.Runtime.InteropServices.WindowsRuntime;
 using System.Text;
 using System.Threading.Tasks;
 
-namespace Shapoco.Calctus.Model.Types {
+namespace Shapoco.Calctus.Model.Maths.Types {
+    // todo Delete
+    [Obsolete("Deprecated", false)]
     struct ufixed113 {
         public static readonly ufixed113 Zero = new ufixed113(0u, 0u, 0u, 0u, 0u);
         public static readonly ufixed113 One = new ufixed113(1u, 0u, 0u, 0u, 0u);

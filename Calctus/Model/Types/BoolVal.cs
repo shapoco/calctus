@@ -4,28 +4,24 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
+using Shapoco.Calctus.Model.Maths.Types;
 using Shapoco.Calctus.Model.Evaluations;
 
 namespace Shapoco.Calctus.Model.Types {
-    class BoolVal : Val {
+    class BoolVal : ValBase<bool> {
         public static readonly BoolVal True  = new BoolVal(true);
         public static readonly BoolVal False = new BoolVal(false);
 
         public static BoolVal FromBool(bool val) => val ? True : False;
 
-        private bool _raw;
-        private BoolVal(bool val, FormatHint fmt = null) : base(fmt) {
-            this._raw = val;
-        }
-
-        public override object Raw => _raw;
+        private BoolVal(bool val, FormatHint fmt = null) : base(val, fmt) { }
 
         public override bool IsScalar => false;
         public override bool IsInteger => false;
 
         public override bool IsSerializable => true;
 
-        public override real AsReal => throw new InvalidCastException();
+        public override decimal AsDecimal => throw new InvalidCastException();
         public override frac AsFrac => throw new InvalidCastException();
         public override double AsDouble => throw new InvalidCastException();
         public override long AsLong => throw new InvalidCastException();
@@ -34,7 +30,7 @@ namespace Shapoco.Calctus.Model.Types {
         public override byte AsByte => throw new InvalidCastException();
         public override bool AsBool => _raw;
 
-        public override real[] AsRealArray => throw new InvalidCastException();
+        public override decimal[] AsDecimalArray => throw new InvalidCastException();
         public override long[] AsLongArray => throw new InvalidCastException();
         public override int[] AsIntArray => throw new InvalidCastException();
         public override byte[] AsByteArray => throw new InvalidCastException();

@@ -108,7 +108,7 @@ namespace Shapoco.Calctus.UI {
         private decimal textToPos(string text, ref FormatHint formatHint) {
             var val = Model.Parsers.Parser.Parse(text).Eval(new Model.Evaluations.EvalContext());
             formatHint = val.FormatHint;
-            if (_axisSettings.ValueToPos(val.AsReal, out decimal pos)) {
+            if (_axisSettings.ValueToPos(val.AsDecimal, out decimal pos)) {
                 return pos;
             }
             else {

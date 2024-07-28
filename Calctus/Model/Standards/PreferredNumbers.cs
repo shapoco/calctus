@@ -4,7 +4,8 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 using Shapoco.Calctus.Model.Types;
-using Shapoco.Calctus.Model.Mathematics;
+using Shapoco.Calctus.Model.Maths;
+using Shapoco.Calctus.Model.Maths.Types;
 
 namespace Shapoco.Calctus.Model.Standards {
     static class PreferredNumbers {
@@ -12,23 +13,23 @@ namespace Shapoco.Calctus.Model.Standards {
         /// <summary>
         /// 最も分圧比が近くなる系列のペアを見つける
         /// </summary>
-        public static real[] FindSplitPair(real[] series, real value) {
+        public static decimal[] FindSplitPair(decimal[] series, decimal value) {
             if (value >= 1) {
-                return new real[] { 1, 0 };
+                return new decimal[] { 1, 0 };
             }
             else if (value <= 0) {
-                return new real[] { 0, 1 };
+                return new decimal[] { 0, 1 };
             }
 
             // ペアを見つける
-            real min_diff = real.MaxValue;
-            real min_lo = 0;
-            real min_hi = 0;
+            decimal min_diff = decimal.MaxValue;
+            decimal min_lo = 0;
+            decimal min_hi = 0;
             foreach (var lo in series) {
-                real hi_floor, hi_ceil;
+                decimal hi_floor, hi_ceil;
                 FindNearests(series, lo / value - lo, out hi_floor, out hi_ceil);
-                real diff_floor = RMath.Abs(value - lo / (hi_floor + lo));
-                real diff_ceil = RMath.Abs(value - lo / (hi_ceil + lo));
+                decimal diff_floor = Math.Abs(value - lo / (hi_floor + lo));
+                decimal diff_ceil = Math.Abs(value - lo / (hi_ceil + lo));
                 if (diff_floor < min_diff) {
                     min_diff = diff_floor;
                     min_lo = lo;
@@ -42,20 +43,20 @@ namespace Shapoco.Calctus.Model.Standards {
             }
 
             // 両方が 1 以上になるように桁合わせ
-            int exp = (int)RMath.Floor(RMath.Log10(RMath.Min(min_lo, min_hi)));
+            int exp = (int)Math.Floor(DMath.Log10(Math.Min(min_lo, min_hi)));
             if (exp < 0) {
                 min_lo = Shift10(min_lo, -exp);
                 min_hi = Shift10(min_hi, -exp);
             }
 
-            return new real[] { min_lo, min_hi };
+            return new decimal[] { min_lo, min_hi };
         }
 
         /// <summary>
         /// 系列で最も近い値のペアのうち小さい方を返す
         /// </summary>
-        public static real Floor(real[] series, real value) {
-            real floor, ceil;
+        public static decimal Floor(decimal[] series, decimal value) {
+            decimal floor, ceil;
             FindNearests(series, value, out floor, out ceil);
             return floor;
         }
@@ -63,8 +64,8 @@ namespace Shapoco.Calctus.Model.Standards {
         /// <summary>
         /// 系列で最も近い値のペアのうち大きい方を返す
         /// </summary>
-        public static real Ceiling(real[] series, real value) {
-            real floor, ceil;
+        public static decimal Ceiling(decimal[] series, decimal value) {
+            decimal floor, ceil;
             FindNearests(series, value, out floor, out ceil);
             return ceil;
         }
@@ -72,8 +73,8 @@ namespace Shapoco.Calctus.Model.Standards {
         /// <summary>
         /// 系列で最も近い値のペアのうち誤差が小さい方を返す
         /// </summary>
-        public static real Round(real[] series, real value) {
-            real floor, ceil;
+        public static decimal Round(decimal[] series, decimal value) {
+            decimal floor, ceil;
             FindNearests(series, value, out floor, out ceil);
             if (value - floor < ceil - value) {
                 return floor;
@@ -86,8 +87,8 @@ namespace Shapoco.Calctus.Model.Standards {
         /// <summary>
         /// 系列で最も近い値のペアを返す
         /// </summary>
-        public static void FindNearests(real[] series, real value, out real floor, out real ceil) {
-            var exp = (int)RMath.Floor(RMath.Log10(value));
+        public static void FindNearests(decimal[] series, decimal value, out decimal floor, out decimal ceil) {
+            var exp = (int)Math.Floor(DMath.Log10(value));
             var key = Shift10(value, -exp);
             int i = BinarySearch(series, key);
             floor = Shift10(series[i], exp);
@@ -102,11 +103,11 @@ namespace Shapoco.Calctus.Model.Standards {
             }
         }
 
-        public static int BinarySearch(real[] series, real key) {
+        public static int BinarySearch(decimal[] series, decimal key) {
             return BinarySearch(series, key, 0, series.Length - 1);
         }
 
-        public static int BinarySearch(real[] series, real key, int i0, int i1) {
+        public static int BinarySearch(decimal[] series, decimal key, int i0, int i1) {
             if (i0 == i1) {
                 return i0;
             }
@@ -121,12 +122,12 @@ namespace Shapoco.Calctus.Model.Standards {
             }
         }
 
-        public static real Shift10(real value, int exp) {
+        public static decimal Shift10(decimal value, int exp) {
             if (exp >= 0) {
-                return value * RMath.Pow10(exp);
+                return value * DMath.Pow10(exp);
             }
             else {
-                return value / RMath.Pow10(-exp);
+                return value / DMath.Pow10(-exp);
             }
         }
 
@@ -140,10 +141,10 @@ namespace Shapoco.Calctus.Model.Standards {
             Test_Ratio();
         }
 
-        public static void Test_RoundExact(real[] series) {
+        public static void Test_RoundExact(decimal[] series) {
             for (int exp = 0; exp <= 27; exp++) {
                 foreach (var e in series) {
-                    real value = Shift10(e, exp);
+                    decimal value = Shift10(e, exp);
                     Assert.Equal("Floor", value, Floor(series, value));
                     Assert.Equal("Ceiling", value, Ceiling(series, value));
                     Assert.Equal("Round", value, Round(series, value));
@@ -151,7 +152,7 @@ namespace Shapoco.Calctus.Model.Standards {
             }
             for (int exp = 0; exp >= -26; exp--) {
                 foreach (var e in series) {
-                    real value = Shift10(e, exp);
+                    decimal value = Shift10(e, exp);
                     Assert.Equal("Floor", value, Floor(series, value));
                     Assert.Equal("Ceiling", value, Ceiling(series, value));
                     Assert.Equal("Round", value, Round(series, value));
@@ -159,34 +160,34 @@ namespace Shapoco.Calctus.Model.Standards {
             }
         }
 
-        public static void Test_RoundDown(real[] series) {
+        public static void Test_RoundDown(decimal[] series) {
             for (int exp = 0; exp <= 27; exp++) {
                 foreach (var e in series) {
-                    real value = Shift10(e, exp);
+                    decimal value = Shift10(e, exp);
                     Assert.Equal("Floor", value, Floor(series, value * 1.001m));
                     Assert.Equal("Round", value, Round(series, value * 1.001m));
                 }
             }
             for (int exp = 0; exp >= -26; exp--) {
                 foreach (var e in series) {
-                    real value = Shift10(e, exp);
+                    decimal value = Shift10(e, exp);
                     Assert.Equal("Floor", value, Floor(series, value * 1.001m));
                     Assert.Equal("Round", value, Round(series, value * 1.001m));
                 }
             }
         }
 
-        public static void Test_RoundUp(real[] series) {
+        public static void Test_RoundUp(decimal[] series) {
             for (int exp = 0; exp <= 27; exp++) {
                 foreach (var e in series) {
-                    real value = Shift10(e, exp);
+                    decimal value = Shift10(e, exp);
                     Assert.Equal("Ceiling", value, Ceiling(series, value / 1.001m));
                     Assert.Equal("Round", value, Round(series, value / 1.001m));
                 }
             }
             for (int exp = 0; exp >= -26; exp--) {
                 foreach (var e in series) {
-                    real value = Shift10(e, exp);
+                    decimal value = Shift10(e, exp);
                     Assert.Equal("Ceiling", value, Ceiling(series, value / 1.001m));
                     Assert.Equal("Round", value, Round(series, value / 1.001m));
                 }
@@ -194,23 +195,23 @@ namespace Shapoco.Calctus.Model.Standards {
         }
 
         public static void Test_Ratio() {
-            Assert.Equal("Ratio", FindSplitPair(ESeries.E6, 0m), new real[] { 0m, 1m });
-            Assert.Equal("Ratio", FindSplitPair(ESeries.E6, 0.01m), new real[] { 1m, 100m });
-            Assert.Equal("Ratio", FindSplitPair(ESeries.E6, 0.02m), new real[] { 6.8m, 330m });
-            Assert.Equal("Ratio", FindSplitPair(ESeries.E6, 0.05m), new real[] { 3.3m, 68m });
-            Assert.Equal("Ratio", FindSplitPair(ESeries.E6, 0.1m), new real[] { 1m, 10m });
-            Assert.Equal("Ratio", FindSplitPair(ESeries.E6, 0.2m), new real[] { 1.5m, 6.8m });
-            Assert.Equal("Ratio", FindSplitPair(ESeries.E6, 0.3m), new real[] { 6.8m, 15m });
-            Assert.Equal("Ratio", FindSplitPair(ESeries.E6, 0.4m), new real[] { 1m, 1.5m });
-            Assert.Equal("Ratio", FindSplitPair(ESeries.E6, 0.5m), new real[] { 1m, 1m });
-            Assert.Equal("Ratio", FindSplitPair(ESeries.E6, 0.6m), new real[] { 1.5m, 1m });
-            Assert.Equal("Ratio", FindSplitPair(ESeries.E6, 0.7m), new real[] { 15m, 6.8m });
-            Assert.Equal("Ratio", FindSplitPair(ESeries.E6, 0.8m), new real[] { 6.8m, 1.5m });
-            Assert.Equal("Ratio", FindSplitPair(ESeries.E6, 0.9m), new real[] { 10m, 1m });
-            Assert.Equal("Ratio", FindSplitPair(ESeries.E6, 0.95m), new real[] { 68m, 3.3m });
-            Assert.Equal("Ratio", FindSplitPair(ESeries.E6, 0.98m), new real[] { 330m, 6.8m });
-            Assert.Equal("Ratio", FindSplitPair(ESeries.E6, 0.99m), new real[] { 100m, 1m });
-            Assert.Equal("Ratio", FindSplitPair(ESeries.E6, 1m), new real[] { 1m, 0m });
+            Assert.Equal("Ratio", FindSplitPair(ESeries.E6, 0m), new decimal[] { 0m, 1m });
+            Assert.Equal("Ratio", FindSplitPair(ESeries.E6, 0.01m), new decimal[] { 1m, 100m });
+            Assert.Equal("Ratio", FindSplitPair(ESeries.E6, 0.02m), new decimal[] { 6.8m, 330m });
+            Assert.Equal("Ratio", FindSplitPair(ESeries.E6, 0.05m), new decimal[] { 3.3m, 68m });
+            Assert.Equal("Ratio", FindSplitPair(ESeries.E6, 0.1m), new decimal[] { 1m, 10m });
+            Assert.Equal("Ratio", FindSplitPair(ESeries.E6, 0.2m), new decimal[] { 1.5m, 6.8m });
+            Assert.Equal("Ratio", FindSplitPair(ESeries.E6, 0.3m), new decimal[] { 6.8m, 15m });
+            Assert.Equal("Ratio", FindSplitPair(ESeries.E6, 0.4m), new decimal[] { 1m, 1.5m });
+            Assert.Equal("Ratio", FindSplitPair(ESeries.E6, 0.5m), new decimal[] { 1m, 1m });
+            Assert.Equal("Ratio", FindSplitPair(ESeries.E6, 0.6m), new decimal[] { 1.5m, 1m });
+            Assert.Equal("Ratio", FindSplitPair(ESeries.E6, 0.7m), new decimal[] { 15m, 6.8m });
+            Assert.Equal("Ratio", FindSplitPair(ESeries.E6, 0.8m), new decimal[] { 6.8m, 1.5m });
+            Assert.Equal("Ratio", FindSplitPair(ESeries.E6, 0.9m), new decimal[] { 10m, 1m });
+            Assert.Equal("Ratio", FindSplitPair(ESeries.E6, 0.95m), new decimal[] { 68m, 3.3m });
+            Assert.Equal("Ratio", FindSplitPair(ESeries.E6, 0.98m), new decimal[] { 330m, 6.8m });
+            Assert.Equal("Ratio", FindSplitPair(ESeries.E6, 0.99m), new decimal[] { 100m, 1m });
+            Assert.Equal("Ratio", FindSplitPair(ESeries.E6, 1m), new decimal[] { 1m, 0m });
         }
     }
 }

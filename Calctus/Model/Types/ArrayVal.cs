@@ -4,13 +4,12 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 using Shapoco.Calctus.Model;
+using Shapoco.Calctus.Model.Maths.Types;
 using Shapoco.Calctus.Model.Formats;
 using Shapoco.Calctus.Model.Evaluations;
 
 namespace Shapoco.Calctus.Model.Types {
-    class ArrayVal : Val {
-        private Val[] _raw;
-
+    class ArrayVal : ArrayValBase<Val[], Val, Val> {
         public static void CheckArrayLength(int length) {
             int limit = Settings.Instance.Calculation_Limit_MaxArrayLength;
             if (length > limit) {
@@ -18,9 +17,8 @@ namespace Shapoco.Calctus.Model.Types {
             }
         }
 
-        public ArrayVal(Val[] val, FormatHint fmt = null) : base(fmt) {
+        public ArrayVal(Val[] val, FormatHint fmt = null) : base(val, fmt) {
             CheckArrayLength(val.Length);
-            this._raw = val;
         }
 
         public Val this[int index] => _raw[index];
@@ -49,12 +47,10 @@ namespace Shapoco.Calctus.Model.Types {
 
         public int Length => _raw.Length;
 
-        public override object Raw => _raw;
-
         public override bool IsScalar => false;
         public override bool IsInteger => false;
 
-        public override real AsReal => throw new InvalidCastException();
+        public override decimal AsDecimal => throw new InvalidCastException();
         public override frac AsFrac => throw new InvalidCastException();
         public override double AsDouble => throw new InvalidCastException();
         public override long AsLong => throw new InvalidCastException();
@@ -63,7 +59,7 @@ namespace Shapoco.Calctus.Model.Types {
         public override byte AsByte => throw new InvalidCastException();
         public override bool AsBool => throw new InvalidCastException();
         
-        public override real[] AsRealArray => _raw.Select(p => p.AsReal).ToArray();
+        public override decimal[] AsDecimalArray => _raw.Select(p => p.AsDecimal).ToArray();
         public override long[] AsLongArray => _raw.Select(p => p.AsLong).ToArray();
         public override int[] AsIntArray => _raw.Select(p => p.AsInt).ToArray();
         public override byte[] AsByteArray => _raw.Select(p => p.AsByte).ToArray();

@@ -3,7 +3,7 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
-using Shapoco.Calctus.Model.Mathematics;
+using Shapoco.Calctus.Model.Maths;
 
 namespace Shapoco.Calctus.Model.Graphs {
     class AxisSettings {
@@ -79,7 +79,7 @@ namespace Shapoco.Calctus.Model.Graphs {
         public decimal PosToValue(decimal pos) {
             switch (_type) {
                 case AxisType.Linear: return pos;
-                case AxisType.Log10: return RMath.Pow10(pos);
+                case AxisType.Log10: return DMath.Pow10(pos);
                 default: throw new NotImplementedException();
             }
         }
@@ -97,7 +97,7 @@ namespace Shapoco.Calctus.Model.Graphs {
                     }
                 case AxisType.Log10:
                     if (val > 0) {
-                        pos = RMath.Log10(val);
+                        pos = DMath.Log10(val);
                         return true;
                     }
                     else {

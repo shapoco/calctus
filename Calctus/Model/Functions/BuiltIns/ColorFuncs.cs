@@ -15,7 +15,7 @@ namespace Shapoco.Calctus.Model.Functions.BuiltIns {
 
         public readonly BuiltInFuncDef rgb_3 = new BuiltInFuncDef("rgb(r, g, b)",
             "Generates 24 bit color value from R, G, B.",
-            (e, a) => ColorSpace.SatPack(a[0].AsReal, a[1].AsReal, a[2].AsReal).ToColorVal());
+            (e, a) => ColorSpace.SatPack(a[0].AsDecimal, a[1].AsDecimal, a[2].AsDecimal).ToColorVal());
 
         public readonly BuiltInFuncDef rgb_1 = new BuiltInFuncDef("rgb(*rgb)",
             "Converts the `rgb` to web-color representation.",
@@ -23,35 +23,35 @@ namespace Shapoco.Calctus.Model.Functions.BuiltIns {
 
         public readonly BuiltInFuncDef hsv2rgb = new BuiltInFuncDef("hsv2rgb(h, s, v)",
             "Converts from H, S, V to 24 bit RGB color value.",
-            (e, a) => ColorSpace.HsvToRgb(a[0].AsReal, a[1].AsReal, a[2].AsReal).ToColorVal());
+            (e, a) => ColorSpace.HsvToRgb(a[0].AsDecimal, a[1].AsDecimal, a[2].AsDecimal).ToColorVal());
 
         public readonly BuiltInFuncDef rgb2hsv = new BuiltInFuncDef("rgb2hsv(*rgb)",
             "Converts the 24 bit RGB color value to HSV.",
-            (e, a) => ColorSpace.RgbToHsv(a[0].AsReal).ToArrayVal());
+            (e, a) => ColorSpace.RgbToHsv(a[0].AsDecimal).ToArrayVal());
 
         public readonly BuiltInFuncDef hsl2rgb = new BuiltInFuncDef("hsl2rgb(h, s, l)",
             "Convert from H, S, L to 24 bit color RGB value.",
-            (e, a) => ColorSpace.HslToRgb(a[0].AsReal, a[1].AsReal, a[2].AsReal).ToColorVal());
+            (e, a) => ColorSpace.HslToRgb(a[0].AsDecimal, a[1].AsDecimal, a[2].AsDecimal).ToColorVal());
 
         public readonly BuiltInFuncDef rgb2hsl = new BuiltInFuncDef("rgb2hsl(*rgb)",
             "Converts the 24 bit RGB color value to HSL.",
-            (e, a) => ColorSpace.RgbToHsl(a[0].AsReal).ToArrayVal());
+            (e, a) => ColorSpace.RgbToHsl(a[0].AsDecimal).ToArrayVal());
 
         public readonly BuiltInFuncDef yuv2rgb_3 = new BuiltInFuncDef("yuv2rgb(y, u, v)",
             "Converts Y, U, V to 24 bit RGB color.",
-            (e, a) => ColorSpace.YuvToRgb(a[0].AsReal, a[1].AsReal, a[2].AsReal).ToColorVal());
+            (e, a) => ColorSpace.YuvToRgb(a[0].AsDecimal, a[1].AsDecimal, a[2].AsDecimal).ToColorVal());
 
         public readonly BuiltInFuncDef yuv2rgb_1 = new BuiltInFuncDef("yuv2rgb(*yuv)",
             "Converts the 24 bit YUV color to 24 bit RGB.",
-            (e, a) => ColorSpace.YuvToRgb(a[0].AsReal).ToColorVal());
+            (e, a) => ColorSpace.YuvToRgb(a[0].AsDecimal).ToColorVal());
 
         public readonly BuiltInFuncDef rgb2yuv_3 = new BuiltInFuncDef("rgb2yuv(r, g, b)",
             "Converts R, G, B to 24 bit YUV color.",
-            (e, a) => ColorSpace.RgbToYuv(a[0].AsReal, a[1].AsReal, a[2].AsReal).ToHexVal());
+            (e, a) => ColorSpace.RgbToYuv(a[0].AsDecimal, a[1].AsDecimal, a[2].AsDecimal).ToHexVal());
 
         public readonly BuiltInFuncDef rgb2yuv_1 = new BuiltInFuncDef("rgb2yuv(*rgb)",
             "Converts 24bit RGB color to 24 bit YUV.",
-            (e, a) => ColorSpace.RgbToYuv(a[0].AsReal).ToHexVal());
+            (e, a) => ColorSpace.RgbToYuv(a[0].AsDecimal).ToHexVal());
 
         public readonly BuiltInFuncDef rgbTo565 = new BuiltInFuncDef("rgbTo565(*rgb)",
             "Downconverts RGB888 color to RGB565.",

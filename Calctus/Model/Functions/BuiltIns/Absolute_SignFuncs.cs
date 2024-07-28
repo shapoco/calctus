@@ -4,7 +4,7 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 using Shapoco.Calctus.Model.Types;
-using Shapoco.Calctus.Model.Mathematics;
+using Shapoco.Calctus.Model.Maths;
 
 namespace Shapoco.Calctus.Model.Functions.BuiltIns {
     class Absolute_SignFuncs : BuiltInFuncCategory {
@@ -14,8 +14,8 @@ namespace Shapoco.Calctus.Model.Functions.BuiltIns {
 
         public readonly BuiltInFuncDef abs = new BuiltInFuncDef("abs(*x@)",
             "Absolute value of `x`",
-            FuncDef.ArgToReal((e, a) => {
-                return RMath.Abs(a[0]);
+            FuncDef.ArgToDecimal((e, a) => {
+                return Math.Abs(a[0]);
             }),
             new FuncTest("-12.34", "12.34"),
             new FuncTest("0", "0"),
@@ -23,8 +23,8 @@ namespace Shapoco.Calctus.Model.Functions.BuiltIns {
 
         public readonly BuiltInFuncDef sign = new BuiltInFuncDef("sign(*x)",
             "Returns 1 for positives, -1 for negatives, 0 otherwise.",
-            FuncDef.ArgToReal((e, a) => {
-                return RMath.Sign(a[0]);
+            FuncDef.ArgToDecimal((e, a) => {
+                return Math.Sign(a[0]);
             }),
             new FuncTest("-12.34", "-1"),
             new FuncTest("0", "0"),
@@ -35,7 +35,7 @@ namespace Shapoco.Calctus.Model.Functions.BuiltIns {
             (e, a) => {
                 var arrayVal = a[0].AsArrayVal();
                 var fmtHint = arrayVal.Length > 0 ? arrayVal[0].FormatHint : null;
-                return RMath.Sqrt(arrayVal.AsRealArray.Sum(p => p * p)).ToRealVal(fmtHint);
+                return DMath.Sqrt(arrayVal.AsDecimalArray.Sum(p => p * p)).ToRealVal(fmtHint);
             },
             new FuncTest("3,4", "5"),
             new FuncTest("3,4,5", "sqrt(50)"));

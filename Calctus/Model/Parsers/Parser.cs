@@ -91,7 +91,7 @@ namespace Shapoco.Calctus.Model.Parsers {
                         return expr;
                     }
                     else if (tok.Text == OpDef.ArithInv.Symbol) {
-                        return new Literal(new RealVal(-val.AsReal));
+                        return new Literal(new RealVal(-val.AsDecimal));
                     }
                 }
                 return new UnaryOp(expr, tok);

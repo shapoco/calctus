@@ -4,7 +4,8 @@ using System.Linq;
 using Shapoco.Calctus.Model.Types;
 using Shapoco.Calctus.Model.Parsers;
 using Shapoco.Calctus.Model.Evaluations;
-using Shapoco.Calctus.Model.Mathematics;
+using Shapoco.Calctus.Model.Maths;
+using Shapoco.Calctus.Model.Maths.Types;
 using Shapoco.Calctus.Model.Functions.BuiltIns;
 
 namespace Shapoco.Calctus.Model.Expressions {
@@ -109,9 +110,9 @@ namespace Shapoco.Calctus.Model.Expressions {
                 var aVal = A.Eval(e);
                 var bVal = B.Eval(e);
                 if (!aVal.IsInteger || !bVal.IsInteger) throw new CalctusError("Operand must be integer.");
-                var a = aVal.AsReal;
-                var b = bVal.AsReal;
-                return RMath.Range(a, b, a < b ? 1 : -1, inclusive).ToArrayVal(aVal.FormatHint, null);
+                var a = aVal.AsDecimal;
+                var b = bVal.AsDecimal;
+                return DMath.Range(a, b, a < b ? 1 : -1, inclusive).ToArrayVal(aVal.FormatHint, null);
             }
             else if (Method == OpDef.Frac) {
                 var a = A.Eval(e);
@@ -123,7 +124,7 @@ namespace Shapoco.Calctus.Model.Expressions {
                     return a.AsRealVal().Div(e, b);
                 }
                 else {
-                    return FracVal.Normalize(new frac(a.AsReal, b.AsReal), a.FormatHint);
+                    return FracVal.Normalize(new frac(a.AsDecimal, b.AsDecimal), a.FormatHint);
                 }
             }
             else if (Method == OpDef.Pow) {

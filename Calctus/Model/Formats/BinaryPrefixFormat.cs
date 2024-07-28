@@ -6,7 +6,8 @@ using System.Text;
 using System.Threading.Tasks;
 using System.Text.RegularExpressions;
 using Shapoco.Calctus.Model.Types;
-using Shapoco.Calctus.Model.Mathematics;
+using Shapoco.Calctus.Model.Maths;
+using Shapoco.Calctus.Model.Maths.Types;
 using Shapoco.Calctus.Model.Parsers;
 
 namespace Shapoco.Calctus.Model.Formats {
@@ -38,7 +39,7 @@ namespace Shapoco.Calctus.Model.Formats {
         }
 
         private static void extractMatch(Match m, out decimal frac, out int prefixIndex) {
-            frac = real.Parse(m.Groups["frac"].Value);
+            frac = DMath.Parse(m.Groups["frac"].Value);
             prefixIndex = Prefixes.IndexOf(m.Groups["prefix"].Value);
             System.Diagnostics.Debug.Assert(prefixIndex >= 0);
         }
@@ -52,10 +53,10 @@ namespace Shapoco.Calctus.Model.Formats {
 
         protected override string OnFormat(Val val, FormatSettings fs) {
             if (val is RealVal) {
-                var r = val.AsReal;
+                var r = val.AsDecimal;
                 int prefixIndex = 0;
                 if (r != 0) {
-                    prefixIndex = (int)RMath.Floor(RMath.Log2(RMath.Abs(r), highAccuracy: true) / 10);
+                    prefixIndex = (int)Math.Floor(DMath.Log2(Math.Abs(r), highAccuracy: true) / 10);
                 }
                 if (prefixIndex < MinPrefixIndex) {
                     prefixIndex = MinPrefixIndex;

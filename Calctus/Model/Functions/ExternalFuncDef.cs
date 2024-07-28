@@ -27,7 +27,7 @@ namespace Shapoco.Calctus.Model.Functions {
         protected override Val OnCall(EvalContext e, Val[] args) {
             var strArgs = new string[args.Length];
             for (int i = 0; i < args.Length; i++) {
-                strArgs[i] = args[i].AsReal.ToString();
+                strArgs[i] = args[i].AsDecimal.ToString();
             }
 
             var sf = Settings.Instance.GetScriptFilterFromPath(Path);

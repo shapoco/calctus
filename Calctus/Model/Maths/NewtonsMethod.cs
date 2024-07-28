@@ -10,7 +10,7 @@ using Shapoco.Calctus.Model.Types;
 using Shapoco.Calctus.Model.Functions;
 using Shapoco.Calctus.Model.Formats;
 
-namespace Shapoco.Calctus.Model.Mathematics {
+namespace Shapoco.Calctus.Model.Maths {
     class NewtonsMethod {
         public const decimal HMin = 1e-18m;
         public const decimal TolMin = 1e-23m;
@@ -46,8 +46,8 @@ namespace Shapoco.Calctus.Model.Mathematics {
             }
             else if (paramVal0 != null && paramVal1 != null) {
                 // 解の範囲が指定された場合
-                xMin = paramVal0.AsReal;
-                xMax = paramVal1.AsReal;
+                xMin = paramVal0.AsDecimal;
+                xMax = paramVal1.AsDecimal;
                 var cands = generateInitCandidates(scope, f, xMin, xMax);
                 inits = filterInitCandidates(cands);
                 determineHTol(xMin, xMax, out h, out tol);
@@ -57,7 +57,7 @@ namespace Shapoco.Calctus.Model.Mathematics {
                 inits = new List<decimal>();
                 if (paramVal0 is ArrayVal) {
                     // 配列で指定された場合
-                    foreach (var val in paramVal0.AsRealArray) {
+                    foreach (var val in paramVal0.AsDecimalArray) {
                         inits.Add(val);
                     }
                     var paramValArray = (Val[])paramVal0.Raw;
@@ -67,7 +67,7 @@ namespace Shapoco.Calctus.Model.Mathematics {
                 }
                 else {
                     // スカラ値で指定された場合
-                    inits.Add(paramVal0.AsReal);
+                    inits.Add(paramVal0.AsDecimal);
                     formatHint = paramVal0.FormatHint;
                 }
                 determineHTol(inits, out h, out tol);
@@ -244,7 +244,7 @@ namespace Shapoco.Calctus.Model.Mathematics {
 
         /// <summary>方程式を評価する</summary>
         private static decimal evalEquation(EvalContext e, FuncDef func, decimal x) {
-            return func.Call(e, new RealVal(x)).AsReal;
+            return func.Call(e, new RealVal(x)).AsDecimal;
         }
 
         /// <summary>近接する解をまとめて平均をとる</summary>

@@ -6,7 +6,7 @@ using System.Threading.Tasks;
 using System.Text.RegularExpressions;
 using Shapoco.Calctus.Model.Types;
 using Shapoco.Calctus.Model.Parsers;
-using Shapoco.Calctus.Model.Mathematics;
+using Shapoco.Calctus.Model.Maths;
 using Shapoco.Calctus.Model.Evaluations;
 
 namespace Shapoco.Calctus.Model.Formats {
@@ -44,7 +44,7 @@ namespace Shapoco.Calctus.Model.Formats {
                 return StringFormat.FormatAsStringLiteral(val.AsString);
             }
             else {
-                return RealFormat.RealToString(val.AsReal, fs, true);
+                return RealFormat.RealToString(val.AsDecimal, fs, true);
             }
         }
 

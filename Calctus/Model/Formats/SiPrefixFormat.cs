@@ -6,7 +6,8 @@ using System.Text;
 using System.Threading.Tasks;
 using System.Text.RegularExpressions;
 using Shapoco.Calctus.Model.Types;
-using Shapoco.Calctus.Model.Mathematics;
+using Shapoco.Calctus.Model.Maths;
+using Shapoco.Calctus.Model.Maths.Types;
 using Shapoco.Calctus.Model.Evaluations;
 
 namespace Shapoco.Calctus.Model.Formats {
@@ -39,7 +40,7 @@ namespace Shapoco.Calctus.Model.Formats {
         }
 
         private static void extractMatch(Match m, out decimal frac, out int prefixIndex) {
-            frac = real.Parse(m.Groups["frac"].Value);
+            frac = DMath.Parse(m.Groups["frac"].Value);
             int i = Prefixes.IndexOf(m.Groups["prefix"].Value);
             System.Diagnostics.Debug.Assert(i >= 0);
             prefixIndex = i - PrefixIndexOffset;
@@ -56,15 +57,15 @@ namespace Shapoco.Calctus.Model.Formats {
         protected override Val OnParse(Match m) {
             extractMatch(m, out var frac, out var prefixIndex);
             var exp = prefixIndex * 3;
-            return new RealVal(frac * RMath.Pow10(exp) , new FormatHint(this));
+            return new RealVal(frac * DMath.Pow10(exp) , new FormatHint(this));
         }
 
         protected override string OnFormat(Val val, FormatSettings fs) {
             if (val is RealVal) {
-                var r = val.AsReal;
+                var r = val.AsDecimal;
                 int prefixIndex = 0;
                 if (r != 0) {
-                    prefixIndex = (int)RMath.Floor(RMath.Log10(RMath.Abs(r)) / 3);
+                    prefixIndex = (int)Math.Floor(DMath.Log10(Math.Abs(r)) / 3);
                 }
                 if (prefixIndex < MinPrefixIndex) {
                     prefixIndex = MinPrefixIndex;
@@ -73,7 +74,7 @@ namespace Shapoco.Calctus.Model.Formats {
                     prefixIndex = MaxPrefixIndex;
                 }
                 var exp = prefixIndex * 3;
-                var frac = r / RMath.Pow10(exp);
+                var frac = r / DMath.Pow10(exp);
                 if (prefixIndex == 0) {
                     return RealFormat.RealToString(frac, fs, false);
                 }

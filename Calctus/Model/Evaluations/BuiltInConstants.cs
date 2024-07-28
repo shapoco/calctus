@@ -5,24 +5,25 @@ using System.Text;
 using System.Threading.Tasks;
 using Shapoco.Calctus.Model.Types;
 using Shapoco.Calctus.Model.Parsers;
-using Shapoco.Calctus.Model.Mathematics;
+using Shapoco.Calctus.Model.Maths;
 using Shapoco.Calctus.Model.Graphs;
 using Shapoco.Calctus.Model.Functions;
 using Shapoco.Calctus.Model.Formats;
+using Shapoco.Calctus.Model.Maths.Types; 
 
 namespace Shapoco.Calctus.Model.Evaluations {
     static class BuiltInConstants {
         private static Var constVar(string name, Val val, string desc)
             => new Var(new Token(TokenType.Word, TextPosition.Nowhere, name), val, true, desc);
 
-        private static Var constVarReal(string name, real value, string desc)
+        private static Var constVarReal(string name, decimal value, string desc)
             => constVar(name, value.ToRealVal(), desc);
 
-        private static Var constVarHex(string name, real value, string desc)
+        private static Var constVarHex(string name, decimal value, string desc)
             => constVar(name, value.ToHexVal(), desc);
 
-        public static readonly Var PI = constVarReal("PI", RMath.PI, "Circle ratio");
-        public static readonly Var E = constVarReal("E", RMath.E, "Base of natural logarithm");
+        public static readonly Var PI = constVarReal("PI", DMath.PI, "Circle ratio");
+        public static readonly Var E = constVarReal("E", DMath.E, "Base of natural logarithm");
         public static readonly Var IntMin = constVarHex("INT_MIN", Int32.MinValue, "Minimum value of 32 bit signed integer");
         public static readonly Var IntMax = constVarHex("INT_MAX", Int32.MaxValue, "Maximum value of 32 bit signed integer");
         public static readonly Var UIntMin = constVarHex("UINT_MIN", UInt32.MinValue, "Minimum value of 32 bit unsigned integer");
@@ -31,8 +32,8 @@ namespace Shapoco.Calctus.Model.Evaluations {
         public static readonly Var LongMax = constVarHex("LONG_MAX", Int64.MaxValue, "Maximum value of 64 bit signed integer");
         public static readonly Var ULongMin = constVarHex("ULONG_MIN", UInt64.MinValue, "Minimum value of 64 bit unsigned integer");
         public static readonly Var ULongMax = constVarHex("ULONG_MAX", UInt64.MaxValue, "Maximum value of 64 bit unsigned integer");
-        public static readonly Var DecimalMin = constVarReal("DECIMAL_MIN", real.MinValue, "Minimum value of Decimal");
-        public static readonly Var DecimalMax = constVarReal("DECIMAL_MAX", real.MaxValue, "Maximum value of Decimal");
+        public static readonly Var DecimalMin = constVarReal("DECIMAL_MIN", decimal.MinValue, "Minimum value of Decimal");
+        public static readonly Var DecimalMax = constVarReal("DECIMAL_MAX", decimal.MaxValue, "Maximum value of Decimal");
 
         public static readonly Var Weekdays = constVar("WEEKDAYS", new ArrayVal(RealVal.Weekdays), "Array of weekday values");
 

@@ -347,28 +347,28 @@ Returns day of year of datetime, expressed as 1..366.
 Converts from days to epoch time.
 
 ```
-fromDays(123.45) //--> #+123.10:48:00#
+fromDays(123.45) //--> #+123.10:48:00.000#
 ```
 ### `fromHours(*x)`
 
 Converts from hours to epoch time.
 
 ```
-fromHours(123.45) //--> #+5.3:27:00#
+fromHours(123.45) //--> #+5.3:27:00.000#
 ```
 ### `fromMinutes(*x)`
 
 Converts from minutes to epoch time.
 
 ```
-fromMinutes(123.45) //--> #+2:03:27#
+fromMinutes(123.45) //--> #+2:03:27.000#
 ```
 ### `fromSeconds(*x)`
 
 Converts from seconds to epoch time.
 
 ```
-fromSeconds(123.45) //--> #+0:02:03.450#
+fromSeconds(123.45) //--> #+0:02:03#
 ```
 ### `hourOf(*t)`
 

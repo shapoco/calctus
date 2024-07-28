@@ -4,8 +4,11 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 using Shapoco.Calctus.Model.Types;
+using Shapoco.Calctus.Model.Maths.Types;
 
-namespace Shapoco.Calctus.Model.Mathematics {
+namespace Shapoco.Calctus.Model.Maths {
+    // todo Delete
+    [Obsolete("Deprecated", false)]
     static class QMath {
         public static quad Log2(quad a) {
             if (a <= 0) throw new ArgumentOutOfRangeException();

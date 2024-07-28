@@ -6,7 +6,7 @@ using System.Threading.Tasks;
 using System.Windows.Forms;
 using System.Drawing;
 using Shapoco.Calctus.Model.Sheets;
-using Shapoco.Calctus.Model.Mathematics;
+using Shapoco.Calctus.Model.Maths;
 using Shapoco.Calctus.Model.Graphs;
 using Shapoco.Calctus.Model.Evaluations;
 using Shapoco.Calctus.Model.Types;
@@ -205,7 +205,7 @@ namespace Shapoco.Calctus.UI {
         private void zoom(AxisSettings axis, int offset, int size, int px, int delta) {
             try {
                 var ps = PlotSettings;
-                var flog10 = RMath.FLog10Abs(axis.PosRange);
+                var flog10 = DMath.FLog10Abs(axis.PosRange);
                 var scale = Math.Max(0.5f, 1f - (float)delta / 1000);
                 if ((flog10 > 24 && scale > 1) || (flog10 < -24 && scale < 1)) return;
                 var graphArea = getGraphArea();
@@ -363,7 +363,7 @@ namespace Shapoco.Calctus.UI {
 
                     // X座標
                     var valX = ps.XAxis.PosToValue(posX);
-                    var textX = siPrefix(valX, RMath.FLog10Abs(valX), 3);
+                    var textX = siPrefix(valX, DMath.FLog10Abs(valX), 3);
                     paintBalloon(g, textX, px, graphArea.Bottom, textColor, backColor);
 
                     // Y座標
@@ -372,9 +372,9 @@ namespace Shapoco.Calctus.UI {
                         foreach(var graph in graphs) {
                             try {
                                 var e = new EvalContext(graph.Call.Context);
-                                var valY = graph.Call.Function.Call(e, new RealVal(valX)).AsReal;
+                                var valY = graph.Call.Function.Call(e, new RealVal(valX)).AsDecimal;
                                 if (project(ps.YAxis, valY, graphArea.Bottom, -graphArea.Height, out float py)) {
-                                    var textY = siPrefix(valY, RMath.FLog10Abs(valY), 3);
+                                    var textY = siPrefix(valY, DMath.FLog10Abs(valY), 3);
                                     paintBalloon(g, textY, px, py, palette[colorIndex], backColor);
                                 }
                             }
@@ -422,14 +422,14 @@ namespace Shapoco.Calctus.UI {
                         // 目盛りの間隔
                         var range = axis.PosRange;
                         var max = axis.PosBottom + range;
-                        var step = RMath.Pow10(RMath.Ceiling(RMath.Log10(range)) - 1);
+                        var step = DMath.Pow10(Math.Ceiling(DMath.Log10(range)) - 1);
                         if (step * 2 > range) step /= 10;
                         else if (step * 4 > range) step /= 5;
                         else if (step * 8 > range) step /= 2;
 
                         // 目盛りの桁数
-                        var flog10 = RMath.FLog10Abs(Math.Max(Math.Abs(axis.PosBottom), Math.Abs(max)));
-                        var logStep = (int)RMath.Floor(RMath.Log10(step));
+                        var flog10 = DMath.FLog10Abs(Math.Max(Math.Abs(axis.PosBottom), Math.Abs(max)));
+                        var logStep = (int)Math.Floor(DMath.Log10(step));
                         var fracDigits = Math.Max(0, (int)Math.Floor((double)flog10 / 3) * 3 - logStep);
 
                         // 目盛りの生成
@@ -457,13 +457,13 @@ namespace Shapoco.Calctus.UI {
                         // 目盛りの生成
                         var lines = new List<Gridline>();
                         for (var exp = expStart; exp <= expEnd; exp++) {
-                            var valStep = RMath.Pow10(exp);
+                            var valStep = DMath.Pow10(exp);
                             for (var sub = 0; sub < subNum; sub++) {
                                 var val = valStep * (1 + (decimal)sub * 10 / subDiv);
-                                var pos = RMath.Log10(val);
+                                var pos = DMath.Log10(val);
                                 if (axis.PosBottom <= pos && pos <= axis.PosTop) {
                                     bool isSub = (sub % 10 != 0);
-                                    var text = isSub ? null : siPrefix(val, RMath.FLog10Abs(val), 0);
+                                    var text = isSub ? null : siPrefix(val, DMath.FLog10Abs(val), 0);
                                     lines.Add(new Gridline(val, text, isSub));
                                 }
                             }
@@ -523,7 +523,7 @@ namespace Shapoco.Calctus.UI {
                 prefixIndex = prefixes.Length - 1;
             }
             var exp = (prefixIndex - prefixOffset) * 3;
-            var frac = (decimal)(r / RMath.Pow10(exp));
+            var frac = (decimal)(r / DMath.Pow10(exp));
             var format = new StringBuilder();
             format.Append("0.");
             if (fracDigits == 0) {

@@ -4,7 +4,8 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 using Shapoco.Calctus.Model.Types;
-using Shapoco.Calctus.Model.Mathematics;
+using Shapoco.Calctus.Model.Maths;
+using Shapoco.Calctus.Model.Maths.Types;
 using Shapoco.Calctus.Model.Parsers;
 using Shapoco.Calctus.Model.Evaluations;
 using Shapoco.Calctus.Model.Formats;
@@ -21,11 +22,11 @@ namespace Shapoco.Calctus.Model.Functions.BuiltIns {
 
         public readonly BuiltInFuncDef rat_1 = new BuiltInFuncDef("rat(*x)",
             "Rational fraction approximation of `x`.",
-            (e, a) => RMath.FindFrac(a[0].AsReal).ToFracVal());
+            (e, a) => FMath.FindFrac(a[0].AsDecimal).ToFracVal());
 
         public readonly BuiltInFuncDef rat_2 = new BuiltInFuncDef("rat(*x, max)",
             "Rational fraction approximation of `x`.",
-            (e, a) => RMath.FindFrac(a[0].AsReal, a[1].AsReal, a[1].AsReal).ToFracVal());
+            (e, a) => FMath.FindFrac(a[0].AsDecimal, a[1].AsDecimal, a[1].AsDecimal).ToFracVal());
 
         public readonly BuiltInFuncDef array = new BuiltInFuncDef("array(s)",
             "Converts string `s` to an array of character code.",

@@ -174,7 +174,7 @@ namespace Shapoco.Calctus.UI {
                             str = DateTimeFormat.FormatAsStringLiteral(DateTime.Parse(str.Trim()));
                             break;
                         case ValuePickupFormatting.RelativeTime:
-                            str = RelativeTimeFormat.FormatAsStringLiteral((real)TimeSpan.Parse(str.Trim()).TotalSeconds);
+                            str = RelativeTimeFormat.FormatAsStringLiteral((decimal)TimeSpan.Parse(str.Trim()).TotalSeconds);
                             break;
                         default:
                             throw new NotImplementedException();

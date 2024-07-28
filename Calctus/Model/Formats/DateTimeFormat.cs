@@ -8,7 +8,8 @@ using System.Globalization;
 using Shapoco.Calctus.Model.Standards;
 using Shapoco.Calctus.Model.Types;
 using Shapoco.Calctus.Model.Parsers;
-using Shapoco.Calctus.Model.Mathematics;
+using Shapoco.Calctus.Model.Maths;
+using Shapoco.Calctus.Model.Maths.Types;
 
 namespace Shapoco.Calctus.Model.Formats {
     class DateTimeFormat : ValFormat {
@@ -30,7 +31,7 @@ namespace Shapoco.Calctus.Model.Formats {
                 return base.OnFormat(val, fs);
             }
 
-            var fval = val.AsReal;
+            var fval = val.AsDecimal;
             if (fval < ulong.MinValue || ulong.MaxValue < fval) {
                 // ulongの範囲外の値はデフォルトの数値表現を使用
                 return base.OnFormat(val, fs);
@@ -41,7 +42,7 @@ namespace Shapoco.Calctus.Model.Formats {
             }
         }
 
-        public static string FormatAsStringLiteral(real unixTime) {
+        public static string FormatAsStringLiteral(decimal unixTime) {
             return FormatAsStringLiteral(UnixTime.ToLocalTime(unixTime));
         }
         

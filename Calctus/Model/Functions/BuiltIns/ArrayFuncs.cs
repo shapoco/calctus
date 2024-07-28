@@ -4,7 +4,7 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 using Shapoco.Calctus.Model.Types;
-using Shapoco.Calctus.Model.Mathematics;
+using Shapoco.Calctus.Model.Maths;
 using Shapoco.Calctus.Model.Evaluations;
 
 namespace Shapoco.Calctus.Model.Functions.BuiltIns {
@@ -22,22 +22,22 @@ namespace Shapoco.Calctus.Model.Functions.BuiltIns {
 
         public readonly BuiltInFuncDef range_2 = new BuiltInFuncDef("range(start, stop)",
             "Returns an array consists of sequence of numbers greater than or equal to `start` and less than `stop`.",
-            (e, a) => RMath.Range(a[0].AsReal, a[1].AsReal, 0, false).ToArrayVal(a[0].FormatHint, null),
+            (e, a) => DMath.Range(a[0].AsDecimal, a[1].AsDecimal, 0, false).ToArrayVal(a[0].FormatHint, null),
             new FuncTest("3,9", "[3,4,5,6,7,8]"));
 
         public readonly BuiltInFuncDef range_3 = new BuiltInFuncDef("range(start, stop, step)",
             "Returns an array consists of sequence of numbers greater than or equal to `start` and less than `stop` with common difference `step`.",
-            (e, a) => RMath.Range(a[0].AsReal, a[1].AsReal, a[2].AsReal, false).ToArrayVal(a[0].FormatHint, null),
+            (e, a) => DMath.Range(a[0].AsDecimal, a[1].AsDecimal, a[2].AsDecimal, false).ToArrayVal(a[0].FormatHint, null),
             new FuncTest("3,9,2", "[3,5,7]"));
 
         public readonly BuiltInFuncDef rangeInclusive_2 = new BuiltInFuncDef("rangeInclusive(start, stop)",
             "Returns an array consists of sequence of numbers greater than or equal to `start` and less than or equal to `stop`.",
-            (e, a) => RMath.Range(a[0].AsReal, a[1].AsReal, 0, true).ToArrayVal(a[0].FormatHint, null),
+            (e, a) => DMath.Range(a[0].AsDecimal, a[1].AsDecimal, 0, true).ToArrayVal(a[0].FormatHint, null),
             new FuncTest("3,9", "[3,4,5,6,7,8,9]"));
 
         public readonly BuiltInFuncDef rangeInclusive_3 = new BuiltInFuncDef("rangeInclusive(start, stop, step)",
             "Returns an array consists of sequence of numbers greater than or equal to `start` and less than or equal to `stop` with common difference `step`.",
-            (e, a) => RMath.Range(a[0].AsReal, a[1].AsReal, a[2].AsReal, true).ToArrayVal(a[0].FormatHint, null),
+            (e, a) => DMath.Range(a[0].AsDecimal, a[1].AsDecimal, a[2].AsDecimal, true).ToArrayVal(a[0].FormatHint, null),
             new FuncTest("3,9,2", "[3,5,7,9]"));
 
         public readonly BuiltInFuncDef reverseArray = new BuiltInFuncDef("reverseArray(array@)",
@@ -85,7 +85,7 @@ namespace Shapoco.Calctus.Model.Functions.BuiltIns {
             (e, a) => {
                 var array = (Val[])a[0].AsArrayVal().Raw;
                 var func = (FuncDef)a[1].Raw;
-                return new ArrayVal(array.OrderBy(p => func.Call(e, p).AsReal).ToArray(), a[0].FormatHint);
+                return new ArrayVal(array.OrderBy(p => func.Call(e, p).AsDecimal).ToArray(), a[0].FormatHint);
             });
 
         public readonly BuiltInFuncDef extend = new BuiltInFuncDef("extend(array,func,count)",
@@ -94,9 +94,9 @@ namespace Shapoco.Calctus.Model.Functions.BuiltIns {
                 var seedArray = a[0].AsArrayVal();
                 var list = ((Val[])seedArray.Raw).ToList();
                 var func = (FuncDef)a[1].Raw;
-                var countReal = a[2].AsReal;
-                if (!RMath.IsInteger(countReal) || countReal <= 0) throw new ArgumentOutOfRangeException();
-                int count = (int)countReal;
+                var countDecimal = a[2].AsDecimal;
+                if (!countDecimal.IsInteger() || countDecimal <= 0) throw new ArgumentOutOfRangeException();
+                int count = (int)countDecimal;
                 ArrayVal.CheckArrayLength(list.Count + count);
                 for (int i = 0; i < count; i++) {
                     list.Add(func.Call(e, new ArrayVal(list.ToArray())));

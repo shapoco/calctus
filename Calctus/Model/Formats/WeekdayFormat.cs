@@ -31,7 +31,7 @@ namespace Shapoco.Calctus.Model.Formats {
                 return base.OnFormat(val, fs);
             }
 
-            var fval = val.AsReal;
+            var fval = val.AsDecimal;
             if (!val.IsInteger || fval < RealVal.WeekdayMin || RealVal.WeekdayMax < fval) {
                 // 範囲外の値はデフォルトの数値表現を使用
                 return base.OnFormat(val, fs);

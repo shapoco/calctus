@@ -3,27 +3,22 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
+using Shapoco.Calctus.Model.Maths.Types;
 using Shapoco.Calctus.Model.Formats;
 using Shapoco.Calctus.Model.Evaluations;
 using Shapoco.Calctus.Model.Functions;
 using Shapoco.Calctus.Model.Parsers;
 
 namespace Shapoco.Calctus.Model.Types {
-    class FuncVal : Val {
-
-        private FuncDef _raw;
-        public FuncVal(FuncDef val, FormatHint fmt = null) : base(fmt) {
-            this._raw = val;
-        }
-
-        public override object Raw => _raw;
+    class FuncVal : ValBase<FuncDef> {
+        public FuncVal(FuncDef val, FormatHint fmt = null) : base(val, fmt) { }
 
         public override bool IsScalar => false;
         public override bool IsInteger => false;
 
         public override bool IsSerializable => false;
 
-        public override real AsReal => throw new InvalidCastException();
+        public override decimal AsDecimal => throw new InvalidCastException();
         public override frac AsFrac => throw new InvalidCastException();
         public override double AsDouble => throw new InvalidCastException();
         public override long AsLong => throw new InvalidCastException();
@@ -33,7 +28,7 @@ namespace Shapoco.Calctus.Model.Types {
         public override bool AsBool => throw new InvalidCastException();
         public override string AsString => throw new InvalidCastException();
 
-        public override real[] AsRealArray => throw new InvalidCastException();
+        public override decimal[] AsDecimalArray => throw new InvalidCastException();
         public override long[] AsLongArray => throw new InvalidCastException();
         public override int[] AsIntArray => throw new InvalidCastException();
         public override byte[] AsByteArray => throw new InvalidCastException();

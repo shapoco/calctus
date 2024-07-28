@@ -6,7 +6,7 @@ using System.Threading.Tasks;
 using System.Drawing;
 using Shapoco.Calctus.Model.Types;
 using Shapoco.Calctus.Model.Evaluations;
-using Shapoco.Calctus.Model.Mathematics;
+using Shapoco.Calctus.Model.Maths;
 
 namespace Shapoco.Calctus.Model.Graphs {
     class Graph {
@@ -31,7 +31,7 @@ namespace Shapoco.Calctus.Model.Graphs {
                 try {
                     var xPos = ps.XAxis.PosBottom + ps.XAxis.PosRange * ((decimal)i / ps.NumSamples);
                     x = ps.XAxis.PosToValue(xPos);
-                    y = call.Function.Call(call.Context, new RealVal(x)).AsReal;
+                    y = call.Function.Call(call.Context, new RealVal(x)).AsDecimal;
                     success = true;
                 }
                 catch { }

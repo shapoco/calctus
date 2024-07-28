@@ -5,8 +5,9 @@ using System.Text;
 using System.Text.RegularExpressions;
 using System.Threading.Tasks;
 using Shapoco.Calctus.Model.Types;
-using Shapoco.Calctus.Model.Mathematics;
+using Shapoco.Calctus.Model.Maths;
 using Shapoco.Calctus.Model.Parsers;
+using Shapoco.Calctus.Model.Maths.Types;
 
 namespace Shapoco.Calctus.Model.Formats {
     class RealFormat : ValFormat {
@@ -18,19 +19,19 @@ namespace Shapoco.Calctus.Model.Formats {
         private RealFormat() : base(TokenType.NumericLiteral, pattern, FormatPriority.Weak) { }
 
         protected override Val OnParse(Match m) {
-            return new RealVal(real.Parse(m.Value), new FormatHint(this));
+            return new RealVal(DMath.Parse(m.Value), new FormatHint(this));
         }
 
         protected override string OnFormat(Val val, FormatSettings fs) {
             if (val is RealVal) {
-                return RealToString(val.AsReal, fs, true);
+                return RealToString(val.AsDecimal, fs, true);
             }
             else {
                 return base.OnFormat(val, fs);
             }
         }
 
-        public static string RealToString(real val, FormatSettings fs, bool allowENotation) {
+        public static string RealToString(decimal val, FormatSettings fs, bool allowENotation) {
             if (val == 0.0m) return "0";
 
             var sbDecFormat = new StringBuilder("0.");
@@ -39,19 +40,19 @@ namespace Shapoco.Calctus.Model.Formats {
             }
             var decFormat = sbDecFormat.ToString();
 
-            int exp = RMath.FLog10Abs(val);
+            int exp = DMath.FLog10Abs(val);
             if (allowENotation && fs.ENotationEnabled && exp >= fs.ENotationExpPositiveMin) {
                 if (fs.ENotationAlignment) {
                     exp = (int)Math.Floor((double)exp / 3) * 3;
                 }
-                var frac = val / RMath.Pow10(exp);
+                var frac = val / DMath.Pow10(exp);
                 return frac.ToString(decFormat) + "e" + exp;
             }
             else if (allowENotation && fs.ENotationEnabled && exp <= fs.ENotationExpNegativeMax) {
                 if (fs.ENotationAlignment) {
                     exp = (int)Math.Floor((double)exp / 3) * 3;
                 }
-                var frac = val * RMath.Pow10(-exp);
+                var frac = val * DMath.Pow10(-exp);
                 return frac.ToString(decFormat) + "e" + exp;
             }
             else {

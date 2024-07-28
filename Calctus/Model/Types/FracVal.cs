@@ -4,34 +4,30 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
-using Shapoco.Calctus.Model.Mathematics;
+using Shapoco.Calctus.Model.Maths;
 using Shapoco.Calctus.Model.Evaluations;
+using Shapoco.Calctus.Model.Maths.Types;
 
 namespace Shapoco.Calctus.Model.Types {
-    class FracVal : Val {
+    class FracVal : ValBase<frac> {
 
-        private frac _raw;
-        public FracVal(frac val, FormatHint fmt = null) : base(fmt) {
-            this._raw = val;
-        }
-
-        public override object Raw => _raw;
+        public FracVal(frac val, FormatHint fmt = null) : base(val,fmt) { }
 
         public override bool IsScalar => true;
         public override bool IsInteger => false;
 
         public override bool IsSerializable => true;
 
-        public override real AsReal => (real)_raw;
+        public override decimal AsDecimal => (decimal)_raw;
         public override frac AsFrac => _raw;
         public override double AsDouble => (double)_raw;
-        public override long AsLong => RMath.ToLong((real)_raw);
-        public override int AsInt => RMath.ToInt((real)_raw);
-        public override char AsChar => RMath.ToChar((real)_raw);
-        public override byte AsByte => RMath.ToByte((real)_raw);
+        public override long AsLong => DMath.ToLong((decimal)_raw);
+        public override int AsInt => DMath.ToInt((decimal)_raw);
+        public override char AsChar => DMath.ToChar((decimal)_raw);
+        public override byte AsByte => DMath.ToByte((decimal)_raw);
         public override bool AsBool => throw new InvalidCastException();
 
-        public override real[] AsRealArray => new real[] { (real)_raw };
+        public override decimal[] AsDecimalArray => new decimal[] { (decimal)_raw };
         public override long[] AsLongArray => new long[] { (long)_raw };
         public override int[] AsIntArray => new int[] { (int)_raw };
         public override byte[] AsByteArray => new byte[] { (byte)_raw };
@@ -47,21 +43,21 @@ namespace Shapoco.Calctus.Model.Types {
             }
         }
 
-        protected override RealVal OnAsRealVal() => new RealVal((real)_raw, FormatHint);
+        protected override RealVal OnAsRealVal() => new RealVal((decimal)_raw, FormatHint);
 
         protected override Val OnAdd(EvalContext ctx, Val b) => Normalize(_raw + b.AsFrac, FormatHint);
         protected override Val OnSub(EvalContext ctx, Val b) => Normalize(_raw - b.AsFrac, FormatHint);
         protected override Val OnMul(EvalContext ctx, Val b) => Normalize(_raw * b.AsFrac, FormatHint);
         protected override Val OnDiv(EvalContext ctx, Val b) => Normalize(_raw / b.AsFrac, FormatHint);
 
-        protected override Val OnIDiv(EvalContext ctx, Val b) => new RealVal(RMath.Truncate((real)_raw / b.AsReal), FormatHint);
-        protected override Val OnMod(EvalContext ctx, Val b) => new RealVal((real)_raw % b.AsReal, FormatHint);
+        protected override Val OnIDiv(EvalContext ctx, Val b) => new RealVal(Math.Truncate((decimal)_raw / b.AsDecimal), FormatHint);
+        protected override Val OnMod(EvalContext ctx, Val b) => new RealVal((decimal)_raw % b.AsDecimal, FormatHint);
 
         protected override Val OnUnaryPlus(EvalContext ctx) => this;
         protected override Val OnAtirhInv(EvalContext ctx) => Normalize(-_raw, FormatHint);
 
-        protected override Val OnGrater(EvalContext ctx, Val b) => BoolVal.FromBool(AsReal > b.AsReal);
-        protected override Val OnEqual(EvalContext ctx, Val b) => BoolVal.FromBool(AsReal == b.AsReal);
+        protected override Val OnGrater(EvalContext ctx, Val b) => BoolVal.FromBool(AsDecimal > b.AsDecimal);
+        protected override Val OnEqual(EvalContext ctx, Val b) => BoolVal.FromBool(AsDecimal == b.AsDecimal);
 
         protected override Val OnBitNot(EvalContext ctx) => new RealVal(~this.AsLong, FormatHint);
         protected override Val OnBitAnd(EvalContext ctx, Val b) => new RealVal(this.AsLong & b.AsLong, FormatHint);
