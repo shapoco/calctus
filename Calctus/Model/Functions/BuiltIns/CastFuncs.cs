@@ -3,9 +3,8 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
-using Shapoco.Calctus.Model.Types;
+using Shapoco.Calctus.Model.Values;
 using Shapoco.Calctus.Model.Maths;
-using Shapoco.Calctus.Model.Maths.Types;
 using Shapoco.Calctus.Model.Parsers;
 using Shapoco.Calctus.Model.Evaluations;
 using Shapoco.Calctus.Model.Formats;
@@ -18,47 +17,25 @@ namespace Shapoco.Calctus.Model.Functions.BuiltIns {
 
         public readonly BuiltInFuncDef real = new BuiltInFuncDef("real(*x)",
             "Converts the `x` to a real number.",
-            (e, a) => a[0].AsRealVal().Format(FormatHint.CStyleReal));
+            (e, a) => a[0].AsRealVal());
 
         public readonly BuiltInFuncDef rat_1 = new BuiltInFuncDef("rat(*x)",
             "Rational fraction approximation of `x`.",
-            (e, a) => FracMath.FindFrac(a[0].AsDecimal).ToFracVal());
+            (e, a) => FracMath.FindFrac(a[0].AsDecimal).ToVal());
 
         public readonly BuiltInFuncDef rat_2 = new BuiltInFuncDef("rat(*x, max)",
             "Rational fraction approximation of `x`.",
-            (e, a) => FracMath.FindFrac(a[0].AsDecimal, a[1].AsDecimal, a[1].AsDecimal).ToFracVal());
+            (e, a) => FracMath.FindFrac(a[0].AsDecimal, a[1].AsDecimal, a[1].AsDecimal).ToVal());
 
-        public readonly BuiltInFuncDef array = new BuiltInFuncDef("array(s)",
-            "Converts string `s` to an array of character code.",
-            (e, a) => {
-                if (a[0] is StrVal strVal) {
-                    return strVal.AsArrayVal();
-                }
-                else if (a[0] is ArrayVal) {
-                    return a[0];
-                }
-                else {
-                    throw new EvalError(e, Token.Empty, "Value is not string or array.");
-                }
-            });
+        public readonly BuiltInFuncDef array = new BuiltInFuncDef("array(x)",
+            "Converts value `x` to an list.",
+            (e, a) => a[0].ToCollectionVal().ToListVal(),
+            new FuncTest("[1,2,3]", "[1,2,3]"),
+            new FuncTest("\"abc\"", "['a', 'b', 'c']"));
 
         public readonly BuiltInFuncDef str = new BuiltInFuncDef("str(x)",
             "Converts `x` to a string.",
-            (e, a) => {
-                if (a[0] is ArrayVal arrayVal) {
-                    var vals = (Val[])arrayVal.Raw;
-                    var sb = new StringBuilder();
-                    foreach (var val in vals) {
-                        sb.Append(val.AsChar);
-                    }
-                    return new StrVal(sb.ToString());
-                }
-                else if (a[0] is StrVal) {
-                    return a[0];
-                }
-                else {
-                    return new StrVal(a[0].AsString);
-                }
-            });
+            (e, a) => a[0].ToStringForValue(e).ToVal());
+    
     }
 }

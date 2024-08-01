@@ -10,12 +10,12 @@ using Shapoco.Calctus.Model;
 using Shapoco.Calctus.Model.Sheets;
 using Shapoco.Calctus.Model.Functions;
 using Shapoco.Calctus.Model.Functions.BuiltIns;
-using Shapoco.Calctus.Model.Types;
+using Shapoco.Calctus.Model.Values;
 
 namespace Shapoco.Calctus.UI.Sheets {
     class SheetViewItem : GdiBox, IDisposable {
-        private static readonly char[] _selectionCancelChars = OpDef.AllOperatorSymbols
-                .Select(p => p[0])
+        private static readonly char[] _selectionCancelChars = OpInfo.Items
+                .Select(p => p.Symbol[0])
                 .Distinct()
                 .ToArray();
 

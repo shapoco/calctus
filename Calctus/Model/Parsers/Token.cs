@@ -3,7 +3,7 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
-using Shapoco.Calctus.Model.Types;
+using Shapoco.Calctus.Model.Values;
 
 namespace Shapoco.Calctus.Model.Parsers {
     class Token {
@@ -14,13 +14,11 @@ namespace Shapoco.Calctus.Model.Parsers {
         public readonly TokenType Type;
         public readonly TextPosition Position;
         public readonly string Text;
-        public readonly object Hint;
 
-        public Token(TokenType t, TextPosition pos, string text, object hint = null) {
+        public Token(TokenType t, TextPosition pos, string text) {
             this.Type = t;
             this.Position = pos;
             this.Text = text;
-            this.Hint = hint;
         }
 
         public override string ToString() {
@@ -32,6 +30,6 @@ namespace Shapoco.Calctus.Model.Parsers {
             }
         }
 
-        public static Token FromWord(string s) => new Token(TokenType.Word, TextPosition.Nowhere, s);
+        public static Token FromWord(string s) => new Token(TokenType.Identifier, TextPosition.Nowhere, s);
     }
 }

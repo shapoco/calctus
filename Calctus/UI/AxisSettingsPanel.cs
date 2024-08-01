@@ -8,7 +8,7 @@ using System.Windows.Forms;
 using System.Drawing;
 using Shapoco.Calctus.Model.Graphs;
 using Shapoco.Calctus.Model.Formats;
-using Shapoco.Calctus.Model.Types;
+using Shapoco.Calctus.Model.Values;
 
 namespace Shapoco.Calctus.UI {
     class AxisSettingsPanel : ContainerControl {
@@ -18,8 +18,8 @@ namespace Shapoco.Calctus.UI {
         private TextBox bottomValue = new TextBox();
         private AxisSettings _axisSettings;
         private bool _propChanging = false;
-        private FormatHint _topFormatHint = null;
-        private FormatHint _bottomFormatHint = null;
+        private FormatFlags _topFormatHint = FormatFlags.Default;
+        private FormatFlags _bottomFormatHint = FormatFlags.Default;
 
         public AxisSettingsPanel() {
             Label.Dock = DockStyle.Top;
@@ -105,9 +105,9 @@ namespace Shapoco.Calctus.UI {
             _propChanging = false;
         }
 
-        private decimal textToPos(string text, ref FormatHint formatHint) {
+        private decimal textToPos(string text, ref FormatFlags formatHint) {
             var val = Model.Parsers.Parser.Parse(text).Eval(new Model.Evaluations.EvalContext());
-            formatHint = val.FormatHint;
+            formatHint = val.FormatFlags;
             if (_axisSettings.ValueToPos(val.AsDecimal, out decimal pos)) {
                 return pos;
             }
@@ -129,11 +129,10 @@ namespace Shapoco.Calctus.UI {
             _propChanging = false;
         }
 
-        private void posToText(decimal pos, FormatHint formatHint, TextBox textBox) {
+        private void posToText(decimal pos, FormatFlags formatHint, TextBox textBox) {
             try {
                 Val val = new RealVal(_axisSettings.PosToValue(pos));
-                if (formatHint != null) val = val.Format(formatHint);
-                textBox.Text = val.ToString();
+                textBox.Text = val.Format(formatHint).ToString();
             }
             catch {
                 textBox.Text = "";

@@ -5,7 +5,7 @@ using System.Text;
 using System.Threading.Tasks;
 
 namespace Shapoco.Calctus.Model.Formats {
-    class FormatSettings {
+    class FormatSettings : ICloneable {
         public int DecimalLengthToDisplay { get; set; } = 9;
         public bool ENotationEnabled { get; set; } = true;
         public int ENotationExpPositiveMin { get; set; } = 15;
@@ -20,5 +20,7 @@ namespace Shapoco.Calctus.Model.Formats {
             ENotationExpNegativeMax = s.NumberFormat_Exp_NegativeMax;
             ENotationAlignment = s.NumberFormat_Exp_Alignment;
         }
+
+        public object Clone() => MemberwiseClone();
     }
 }

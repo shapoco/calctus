@@ -11,7 +11,7 @@ using Shapoco.Calctus.Model.Parsers;
 using Shapoco.Calctus.Model.Formats;
 using Shapoco.Calctus.Model.Expressions;
 using Shapoco.Calctus.Model.Evaluations;
-using Shapoco.Calctus.Model.Types;
+using Shapoco.Calctus.Model.Values;
 
 namespace Shapoco.Calctus.UI.Sheets {
     /// <summary>
@@ -64,29 +64,36 @@ namespace Shapoco.Calctus.UI.Sheets {
         public void Layout(string text) {
             var s = Settings.Instance;
 
-            try {
-                // 字句解析
-                _tokens = new Lexer(text).PopToEnd();
-
-                // 不足している括弧の補完
-                _tokens.CompleteParentheses();
-
+            if (text == null || text.Trim().Length == 0) {
+                _tokens = new TokenQueue();
+                _exprObj = Expr.Empty;
+                SyntaxError = LexerError.EmptyError;
+            }
+            else {
                 try {
-                    // 構文解析
-                    _exprObj = Parser.Parse((TokenQueue)_tokens.Clone());
-                    SyntaxError = null;
+                    // 字句解析
+                    _tokens = new Lexer(text).PopToEnd();
+
+                    // 不足している括弧の補完
+                    _tokens.CompleteParentheses();
+
+                    try {
+                        // 構文解析
+                        _exprObj = Parser.Parse((TokenQueue)_tokens.Clone());
+                        SyntaxError = null;
+                    }
+                    catch (Exception ex) {
+                        // 構文解析エラー
+                        _exprObj = Expr.Empty;
+                        SyntaxError = ex;
+                    }
                 }
                 catch (Exception ex) {
-                    // 構文解析エラー
+                    // 字句解析エラー
+                    _tokens = new TokenQueue();
                     _exprObj = Expr.Empty;
                     SyntaxError = ex;
                 }
-            }
-            catch (Exception ex) {
-                // 字句解析エラー
-                _tokens = new TokenQueue();
-                _exprObj = Expr.Empty;
-                SyntaxError = ex;
             }
 
             var font = _owner.Font;
@@ -95,7 +102,7 @@ namespace Shapoco.Calctus.UI.Sheets {
 
             // 自動桁区切り
             foreach (var t in _tokens) {
-                if (t.Type == TokenType.NumericLiteral) {
+                if (t.Type == TokenType.Literal) {
                     Match m;
                     if (s.NumberFormat_Separator_Hexadecimal && (m = HexBinOctPattern.Match(t.Text)).Success && !m.Value.Contains("_")) {
                         insertSeparators(t, m.Groups["hex"], 4, false);
@@ -166,45 +173,39 @@ namespace Shapoco.Calctus.UI.Sheets {
 
                 // トークン種別に応じた強調表示
                 switch (t.Type) {
-                    case TokenType.Word:
+                    case TokenType.Identifier:
                         // 識別子の強調表示
                         setForeColor(t, s.Appearance_Color_Identifiers);
                         break;
 
-                    case TokenType.SpecialLiteral:
-                        // 特殊リテラルの強調表示
-                        setForeColor(t, s.Appearance_Color_Special_Literals);
-                        break;
-
-                    case TokenType.NumericLiteral:
-                        if (t.Hint is LiteralTokenHint nth) {
-                            if (nth.Value.FormatHint.Format == ValFormat.SiPrefixed) {
-                                // SI接頭語の強調表示
-                                setForeColor(t.Position.Index + t.Text.Length - 1, 1, s.Appearance_Color_SI_Prefix);
+                    case TokenType.Literal:
+                        if (t is LiteralToken lt) {
+                            var fmt = lt.Value.FormatFlags;
+                            var style = fmt.GetStyle();
+                            if (lt.Value is BoolVal || style == FormatStyle.Character) {
+                                // BoolVal
+                                setForeColor(t, s.Appearance_Color_Special_Literals);
                             }
-                            else if (nth.Value.FormatHint.Format == ValFormat.BinaryPrefixed) {
-                                // 二進接頭語の強調表示
-                                setForeColor(t.Position.Index + t.Text.Length - 2, 2, s.Appearance_Color_SI_Prefix);
-                            }
-                            else if (nth.Value.FormatHint.Format == ValFormat.WebColor) {
+                            else if (fmt == FormatFlags.WebColor) {
                                 // WebColorの強調表示
-                                var back = Color.FromArgb((0xff << 24) | nth.Value.AsInt);
+                                var back = Color.FromArgb((0xff << 24) | lt.Value.AsInt);
                                 var gray = ColorUtils.GrayScale(back);
                                 var fore = gray.R < 128 ? Color.White : Color.Black;
                                 setBackColor(t, back);
                                 setForeColor(t, fore);
                             }
-                            else if (nth.Value.FormatHint.Format == ValFormat.CStyleChar) {
-                                // その他の特殊リテラルの強調表示
-                                setForeColor(t, s.Appearance_Color_Special_Literals);
+                            else if (lt.Value is RealVal && style != FormatStyle.DateTime && style != FormatStyle.TimeSpan) {
+                                var postfixLen = lt.PostfixLength;
+                                setForeColor(t.Position.Index + t.Text.Length - postfixLen, postfixLen, s.Appearance_Color_SI_Prefix);
+                                //Match m;
+                                //if ((m = ExponentPattern.Match(t.Text)).Success) {
+                                //    // 指数の強調表示
+                                //    setForeColor(t.Position.Index + m.Index, m.Length, s.Appearance_Color_SI_Prefix);
+                                //}
                             }
-                            else if (nth.Value.FormatHint.Format == ValFormat.CStyleInt || 
-                                    nth.Value.FormatHint.Format == ValFormat.CStyleReal) {
-                                Match m;
-                                if ((m = ExponentPattern.Match(t.Text)).Success) {
-                                    // 指数の強調表示
-                                    setForeColor(t.Position.Index + m.Index, m.Length, s.Appearance_Color_SI_Prefix);
-                                }
+                            else {
+                                // その他のリテラルの強調表示
+                                setForeColor(t, s.Appearance_Color_Special_Literals);
                             }
                         }
                         break;
@@ -338,10 +339,10 @@ namespace Shapoco.Calctus.UI.Sheets {
                 // 文法エラーの強調表示
                 int errorStart = 0;
                 int errorEnd = _chars.Length;
-                if (error is LexerError syntaxError) {
+                if (error is LexerError lexerError) {
                     // 字句解析エラー
-                    errorStart = syntaxError.Position.Index;
-                    errorEnd = errorStart + 1;
+                    errorStart = lexerError.Position.Index;
+                    errorEnd = errorStart + lexerError.Length;
                 }
                 else if (error is ParserError parserError) {
                     // 構文解析エラー

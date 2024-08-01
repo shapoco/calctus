@@ -3,7 +3,7 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
-using Shapoco.Calctus.Model.Types;
+using Shapoco.Calctus.Model.Values;
 
 namespace Shapoco.Calctus.Model.Functions.BuiltIns {
     class RandomFuncs : BuiltInFuncCategory {
@@ -15,14 +15,14 @@ namespace Shapoco.Calctus.Model.Functions.BuiltIns {
 
         public readonly BuiltInFuncDef rand_0 = new BuiltInFuncDef("rand()",
             "Generates a random value between 0.0 and 1.0.",
-            (e, a) => ((decimal)rng.NextDouble()).ToRealVal());
+            (e, a) => ((decimal)rng.NextDouble()).ToVal());
 
         public readonly BuiltInFuncDef rand_2 = new BuiltInFuncDef("rand(min,max)",
             "Generates a random value between min and max.",
             (e, a) => {
                 var min = a[0].AsDecimal;
                 var max = a[1].AsDecimal;
-                return (min + (decimal)rng.NextDouble() * (max - min)).ToRealVal(a[0].FormatHint);
+                return (min + (decimal)rng.NextDouble() * (max - min)).ToVal(a[0].FormatFlags);
             });
 
         public readonly BuiltInFuncDef rand32 = new BuiltInFuncDef("rand32()",

@@ -3,7 +3,7 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
-using Shapoco.Calctus.Model.Types;
+using Shapoco.Calctus.Model.Values;
 using Shapoco.Calctus.Model.Parsers;
 using Shapoco.Calctus.Model.Evaluations;
 
@@ -29,13 +29,13 @@ namespace Shapoco.Calctus.Model.Functions {
                 var actStr = actVal.ToString();
 
                 bool success = false;
-                if (expVal is ArrayVal expArrayVal) {
+                if (expVal is ListVal expArrayVal) {
                     var expArray = (Val[])expArrayVal.Raw;
                     var actArray = (Val[])actVal.Raw;
                     if (actArray.Length == expArray.Length) {
                         success = true;
                         for (int i = 0; i < actArray.Length; i++) {
-                            if (!actArray[i].Equals(e, expArray[i]).AsBool) {
+                            if (!actArray[i].Equals(e, expArray[i])) {
                                 success = false;
                                 break;
                             }
@@ -43,7 +43,7 @@ namespace Shapoco.Calctus.Model.Functions {
                     }
                 }
                 else {
-                    success = actVal.Equals(e, expVal).AsBool;
+                    success = actVal.Equals(e, expVal);
                 }
                 
                 if (success) {

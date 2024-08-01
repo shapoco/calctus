@@ -4,7 +4,8 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 using Shapoco.Calctus.Model;
-using Shapoco.Calctus.Model.Types;
+using Shapoco.Calctus.Model.Formats;
+using Shapoco.Calctus.Model.Values;
 using Shapoco.Calctus.Model.Parsers;
 using Shapoco.Calctus.Model.Expressions;
 using Shapoco.Calctus.Model.Evaluations;
@@ -85,7 +86,7 @@ namespace Shapoco.Calctus.Model.Sheets {
 
         public void SetStatus(Val ans, Exception syntaxError, Exception evalError) {
             string ansText;
-            ansText = ans.ToString();
+            ansText = ans.ToString(ToStringArgs.ForLiteral());
             if (ans.Equals(AnsVal) && ansText == AnsText && syntaxError == SyntaxError && evalError == EvalError) return;
             AnsVal = ans;
             AnsText = ansText;

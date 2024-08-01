@@ -13,7 +13,7 @@ namespace Shapoco.Calctus.Model.Functions.BuiltIns {
         public readonly BuiltInFuncDef assert = new BuiltInFuncDef("assert(x)",
             "Raises an error if the `x` is false.",
             (e, a) => {
-                if (!a[0].AsBool) {
+                if (!a[0].ToBool()) {
                     throw new CalctusError("Assertion failed.");
                 }
                 return a[0];

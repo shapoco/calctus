@@ -4,7 +4,7 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 using System.Windows.Forms;
-using Shapoco.Calctus.Model.Types;
+using Shapoco.Calctus.Model.Values;
 using Shapoco.Calctus.Model.Maths;
 
 namespace Shapoco.Calctus.Model.Functions.BuiltIns {
@@ -15,7 +15,7 @@ namespace Shapoco.Calctus.Model.Functions.BuiltIns {
 
         public readonly BuiltInFuncDef version = new BuiltInFuncDef("version()",
             "Returns current version of " + Application.ProductName + ".",
-            (e, a) => Application.ProductVersion.ToStrVal()
+            (e, a) => Application.ProductVersion.ToVal()
 #if !DEBUG
             , new FuncTest("", "\"" + Application.ProductVersion + "\"")
 #endif

@@ -11,7 +11,7 @@ using System.Runtime.InteropServices;
 using System.Globalization;
 using System.IO;
 using Shapoco.Calctus.Model;
-using Shapoco.Calctus.Model.Types;
+using Shapoco.Calctus.Model.Values;
 using Shapoco.Calctus.Model.Parsers;
 using Shapoco.Calctus.Model.Sheets;
 using Shapoco.Calctus.Model.Expressions;
@@ -679,14 +679,14 @@ namespace Shapoco.Calctus.UI.Sheets {
                         string leftStr = _sheet.Items[end - 2 - i].ExprText;
                         Expr leftExpr = Parser.Parse(leftStr);
 
-                        var op = new BinaryOp(sym, leftExpr, rightExpr);
-                        if (leftExpr is Operator leftOp) {
-                            if (leftOp.Method.Priority <= op.Method.Priority) {
+                        var op = new BinaryOpExpr(sym, leftExpr, rightExpr);
+                        if (leftExpr is OpExpr leftOp) {
+                            if (leftOp.OpCode.Priority() <= op.OpCode.Priority()) {
                                 leftStr = "(" + leftStr + ")";
                             }
                         }
-                        if (rightExpr is Operator rightOp) {
-                            if (op.Method.Priority >= rightOp.Method.Priority) {
+                        if (rightExpr is OpExpr rightOp) {
+                            if (op.OpCode.Priority() >= rightOp.OpCode.Priority()) {
                                 rightStr = "(" + rightStr + ")";
                             }
                         }
@@ -1003,7 +1003,7 @@ namespace Shapoco.Calctus.UI.Sheets {
             }
             list.Add(new InputCandidate(Sheet.LastAnsId, Sheet.LastAnsId, "last answer", false));
             foreach (var k in Keyword.EnumKeywords()) {
-                list.Add(new InputCandidate(k.Token, k.Token, k.Description, false));
+                list.Add(new InputCandidate(k.String, k.String, k.Description, false));
             }
             _inputCandidates = list.OrderBy(p => p.Id).ToArray();
             _recalcRequested = false;

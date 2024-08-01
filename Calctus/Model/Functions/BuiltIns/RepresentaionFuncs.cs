@@ -13,34 +13,34 @@ namespace Shapoco.Calctus.Model.Functions.BuiltIns {
 
         public readonly BuiltInFuncDef dec = new BuiltInFuncDef("dec(*x)",
             "Converts `x` to decimal representation.",
-            (e, a) => a[0].Format(FormatHint.CStyleInt));
+            (e, a) => a[0].Format(FormatFlags.Decimal));
 
         public readonly BuiltInFuncDef hex = new BuiltInFuncDef("hex(*x)",
             "Converts `x` to hexdecimal representation.",
-            (e, a) => a[0].Format(FormatHint.CStyleHex));
+            (e, a) => a[0].Format(FormatFlags.Hexadecimal));
 
         public readonly BuiltInFuncDef bin = new BuiltInFuncDef("bin(*x)",
             "Converts `x` to binary representation.",
-            (e, a) => a[0].Format(FormatHint.CStyleBin));
+            (e, a) => a[0].Format(FormatFlags.Binary));
 
         public readonly BuiltInFuncDef oct = new BuiltInFuncDef("oct(*x)",
             "Converts `x` to octal representation.",
-            (e, a) => a[0].Format(FormatHint.CStyleOct));
+            (e, a) => a[0].Format(FormatFlags.Octal));
 
         public readonly BuiltInFuncDef si = new BuiltInFuncDef("si(*x)",
             "Converts `x` to SI prefixed representation.",
-            (e, a) => a[0].Format(FormatHint.SiPrefixed));
+            (e, a) => a[0].Format(FormatFlags.SiPrefixed));
 
         public readonly BuiltInFuncDef kibi = new BuiltInFuncDef("kibi(*x)",
             "Converts `x` to binary prefixed representation.",
-            (e, a) => a[0].Format(FormatHint.BinaryPrefixed));
+            (e, a) => a[0].Format(FormatFlags.BinaryPrefixed));
 
         public readonly BuiltInFuncDef char_1 = new BuiltInFuncDef("char(*x)",
             "Converts `x` to character representation.",
-            (e, a) => a[0].Format(FormatHint.CStyleChar));
+            (e, a) => a[0].Format(FormatFlags.Character));
 
         public readonly BuiltInFuncDef datetime = new BuiltInFuncDef("datetime(*x)",
             "Converts UNIX time `x` to datetime representation.",
-            (e, a) => a[0].Format(FormatHint.DateTime));
+            (e, a) => a[0].Format(FormatFlags.DateTime));
     }
 }

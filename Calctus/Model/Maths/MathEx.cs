@@ -1,11 +1,8 @@
 ﻿using System;
 using System.Collections.Generic;
-using Shapoco.Calctus.Model.Maths.Types;
 
 namespace Shapoco.Calctus.Model.Maths {
     static class MathEx {
-        public static bool IsInteger(this decimal x) => x == Math.Floor(x);
-
         /// <summary>a と b の最大公約数</summary>
         public static decimal Gcd(decimal a, decimal b) {
             Assert.ArgIsInteger(nameof(Gcd), nameof(a), a);

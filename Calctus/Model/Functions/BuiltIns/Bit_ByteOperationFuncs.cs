@@ -3,7 +3,7 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
-using Shapoco.Calctus.Model.Types;
+using Shapoco.Calctus.Model.Values;
 using Shapoco.Calctus.Model.Maths;
 
 namespace Shapoco.Calctus.Model.Functions.BuiltIns {
@@ -15,7 +15,7 @@ namespace Shapoco.Calctus.Model.Functions.BuiltIns {
         public readonly BuiltInFuncDef pack = new BuiltInFuncDef("pack(b, array[]...)",
             "Packs array values at b-bit intervals.",
             (e, a) => {
-                if (a[0] is ArrayVal) {
+                if (a[0] is ListVal) {
                     return LongMath.Pack(a[0].AsIntArray, a[1].AsLongArray).ToHexVal();
                 }
                 else {
@@ -25,11 +25,11 @@ namespace Shapoco.Calctus.Model.Functions.BuiltIns {
 
         public readonly BuiltInFuncDef unpack_2 = new BuiltInFuncDef("unpack(array, x)",
             "Divide the value of `x` into `n` elements of `b` bit width.",
-            (e, a) => LongMath.Unpack(a[0].AsIntArray, a[1].AsLong).ToArrayVal(a[1].FormatHint, null));
+            (e, a) => LongMath.Unpack(a[0].AsIntArray, a[1].AsLong).ToVal(a[1].FormatFlags));
 
         public readonly BuiltInFuncDef unpack_3 = new BuiltInFuncDef("unpack(b, n, x)",
             "Separate the value of `x` into `n` elements of `b` bit width.",
-            (e, a) => LongMath.Unpack(a[0].AsInt, a[1].AsInt, a[2].AsLong).ToArrayVal(a[2].FormatHint, null));
+            (e, a) => LongMath.Unpack(a[0].AsInt, a[1].AsInt, a[2].AsLong).ToVal(a[2].FormatFlags));
 
         public readonly BuiltInFuncDef swapNib = new BuiltInFuncDef("swapNib(*x@)",
             "Swaps the nibble of each byte of `x`.",

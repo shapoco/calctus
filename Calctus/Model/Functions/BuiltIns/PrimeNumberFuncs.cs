@@ -3,7 +3,7 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
-using Shapoco.Calctus.Model.Types;
+using Shapoco.Calctus.Model.Values;
 using Shapoco.Calctus.Model.Maths;
 
 namespace Shapoco.Calctus.Model.Functions.BuiltIns {
@@ -18,10 +18,10 @@ namespace Shapoco.Calctus.Model.Functions.BuiltIns {
 
         public readonly BuiltInFuncDef isPrime = new BuiltInFuncDef("isPrime(*x)",
             "Returns whether `x` is prime or not.",
-            (e, a) => BoolVal.FromBool(MathEx.IsPrime(a[0].AsDecimal)));
+            (e, a) => BoolVal.From(MathEx.IsPrime(a[0].AsDecimal)));
 
         public readonly BuiltInFuncDef primeFact = new BuiltInFuncDef("primeFact(*x)",
             "Returns prime factors of `x`.",
-            (e, a) => MathEx.PrimeFactors(a[0].AsDecimal).ToArrayVal(a[0].FormatHint, null));
+            (e, a) => MathEx.PrimeFactors(a[0].AsDecimal).ToVal(a[0].FormatFlags));
     }
 }

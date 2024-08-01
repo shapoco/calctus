@@ -3,26 +3,29 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
-using Shapoco.Calctus.Model.Types;
+using Shapoco.Calctus.Model.Values;
 using Shapoco.Calctus.Model.Parsers;
 using Shapoco.Calctus.Model.Maths;
 using Shapoco.Calctus.Model.Graphs;
 using Shapoco.Calctus.Model.Functions;
+using Shapoco.Calctus.Model.Formats;
 
 namespace Shapoco.Calctus.Model.Evaluations {
     class EvalContext {
 
         private Dictionary<string, Var> _vars = new Dictionary<string, Var>();
         public readonly EvalSettings EvalSettings;
+        public readonly FormatSettings FormatSettings;
         public readonly List<PlotCall> PlotCalls = new List<PlotCall>();
         public readonly int Depth;
 
         public void DefConst(string name, Val val, string desc) {
-            _vars.Add(name, new Var(new Token(TokenType.Word, TextPosition.Nowhere, name), val, true, desc));
+            _vars.Add(name, new Var(new Token(TokenType.Identifier, TextPosition.Nowhere, name), val, true, desc));
         }
 
         public EvalContext() {
             EvalSettings = new EvalSettings();
+            FormatSettings = new FormatSettings();
             Depth = 0;
             foreach(var constVar in BuiltInConstants.EnumConstants()) {
                 _vars.Add(constVar.Name.Text, constVar);
@@ -38,6 +41,7 @@ namespace Shapoco.Calctus.Model.Evaluations {
                 _vars.Add(k, (Var)src._vars[k].Clone());
             }
             EvalSettings = (EvalSettings)src.EvalSettings.Clone();
+            FormatSettings = (FormatSettings)src.FormatSettings.Clone();
         }
 
         public bool Ref(Token name , bool allowCreate, out Var v) {
@@ -64,7 +68,7 @@ namespace Shapoco.Calctus.Model.Evaluations {
         }
 
         public Var Ref(string name, bool allowCreate) {
-            return Ref(new Token(TokenType.Word, TextPosition.Nowhere, name), allowCreate);
+            return Ref(new Token(TokenType.Identifier, TextPosition.Nowhere, name), allowCreate);
         }
 
         public void Undef(string name, bool ignoreError) {

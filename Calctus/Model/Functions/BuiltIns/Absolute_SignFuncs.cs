@@ -3,7 +3,7 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
-using Shapoco.Calctus.Model.Types;
+using Shapoco.Calctus.Model.Values;
 using Shapoco.Calctus.Model.Maths;
 
 namespace Shapoco.Calctus.Model.Functions.BuiltIns {
@@ -33,9 +33,9 @@ namespace Shapoco.Calctus.Model.Functions.BuiltIns {
         public readonly BuiltInFuncDef mag = new BuiltInFuncDef("mag(x[]...)",
             "Magnitude of vector `x`",
             (e, a) => {
-                var arrayVal = a[0].AsArrayVal();
-                var fmtHint = arrayVal.Length > 0 ? arrayVal[0].FormatHint : null;
-                return MathEx.Sqrt(arrayVal.AsDecimalArray.Sum(p => p * p)).ToRealVal(fmtHint);
+                var arrayVal = (ListVal)a[0];
+                var fmt = arrayVal.Length > 0 ? arrayVal[0].FormatFlags : Formats.FormatFlags.Default;
+                return MathEx.Sqrt(arrayVal.AsDecimalArray.Sum(p => p * p)).ToVal(fmt);
             },
             new FuncTest("3,4", "5"),
             new FuncTest("3,4,5", "sqrt(50)"));

@@ -100,13 +100,13 @@ namespace Shapoco.Calctus.UI.Sheets {
         public void InsertToday() {
             if (!ReadOnly) {
                 CandidateHide();
-                _edit.SelectedText = DateTimeFormat.FormatAsStringLiteral(UnixTime.Today);
+                _edit.SelectedText = DateTimeFormat.FormatAsStringLiteral(UnixTime.Today, true);
             }
         }
         public void InsertCurrentTime() {
             if (!ReadOnly) {
                 CandidateHide();
-                _edit.SelectedText = DateTimeFormat.FormatAsStringLiteral(UnixTime.Now);
+                _edit.SelectedText = DateTimeFormat.FormatAsStringLiteral(UnixTime.Now, true);
             }
         }
 

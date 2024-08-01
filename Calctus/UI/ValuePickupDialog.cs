@@ -10,7 +10,7 @@ using System.Windows.Forms;
 using Shapoco.Windows;
 using Shapoco.Calctus.UI.Sheets;
 using Shapoco.Calctus.Model.Formats;
-using Shapoco.Calctus.Model.Types;
+using Shapoco.Calctus.Model.Values;
 
 namespace Shapoco.Calctus.UI {
     partial class ValuePickupDialog : Form {
@@ -168,13 +168,13 @@ namespace Shapoco.Calctus.UI {
                             str = str.Trim();
                             break;
                         case ValuePickupFormatting.String:
-                            str = Model.Formats.StringFormat.FormatAsStringLiteral(str);
+                            str = Formatter.StringToCStyleLiteral(str, ToStringArgs.ForLiteral());
                             break;
                         case ValuePickupFormatting.DateTime:
-                            str = DateTimeFormat.FormatAsStringLiteral(DateTime.Parse(str.Trim()));
+                            str = DateTimeFormat.FormatAsStringLiteral(DateTime.Parse(str.Trim()), true);
                             break;
-                        case ValuePickupFormatting.RelativeTime:
-                            str = RelativeTimeFormat.FormatAsStringLiteral((decimal)TimeSpan.Parse(str.Trim()).TotalSeconds);
+                        case ValuePickupFormatting.TimeSpan:
+                            str = TimeSpanFormat.FormatAsStringLiteral((decimal)TimeSpan.Parse(str.Trim()).TotalSeconds, true);
                             break;
                         default:
                             throw new NotImplementedException();
@@ -190,7 +190,7 @@ namespace Shapoco.Calctus.UI {
                 }
             }
             catch (Exception ex) {
-
+                Console.WriteLine(nameof(updateExprBox) + " : " + ex.Message);
             }
 
             var selStart = _exprBox.SelectionStart;

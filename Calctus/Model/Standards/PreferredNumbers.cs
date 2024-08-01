@@ -3,9 +3,9 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
-using Shapoco.Calctus.Model.Types;
+using Shapoco.Calctus.Model.Values;
 using Shapoco.Calctus.Model.Maths;
-using Shapoco.Calctus.Model.Maths.Types;
+
 
 namespace Shapoco.Calctus.Model.Standards {
     static class PreferredNumbers {

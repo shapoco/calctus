@@ -8,14 +8,19 @@ using Shapoco.Calctus.Model;
 
 namespace Shapoco.Calctus.Model.Parsers {
     class LexerError : CalctusError {
-        public TextPosition Position { get; private set; }
-        public LexerError(TextPosition pos, string msg) : base(msg) {
+        public static readonly LexerError EmptyError = new LexerError(new TextPosition(0), "Empty expression");
+
+        public readonly TextPosition Position;
+        public readonly int Length;
+        public LexerError(TextPosition pos, int length, string msg) : base(msg) {
             this.Position = pos;
+            this.Length = length;
         }
+        public LexerError(TextPosition pos, string msg) : this(pos, 1, msg) { }
     }
 
     class ParserError : CalctusError {
-        public Token Token { get; private set; }
+        public readonly Token Token;
         public ParserError(Token token, string msg) : base(msg) {
             Token = token;
         }

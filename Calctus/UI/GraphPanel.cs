@@ -9,7 +9,7 @@ using Shapoco.Calctus.Model.Sheets;
 using Shapoco.Calctus.Model.Maths;
 using Shapoco.Calctus.Model.Graphs;
 using Shapoco.Calctus.Model.Evaluations;
-using Shapoco.Calctus.Model.Types;
+using Shapoco.Calctus.Model.Values;
 
 namespace Shapoco.Calctus.UI {
     class GraphPanel : Control {

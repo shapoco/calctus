@@ -5,7 +5,7 @@ using System.Text;
 using System.Text.RegularExpressions;
 using System.Threading.Tasks;
 using Shapoco.Calctus.Model.Standards;
-using Shapoco.Calctus.Model.Types;
+using Shapoco.Calctus.Model.Values;
 using Shapoco.Calctus.Model.Formats;
 using Shapoco.Calctus.Model.Parsers;
 using Shapoco.Calctus.Model.Evaluations;
@@ -59,7 +59,7 @@ namespace Shapoco.Calctus.Model.Functions {
                     args.Add(new ArgDef(argName));
                 }
             }
-            this.Name = new Token(TokenType.Word, TextPosition.Nowhere, m.Groups["name"].Value);
+            this.Name = new Token(TokenType.Identifier, TextPosition.Nowhere, m.Groups["name"].Value);
             this.Args = new ArgDefList(args.ToArray(), mode, vecArgIndex, fmtSrcArgIndex);
             this.Description = desc;
         }
@@ -94,7 +94,7 @@ namespace Shapoco.Calctus.Model.Functions {
                 if (args.Length < Args.Count - 1) {
                     throw new CalctusError("Too few arguments");
                 }
-                else if (Args.Count == args.Length && args[args.Length - 1] is ArrayVal extVals) {
+                else if (Args.Count == args.Length && args[args.Length - 1] is ListVal extVals) {
                     // 可変長引数部分が1個の配列の場合はフラットに展開する
                     var tempArgs = new Val[this.Args.Count - 1 + extVals.Length];
                     Array.Copy(args, tempArgs, args.Length - 1);
@@ -115,10 +115,10 @@ namespace Shapoco.Calctus.Model.Functions {
                     // 可変長配列部分が空配列
                     var tempArgs = new Val[this.Args.Count];
                     Array.Copy(args, tempArgs, Args.Count - 1);
-                    tempArgs[this.Args.Count - 1] = new ArrayVal(new Val[0]);
+                    tempArgs[this.Args.Count - 1] = new ListVal(new Val[0]);
                     return OnCallWrap(e, tempArgs);
                 }
-                else if (Args.Count == args.Length && args[args.Length - 1] is ArrayVal) {
+                else if (Args.Count == args.Length && args[args.Length - 1] is ListVal) {
                     // 配列で渡された場合はそのまま
                     return OnCallWrap(e, args);
                 }
@@ -128,11 +128,11 @@ namespace Shapoco.Calctus.Model.Functions {
                     Array.Copy(args, tempArgs, Args.Count - 1);
                     var array = new Val[args.Length - Args.Count + 1];
                     Array.Copy(args, Args.Count - 1, array, 0, array.Length);
-                    tempArgs[Args.Count - 1] = new ArrayVal(array);
+                    tempArgs[Args.Count - 1] = new ListVal(array);
                     return OnCallWrap(e, tempArgs);
                 }
             }
-            else if (Args.VectorizableArgIndex >= 0 && args[Args.VectorizableArgIndex] is ArrayVal vecVals) {
+            else if (Args.VectorizableArgIndex >= 0 && args[Args.VectorizableArgIndex] is ListVal vecVals) {
                 // ベクトル化
                 var tempArgs = new Val[args.Length];
                 Array.Copy(args, tempArgs, args.Length);
@@ -141,7 +141,7 @@ namespace Shapoco.Calctus.Model.Functions {
                     tempArgs[Args.VectorizableArgIndex] = vecVals[i];
                     results[i] = OnCallWrap(e, tempArgs);
                 }
-                return new ArrayVal(results);
+                return new ListVal(results);
             }
             else {
                 return OnCallWrap(e, args);
@@ -151,7 +151,7 @@ namespace Shapoco.Calctus.Model.Functions {
         private Val OnCallWrap(EvalContext e, Val[] args) {
             var retVal = OnCall(e, args);
             if (Args.FormatSourceArgIndex >= 0) {
-                retVal = retVal.Format(args[Args.FormatSourceArgIndex].FormatHint);
+                retVal = retVal.Format(args[Args.FormatSourceArgIndex].FormatFlags);
             }
             return retVal;
         }
@@ -195,16 +195,15 @@ namespace Shapoco.Calctus.Model.Functions {
         /// <summary>
         /// 関数本体の実装をシンプルにするために引数を Val と real の間で変換する。
         /// </summary>
-        public static Func<EvalContext, Val[], Val> ArgToDecimal(Func<EvalContext, decimal[], decimal> func, FormatHint fh = null) {
-            return (e, a) => func(e, a.Select(p => p.AsDecimal).ToArray()).ToRealVal(fh);
+        public static Func<EvalContext, Val[], Val> ArgToDecimal(Func<EvalContext, decimal[], decimal> func, FormatFlags fmt = FormatFlags.Default) {
+            return (e, a) => func(e, a.Select(p => p.AsDecimal).ToArray()).ToVal(fmt);
         }
 
         /// <summary>
         /// 関数本体の実装をシンプルにするために引数を Val と long の間で変換する。
         /// </summary>
-        public static Func<EvalContext, Val[], Val> ArgToLong(Func<EvalContext, long[], long> func, FormatHint fh = null) {
-            if (fh == null) fh = FormatHint.CStyleInt;
-            return (e, a) => func(e, a.Select(p => p.AsLong).ToArray()).ToRealVal(fh);
+        public static Func<EvalContext, Val[], Val> ArgToLong(Func<EvalContext, long[], long> func, FormatFlags fmt = FormatFlags.Default) {
+            return (e, a) => func(e, a.Select(p => p.AsLong).ToArray()).ToRealVal(fmt);
         }
     }
 }

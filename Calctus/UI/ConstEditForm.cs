@@ -14,7 +14,7 @@ using Shapoco.Calctus.Model.Evaluations;
 
 namespace Shapoco.Calctus.UI {
     partial class ConstEditForm : Form {
-        public readonly Regex IdRegex = new Regex("^" + Lexer.IdPattern + "$");
+        public readonly Regex IdRegex = new Regex(@"^[\p{L}_][\p{L}\p{N}_]*$");
         private UserConstant _target;
 
         public ConstEditForm() {

@@ -1,5 +1,5 @@
 ﻿using System.Linq;
-using Shapoco.Calctus.Model.Types;
+using Shapoco.Calctus.Model.Values;
 using Shapoco.Calctus.Model.Parsers;
 using Shapoco.Calctus.Model.Evaluations;
 
@@ -15,7 +15,7 @@ namespace Shapoco.Calctus.Model.Expressions {
         public override bool CausesValueChange() => Elements.Any(p => p.CausesValueChange());
 
         protected override Val OnEval(EvalContext ctx) {
-            return new ArrayVal(Elements.Select(p => p.Eval(ctx)).ToArray());
+            return new ListVal(Elements.Select(p => p.Eval(ctx)).ToArray());
         }
     }
 }

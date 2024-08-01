@@ -12,6 +12,9 @@ namespace Shapoco.Calctus.Model.Standards {
             return FromLocalTime(new DateTime(year, mon, day, hour, min, secInt)) + (sec - secInt);
         }
 
+        public static decimal FromLocalTime(int year, int mon, int day)
+            => FromLocalTime(year, mon, day, 0, 0, 0);
+
         public static DateTime ToLocalTime(decimal unixTime)
             => Epoch.AddSeconds((double)unixTime).ToLocalTime();
 

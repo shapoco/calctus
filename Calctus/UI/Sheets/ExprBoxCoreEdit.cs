@@ -13,7 +13,8 @@ using Shapoco.Calctus.Model.Sheets;
 using Shapoco.Calctus.Model.Parsers;
 using Shapoco.Calctus.Model.Evaluations;
 using Shapoco.Calctus.Model.Maths;
-using Shapoco.Calctus.Model.Types;
+using Shapoco.Calctus.Model.Values;
+using Shapoco.Calctus.Model.Standards;
 
 namespace Shapoco.Calctus.UI.Sheets {
     class ExprBoxCoreEdit {
@@ -419,13 +420,15 @@ namespace Shapoco.Calctus.UI.Sheets {
                 int exp;
 
                 // カーソル位置の数値を解釈
-                var queryTokenArgs = new QueryTokenEventArgs(SelectionStart, TokenType.NumericLiteral);
+                var queryTokenArgs = new QueryTokenEventArgs(SelectionStart, TokenType.Literal);
                 QueryToken?.Invoke(this, queryTokenArgs);
                 var token = queryTokenArgs.Result;
-                if (token == null) return;
+                if (token == null || !(token is LiteralToken literalToken)) return;
+                var val = literalToken.Value;
+                if (val == null) return;
 
                 if (DecMath.TryParse(token.Text, out frac, out eChar, out exp)) { }
-                else if (SiPrefixFormat.TryParse(token.Text, out frac, out var prefixIndex)) {
+                else if (SiPrefix.TryParse(token.Text, out frac, out var prefixIndex)) {
                     exp = prefixIndex * 3;
                 }
                 else {
@@ -441,9 +444,8 @@ namespace Shapoco.Calctus.UI.Sheets {
                 if (exp < -28 || 28 < exp) return;
 
                 // 文字列に変換
-                var changedStr = 
-                    frac.ToString("0.##############################", CultureInfo.InvariantCulture)
-                    + eChar + exp.ToString(CultureInfo.InvariantCulture);
+                var changedStr = frac.ToString("0.##############################", CultureInfo.InvariantCulture);
+                if (exp != 0) changedStr += eChar + exp.ToString(CultureInfo.InvariantCulture);
 
                 // 再度文字列に変換して元のトークンと差し替える
                 SetSelection(token.Position.Index, token.Position.Index + token.Text.Length);
@@ -461,15 +463,15 @@ namespace Shapoco.Calctus.UI.Sheets {
                 bool isBinaryPrefix;
 
                 // カーソル位置の数値を解釈
-                var queryTokenArgs = new QueryTokenEventArgs(SelectionStart, TokenType.NumericLiteral);
+                var queryTokenArgs = new QueryTokenEventArgs(SelectionStart, TokenType.Literal);
                 QueryToken?.Invoke(this, queryTokenArgs);
                 var token = queryTokenArgs.Result;
                 if (token == null) return;
 
-                if (SiPrefixFormat.TryParse(token.Text, out frac, out prefixIndex)) {
+                if (SiPrefix.TryParse(token.Text, out frac, out prefixIndex)) {
                     isBinaryPrefix = false;
                 }
-                else if (BinaryPrefixFormat.TryParse(token.Text, out frac, out prefixIndex)) {
+                else if (BinaryPrefix.TryParse(token.Text, out frac, out prefixIndex)) {
                     isBinaryPrefix = true;
                 }
                 else if (DecMath.TryParse(token.Text, out frac, out _, out int exp)) {
@@ -488,14 +490,14 @@ namespace Shapoco.Calctus.UI.Sheets {
                 if (isBinaryPrefix) {
                     frac *= (decimal)Math.Pow(1024, -amount);
                     prefixIndex += amount;
-                    if (prefixIndex < BinaryPrefixFormat.MinPrefixIndex || BinaryPrefixFormat.MaxPrefixIndex < prefixIndex) {
+                    if (prefixIndex < BinaryPrefix.MinExp || BinaryPrefix.MaxExp < prefixIndex) {
                         return;
                     }
                 }
                 else {
                     frac *= MathEx.Pow10(-amount * 3);
                     prefixIndex += amount;
-                    if (prefixIndex < SiPrefixFormat.MinPrefixIndex || SiPrefixFormat.MaxPrefixIndex < prefixIndex) {
+                    if (prefixIndex < SiPrefix.MinExp || SiPrefix.MaxExp < prefixIndex) {
                         return;
                     }
                 }
@@ -503,10 +505,10 @@ namespace Shapoco.Calctus.UI.Sheets {
                 // 文字列に変換
                 string changedStr = frac.ToString("0.##############################", CultureInfo.InvariantCulture);
                 if (isBinaryPrefix) {
-                    changedStr += BinaryPrefixFormat.GetPrefixString(prefixIndex);
+                    changedStr += BinaryPrefix.GetPrefixString(prefixIndex);
                 }
                 else if (prefixIndex != 0) {
-                    changedStr += SiPrefixFormat.GetPrefixChar(prefixIndex);
+                    changedStr += SiPrefix.GetPrefixChar(prefixIndex);
                 }
 
                 // 再度文字列に変換して元のトークンと差し替える

@@ -25,7 +25,7 @@ namespace Shapoco.Calctus.UI.CLI {
                     var exprStr = args[1];
                     var expr = Parser.Parse(exprStr);
                     var e = new EvalContext();
-                    cout.WriteLine(expr.Eval(e).AsString);
+                    cout.WriteLine(expr.Eval(e).ToStringForDisplay());
                 }
                 catch (Exception ex) {
                     cout.WriteLine("*ERROR: " + ex.Message);

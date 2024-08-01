@@ -3,7 +3,7 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
-using Shapoco.Calctus.Model.Types;
+using Shapoco.Calctus.Model.Values;
 
 namespace Shapoco.Calctus.Model.Evaluations {
     class ValEqualityComparer : IEqualityComparer<Val> {
@@ -13,7 +13,7 @@ namespace Shapoco.Calctus.Model.Evaluations {
             Context = e;
         }
 
-        public bool Equals(Val x, Val y) => x.Equals(Context, y).AsBool;
+        public bool Equals(Val x, Val y) => x.Equals(Context, y);
 
         public int GetHashCode(Val obj) => obj.GetHashCode();
     }

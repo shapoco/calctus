@@ -13,6 +13,6 @@ namespace Shapoco.Calctus.UI {
         NoChange,
         String,
         DateTime,
-        RelativeTime,
+        TimeSpan,
     }
 }

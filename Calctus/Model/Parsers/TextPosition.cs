@@ -5,6 +5,7 @@ using System.Text;
 using System.Threading.Tasks;
 
 namespace Shapoco.Calctus.Model.Parsers {
+    // todo 廃止 TextPosition
     struct TextPosition {
         public static readonly TextPosition Empty = new TextPosition(0);
         public static readonly TextPosition Nowhere = new TextPosition(-1);

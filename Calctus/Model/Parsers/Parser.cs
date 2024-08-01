@@ -8,7 +8,7 @@ using System.IO;
 using Shapoco.Calctus.Model;
 using Shapoco.Calctus.Model.Expressions;
 using Shapoco.Calctus.Model.Functions;
-using Shapoco.Calctus.Model.Types;
+using Shapoco.Calctus.Model.Values;
 
 namespace Shapoco.Calctus.Model.Parsers {
     class Parser {
@@ -36,16 +36,17 @@ namespace Shapoco.Calctus.Model.Parsers {
 
         public Expr Expr(bool root = false) {
             var vals = new Stack<Expr>();
-            var ops = new Stack<BinaryOp>();
+            var ops = new Stack<BinaryOpExpr>();
 
             vals.Push(UnaryOpExpr());
 
             while (!EndOfExpr) {
-                var rightOp = new BinaryOp(Read(), null, null);
-                while (ops.Count > 0 && ops.Peek().Method.ComparePriority(rightOp.Method) == OpPriorityDir.Left) {
+                var sym = Read();
+                var rightOp = new BinaryOpExpr(sym, null, null);
+                while (ops.Count > 0 && ops.Peek().OpCode.ComparePriority(rightOp.OpCode) == OpPriorityDir.Left) {
                     var b = vals.Pop();
                     var a = vals.Pop();
-                    vals.Push(new BinaryOp(ops.Pop().Token, a, b));
+                    vals.Push(new BinaryOpExpr(ops.Pop().Token, a, b));
                 }
                 ops.Push(rightOp);
                 vals.Push(UnaryOpExpr());
@@ -54,7 +55,7 @@ namespace Shapoco.Calctus.Model.Parsers {
             while (ops.Count > 0) {
                 var b = vals.Pop();
                 var a = vals.Pop();
-                vals.Push(new BinaryOp(ops.Pop().Token, a, b));
+                vals.Push(new BinaryOpExpr(ops.Pop().Token, a, b));
             }
 
             if (vals.Count != 1) {
@@ -68,7 +69,7 @@ namespace Shapoco.Calctus.Model.Parsers {
                 var trueVal = Expr();
                 Expect(":");
                 var falseVal = Expr();
-                expr = new CondOp(tok, expr, trueVal, falseVal);
+                expr = new CondOpExpr(tok, expr, trueVal, falseVal);
             }
 
             if (root && !Eos) {
@@ -80,21 +81,20 @@ namespace Shapoco.Calctus.Model.Parsers {
         public Expr UnaryOpExpr() {
             Token tok;
             if (ReadIf("*", out tok)) {
-                Expect(TokenType.Word, out Token id);
+                Expect(TokenType.Identifier, out Token id);
                 return new AsterExpr(tok, new IdExpr(id));
             }
             else if (ReadIf(TokenType.OperatorSymbol, out tok)) {
                 var expr = UnaryOpExpr();
-                if (expr is Literal num && num.Value is RealVal val) {
-                    // 単純な
-                    if (tok.Text == OpDef.Plus.Symbol) {
+                if (expr is LiteralExpr num && num.Value is RealVal val) {
+                    if (tok.Text == OpCodes.Plus.GetSymbol()) {
                         return expr;
                     }
-                    else if (tok.Text == OpDef.ArithInv.Symbol) {
-                        return new Literal(new RealVal(-val.AsDecimal));
+                    else if (tok.Text == OpCodes.ArithInv.GetSymbol()) {
+                        return new LiteralExpr(new RealVal(-val.AsDecimal));
                     }
                 }
-                return new UnaryOp(expr, tok);
+                return new UnaryOpExpr(tok, expr);
             }
             else {
                 return ElemRefExpr();
@@ -110,7 +110,7 @@ namespace Shapoco.Calctus.Model.Parsers {
                     to = Expr();
                 }
                 Expect("]");
-                return new PartRef(tok, operand, from, to);
+                return new PartRefExpr(tok, operand, from, to);
             }
             else {
                 return operand;
@@ -133,10 +133,10 @@ namespace Shapoco.Calctus.Model.Parsers {
                 }
                 return new ArrayExpr(tok, elms.ToArray());
             }
-            else if (ReadIf(TokenType.NumericLiteral, out tok) || ReadIf(TokenType.SpecialLiteral, out tok)) {
-                return new Literal(tok);
+            else if (ReadIf(TokenType.Literal, out tok)) {
+                return new LiteralExpr((LiteralToken)tok);
             }
-            else if (ReadIf(TokenType.Word, out tok)) {
+            else if (ReadIf(TokenType.Identifier, out tok)) {
                 var args = new List<Expr>();
                 if (ReadIf("(")) {
                     if (!ReadIf(")")) {
@@ -160,7 +160,7 @@ namespace Shapoco.Calctus.Model.Parsers {
             }
             else {
                 var nextToken = Peek();
-                throw new ParserError(nextToken, "Invalid operand: '" + nextToken + "'");
+                throw new ParserError(nextToken, "Invalid operand: " + nextToken);
             }
         }
 
@@ -209,7 +209,7 @@ namespace Shapoco.Calctus.Model.Parsers {
         }
 
         public Expr Def(Token first) {
-            Expect(TokenType.Word, out Token name);
+            Expect(TokenType.Identifier, out Token name);
             Expect("(");
             var args = ArgDefList();
             Expect(")");
@@ -228,7 +228,7 @@ namespace Shapoco.Calctus.Model.Parsers {
                         if (vecArgIndex >= 0) throw new ParserError(aster, "Only one argument is vectorizable.");
                         vecArgIndex = args.Count;
                     }
-                    Expect(TokenType.Word, out Token arg);
+                    Expect(TokenType.Identifier, out Token arg);
                     args.Add(new ArgDef(arg));
                 } while (ReadIf(","));
                 if (args.Count > 0 && ReadIf("[")) {

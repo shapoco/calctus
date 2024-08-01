@@ -3,7 +3,7 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
-using Shapoco.Calctus.Model.Types;
+using Shapoco.Calctus.Model.Values;
 using Shapoco.Calctus.Model.Standards;
 using Shapoco.Calctus.Model.Maths;
 using Shapoco.Calctus.Model.Formats;
@@ -36,7 +36,7 @@ namespace Shapoco.Calctus.Model.Functions.BuiltIns {
 
         public readonly BuiltInFuncDef dayOfWeek = new BuiltInFuncDef("dayOfWeek(*t)",
             "Returns day of week of datetime, expressed as 0 (Sunday)..6 (Saturday).",
-            (e, a) => ((int)UnixTime.ToLocalTime(a[0].AsDecimal).DayOfWeek).ToRealVal(FormatHint.Weekday));
+            (e, a) => ((int)UnixTime.ToLocalTime(a[0].AsDecimal).DayOfWeek).ToRealVal(FormatFlags.DayOfWeek));
 
         public readonly BuiltInFuncDef dayOfMonth = new BuiltInFuncDef("dayOfMonth(*t)",
             "Returns day component of datetime, expressed as 1..31.",
@@ -55,7 +55,7 @@ namespace Shapoco.Calctus.Model.Functions.BuiltIns {
             (e, a) => {
                 var unixTime = a[0].AsDecimal;
                 var subSec = unixTime - Math.Floor(unixTime);
-                return (UnixTime.ToLocalTime(unixTime).Second + subSec).ToRealVal();
+                return (UnixTime.ToLocalTime(unixTime).Second + subSec).ToVal();
             });
 
         public readonly BuiltInFuncDef now = new BuiltInFuncDef("now()",
@@ -68,42 +68,42 @@ namespace Shapoco.Calctus.Model.Functions.BuiltIns {
 
         public readonly BuiltInFuncDef toDays = new BuiltInFuncDef("toDays(*x)",
             "Converts from epoch time to days.",
-            (e, a) => (a[0].AsDecimal / (24 * 60 * 60)).ToRealVal(),
+            (e, a) => (a[0].AsDecimal / (24 * 60 * 60)).ToVal(),
             new FuncTest("#+123.12:34:56.789#", "123+(12+(34+56.789/60)/60)/24"));
 
         public readonly BuiltInFuncDef toHours = new BuiltInFuncDef("toHours(*x)",
             "Converts from epoch time to hours.",
-            (e, a) => (a[0].AsDecimal / (60 * 60)).ToRealVal(),
+            (e, a) => (a[0].AsDecimal / (60 * 60)).ToVal(),
             new FuncTest("#+123.12:34:56.789#", "(123*24)+12+(34+56.789/60)/60"));
 
         public readonly BuiltInFuncDef toMinutes = new BuiltInFuncDef("toMinutes(*x)",
             "Converts from epoch time to minutes.",
-            (e, a) => (a[0].AsDecimal / 60).ToRealVal(),
+            (e, a) => (a[0].AsDecimal / 60).ToVal(),
             new FuncTest("#+123.12:34:56.789#", "((123*24)+12)*60+34+56.789/60"));
 
         public readonly BuiltInFuncDef toSeconds = new BuiltInFuncDef("toSeconds(*x)",
             "Converts from epoch time to seconds.",
-            (e, a) => a[0].Format(FormatHint.CStyleReal),
+            (e, a) => a[0].Format(FormatFlags.Decimal),
             new FuncTest("#+123.12:34:56.789#", "(((123*24)+12)*60+34)*60+56.789"));
 
         public readonly BuiltInFuncDef fromDays = new BuiltInFuncDef("fromDays(*x)",
             "Converts from days to epoch time.",
-            (e, a) => (a[0].AsDecimal * (24 * 60 * 60)).ToRelativeTimeVal(),
+            (e, a) => (a[0].AsDecimal * (24 * 60 * 60)).ToTimeSpanVal(),
             new FuncTest("123.45", "#+123.10:48:00#"));
 
         public readonly BuiltInFuncDef fromHours = new BuiltInFuncDef("fromHours(*x)",
             "Converts from hours to epoch time.",
-            (e, a) => (a[0].AsDecimal * (60 * 60)).ToRelativeTimeVal(),
+            (e, a) => (a[0].AsDecimal * (60 * 60)).ToTimeSpanVal(),
             new FuncTest("123.45", "#+5.3:27:00#"));
 
         public readonly BuiltInFuncDef fromMinutes = new BuiltInFuncDef("fromMinutes(*x)",
             "Converts from minutes to epoch time.",
-            (e, a) => (a[0].AsDecimal * 60).ToRelativeTimeVal(),
+            (e, a) => (a[0].AsDecimal * 60).ToTimeSpanVal(),
             new FuncTest("123.45", "#+2:03:27#"));
 
         public readonly BuiltInFuncDef fromSeconds = new BuiltInFuncDef("fromSeconds(*x)",
             "Converts from seconds to epoch time.",
-            (e, a) => a[0].Format(FormatHint.RelativeTime),
+            (e, a) => a[0].Format(FormatFlags.TimeSpan),
             new FuncTest("123.45", "#+0:02:03.45#"));
     }
 }

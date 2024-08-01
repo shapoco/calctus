@@ -4,7 +4,7 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 using System.Drawing;
-using Shapoco.Calctus.Model.Types;
+using Shapoco.Calctus.Model.Values;
 using Shapoco.Calctus.Model.Maths;
 
 namespace Shapoco.Calctus.Model.Standards {
@@ -229,6 +229,10 @@ namespace Shapoco.Calctus.Model.Standards {
         public static decimal YuvToRgb_G(decimal yuv) { YuvToRgb(yuv, out _, out decimal g, out _); return g; }
         public static decimal YuvToRgb_B(decimal yuv) { YuvToRgb(yuv, out _, out _, out decimal b); return b; }
 
+        public static string ToHtmlStyle(int val) {
+            var hexStr = "000000" + Convert.ToString(val, 16);
+            return "#" + hexStr.Substring(hexStr.Length - 6);
+        }
     }
 }
 

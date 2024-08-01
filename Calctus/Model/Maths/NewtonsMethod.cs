@@ -6,7 +6,7 @@ using System.Threading.Tasks;
 using Shapoco.Calctus.Model.Expressions;
 using Shapoco.Calctus.Model.Evaluations;
 using Shapoco.Calctus.Model.Parsers;
-using Shapoco.Calctus.Model.Types;
+using Shapoco.Calctus.Model.Values;
 using Shapoco.Calctus.Model.Functions;
 using Shapoco.Calctus.Model.Formats;
 
@@ -18,7 +18,7 @@ namespace Shapoco.Calctus.Model.Maths {
 
         public static Val Solve(EvalContext e, FuncDef f, Val paramVal0 = null, Val paramVal1 = null) {
             // パラメータの評価
-            var formatHint = new FormatHint(ValFormat.CStyleReal);
+            var fmt = FormatFlags.Default;
 
             // スコープの生成
             var scope = new EvalContext(e);
@@ -55,20 +55,20 @@ namespace Shapoco.Calctus.Model.Maths {
             else if (paramVal0 != null && paramVal1 == null) {
                 // 初期値が直接指定された場合
                 inits = new List<decimal>();
-                if (paramVal0 is ArrayVal) {
+                if (paramVal0 is ListVal) {
                     // 配列で指定された場合
                     foreach (var val in paramVal0.AsDecimalArray) {
                         inits.Add(val);
                     }
                     var paramValArray = (Val[])paramVal0.Raw;
                     if (paramValArray.Length > 0) {
-                        formatHint = paramValArray[0].FormatHint;
+                        fmt = paramValArray[0].FormatFlags;
                     }
                 }
                 else {
                     // スカラ値で指定された場合
                     inits.Add(paramVal0.AsDecimal);
-                    formatHint = paramVal0.FormatHint;
+                    fmt = paramVal0.FormatFlags;
                 }
                 determineHTol(inits, out h, out tol);
             }
@@ -100,10 +100,10 @@ namespace Shapoco.Calctus.Model.Maths {
             sols = reduceSols(sols, tol);
 
             if (sols.Count == 1) {
-                return new RealVal(sols[0]).Format(formatHint);
+                return new RealVal(sols[0]).Format(fmt);
             }
             else {
-                return new ArrayVal(sols.Select(p => new RealVal(p).Format(formatHint)).ToArray());
+                return new ListVal(sols.Select(p => new RealVal(p).Format(fmt)).ToArray());
             }
         }
 

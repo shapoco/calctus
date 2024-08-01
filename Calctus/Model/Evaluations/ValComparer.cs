@@ -3,7 +3,7 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
-using Shapoco.Calctus.Model.Types;
+using Shapoco.Calctus.Model.Values;
 
 namespace Shapoco.Calctus.Model.Evaluations {
     class ValComparer : IComparer<Val> {
@@ -14,10 +14,8 @@ namespace Shapoco.Calctus.Model.Evaluations {
         }
 
         public int Compare(Val x, Val y) {
-            bool equal = x.Equals(Context, y).AsBool;
-            bool grater = x.Grater(Context, y).AsBool;
-            if (equal) return 0;
-            else if (grater) return 1;
+            if (x.Equals(Context, y)) return 0;
+            else if (x.Grater(Context, y)) return 1;
             else return -1;
         }
     }

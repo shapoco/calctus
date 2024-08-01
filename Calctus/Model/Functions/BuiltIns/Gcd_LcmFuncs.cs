@@ -3,7 +3,7 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
-using Shapoco.Calctus.Model.Types;
+using Shapoco.Calctus.Model.Values;
 using Shapoco.Calctus.Model.Maths;
 
 namespace Shapoco.Calctus.Model.Functions.BuiltIns {
@@ -14,10 +14,10 @@ namespace Shapoco.Calctus.Model.Functions.BuiltIns {
 
         public readonly BuiltInFuncDef gcd = new BuiltInFuncDef("gcd(array...)",
             "Greatest common divisor of elements of the `array`.",
-            (e, a) => MathEx.Gcd(a.ToRealArray()).ToRealVal(a[0].FormatHint));
+            (e, a) => MathEx.Gcd(a.ToDecimalArray()).ToVal(a[0].FormatFlags));
 
         public readonly BuiltInFuncDef lcm = new BuiltInFuncDef("lcm(array...)",
             "Least common multiple of elements of the `array`.",
-            (e, a) => MathEx.Lcm(a.ToRealArray()).ToRealVal(a[0].FormatHint));
+            (e, a) => MathEx.Lcm(a.ToDecimalArray()).ToVal(a[0].FormatFlags));
     }
 }

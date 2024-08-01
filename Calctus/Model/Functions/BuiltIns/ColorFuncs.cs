@@ -3,7 +3,7 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
-using Shapoco.Calctus.Model.Types;
+using Shapoco.Calctus.Model.Values;
 using Shapoco.Calctus.Model.Formats;
 using Shapoco.Calctus.Model.Standards;
 
@@ -19,7 +19,7 @@ namespace Shapoco.Calctus.Model.Functions.BuiltIns {
 
         public readonly BuiltInFuncDef rgb_1 = new BuiltInFuncDef("rgb(*rgb)",
             "Converts the `rgb` to web-color representation.",
-            (e, a) => a[0].Format(FormatHint.WebColor));
+            (e, a) => a[0].Format(FormatFlags.WebColor));
 
         public readonly BuiltInFuncDef hsv2rgb = new BuiltInFuncDef("hsv2rgb(h, s, v)",
             "Converts from H, S, V to 24 bit RGB color value.",
@@ -27,7 +27,7 @@ namespace Shapoco.Calctus.Model.Functions.BuiltIns {
 
         public readonly BuiltInFuncDef rgb2hsv = new BuiltInFuncDef("rgb2hsv(*rgb)",
             "Converts the 24 bit RGB color value to HSV.",
-            (e, a) => ColorSpace.RgbToHsv(a[0].AsDecimal).ToArrayVal());
+            (e, a) => ColorSpace.RgbToHsv(a[0].AsDecimal).ToVal());
 
         public readonly BuiltInFuncDef hsl2rgb = new BuiltInFuncDef("hsl2rgb(h, s, l)",
             "Convert from H, S, L to 24 bit color RGB value.",
@@ -35,7 +35,7 @@ namespace Shapoco.Calctus.Model.Functions.BuiltIns {
 
         public readonly BuiltInFuncDef rgb2hsl = new BuiltInFuncDef("rgb2hsl(*rgb)",
             "Converts the 24 bit RGB color value to HSL.",
-            (e, a) => ColorSpace.RgbToHsl(a[0].AsDecimal).ToArrayVal());
+            (e, a) => ColorSpace.RgbToHsl(a[0].AsDecimal).ToVal());
 
         public readonly BuiltInFuncDef yuv2rgb_3 = new BuiltInFuncDef("yuv2rgb(y, u, v)",
             "Converts Y, U, V to 24 bit RGB color.",
@@ -67,6 +67,6 @@ namespace Shapoco.Calctus.Model.Functions.BuiltIns {
 
         public readonly BuiltInFuncDef unpack565 = new BuiltInFuncDef("unpack565(*x)",
             "Unpacks the RGB565 color to 3 values.",
-            (e, a) => ColorSpace.Unpack565(a[0].AsInt).ToArrayVal());
+            (e, a) => ColorSpace.Unpack565(a[0].AsInt).ToVal());
     }
 }

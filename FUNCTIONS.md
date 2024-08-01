@@ -67,6 +67,17 @@ any([false,true,false])  //--> true
 
 Returns true if tester function `func(x)` returns true for at least one element of the `array`.
 
+### `arrayComp(array0, array1)`
+
+Returns true if all elements of the two arrays are the same.
+
+```
+arrayComp([1,2,3], [1,2,3])   //--> true
+arrayComp([1,2,3], [1,2,3,4]) //--> false
+arrayComp([1,2,3], [1,2,10])  //--> false
+arrayComp([], [])             //--> true
+arrayComp([], [1,2,3])        //--> false
+```
 ### `concat(array0, array1)`
 
 Concatenate array0 and array1.
@@ -240,10 +251,14 @@ Separate the value of `x` into `n` elements of `b` bit width.
 ----
 ## Cast
 
-### `array(s)`
+### `array(x)`
 
-Converts string `s` to an array of character code.
+Converts value `x` to an list.
 
+```
+array([1,2,3]) //--> [1, 2, 3]
+array("abc")   //--> ['a', 'b', 'c']
+```
 ### `rat(*x)`
 
 Rational fraction approximation of `x`.
@@ -347,28 +362,28 @@ Returns day of year of datetime, expressed as 1..366.
 Converts from days to epoch time.
 
 ```
-fromDays(123.45) //--> #+123.10:48:00.000#
+fromDays(123.45) //--> +123.10:48:00.000
 ```
 ### `fromHours(*x)`
 
 Converts from hours to epoch time.
 
 ```
-fromHours(123.45) //--> #+5.3:27:00.000#
+fromHours(123.45) //--> +5.3:27:00.000
 ```
 ### `fromMinutes(*x)`
 
 Converts from minutes to epoch time.
 
 ```
-fromMinutes(123.45) //--> #+2:03:27.000#
+fromMinutes(123.45) //--> +2:03:27.000
 ```
 ### `fromSeconds(*x)`
 
 Converts from seconds to epoch time.
 
 ```
-fromSeconds(123.45) //--> #+0:02:03#
+fromSeconds(123.45) //--> +0:02:03
 ```
 ### `hourOf(*t)`
 

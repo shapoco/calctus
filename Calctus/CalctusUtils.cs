@@ -13,6 +13,9 @@ namespace Shapoco.Calctus {
             else if (val is string) {
                 return "\"" + val + "\"";
             }
+            else if (val is char) {
+                return "'" + val + "'";
+            }
             else {
                 return val.ToString();
             }
