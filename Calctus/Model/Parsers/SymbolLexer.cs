@@ -13,7 +13,7 @@ namespace Shapoco.Calctus.Model.Parsers {
             foreach (OpInfo op in OpInfo.Items) {
                 registerSymbol(TokenType.OperatorSymbol, op.Symbol);
             }
-            registerSymbol(TokenType.GeneralSymbol, "(", ")", "[", "]", ",", "?", ":");
+            registerSymbol(TokenType.GeneralSymbol, "(", ")", "[", "]", ",", "?");
         }
         private void registerSymbol(TokenType type, params string[] symArray) {
             foreach (var sym in symArray) {

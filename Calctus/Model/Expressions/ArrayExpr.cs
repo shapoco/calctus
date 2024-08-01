@@ -8,7 +8,7 @@ namespace Shapoco.Calctus.Model.Expressions {
         public Token Name => Token;
         public readonly Expr[] Elements;
 
-        public ArrayExpr(Token startBracket, Expr[] elms) : base(startBracket) {
+        public ArrayExpr(Token openBracket, Expr[] elms) : base(openBracket) {
             this.Elements = elms;
         }
 

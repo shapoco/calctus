@@ -6,6 +6,7 @@ using System.Threading.Tasks;
 using Shapoco.Calctus.Model.Values;
 using Shapoco.Calctus.Model.Maths;
 using Shapoco.Calctus.Model.Evaluations;
+using Shapoco.Calctus.Model.Expressions;
 
 namespace Shapoco.Calctus.Model.Functions.BuiltIns {
     class ArrayFuncs : BuiltInFuncCategory {
@@ -47,7 +48,10 @@ namespace Shapoco.Calctus.Model.Functions.BuiltIns {
                 var array1 = a[1].ToCollectionVal().ToValArray();
                 if (array0.Length != array1.Length) return BoolVal.False;
                 for (int i =0;i < array0.Length; i++) {
-                    if (!array0[i].Equals(e, array1[i])) return BoolVal.False;
+                    var elmA = array0[i];
+                    var elmB = array1[i];
+                    BinaryOpExpr.TryAutoCast(e, ref elmA, ref elmB);
+                    if (!elmA.Equals(e, elmB)) return BoolVal.False;
                 }
                 return BoolVal.True;
             },

@@ -18,29 +18,42 @@ namespace Shapoco.Calctus.Model.Parsers {
         public TokenQueue Queue => _queue;
 
         public static Expr Parse(string s) => Parse(new Lexer(s).PopToEnd());
-        public static Expr Parse(TokenQueue q) => new Parser(q).Pop(root: true);
+        public static Expr Parse(TokenQueue q) => new Parser(q).Start();
 
         public Parser(TokenQueue queue) {
             _queue = queue;
         }
 
-        public Expr Pop(bool root) {
+        public Expr Start() {
             Token tok;
+            Expr ret;
             if (ReadIf("def", out tok)) {
-                return Def(tok);
+                ret = DefFollowing(tok);
             }
             else {
-                return Expr(root);
+                ret = Expr(true);
             }
+            if (!Eos) throw new ParserError(Read(), "EOS is expected");
+            return ret;
         }
 
-        public Expr Expr(bool root = false) {
+        public Expr DefFollowing(Token first) {
+            var name = Expect(TokenType.Identifier);
+            var parOpen = Expect("(");
+            var args = ArgDefList();
+            Expect(")", parOpen);
+            Expect("=");
+            var body = Expr(allowColon: true);
+            return new DefExpr(first, name, args, body);
+        }
+
+        public Expr Expr(bool allowColon) {
             var vals = new Stack<Expr>();
             var ops = new Stack<BinaryOpExpr>();
 
-            vals.Push(UnaryOpExpr());
+            vals.Push(UnaryOpExpr(allowColon));
 
-            while (!EndOfExpr) {
+            while (!EndOfExpr(allowColon)) {
                 var sym = Read();
                 var rightOp = new BinaryOpExpr(sym, null, null);
                 while (ops.Count > 0 && ops.Peek().OpCode.ComparePriority(rightOp.OpCode) == OpPriorityDir.Left) {
@@ -49,7 +62,7 @@ namespace Shapoco.Calctus.Model.Parsers {
                     vals.Push(new BinaryOpExpr(ops.Pop().Token, a, b));
                 }
                 ops.Push(rightOp);
-                vals.Push(UnaryOpExpr());
+                vals.Push(UnaryOpExpr(allowColon));
             }
 
             while (ops.Count > 0) {
@@ -66,97 +79,89 @@ namespace Shapoco.Calctus.Model.Parsers {
 
             // 条件演算子
             if (ReadIf("?", out Token tok)) {
-                var trueVal = Expr();
+                var trueVal = Expr(allowColon: false);
                 Expect(":");
-                var falseVal = Expr();
+                var falseVal = Expr(allowColon: false);
                 expr = new CondOpExpr(tok, expr, trueVal, falseVal);
             }
 
-            if (root && !Eos) {
-                throw new ParserError(_lastToken, "Operator missing");
-            }
             return expr;
         }
 
-        public Expr UnaryOpExpr() {
-            Token tok;
-            if (ReadIf("*", out tok)) {
-                Expect(TokenType.Identifier, out Token id);
-                return new AsterExpr(tok, new IdExpr(id));
+        public Expr UnaryOpExpr(bool allowColon) {
+            if (ReadIf("*", out Token aster)) {
+                var id = Expect(TokenType.Identifier);
+                return new AsterExpr(aster, new IdExpr(id));
             }
-            else if (ReadIf(TokenType.OperatorSymbol, out tok)) {
-                var expr = UnaryOpExpr();
-                if (expr is LiteralExpr num && num.Value is RealVal val) {
-                    if (tok.Text == OpCodes.Plus.GetSymbol()) {
-                        return expr;
-                    }
-                    else if (tok.Text == OpCodes.ArithInv.GetSymbol()) {
-                        return new LiteralExpr(new RealVal(-val.AsDecimal));
-                    }
-                }
-                return new UnaryOpExpr(tok, expr);
+            else if (ReadIf(TokenType.OperatorSymbol, out Token op)) {
+                var expr = UnaryOpExpr(allowColon);
+                return new UnaryOpExpr(op, expr);
             }
             else {
-                return ElemRefExpr();
+                return ElemRefExpr(allowColon);
             }
         }
 
-        public Expr ElemRefExpr() {
-            var operand = Operand();
-            if (ReadIf("[", out Token tok)) {
-                var from = Expr();
+        public Expr ElemRefExpr(bool allowColon) {
+            var operand = Operand(allowColon);
+            if (ReadIf("[", out Token openBracket)) {
+                var from = Expr(false);
                 Expr to = null;
                 if (ReadIf(":")) {
-                    to = Expr();
+                    to = Expr(false);
                 }
-                Expect("]");
-                return new PartRefExpr(tok, operand, from, to);
+                Expect("]", openBracket);
+                return new PartRefExpr(openBracket, operand, from, to);
             }
             else {
                 return operand;
             }
         }
 
-        public Expr Operand() {
-            Token tok;
-            if (ReadIf("(", out tok)) {
-                return Parenthesis(tok);
+        public Expr Operand(bool allowColon) {
+            if (ReadIf("(", out Token openPar)) {
+                return ParenthesisFollowing(openPar);
             }
-            else if (ReadIf("[", out tok)) {
+            else if (ReadIf("[", out Token openBracket)) {
                 var elms = new List<Expr>();
                 if (!ReadIf("]")) {
-                    elms.Add(Expr());
+                    elms.Add(Expr(true));
                     while (ReadIf(",")) {
-                        elms.Add(Expr());
+                        elms.Add(Expr(true));
                     }
-                    Expect("]");
+                    Expect("]", openBracket);
                 }
-                return new ArrayExpr(tok, elms.ToArray());
+                return new ArrayExpr(openBracket, elms.ToArray());
             }
-            else if (ReadIf(TokenType.Literal, out tok)) {
-                return new LiteralExpr((LiteralToken)tok);
+            else if (ReadIf(TokenType.Literal, out Token literalToken)) {
+                return new LiteralExpr((LiteralToken)literalToken);
             }
-            else if (ReadIf(TokenType.Identifier, out tok)) {
+            else if (ReadIf(TokenType.Identifier, out Token id)) {
                 var args = new List<Expr>();
-                if (ReadIf("(")) {
+                if (ReadIf("(", out Token argListOpen)) {
                     if (!ReadIf(")")) {
-                        args.Add(Expr());
+                        args.Add(Expr(true));
                         while (ReadIf(",")) {
-                            args.Add(Expr());
+                            args.Add(Expr(true));
                         }
-                        Expect(")");
+                        Expect(")", argListOpen);
                     }
-                    return new CallExpr(tok, args.ToArray());
+                    return new CallExpr(id, args.ToArray());
                 }
-                else if (ReadIf("=>", out Token t)) {
-                    return Lambda(new IdExpr[] { new IdExpr(tok) }, t);
+                else if (ReadIf("=>", out Token arrow)) {
+                    return Lambda(new IdExpr[] { new IdExpr(id) }, arrow);
                 }
                 else {
-                    return new IdExpr(tok);
+                    return new IdExpr(id);
                 }
             }
-            else if (EndOfExpr) {
-                throw new ParserError(_lastToken, "Operand missing");
+            else if (EndOfExpr(allowColon)) {
+                if (!allowColon && Peek().Text == ":") {
+                    throw new ParserError(Peek(), "Operator ':' is not allowed in this context.");
+                }
+                else {
+                    throw new ParserError(_lastToken, "Operand missing");
+                }
             }
             else {
                 var nextToken = Peek();
@@ -164,26 +169,27 @@ namespace Shapoco.Calctus.Model.Parsers {
             }
         }
 
-        public Expr Parenthesis(Token first) {
+        public Expr ParenthesisFollowing(Token parOpen) {
             var exprs = new List<Expr>();
             Token t;
             Token firstComma = null;
             if (!ReadIf(")")) {
-                exprs.Add(Expr());
+                exprs.Add(Expr(true));
                 while (ReadIf(",", out t)) {
                     if (firstComma == null) firstComma = t;
-                    exprs.Add(Expr());
+                    exprs.Add(Expr(true));
                 }
-                Expect(")");
+                Expect(")", parOpen);
             }
-            if (ReadIf("=>", out t)) {
-                return Lambda(exprs.ToArray(), t);
+
+            if (ReadIf("=>", out Token arrow)) {
+                return Lambda(exprs.ToArray(), arrow);
             }
             else if (exprs.Count == 1) {
                 return exprs[0];
             }
             else {
-                return new ParenthesisExpr(first, firstComma, exprs.ToArray());
+                throw new ParserError(_lastToken, "Operator '=>' is expected.");
             }
         }
 
@@ -204,18 +210,8 @@ namespace Shapoco.Calctus.Model.Parsers {
                 }
             }
             var argDefs = new ArgDefList(args, VariadicMode.None, vecArgIndex, -1);
-            var body = Expr();
-            return new LambdaExpr(arrow, new UserFuncDef(Token.Empty, argDefs, body));
-        }
-
-        public Expr Def(Token first) {
-            Expect(TokenType.Identifier, out Token name);
-            Expect("(");
-            var args = ArgDefList();
-            Expect(")");
-            Expect("=");
             var body = Expr(true);
-            return new DefExpr(first, name, args, body);
+            return new LambdaExpr(arrow, new UserFuncDef(Token.Empty, argDefs, body));
         }
 
         public ArgDefList ArgDefList() {
@@ -228,11 +224,11 @@ namespace Shapoco.Calctus.Model.Parsers {
                         if (vecArgIndex >= 0) throw new ParserError(aster, "Only one argument is vectorizable.");
                         vecArgIndex = args.Count;
                     }
-                    Expect(TokenType.Identifier, out Token arg);
-                    args.Add(new ArgDef(arg));
+                    var argName = Expect(TokenType.Identifier);
+                    args.Add(new ArgDef(argName));
                 } while (ReadIf(","));
-                if (args.Count > 0 && ReadIf("[")) {
-                    Expect("]");
+                if (args.Count > 0 && ReadIf("[", out Token openBracket)) {
+                    Expect("]", openBracket);
                     Expect("...");
                     if (vecArgIndex >= 0) throw new CalctusError("Variadic argument and vectorizable argument cannot coexist.");
                     mode = VariadicMode.Array;
@@ -286,19 +282,25 @@ namespace Shapoco.Calctus.Model.Parsers {
         public bool Eos
             => Peek().Type == TokenType.Eos;
 
-        public bool EndOfExpr
-            => Eos || (Peek().Text == ")") || (Peek().Text == "]") || (Peek().Text == ",") || (Peek().Text == ":") || (Peek().Text == "?");
-
-        public void Expect(string s) => Expect(s, out _);
-
-        public void Expect(string s, out Token tok) {
-            if (!ReadIf(s, out tok)) {
-                throw new ParserError(Peek(), "Missing: '" + s + "'");
+        public bool EndOfExpr(bool allowColon) =>
+            Eos || (Peek().Text == ")") || (Peek().Text == "]") || (Peek().Text == ",") || (Peek().Text == "?") ||
+            (!allowColon && Peek().Text == ":");
+        
+        public Token Expect(string s, Token errorToken = null) {
+            if (ReadIf(s, out Token tok)) {
+                return tok;
+            }
+            else {
+                if (errorToken == null) errorToken = Peek();
+                throw new ParserError(errorToken, "Missing: '" + s + "'");
             }
         }
 
-        public void Expect(TokenType typ, out Token tok) {
-            if (!ReadIf(typ, out tok)) {
+        public Token Expect(TokenType typ) {
+            if (ReadIf(typ, out Token tok)) {
+                return tok;
+            }
+            else {
                 throw new ParserError(Peek(), "Missing: '" + typ + "'");
             }
         }

@@ -110,7 +110,7 @@ namespace Shapoco.Calctus.Model {
                 case OpCodes.ArithInv: return new OpInfo(OpType.Unary, op, 90, "-");
                 case OpCodes.LogicNot: return new OpInfo(OpType.Unary, op, 90, "!");
                 case OpCodes.BitNot: return new OpInfo(OpType.Unary, op, 90, "~");
-                case OpCodes.Frac: return new OpInfo(OpType.Binary, op, 70, "$");
+                case OpCodes.Frac: return new OpInfo(OpType.Binary, op, 70, ":");
                 case OpCodes.Pow: return new OpInfo(OpType.Binary, op, 62, "^");
                 case OpCodes.Mul: return new OpInfo(OpType.Binary, op, 61, "*");
                 case OpCodes.Div: return new OpInfo(OpType.Binary, op, 61, "/");

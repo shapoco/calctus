@@ -144,7 +144,7 @@ namespace Shapoco.Calctus.Model.Expressions {
                 var b = B.Eval(e);
                 if (a is ListVal aArray && !(b is ListVal)) {
                     // 配列とスカラ値のベクトル演算
-                    var aVals = (Val[])aArray.Raw;
+                    var aVals = aArray.Raw;
                     var results = new Val[aVals.Length];
                     for (int i = 0; i < aVals.Length; i++) {
                         results[i] = scalarOperation(e, aVals[i], b);
@@ -153,7 +153,7 @@ namespace Shapoco.Calctus.Model.Expressions {
                 }
                 else if (!(a is ListVal) && b is ListVal bArray) {
                     // スカラ値と配列のベクトル演算
-                    var bVals = (Val[])bArray.Raw;
+                    var bVals = bArray.Raw;
                     var results = new Val[bVals.Length];
                     for (int i = 0; i < bVals.Length; i++) {
                         results[i] = scalarOperation(e, a, bVals[i]);
@@ -192,13 +192,19 @@ namespace Shapoco.Calctus.Model.Expressions {
             }
         }
 
+        public static bool TryAutoCast(EvalContext e, ref Val a, ref Val b) {
+            if (a.GetType().Equals(b.GetType())) return true;
+            if (TryAutoCast<RealVal, FracVal>(e, ref a, ref b, (e, p) => new FracVal(p.Raw))) return true;
+            if (TryAutoCast<Val, StrVal>(e, ref a, ref b, (e, p) => p.ToStringForValue(e).ToVal())) return true;
+            return false;
+        }
+
         private Val scalarOperation(EvalContext e, Val a, Val b) {
-            if (!a.GetType().Equals(b.GetType())) {
-                if (TryAutoCast<RealVal, FracVal>(e, ref a, ref b, (e, p) => new FracVal(p.Raw))) { }
-                else if (TryAutoCast<Val, StrVal>(e, ref a, ref b, (e, p) => p.ToStringForValue(e).ToVal())) { }
-                else {
-                    throw new InvalidCastException(OpCode + " cannot be applied for " + a.CalctusTypeName + " and " + b.CalctusTypeName);
-                }
+            if (OpCode == OpCodes.Mul && a is StrVal && b is RealVal) {
+                // pass
+            }
+            else if (!TryAutoCast(e, ref a, ref b)) {
+                throw new InvalidCastException(OpCode + " cannot be applied for " + a.CalctusTypeName + " and " + b.CalctusTypeName);
             }
 
             // todo cast str --> array
