@@ -38,7 +38,7 @@ Calctus (カルクタス) is a calculator application for Windows developed for 
 |Binary|`0b1111011`|
 |SI Prefixed|`123k`, `456u`|
 |Binary Prefixed|`123ki`, `456Mi`|
-|Fraction|`2$3`|
+|Fraction|`2:3`|
 |Character|`'A'`|
 |String|`"ABC"`|
 |Date Time|`#2022/34/56 12:34:56#`|
@@ -75,16 +75,16 @@ Calctus (カルクタス) is a calculator application for Windows developed for 
 |:--|--:|
 |`PI`|`3.1415926535897932384626433833`|
 |`E`|`2.7182818284590452353602874714`|
-|`INT_MIN`|`-2,147,483,648`|
-|`INT_MAX`|`2,147,483,647`|
+|`INT_MIN`|`-2_147_483_648`|
+|`INT_MAX`|`2_147_483_647`|
 |`UINT_MIN`|`0`|
-|`UINT_MAX`|`4,294,967,295`|
-|`LONG_MIN`|`-9,223,372,036,854,775,808`|
-|`LONG_MAX`|`9,223,372,036,854,775,807`|
+|`UINT_MAX`|`4_294_967_295`|
+|`LONG_MIN`|`-9_223_372_036_854_775_808`|
+|`LONG_MAX`|`9_223_372_036_854_775_807`|
 |`ULONG_MIN`|`0`|
-|`ULONG_MAX`|`18,446,744,073,709,551,615`|
-|`DECIMAL_MIN`|`-79,228,162,514,264,337,593,543,950,335`|
-|`DECIMAL_MAX`|`79,228,162,514,264,337,593,543,950,335`|
+|`ULONG_MAX`|`18_446_744_073_709_551_615`|
+|`DECIMAL_MIN`|`-79_228_162_514_264_337_593_543_950_335`|
+|`DECIMAL_MAX`|`79_228_162_514_264_337_593_543_950_335`|
 
 User-defined constants can also be used. 
 
