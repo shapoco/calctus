@@ -1,0 +1,372 @@
+<!DOCTYPE html>
+<html class="writer-html5" lang="en" data-content_root="../">
+<head>
+  <meta charset="utf-8" /><meta name="viewport" content="width=device-width, initial-scale=1" />
+
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Array &mdash; Calctus  documentation</title>
+      <link rel="stylesheet" type="text/css" href="../_static/pygments.css?v=80d5e7a1" />
+      <link rel="stylesheet" type="text/css" href="../_static/css/theme.css?v=19f00094" />
+
+  
+  <!--[if lt IE 9]>
+    <script src="../_static/js/html5shiv.min.js"></script>
+  <![endif]-->
+  
+        <script src="../_static/jquery.js?v=5d32c60e"></script>
+        <script src="../_static/_sphinx_javascript_frameworks_compat.js?v=2cd50e6c"></script>
+        <script src="../_static/documentation_options.js?v=5929fcd5"></script>
+        <script src="../_static/doctools.js?v=9a2dae69"></script>
+        <script src="../_static/sphinx_highlight.js?v=dc90522c"></script>
+    <script src="../_static/js/theme.js"></script>
+    <link rel="index" title="Index" href="../genindex.html" />
+    <link rel="search" title="Search" href="../search.html" />
+    <link rel="next" title="Bit/Byte Operation" href="bit_byteoperationfuncs.html" />
+    <link rel="prev" title="Absolute/Sign" href="absolute_signfuncs.html" /> 
+</head>
+
+<body class="wy-body-for-nav"> 
+  <div class="wy-grid-for-nav">
+    <nav data-toggle="wy-nav-shift" class="wy-nav-side">
+      <div class="wy-side-scroll">
+        <div class="wy-side-nav-search" >
+
+          
+          
+          <a href="../index.html" class="icon icon-home">
+            Calctus
+          </a>
+<div role="search">
+  <form id="rtd-search-form" class="wy-form" action="../search.html" method="get">
+    <input type="text" name="q" placeholder="Search docs" aria-label="Search docs" />
+    <input type="hidden" name="check_keywords" value="yes" />
+    <input type="hidden" name="area" value="default" />
+  </form>
+</div>
+        </div><div class="wy-menu wy-menu-vertical" data-spy="affix" role="navigation" aria-label="Navigation menu">
+              <ul class="current">
+<li class="toctree-l1 current"><a class="reference internal" href="index.html">Built-In Functions</a><ul class="current">
+<li class="toctree-l2"><a class="reference internal" href="absolute_signfuncs.html">Absolute/Sign</a></li>
+<li class="toctree-l2 current"><a class="current reference internal" href="#">Array</a><ul>
+<li class="toctree-l3"><a class="reference internal" href="#aggregate-array-func">aggregate(array, func)</a></li>
+<li class="toctree-l3"><a class="reference internal" href="#all-array">all(array)</a></li>
+<li class="toctree-l3"><a class="reference internal" href="#all-array-func">all(array, func)</a></li>
+<li class="toctree-l3"><a class="reference internal" href="#any-array">any(array)</a></li>
+<li class="toctree-l3"><a class="reference internal" href="#any-array-func">any(array, func)</a></li>
+<li class="toctree-l3"><a class="reference internal" href="#arraycomp-array0-array1">arrayComp(array0, array1)</a></li>
+<li class="toctree-l3"><a class="reference internal" href="#concat-array0-array1">concat(array0, array1)</a></li>
+<li class="toctree-l3"><a class="reference internal" href="#contains-array-val">contains(array, *val)</a></li>
+<li class="toctree-l3"><a class="reference internal" href="#count-array-func">count(array, func)</a></li>
+<li class="toctree-l3"><a class="reference internal" href="#except-array0-array1">except(array0, array1)</a></li>
+<li class="toctree-l3"><a class="reference internal" href="#extend-array-func-count">extend(array, func, count)</a></li>
+<li class="toctree-l3"><a class="reference internal" href="#filter-array-func">filter(array, func)</a></li>
+<li class="toctree-l3"><a class="reference internal" href="#indexof-array-val">indexOf(array, *val)</a></li>
+<li class="toctree-l3"><a class="reference internal" href="#intersect-array0-array1">intersect(array0, array1)</a></li>
+<li class="toctree-l3"><a class="reference internal" href="#lastindexof-array-val">lastIndexOf(array, *val)</a></li>
+<li class="toctree-l3"><a class="reference internal" href="#len-array">len(array)</a></li>
+<li class="toctree-l3"><a class="reference internal" href="#map-array-func">map(array, func)</a></li>
+<li class="toctree-l3"><a class="reference internal" href="#range-start-stop">range(start, stop)</a></li>
+<li class="toctree-l3"><a class="reference internal" href="#range-start-stop-step">range(start, stop, step)</a></li>
+<li class="toctree-l3"><a class="reference internal" href="#rangeinclusive-start-stop">rangeInclusive(start, stop)</a></li>
+<li class="toctree-l3"><a class="reference internal" href="#rangeinclusive-start-stop-step">rangeInclusive(start, stop, step)</a></li>
+<li class="toctree-l3"><a class="reference internal" href="#reversearray-array">reverseArray(array)</a></li>
+<li class="toctree-l3"><a class="reference internal" href="#sort-array">sort(array)</a></li>
+<li class="toctree-l3"><a class="reference internal" href="#sort-array-func">sort(array, func)</a></li>
+<li class="toctree-l3"><a class="reference internal" href="#union-array0-array1">union(array0, array1)</a></li>
+<li class="toctree-l3"><a class="reference internal" href="#unique-array">unique(array)</a></li>
+<li class="toctree-l3"><a class="reference internal" href="#unique-array-func">unique(array, func)</a></li>
+</ul>
+</li>
+<li class="toctree-l2"><a class="reference internal" href="bit_byteoperationfuncs.html">Bit/Byte Operation</a></li>
+<li class="toctree-l2"><a class="reference internal" href="castfuncs.html">Cast</a></li>
+<li class="toctree-l2"><a class="reference internal" href="colorfuncs.html">Color</a></li>
+<li class="toctree-l2"><a class="reference internal" href="datetimefuncs.html">Date Time</a></li>
+<li class="toctree-l2"><a class="reference internal" href="eseriesfuncs.html">E Series</a></li>
+<li class="toctree-l2"><a class="reference internal" href="encodingfuncs.html">Encoding</a></li>
+<li class="toctree-l2"><a class="reference internal" href="exponentialfuncs.html">Exponential</a></li>
+<li class="toctree-l2"><a class="reference internal" href="gcd_lcmfuncs.html">Gcd/Lcm</a></li>
+<li class="toctree-l2"><a class="reference internal" href="graycodefuncs.html">Gray Code</a></li>
+<li class="toctree-l2"><a class="reference internal" href="min_maxfuncs.html">Min/Max</a></li>
+<li class="toctree-l2"><a class="reference internal" href="parity_eccfuncs.html">Parity/Ecc</a></li>
+<li class="toctree-l2"><a class="reference internal" href="plottingfuncs.html">Plotting</a></li>
+<li class="toctree-l2"><a class="reference internal" href="primenumberfuncs.html">Prime Number</a></li>
+<li class="toctree-l2"><a class="reference internal" href="randomfuncs.html">Random</a></li>
+<li class="toctree-l2"><a class="reference internal" href="representaionfuncs.html">Representaion</a></li>
+<li class="toctree-l2"><a class="reference internal" href="roundingfuncs.html">Rounding</a></li>
+<li class="toctree-l2"><a class="reference internal" href="solvefuncs.html">Solve</a></li>
+<li class="toctree-l2"><a class="reference internal" href="stringfuncs.html">String</a></li>
+<li class="toctree-l2"><a class="reference internal" href="sum_averagefuncs.html">Sum/Average</a></li>
+<li class="toctree-l2"><a class="reference internal" href="systemfuncs.html">System</a></li>
+<li class="toctree-l2"><a class="reference internal" href="trigonometricfuncs.html">Trigonometric</a></li>
+</ul>
+</li>
+</ul>
+
+        </div>
+      </div>
+    </nav>
+
+    <section data-toggle="wy-nav-shift" class="wy-nav-content-wrap"><nav class="wy-nav-top" aria-label="Mobile navigation menu" >
+          <i data-toggle="wy-nav-top" class="fa fa-bars"></i>
+          <a href="../index.html">Calctus</a>
+      </nav>
+
+      <div class="wy-nav-content">
+        <div class="rst-content">
+          <div role="navigation" aria-label="Page navigation">
+  <ul class="wy-breadcrumbs">
+      <li><a href="../index.html" class="icon icon-home" aria-label="Home"></a></li>
+          <li class="breadcrumb-item"><a href="index.html">Built-In Functions</a></li>
+      <li class="breadcrumb-item active">Array</li>
+      <li class="wy-breadcrumbs-aside">
+            <a href="../_sources/functions/arrayfuncs.rst.txt" rel="nofollow"> View page source</a>
+      </li>
+  </ul>
+  <hr/>
+</div>
+          <div role="main" class="document" itemscope="itemscope" itemtype="http://schema.org/Article">
+           <div itemprop="articleBody">
+             
+  <section id="array">
+<h1>Array<a class="headerlink" href="#array" title="Link to this heading"></a></h1>
+<section id="aggregate-array-func">
+<h2>aggregate(array, func)<a class="headerlink" href="#aggregate-array-func" title="Link to this heading"></a></h2>
+<p>Apply the aggregate function <cite>func(a,b)</cite> for the <cite>array</cite>.</p>
+<div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="n">aggregate</span><span class="p">([</span><span class="mi">1</span><span class="p">,</span><span class="mi">2</span><span class="p">,</span><span class="mi">3</span><span class="p">,</span><span class="mi">4</span><span class="p">,</span><span class="mi">5</span><span class="p">],(</span><span class="n">a</span><span class="p">,</span><span class="n">b</span><span class="p">)</span><span class="o">=&gt;</span><span class="n">a</span><span class="o">+</span><span class="n">b</span><span class="p">)</span>
+                         <span class="o">//--&gt;</span> <span class="mi">15</span>
+</pre></div>
+</div>
+</section>
+<section id="all-array">
+<h2>all(array)<a class="headerlink" href="#all-array" title="Link to this heading"></a></h2>
+<p>Returns true if all <cite>array</cite> elements are true.</p>
+<div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="nb">all</span><span class="p">([</span><span class="n">true</span><span class="p">,</span><span class="n">false</span><span class="p">,</span><span class="n">true</span><span class="p">])</span> <span class="o">//--&gt;</span> <span class="n">false</span>
+<span class="nb">all</span><span class="p">([</span><span class="n">true</span><span class="p">,</span><span class="n">true</span><span class="p">,</span><span class="n">true</span><span class="p">])</span>  <span class="o">//--&gt;</span> <span class="n">true</span>
+</pre></div>
+</div>
+</section>
+<section id="all-array-func">
+<h2>all(array, func)<a class="headerlink" href="#all-array-func" title="Link to this heading"></a></h2>
+<p>Returns true if tester function <cite>func(x)</cite> returns true for all elements of the <cite>array</cite>.</p>
+<div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="nb">all</span><span class="p">([</span><span class="mi">2</span><span class="p">,</span><span class="mi">3</span><span class="p">,</span><span class="mi">5</span><span class="p">,</span><span class="mi">7</span><span class="p">],</span><span class="n">isPrime</span><span class="p">)</span>   <span class="o">//--&gt;</span> <span class="n">true</span>
+<span class="nb">all</span><span class="p">([</span><span class="mi">2</span><span class="p">,</span><span class="mi">3</span><span class="p">,</span><span class="mi">5</span><span class="p">,</span><span class="mi">7</span><span class="p">,</span><span class="mi">9</span><span class="p">],</span><span class="n">isPrime</span><span class="p">)</span> <span class="o">//--&gt;</span> <span class="n">false</span>
+</pre></div>
+</div>
+</section>
+<section id="any-array">
+<h2>any(array)<a class="headerlink" href="#any-array" title="Link to this heading"></a></h2>
+<p>Returns true if at least one element is true.</p>
+<div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="nb">any</span><span class="p">([</span><span class="n">false</span><span class="p">,</span><span class="n">false</span><span class="p">,</span><span class="n">false</span><span class="p">])</span> <span class="o">//--&gt;</span> <span class="n">false</span>
+<span class="nb">any</span><span class="p">([</span><span class="n">false</span><span class="p">,</span><span class="n">true</span><span class="p">,</span><span class="n">false</span><span class="p">])</span>  <span class="o">//--&gt;</span> <span class="n">true</span>
+</pre></div>
+</div>
+</section>
+<section id="any-array-func">
+<h2>any(array, func)<a class="headerlink" href="#any-array-func" title="Link to this heading"></a></h2>
+<p>Returns true if tester function <cite>func(x)</cite> returns true for at least one element of the <cite>array</cite>.</p>
+<div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="nb">any</span><span class="p">([</span><span class="mi">1</span><span class="p">,</span><span class="mi">2</span><span class="p">,</span><span class="mi">3</span><span class="p">,</span><span class="mi">4</span><span class="p">,</span><span class="mi">5</span><span class="p">],</span><span class="n">x</span><span class="o">=&gt;</span><span class="n">x</span><span class="o">%</span><span class="mi">2</span><span class="o">==</span><span class="mi">0</span><span class="p">)</span> <span class="o">//--&gt;</span> <span class="n">true</span>
+<span class="nb">any</span><span class="p">([</span><span class="mi">1</span><span class="p">,</span><span class="mi">3</span><span class="p">,</span><span class="mi">5</span><span class="p">,</span><span class="mi">7</span><span class="p">,</span><span class="mi">9</span><span class="p">],</span><span class="n">x</span><span class="o">=&gt;</span><span class="n">x</span><span class="o">%</span><span class="mi">2</span><span class="o">==</span><span class="mi">0</span><span class="p">)</span> <span class="o">//--&gt;</span> <span class="n">false</span>
+</pre></div>
+</div>
+</section>
+<section id="arraycomp-array0-array1">
+<h2>arrayComp(array0, array1)<a class="headerlink" href="#arraycomp-array0-array1" title="Link to this heading"></a></h2>
+<p>Returns true if all elements of the two arrays are the same.</p>
+<div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="n">arrayComp</span><span class="p">([</span><span class="mi">1</span><span class="p">,</span><span class="mi">2</span><span class="p">,</span><span class="mi">3</span><span class="p">],</span> <span class="p">[</span><span class="mi">1</span><span class="p">,</span><span class="mi">2</span><span class="p">,</span><span class="mi">3</span><span class="p">])</span>   <span class="o">//--&gt;</span> <span class="n">true</span>
+<span class="n">arrayComp</span><span class="p">([</span><span class="mi">1</span><span class="p">,</span><span class="mi">2</span><span class="p">,</span><span class="mi">3</span><span class="p">],</span> <span class="p">[</span><span class="mi">1</span><span class="p">,</span><span class="mi">2</span><span class="p">,</span><span class="mi">3</span><span class="p">,</span><span class="mi">4</span><span class="p">])</span> <span class="o">//--&gt;</span> <span class="n">false</span>
+<span class="n">arrayComp</span><span class="p">([</span><span class="mi">1</span><span class="p">,</span><span class="mi">2</span><span class="p">,</span><span class="mi">3</span><span class="p">],</span> <span class="p">[</span><span class="mi">1</span><span class="p">,</span><span class="mi">2</span><span class="p">,</span><span class="mi">10</span><span class="p">])</span>  <span class="o">//--&gt;</span> <span class="n">false</span>
+<span class="n">arrayComp</span><span class="p">([],</span> <span class="p">[])</span>             <span class="o">//--&gt;</span> <span class="n">true</span>
+<span class="n">arrayComp</span><span class="p">([],</span> <span class="p">[</span><span class="mi">1</span><span class="p">,</span><span class="mi">2</span><span class="p">,</span><span class="mi">3</span><span class="p">])</span>        <span class="o">//--&gt;</span> <span class="n">false</span>
+</pre></div>
+</div>
+</section>
+<section id="concat-array0-array1">
+<h2>concat(array0, array1)<a class="headerlink" href="#concat-array0-array1" title="Link to this heading"></a></h2>
+<p>Concatenate array0 and array1.</p>
+<div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="n">concat</span><span class="p">([</span><span class="mi">1</span><span class="p">,</span><span class="mi">2</span><span class="p">,</span><span class="mi">3</span><span class="p">],[</span><span class="mi">4</span><span class="p">,</span><span class="mi">5</span><span class="p">,</span><span class="mi">6</span><span class="p">])</span> <span class="o">//--&gt;</span> <span class="p">[</span><span class="mi">1</span><span class="p">,</span> <span class="mi">2</span><span class="p">,</span> <span class="mi">3</span><span class="p">,</span> <span class="mi">4</span><span class="p">,</span> <span class="mi">5</span><span class="p">,</span> <span class="mi">6</span><span class="p">]</span>
+</pre></div>
+</div>
+</section>
+<section id="contains-array-val">
+<h2>contains(array, <a href="#id1"><span class="problematic" id="id2">*</span></a>val)<a class="headerlink" href="#contains-array-val" title="Link to this heading"></a></h2>
+<p>Returns whether the <cite>array</cite> contains <cite>val</cite>.</p>
+<div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="n">contains</span><span class="p">([</span><span class="mi">8</span><span class="p">,</span><span class="mi">1</span><span class="p">,</span><span class="mi">4</span><span class="p">,</span><span class="mi">0</span><span class="p">,</span><span class="mi">7</span><span class="p">,</span><span class="mi">2</span><span class="p">,</span><span class="mi">5</span><span class="p">,</span><span class="mi">4</span><span class="p">,</span><span class="mi">3</span><span class="p">],</span><span class="mi">4</span><span class="p">)</span> <span class="o">//--&gt;</span> <span class="n">true</span>
+<span class="n">contains</span><span class="p">([</span><span class="mi">8</span><span class="p">,</span><span class="mi">1</span><span class="p">,</span><span class="mi">4</span><span class="p">,</span><span class="mi">0</span><span class="p">,</span><span class="mi">7</span><span class="p">,</span><span class="mi">2</span><span class="p">,</span><span class="mi">5</span><span class="p">,</span><span class="mi">4</span><span class="p">,</span><span class="mi">3</span><span class="p">],</span><span class="mi">6</span><span class="p">)</span> <span class="o">//--&gt;</span> <span class="n">false</span>
+</pre></div>
+</div>
+</section>
+<section id="count-array-func">
+<h2>count(array, func)<a class="headerlink" href="#count-array-func" title="Link to this heading"></a></h2>
+<p>Count specific elements in the <cite>array</cite> using a tester function <cite>func(x)</cite>.</p>
+<div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="n">count</span><span class="p">(</span><span class="mf">0..10</span><span class="p">,</span><span class="n">x</span><span class="o">=&gt;</span><span class="n">x</span><span class="o">%</span><span class="mi">3</span><span class="o">==</span><span class="mi">0</span><span class="p">)</span> <span class="o">//--&gt;</span> <span class="mi">4</span>
+</pre></div>
+</div>
+</section>
+<section id="except-array0-array1">
+<h2>except(array0, array1)<a class="headerlink" href="#except-array0-array1" title="Link to this heading"></a></h2>
+<p>Returns the difference set of the two arrays.</p>
+<div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="k">except</span><span class="p">(</span><span class="mf">0..10</span><span class="p">,[</span><span class="mi">1</span><span class="p">,</span><span class="mi">4</span><span class="p">,</span><span class="mi">7</span><span class="p">,</span><span class="mi">10</span><span class="p">,</span><span class="mi">13</span><span class="p">,</span><span class="mi">16</span><span class="p">])</span> <span class="o">//--&gt;</span> <span class="p">[</span><span class="mi">0</span><span class="p">,</span> <span class="mi">2</span><span class="p">,</span> <span class="mi">3</span><span class="p">,</span> <span class="mi">5</span><span class="p">,</span> <span class="mi">6</span><span class="p">,</span> <span class="mi">8</span><span class="p">,</span> <span class="mi">9</span><span class="p">]</span>
+</pre></div>
+</div>
+</section>
+<section id="extend-array-func-count">
+<h2>extend(array, func, count)<a class="headerlink" href="#extend-array-func-count" title="Link to this heading"></a></h2>
+<p>Extends the <cite>array</cite> using converter function <cite>func(array)</cite>.</p>
+<div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="n">extend</span><span class="p">([</span><span class="mi">0</span><span class="p">,</span><span class="mi">1</span><span class="p">],</span><span class="n">a</span><span class="o">=&gt;</span><span class="n">a</span><span class="p">[</span><span class="o">-</span><span class="mi">2</span><span class="p">]</span><span class="o">+</span><span class="n">a</span><span class="p">[</span><span class="o">-</span><span class="mi">1</span><span class="p">],</span><span class="mi">5</span><span class="p">)</span> <span class="o">//--&gt;</span> <span class="p">[</span><span class="mi">0</span><span class="p">,</span> <span class="mi">1</span><span class="p">,</span> <span class="mi">1</span><span class="p">,</span> <span class="mi">2</span><span class="p">,</span> <span class="mi">3</span><span class="p">,</span> <span class="mi">5</span><span class="p">,</span> <span class="mi">8</span><span class="p">]</span>
+</pre></div>
+</div>
+</section>
+<section id="filter-array-func">
+<h2>filter(array, func)<a class="headerlink" href="#filter-array-func" title="Link to this heading"></a></h2>
+<p>Filter the <cite>array</cite> using a tester function <cite>func(x)</cite>.</p>
+<div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="nb">filter</span><span class="p">(</span><span class="mf">0..10</span><span class="p">,</span><span class="n">x</span><span class="o">=&gt;</span><span class="n">x</span><span class="o">%</span><span class="mi">3</span><span class="o">==</span><span class="mi">0</span><span class="p">)</span> <span class="o">//--&gt;</span> <span class="p">[</span><span class="mi">0</span><span class="p">,</span> <span class="mi">3</span><span class="p">,</span> <span class="mi">6</span><span class="p">,</span> <span class="mi">9</span><span class="p">]</span>
+</pre></div>
+</div>
+</section>
+<section id="indexof-array-val">
+<h2>indexOf(array, <a href="#id3"><span class="problematic" id="id4">*</span></a>val)<a class="headerlink" href="#indexof-array-val" title="Link to this heading"></a></h2>
+<p>Returns the index of the first element in the <cite>array</cite> whose value matches <cite>val</cite>.</p>
+<div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="n">indexOf</span><span class="p">([</span><span class="mi">8</span><span class="p">,</span><span class="mi">1</span><span class="p">,</span><span class="mi">4</span><span class="p">,</span><span class="mi">0</span><span class="p">,</span><span class="mi">7</span><span class="p">,</span><span class="mi">2</span><span class="p">,</span><span class="mi">5</span><span class="p">,</span><span class="mi">4</span><span class="p">,</span><span class="mi">3</span><span class="p">],</span><span class="mi">4</span><span class="p">)</span> <span class="o">//--&gt;</span> <span class="mi">2</span>
+<span class="n">indexOf</span><span class="p">([</span><span class="mi">8</span><span class="p">,</span><span class="mi">1</span><span class="p">,</span><span class="mi">4</span><span class="p">,</span><span class="mi">0</span><span class="p">,</span><span class="mi">7</span><span class="p">,</span><span class="mi">2</span><span class="p">,</span><span class="mi">5</span><span class="p">,</span><span class="mi">4</span><span class="p">,</span><span class="mi">3</span><span class="p">],</span><span class="mi">6</span><span class="p">)</span> <span class="o">//--&gt;</span> <span class="o">-</span><span class="mi">1</span>
+</pre></div>
+</div>
+</section>
+<section id="intersect-array0-array1">
+<h2>intersect(array0, array1)<a class="headerlink" href="#intersect-array0-array1" title="Link to this heading"></a></h2>
+<p>Returns the product set of the two arrays.</p>
+<div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="n">intersect</span><span class="p">(</span><span class="mf">0..10</span><span class="p">,[</span><span class="mi">1</span><span class="p">,</span><span class="mi">4</span><span class="p">,</span><span class="mi">7</span><span class="p">,</span><span class="mi">10</span><span class="p">,</span><span class="mi">13</span><span class="p">,</span><span class="mi">16</span><span class="p">])</span>
+                         <span class="o">//--&gt;</span> <span class="p">[</span><span class="mi">1</span><span class="p">,</span> <span class="mi">4</span><span class="p">,</span> <span class="mi">7</span><span class="p">]</span>
+</pre></div>
+</div>
+</section>
+<section id="lastindexof-array-val">
+<h2>lastIndexOf(array, <a href="#id5"><span class="problematic" id="id6">*</span></a>val)<a class="headerlink" href="#lastindexof-array-val" title="Link to this heading"></a></h2>
+<p>Returns the index of the last element in the <cite>array</cite> whose value matches <cite>val</cite>.</p>
+<div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="n">lastIndexOf</span><span class="p">([</span><span class="mi">8</span><span class="p">,</span><span class="mi">1</span><span class="p">,</span><span class="mi">4</span><span class="p">,</span><span class="mi">0</span><span class="p">,</span><span class="mi">7</span><span class="p">,</span><span class="mi">2</span><span class="p">,</span><span class="mi">5</span><span class="p">,</span><span class="mi">4</span><span class="p">,</span><span class="mi">3</span><span class="p">],</span><span class="mi">4</span><span class="p">)</span>
+                          <span class="o">//--&gt;</span> <span class="mi">7</span>
+<span class="n">lastIndexOf</span><span class="p">([</span><span class="mi">8</span><span class="p">,</span><span class="mi">1</span><span class="p">,</span><span class="mi">4</span><span class="p">,</span><span class="mi">0</span><span class="p">,</span><span class="mi">7</span><span class="p">,</span><span class="mi">2</span><span class="p">,</span><span class="mi">5</span><span class="p">,</span><span class="mi">4</span><span class="p">,</span><span class="mi">3</span><span class="p">],</span><span class="mi">6</span><span class="p">)</span>
+                          <span class="o">//--&gt;</span> <span class="o">-</span><span class="mi">1</span>
+</pre></div>
+</div>
+</section>
+<section id="len-array">
+<h2>len(array)<a class="headerlink" href="#len-array" title="Link to this heading"></a></h2>
+<p>Length of <cite>array</cite></p>
+<div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="nb">len</span><span class="p">([])</span>            <span class="o">//--&gt;</span> <span class="mi">0</span>
+<span class="nb">len</span><span class="p">([</span><span class="mi">12</span><span class="p">,</span><span class="mi">34</span><span class="p">,</span><span class="mi">56</span><span class="p">,</span><span class="mi">78</span><span class="p">])</span> <span class="o">//--&gt;</span> <span class="mi">4</span>
+<span class="nb">len</span><span class="p">(</span><span class="s2">&quot;Hello&quot;</span><span class="p">)</span>       <span class="o">//--&gt;</span> <span class="mi">5</span>
+</pre></div>
+</div>
+</section>
+<section id="map-array-func">
+<h2>map(array, func)<a class="headerlink" href="#map-array-func" title="Link to this heading"></a></h2>
+<p>Map the <cite>array</cite> using a converter function <cite>func(x)</cite>.</p>
+<div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="nb">map</span><span class="p">(</span><span class="mf">0..5</span><span class="p">,</span><span class="n">x</span><span class="o">=&gt;</span><span class="n">x</span><span class="o">*</span><span class="n">x</span><span class="p">)</span> <span class="o">//--&gt;</span> <span class="p">[</span><span class="mi">0</span><span class="p">,</span> <span class="mi">1</span><span class="p">,</span> <span class="mi">4</span><span class="p">,</span> <span class="mi">9</span><span class="p">,</span> <span class="mi">16</span><span class="p">]</span>
+</pre></div>
+</div>
+</section>
+<section id="range-start-stop">
+<h2>range(start, stop)<a class="headerlink" href="#range-start-stop" title="Link to this heading"></a></h2>
+<p>Returns an array consists of sequence of numbers greater than or equal to <cite>start</cite> and less than <cite>stop</cite>.</p>
+<div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="nb">range</span><span class="p">(</span><span class="mi">3</span><span class="p">,</span><span class="mi">9</span><span class="p">)</span> <span class="o">//--&gt;</span> <span class="p">[</span><span class="mi">3</span><span class="p">,</span> <span class="mi">4</span><span class="p">,</span> <span class="mi">5</span><span class="p">,</span> <span class="mi">6</span><span class="p">,</span> <span class="mi">7</span><span class="p">,</span> <span class="mi">8</span><span class="p">]</span>
+</pre></div>
+</div>
+</section>
+<section id="range-start-stop-step">
+<h2>range(start, stop, step)<a class="headerlink" href="#range-start-stop-step" title="Link to this heading"></a></h2>
+<p>Returns an array consists of sequence of numbers greater than or equal to <cite>start</cite> and less than <cite>stop</cite> with common difference <cite>step</cite>.</p>
+<div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="nb">range</span><span class="p">(</span><span class="mi">3</span><span class="p">,</span><span class="mi">9</span><span class="p">,</span><span class="mi">2</span><span class="p">)</span> <span class="o">//--&gt;</span> <span class="p">[</span><span class="mi">3</span><span class="p">,</span> <span class="mi">5</span><span class="p">,</span> <span class="mi">7</span><span class="p">]</span>
+</pre></div>
+</div>
+</section>
+<section id="rangeinclusive-start-stop">
+<h2>rangeInclusive(start, stop)<a class="headerlink" href="#rangeinclusive-start-stop" title="Link to this heading"></a></h2>
+<p>Returns an array consists of sequence of numbers greater than or equal to <cite>start</cite> and less than or equal to <cite>stop</cite>.</p>
+<div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="n">rangeInclusive</span><span class="p">(</span><span class="mi">3</span><span class="p">,</span><span class="mi">9</span><span class="p">)</span> <span class="o">//--&gt;</span> <span class="p">[</span><span class="mi">3</span><span class="p">,</span> <span class="mi">4</span><span class="p">,</span> <span class="mi">5</span><span class="p">,</span> <span class="mi">6</span><span class="p">,</span> <span class="mi">7</span><span class="p">,</span> <span class="mi">8</span><span class="p">,</span> <span class="mi">9</span><span class="p">]</span>
+</pre></div>
+</div>
+</section>
+<section id="rangeinclusive-start-stop-step">
+<h2>rangeInclusive(start, stop, step)<a class="headerlink" href="#rangeinclusive-start-stop-step" title="Link to this heading"></a></h2>
+<p>Returns an array consists of sequence of numbers greater than or equal to <cite>start</cite> and less than or equal to <cite>stop</cite> with common difference <cite>step</cite>.</p>
+<div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="n">rangeInclusive</span><span class="p">(</span><span class="mi">3</span><span class="p">,</span><span class="mi">9</span><span class="p">,</span><span class="mi">2</span><span class="p">)</span> <span class="o">//--&gt;</span> <span class="p">[</span><span class="mi">3</span><span class="p">,</span> <span class="mi">5</span><span class="p">,</span> <span class="mi">7</span><span class="p">,</span> <span class="mi">9</span><span class="p">]</span>
+</pre></div>
+</div>
+</section>
+<section id="reversearray-array">
+<h2>reverseArray(array)<a class="headerlink" href="#reversearray-array" title="Link to this heading"></a></h2>
+<p>Reverses the order of elements of <cite>array</cite></p>
+<div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="n">reverseArray</span><span class="p">([</span><span class="mi">12</span><span class="p">,</span><span class="mi">3</span><span class="p">,</span><span class="mi">4567</span><span class="p">,</span><span class="mi">890</span><span class="p">])</span> <span class="o">//--&gt;</span> <span class="p">[</span><span class="mi">890</span><span class="p">,</span> <span class="mi">4567</span><span class="p">,</span> <span class="mi">3</span><span class="p">,</span> <span class="mi">12</span><span class="p">]</span>
+</pre></div>
+</div>
+</section>
+<section id="sort-array">
+<h2>sort(array)<a class="headerlink" href="#sort-array" title="Link to this heading"></a></h2>
+<p>Sort the <cite>array</cite>.</p>
+<div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="n">sort</span><span class="p">([</span><span class="mi">4</span><span class="p">,</span><span class="mi">3</span><span class="p">,</span><span class="mi">5</span><span class="p">,</span><span class="mi">1</span><span class="p">,</span><span class="mi">2</span><span class="p">])</span> <span class="o">//--&gt;</span> <span class="p">[</span><span class="mi">1</span><span class="p">,</span> <span class="mi">2</span><span class="p">,</span> <span class="mi">3</span><span class="p">,</span> <span class="mi">4</span><span class="p">,</span> <span class="mi">5</span><span class="p">]</span>
+</pre></div>
+</div>
+</section>
+<section id="sort-array-func">
+<h2>sort(array, func)<a class="headerlink" href="#sort-array-func" title="Link to this heading"></a></h2>
+<p>Sort the <cite>array</cite> using a evaluator function <cite>func(x)</cite>.</p>
+<div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="n">sort</span><span class="p">([</span><span class="mi">14</span><span class="p">,</span><span class="mi">23</span><span class="p">,</span><span class="mi">35</span><span class="p">,</span><span class="mi">41</span><span class="p">,</span><span class="mi">52</span><span class="p">],</span><span class="n">x</span><span class="o">=&gt;</span><span class="n">x</span><span class="o">%</span><span class="mi">10</span><span class="p">)</span> <span class="o">//--&gt;</span> <span class="p">[</span><span class="mi">41</span><span class="p">,</span> <span class="mi">52</span><span class="p">,</span> <span class="mi">23</span><span class="p">,</span> <span class="mi">14</span><span class="p">,</span> <span class="mi">35</span><span class="p">]</span>
+</pre></div>
+</div>
+</section>
+<section id="union-array0-array1">
+<h2>union(array0, array1)<a class="headerlink" href="#union-array0-array1" title="Link to this heading"></a></h2>
+<p>Returns the union of the two arrays.</p>
+<div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="n">union</span><span class="p">(</span><span class="mf">0..10</span><span class="p">,[</span><span class="mi">1</span><span class="p">,</span><span class="mi">4</span><span class="p">,</span><span class="mi">7</span><span class="p">,</span><span class="mi">10</span><span class="p">,</span><span class="mi">13</span><span class="p">,</span><span class="mi">16</span><span class="p">])</span> <span class="o">//--&gt;</span> <span class="p">[</span><span class="mi">0</span><span class="p">,</span> <span class="mi">1</span><span class="p">,</span> <span class="mi">2</span><span class="p">,</span> <span class="mi">3</span><span class="p">,</span> <span class="mi">4</span><span class="p">,</span> <span class="mi">5</span><span class="p">,</span> <span class="mi">6</span><span class="p">,</span> <span class="mi">7</span><span class="p">,</span> <span class="mi">8</span><span class="p">,</span> <span class="mi">9</span><span class="p">,</span> <span class="mi">10</span><span class="p">,</span> <span class="mi">13</span><span class="p">,</span> <span class="mi">16</span><span class="p">]</span>
+</pre></div>
+</div>
+</section>
+<section id="unique-array">
+<h2>unique(array)<a class="headerlink" href="#unique-array" title="Link to this heading"></a></h2>
+<p>Returns an array of unique elements.</p>
+<div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="n">unique</span><span class="p">([</span><span class="mi">3</span><span class="p">,</span><span class="mi">0</span><span class="p">,</span><span class="mi">1</span><span class="p">,</span><span class="mi">2</span><span class="p">,</span><span class="mi">2</span><span class="p">,</span><span class="mi">1</span><span class="p">,</span><span class="mi">3</span><span class="p">,</span><span class="mi">4</span><span class="p">])</span> <span class="o">//--&gt;</span> <span class="p">[</span><span class="mi">3</span><span class="p">,</span> <span class="mi">0</span><span class="p">,</span> <span class="mi">1</span><span class="p">,</span> <span class="mi">2</span><span class="p">,</span> <span class="mi">4</span><span class="p">]</span>
+</pre></div>
+</div>
+</section>
+<section id="unique-array-func">
+<h2>unique(array, func)<a class="headerlink" href="#unique-array-func" title="Link to this heading"></a></h2>
+<p>Return unique elements using evaluator function <cite>func(x)</cite>.</p>
+<div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="n">unique</span><span class="p">([</span><span class="mi">13</span><span class="p">,</span><span class="mi">20</span><span class="p">,</span><span class="mi">31</span><span class="p">,</span><span class="mi">42</span><span class="p">,</span><span class="mi">52</span><span class="p">,</span><span class="mi">61</span><span class="p">,</span><span class="mi">73</span><span class="p">,</span><span class="mi">84</span><span class="p">],(</span><span class="n">a</span><span class="p">,</span><span class="n">b</span><span class="p">)</span><span class="o">=&gt;</span><span class="n">a</span><span class="o">%</span><span class="mi">10</span><span class="o">==</span><span class="n">b</span><span class="o">%</span><span class="mi">10</span><span class="p">)</span>
+                                       <span class="o">//--&gt;</span> <span class="p">[</span><span class="mi">13</span><span class="p">,</span> <span class="mi">20</span><span class="p">,</span> <span class="mi">31</span><span class="p">,</span> <span class="mi">42</span><span class="p">,</span> <span class="mi">84</span><span class="p">]</span>
+</pre></div>
+</div>
+</section>
+</section>
+
+
+           </div>
+          </div>
+          <footer><div class="rst-footer-buttons" role="navigation" aria-label="Footer">
+        <a href="absolute_signfuncs.html" class="btn btn-neutral float-left" title="Absolute/Sign" accesskey="p" rel="prev"><span class="fa fa-arrow-circle-left" aria-hidden="true"></span> Previous</a>
+        <a href="bit_byteoperationfuncs.html" class="btn btn-neutral float-right" title="Bit/Byte Operation" accesskey="n" rel="next">Next <span class="fa fa-arrow-circle-right" aria-hidden="true"></span></a>
+    </div>
+
+  <hr/>
+
+  <div role="contentinfo">
+    <p>&#169; Copyright 2024, Shapoco.</p>
+  </div>
+
+  Built with <a href="https://www.sphinx-doc.org/">Sphinx</a> using a
+    <a href="https://github.com/readthedocs/sphinx_rtd_theme">theme</a>
+    provided by <a href="https://readthedocs.org">Read the Docs</a>.
+   
+
+</footer>
+        </div>
+      </div>
+    </section>
+  </div>
+  <script>
+      jQuery(function () {
+          SphinxRtdTheme.Navigation.enable(true);
+      });
+  </script> 
+
+</body>
+</html>
