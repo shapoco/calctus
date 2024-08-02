@@ -29,6 +29,7 @@ $(INDEX_HTML): $(DEPENDENCY_LIST)
 	rm -rf $(OUTPUT_DIR)
 	mkdir -p $(OUTPUT_DIR)
 	cp -rp $(PROJECT_DIR)/build/html/* $(OUTPUT_DIR)
+	cp -p $(PROJECT_DIR)/build/html/.nojekyll $(OUTPUT_DIR)/.
 	find $(OUTPUT_DIR) -exec touch {} +
 
 docker_build:
@@ -53,3 +54,9 @@ test: $(INDEX_HTML)
 clean:
 	rm -rf $(PROJECT_DIR)/build/html
 	rm -rf $(OUTPUT_DIR)
+	docker run \
+		--rm \
+		--user $(shell id -u):$(shell id -g) \
+		-v $(WORK_DIR)/$(PROJECT_DIR):/docs \
+		$(CONTAINER_NAME) \
+		make clean
