@@ -1,0 +1,2 @@
+assert(fromGray(0b1111)==0b1010)
+assert(toGray(0b1111)==0b1000)

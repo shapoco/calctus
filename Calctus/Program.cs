@@ -16,17 +16,17 @@ namespace Shapoco.Calctus
         static void Main()
         {
 #if DEBUG
-            Shapoco.Calctus.Parser.Lexer.Test("1+2*3/4//5");
-            Shapoco.Calctus.Parser.Parser.Test("2");
-            Shapoco.Calctus.Parser.Parser.Test("2+3");
-            Shapoco.Calctus.Parser.Parser.Test("2+3*4");
-            Shapoco.Calctus.Parser.Parser.Test("2*3+4");
-            Shapoco.Calctus.Parser.Parser.Test("(2+3)*4");
-            Shapoco.Calctus.Parser.Parser.Test("2*(3+4)");
+            Model.Formats.NumberFormatter.Test();
+            Model.Standards.PreferredNumbers.Test();
+            Model.Types.ufixed113.Test();
+            Model.Types.quad.Test();
+            Model.Mathematics.QMath.Test();
+            Model.Functions.BuiltInFuncDef.GenerateDocumentation();
 #endif
             Application.EnableVisualStyles();
             Application.SetCompatibleTextRenderingDefault(false);
             Application.Run(new UI.MainForm());
+            Settings.Instance.Save();
         }
     }
 }

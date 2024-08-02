@@ -1,0 +1,5 @@
+ratio=3.3/5
+assert(all(esRatio(3,ratio)==[10,4.7]))
+assert(all(esRatio(6,ratio)==[6.8,3.3]))
+assert(all(esRatio(12,ratio)==[2.2,1.2]))
+assert(all(esRatio(24,ratio)==[9.1,4.7]))

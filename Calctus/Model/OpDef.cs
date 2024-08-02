@@ -5,6 +5,8 @@ using System.Text;
 using System.Threading.Tasks;
 
 using Shapoco.Calctus;
+using Shapoco.Calctus.Model.Parsers;
+using Shapoco.Calctus.Model.Expressions;
 
 namespace Shapoco.Calctus.Model {
 
@@ -26,8 +28,10 @@ namespace Shapoco.Calctus.Model {
         // ネイティブ演算子の定義
         public static OpDef Plus = new OpDef(OpType.Unary, 90, "+");
         public static OpDef ArithInv = new OpDef(OpType.Unary, 90, "-");
-        //public static OpDef LogicInvert = new OpDef(OpType.Unary, 90, "!");
+        public static OpDef LogicNot = new OpDef(OpType.Unary, 90, "!");
         public static OpDef BitNot = new OpDef(OpType.Unary, 90, "~");
+
+        public static OpDef Frac = new OpDef(OpType.Binary, 70, "$");
 
         public static OpDef Pow = new OpDef(OpType.Binary, 62, "^");
         public static OpDef Mul = new OpDef(OpType.Binary, 61, "*");
@@ -42,14 +46,29 @@ namespace Shapoco.Calctus.Model {
         public static OpDef ArithShiftL = new OpDef(OpType.Binary, 50, "<<<");
         public static OpDef ArithShiftR = new OpDef(OpType.Binary, 50, ">>>");
 
+        public static OpDef Grater = new OpDef(OpType.Binary, 41, ">");
+        public static OpDef GraterEqual = new OpDef(OpType.Binary, 41, ">=");
+        public static OpDef Less = new OpDef(OpType.Binary, 41, "<");
+        public static OpDef LessEqual = new OpDef(OpType.Binary, 41, "<=");
+        public static OpDef Equal = new OpDef(OpType.Binary, 40, "==");
+        public static OpDef NotEqual = new OpDef(OpType.Binary, 40, "!=");
+
         public static OpDef BitAnd = new OpDef(OpType.Binary, 34, "&");
         public static OpDef BitXor = new OpDef(OpType.Binary, 33, "+|");
         public static OpDef BitOr = new OpDef(OpType.Binary, 32, "|");
 
-        //public static OpDef LogicAnd = new OpDef(OpType.Binary, 31, "&&");
-        //public static OpDef LogicOr = new OpDef(OpType.Binary, 30, "||");
-        // ここに 3項演算子
+        public static OpDef LogicAnd = new OpDef(OpType.Binary, 31, "&&");
+        public static OpDef LogicOr = new OpDef(OpType.Binary, 30, "||");
+
+        public static OpDef ExclusiveRange = new OpDef(OpType.Binary, 20, "..");
+        public static OpDef InclusiveRange = new OpDef(OpType.Binary, 20, "..=");
+
+        public static OpDef Arrow = new OpDef(OpType.Binary, 10, "=>");
+        
         public static OpDef Assign = new OpDef(OpType.Binary, OpPriorityDir.Right, 0, "=");
+
+        // その他の演算子
+        public static OpDef Leader = new OpDef(OpType.None, -1, "...");
 
         /// <summary>ネイティブ演算子の一覧</summary>
         public static OpDef[] NativeOperators = EnumOperators().ToArray();
@@ -78,7 +97,7 @@ namespace Shapoco.Calctus.Model {
         public static IEnumerable<OpDef> AllOperators => NativeOperators;
 
         /// <summary>演算子記号の一覧</summary>
-        public static string[] AllSymbols = NativeOperators.Select(p=>p.Symbol).Distinct().ToArray();
+        public static string[] AllOperatorSymbols = NativeOperators.Select(p=>p.Symbol).Distinct().ToArray();
 
         /// <summary>指定された条件にマッチする演算子定義を返す</summary>
         public static bool Match(OpType typ, string s, out OpDef op) {
@@ -90,11 +109,11 @@ namespace Shapoco.Calctus.Model {
         public static OpDef Match(OpType typ, Token tok) {
             var ops = AllOperators.Where(p=>p.Symbol == tok.Text).ToArray();
             if (ops.Length == 0) {
-                throw new Parser.SyntaxError(tok.Position, tok + " is not operator");
+                throw new LexerError(tok.Position, tok + " is not operator");
             }
             var op = ops.FirstOrDefault(p => p.Type == typ);
             if (op == null) {
-                throw new Parser.SyntaxError(tok.Position, tok + " is not " + typ.ToString());
+                throw new LexerError(tok.Position, tok + " is not " + typ.ToString());
             }
             return op;
         }

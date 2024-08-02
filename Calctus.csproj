@@ -8,10 +8,11 @@
     <OutputType>WinExe</OutputType>
     <RootNamespace>Shapoco</RootNamespace>
     <AssemblyName>Calctus</AssemblyName>
-    <TargetFrameworkVersion>v4.7.2</TargetFrameworkVersion>
+    <TargetFrameworkVersion>v4.8</TargetFrameworkVersion>
     <FileAlignment>512</FileAlignment>
     <AutoGenerateBindingRedirects>true</AutoGenerateBindingRedirects>
     <Deterministic>false</Deterministic>
+    <TargetFrameworkProfile />
   </PropertyGroup>
   <PropertyGroup Condition=" '$(Configuration)|$(Platform)' == 'Debug|AnyCPU' ">
     <PlatformTarget>AnyCPU</PlatformTarget>
@@ -36,8 +37,10 @@
     <ApplicationIcon>icon.ico</ApplicationIcon>
   </PropertyGroup>
   <ItemGroup>
+    <Reference Include="Microsoft.VisualBasic" />
     <Reference Include="System" />
     <Reference Include="System.Core" />
+    <Reference Include="System.Web" />
     <Reference Include="System.Xml.Linq" />
     <Reference Include="System.Data.DataSetExtensions" />
     <Reference Include="Microsoft.CSharp" />
@@ -49,43 +52,177 @@
     <Reference Include="System.Xml" />
   </ItemGroup>
   <ItemGroup>
-    <Compile Include="Calctus\Model\Errors.cs" />
-    <Compile Include="Calctus\Model\EvalContext.cs" />
-    <Compile Include="Calctus\Model\Expr.cs" />
-    <Compile Include="Calctus\Model\FuncDef.cs" />
-    <Compile Include="Calctus\Model\Syntax\ValFormatHint.cs" />
-    <Compile Include="Calctus\Model\OpDef.cs" />
-    <Compile Include="Calctus\Model\RealVal.cs" />
-    <Compile Include="Calctus\Model\Syntax\NumberFormatter.cs" />
-    <Compile Include="Calctus\Model\UnitSystem\BaseUnit.cs" />
-    <Compile Include="Calctus\Model\UnitSystem\DerivedUnit.cs" />
-    <Compile Include="Calctus\Model\UnitSystem\UnitElement.cs" />
-    <Compile Include="Calctus\Model\UnitSystem\NativeUnits.cs" />
-    <Compile Include="Calctus\Model\UnitSystem\Dim.cs" />
-    <Compile Include="Calctus\Model\UnitSystem\Types.cs" />
-    <Compile Include="Calctus\Model\UnitSystem\Unit.cs" />
-    <Compile Include="Calctus\Model\UnitSystem\UnitException.cs" />
-    <Compile Include="Calctus\Model\UnitSystem\UnitFactory.cs" />
-    <Compile Include="Calctus\Model\UnitSystem\ScaledUnit.cs" />
-    <Compile Include="Calctus\Model\UnitSystem\UnitSyntax.cs" />
-    <Compile Include="Calctus\Parser\Errors.cs" />
-    <Compile Include="Calctus\Parser\Lexer.cs" />
-    <Compile Include="Calctus\Parser\Parser.cs" />
-    <Compile Include="Calctus\Parser\StringMatchReader.cs" />
-    <Compile Include="Calctus\Model\TextPosition.cs" />
-    <Compile Include="Calctus\Model\Token.cs" />
+    <Compile Include="AppDataManager.cs" />
+    <Compile Include="Calctus\Assert.cs" />
+    <Compile Include="Calctus\Model\ArgDef.cs" />
+    <Compile Include="Calctus\Model\Evaluations\EvalError.cs" />
+    <Compile Include="Calctus\Model\Evaluations\ValComparer.cs" />
+    <Compile Include="Calctus\Model\Evaluations\ValEqualityComparer.cs" />
+    <Compile Include="Calctus\Model\Expressions\ArrayExpr.cs" />
+    <Compile Include="Calctus\Model\Expressions\AsterExpr.cs" />
+    <Compile Include="Calctus\Model\Expressions\LambdaExpr.cs" />
+    <Compile Include="Calctus\Model\Expressions\ParenthesisExpr.cs" />
+    <Compile Include="Calctus\Model\Formats\FormatSettings.cs" />
+    <Compile Include="Calctus\Model\Functions\ArgDefList.cs" />
+    <Compile Include="Calctus\Model\Functions\BuiltIns\ArrayFuncs.cs" />
+    <Compile Include="Calctus\Model\Functions\BuiltIns\AssertionFuncs.cs" />
+    <Compile Include="Calctus\Model\Functions\BuiltIns\Bit_ByteOperationFuncs.cs" />
+    <Compile Include="Calctus\Model\Functions\BuiltIns\CastFuncs.cs" />
+    <Compile Include="Calctus\Model\Functions\BuiltIns\ColorFuncs.cs" />
+    <Compile Include="Calctus\Model\Functions\BuiltIns\DateTimeFuncs.cs" />
+    <Compile Include="Calctus\Model\Functions\BuiltIns\EncodingFuncs.cs" />
+    <Compile Include="Calctus\Model\Functions\BuiltIns\ESeriesFuncs.cs" />
+    <Compile Include="Calctus\Model\Functions\BuiltIns\GrayCodeFuncs.cs" />
+    <Compile Include="Calctus\Model\Functions\BuiltIns\Parity_EccFuncs.cs" />
+    <Compile Include="Calctus\Model\Functions\BuiltIns\PlottingFuncs.cs" />
+    <Compile Include="Calctus\Model\Functions\BuiltIns\PrimeNumberFuncs.cs" />
+    <Compile Include="Calctus\Model\Functions\BuiltIns\RandomFuncs.cs" />
+    <Compile Include="Calctus\Model\Functions\BuiltIns\RepresentaionFuncs.cs" />
+    <Compile Include="Calctus\Model\Functions\BuiltIns\SolveFuncs.cs" />
+    <Compile Include="Calctus\Model\Functions\BuiltIns\StringFuncs.cs" />
+    <Compile Include="Calctus\Model\Functions\EqualityComparerFunc.cs" />
+    <Compile Include="Calctus\Model\Functions\BuiltIns\ExponentialFuncs.cs" />
+    <Compile Include="Calctus\Model\Functions\BuiltIns\Gcd_LcmFuncs.cs" />
+    <Compile Include="Calctus\Model\Functions\BuiltIns\Min_MaxFuncs.cs" />
+    <Compile Include="Calctus\Model\Functions\BuiltIns\RoundingFuncs.cs" />
+    <Compile Include="Calctus\Model\Functions\BuiltIns\Absolute_SignFuncs.cs" />
+    <Compile Include="Calctus\Model\Functions\BuiltIns\Sum_AverageFuncs.cs" />
+    <Compile Include="Calctus\Model\Functions\BuiltIns\TrigonometricFuncs.cs" />
+    <Compile Include="Calctus\Model\Functions\Types.cs" />
+    <Compile Include="Calctus\Model\Graphs\AxisSettings.cs" />
+    <Compile Include="Calctus\Model\Graphs\PlotCall.cs" />
+    <Compile Include="Calctus\Model\Expressions\Types.cs" />
+    <Compile Include="Calctus\Model\Expressions\DefExpr.cs" />
+    <Compile Include="Calctus\Model\Formats\StringFormatter.cs" />
+    <Compile Include="Calctus\Model\Graphs\PlotRequest.cs" />
+    <Compile Include="Calctus\Model\Graphs\Types.cs" />
+    <Compile Include="Calctus\Model\Functions\FuncDef.cs" />
+    <Compile Include="Calctus\Model\Mathematics\NewtonsMethod.cs" />
+    <Compile Include="Calctus\Model\Parsers\Types.cs" />
     <Compile Include="Calctus\Model\Types.cs" />
-    <Compile Include="Calctus\Model\Val.cs" />
-    <Compile Include="Calctus\Model\Var.cs" />
-    <Compile Include="Calctus\Parser\Types.cs" />
+    <Compile Include="Calctus\Model\Types\ArrayVal.cs" />
+    <Compile Include="Calctus\Model\Sheets\Types.cs" />
+    <Compile Include="Calctus\Model\Types\BoolVal.cs" />
+    <Compile Include="Calctus\Model\Evaluations\EvalSettings.cs" />
+    <Compile Include="Calctus\Model\Functions\ExternalFuncDef.cs" />
+    <Compile Include="Calctus\Model\Mathematics\LMath.cs" />
+    <Compile Include="Calctus\Model\Sheets\Sheet.cs" />
+    <Compile Include="Calctus\Model\Sheets\SheetItem.cs" />
+    <Compile Include="Calctus\Model\Mathematics\QMath.cs" />
+    <Compile Include="Calctus\Model\Types\FuncVal.cs" />
+    <Compile Include="Calctus\Model\Types\quad.cs" />
+    <Compile Include="Calctus\Model\ScriptFilter.cs" />
+    <Compile Include="Calctus\Model\Formats\BinaryPrefixFormatter.cs" />
+    <Compile Include="Calctus\Model\Formats\SiPrefixFormatter.cs" />
+    <Compile Include="Calctus\Model\Formats\Type.cs" />
+    <Compile Include="Calctus\Model\Types\StrVal.cs" />
+    <Compile Include="Calctus\Model\Types\ufixed113.cs" />
+    <Compile Include="Calctus\Model\Types\frac.cs" />
+    <Compile Include="Calctus\Model\Types\FracVal.cs" />
+    <Compile Include="Calctus\Model\Mathematics\RMath.cs" />
+    <Compile Include="Calctus\Model\CalctusErrors.cs" />
+    <Compile Include="Calctus\Model\Evaluations\EvalContext.cs" />
+    <Compile Include="Calctus\Model\Expressions\Expr.cs" />
+    <Compile Include="Calctus\Model\Functions\BuiltInFuncDef.cs" />
+    <Compile Include="Calctus\Model\Types\real.cs" />
+    <Compile Include="Calctus\Model\Standards\ColorSpace.cs" />
+    <Compile Include="Calctus\Model\Standards\ESeries.cs" />
+    <Compile Include="Calctus\Model\Standards\PreferredNumbers.cs" />
+    <Compile Include="Calctus\Model\Standards\UnixTime.cs" />
+    <Compile Include="Calctus\Model\Formats\CharFormatter.cs" />
+    <Compile Include="Calctus\Model\Formats\DateTimeFormatter.cs" />
+    <Compile Include="Calctus\Model\Formats\IntFormatter.cs" />
+    <Compile Include="Calctus\Model\Formats\RealFormatter.cs" />
+    <Compile Include="Calctus\Model\Formats\FormatHint.cs" />
+    <Compile Include="Calctus\Model\OpDef.cs" />
+    <Compile Include="Calctus\Model\Types\RealVal.cs" />
+    <Compile Include="Calctus\Model\Formats\NumberFormatter.cs" />
+    <Compile Include="Calctus\Model\Formats\WebColorFormatter.cs" />
+    <Compile Include="Calctus\Model\Evaluations\UserConstant.cs" />
+    <Compile Include="Calctus\Model\Types\NullVal.cs" />
+    <Compile Include="Calctus\Model\Parsers\Errors.cs" />
+    <Compile Include="Calctus\Model\Parsers\Lexer.cs" />
+    <Compile Include="Calctus\Model\Parsers\Parser.cs" />
+    <Compile Include="Calctus\Model\Parsers\StringMatchReader.cs" />
+    <Compile Include="Calctus\Model\Parsers\TextPosition.cs" />
+    <Compile Include="Calctus\Model\Parsers\Token.cs" />
+    <Compile Include="Calctus\Model\Types\Val.cs" />
+    <Compile Include="Calctus\Model\Evaluations\Var.cs" />
+    <Compile Include="Calctus\Model\Parsers\TokenQueue.cs" />
+    <Compile Include="Calctus\Model\Functions\UserFuncDef.cs" />
+    <Compile Include="Calctus\Settings.cs" />
+    <Compile Include="Calctus\UI\AxisSettingsPanel.cs">
+      <SubType>Component</SubType>
+    </Compile>
+    <Compile Include="Calctus\UI\Books\Book.cs" />
+    <Compile Include="Calctus\UI\Books\SampleBook.cs" />
+    <Compile Include="Calctus\UI\Books\Types.cs" />
+    <Compile Include="Calctus\UI\Books\BookTreeView.cs">
+      <SubType>Component</SubType>
+    </Compile>
+    <Compile Include="Calctus\UI\ValuePickupDialog.cs">
+      <SubType>Form</SubType>
+    </Compile>
+    <Compile Include="Calctus\UI\ValuePickupDialog.Designer.cs">
+      <DependentUpon>ValuePickupDialog.cs</DependentUpon>
+    </Compile>
     <Compile Include="Calctus\UI\ColorUtils.cs" />
+    <Compile Include="Calctus\UI\ConstEditForm.cs">
+      <SubType>Form</SubType>
+    </Compile>
+    <Compile Include="Calctus\UI\ConstEditForm.Designer.cs">
+      <DependentUpon>ConstEditForm.cs</DependentUpon>
+    </Compile>
+    <Compile Include="Calctus\Model\Graphs\Graph.cs" />
+    <Compile Include="Calctus\UI\CustomProfessionalColors.cs" />
+    <Compile Include="Calctus\UI\GraphForm.cs">
+      <SubType>Form</SubType>
+    </Compile>
+    <Compile Include="Calctus\UI\GraphForm.Designer.cs">
+      <DependentUpon>GraphForm.cs</DependentUpon>
+    </Compile>
+    <Compile Include="Calctus\Model\Graphs\PlotSettings.cs" />
+    <Compile Include="Calctus\Model\Graphs\Plotter.cs" />
+    <Compile Include="Calctus\UI\GraphPanel.cs">
+      <SubType>Component</SubType>
+    </Compile>
+    <Compile Include="Calctus\UI\Sheets\EqualButton.cs" />
+    <Compile Include="Calctus\UI\Sheets\ExprBoxCoreEdit.cs" />
+    <Compile Include="Calctus\UI\Sheets\ExprBoxCoreLayout.cs" />
     <Compile Include="Calctus\UI\FlatButton.cs">
       <SubType>Component</SubType>
     </Compile>
-    <Compile Include="Calctus\UI\HistoryBox.cs">
+    <Compile Include="Calctus\UI\FlatRadioButton.cs">
       <SubType>Component</SubType>
     </Compile>
-    <Compile Include="Calctus\UI\HistoryItem.cs" />
+    <Compile Include="Calctus\UI\Sheets\GdiBox.cs" />
+    <Compile Include="Calctus\UI\Sheets\GdiControl.cs">
+      <SubType>Component</SubType>
+    </Compile>
+    <Compile Include="Calctus\UI\Hotkey.cs" />
+    <Compile Include="Calctus\UI\Sheets\ExprBoxCore.cs" />
+    <Compile Include="Calctus\UI\Sheets\InputCandidate.cs" />
+    <Compile Include="Calctus\UI\Sheets\InputCandidateForm.cs">
+      <SubType>Form</SubType>
+    </Compile>
+    <Compile Include="Calctus\UI\Sheets\IInputCandidateProvider.cs" />
+    <Compile Include="Calctus\UI\Sheets\SheetAction.cs" />
+    <Compile Include="Calctus\UI\Sheets\UndoEntryBuilder.cs" />
+    <Compile Include="Calctus\UI\Sheets\SheetOperator.cs" />
+    <Compile Include="Calctus\UI\Sheets\SheetViewState.cs" />
+    <Compile Include="Calctus\UI\Sheets\SheetView.cs">
+      <SubType>Component</SubType>
+    </Compile>
+    <Compile Include="Calctus\UI\Sheets\SheetViewItem.cs" />
+    <Compile Include="Calctus\UI\ScriptFilterEditForm.cs">
+      <SubType>Form</SubType>
+    </Compile>
+    <Compile Include="Calctus\UI\ScriptFilterEditForm.Designer.cs">
+      <DependentUpon>ScriptFilterEditForm.cs</DependentUpon>
+    </Compile>
+    <Compile Include="Calctus\UI\KeyCodeBox.cs">
+      <SubType>Component</SubType>
+    </Compile>
     <Compile Include="Calctus\UI\MainForm.cs">
       <SubType>Form</SubType>
     </Compile>
@@ -93,9 +230,57 @@
       <DependentUpon>MainForm.cs</DependentUpon>
     </Compile>
     <Compile Include="Calctus\Program.cs" />
+    <Compile Include="Calctus\UI\PasteOptionForm.cs">
+      <SubType>Form</SubType>
+    </Compile>
+    <Compile Include="Calctus\UI\PasteOptionForm.Designer.cs">
+      <DependentUpon>PasteOptionForm.cs</DependentUpon>
+    </Compile>
+    <Compile Include="Calctus\UI\SettingsDialog.cs">
+      <SubType>Form</SubType>
+    </Compile>
+    <Compile Include="Calctus\UI\SettingsDialog.Designer.cs">
+      <DependentUpon>SettingsDialog.cs</DependentUpon>
+    </Compile>
+    <Compile Include="Calctus\UI\Sheets\Types.cs" />
+    <Compile Include="Calctus\UI\Sheets\UndoEntry.cs" />
+    <Compile Include="Calctus\UI\Books\BookItem.cs" />
+    <Compile Include="Calctus\UI\Types.cs" />
+    <Compile Include="Calctus\Model\Expressions\BinaryOp.cs" />
+    <Compile Include="Calctus\Model\Expressions\BoolLiteral.cs" />
+    <Compile Include="Calctus\Model\Expressions\CondOp.cs" />
+    <Compile Include="Calctus\Model\Expressions\EmptyExpr.cs" />
+    <Compile Include="Calctus\Model\Expressions\CallExpr.cs" />
+    <Compile Include="Calctus\Model\Expressions\Literal.cs" />
+    <Compile Include="Calctus\Model\Expressions\Number.cs" />
+    <Compile Include="Calctus\Model\Expressions\Operator.cs" />
+    <Compile Include="Calctus\Model\Expressions\PartRef.cs" />
+    <Compile Include="Calctus\Model\Expressions\UnaryOp.cs" />
+    <Compile Include="Calctus\Model\Expressions\IdExpr.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
+    <Compile Include="Windows\ClipboardListener.cs" />
+    <Compile Include="Windows\StartupShortcut.cs" />
+    <Compile Include="Windows\WinUser.cs" />
+    <EmbeddedResource Include="Calctus\UI\ValuePickupDialog.resx">
+      <DependentUpon>ValuePickupDialog.cs</DependentUpon>
+    </EmbeddedResource>
+    <EmbeddedResource Include="Calctus\UI\ConstEditForm.resx">
+      <DependentUpon>ConstEditForm.cs</DependentUpon>
+    </EmbeddedResource>
+    <EmbeddedResource Include="Calctus\UI\GraphForm.resx">
+      <DependentUpon>GraphForm.cs</DependentUpon>
+    </EmbeddedResource>
+    <EmbeddedResource Include="Calctus\UI\ScriptFilterEditForm.resx">
+      <DependentUpon>ScriptFilterEditForm.cs</DependentUpon>
+    </EmbeddedResource>
     <EmbeddedResource Include="Calctus\UI\MainForm.resx">
       <DependentUpon>MainForm.cs</DependentUpon>
+    </EmbeddedResource>
+    <EmbeddedResource Include="Calctus\UI\PasteOptionForm.resx">
+      <DependentUpon>PasteOptionForm.cs</DependentUpon>
+    </EmbeddedResource>
+    <EmbeddedResource Include="Calctus\UI\SettingsDialog.resx">
+      <DependentUpon>SettingsDialog.cs</DependentUpon>
     </EmbeddedResource>
     <EmbeddedResource Include="Properties\Resources.resx">
       <Generator>ResXFileCodeGenerator</Generator>
@@ -122,6 +307,39 @@
   </ItemGroup>
   <ItemGroup>
     <Content Include="icon.ico" />
+    <None Include="Resources\ToolIcon_Sheet_Open.png" />
+    <None Include="Resources\ToolIcon_Sheet_Close.png" />
+    <None Include="Resources\ToolIcon_Sheet.png" />
+    <None Include="Resources\ToolIcon_Folder.png" />
+    <None Include="Resources\ToolIcon_Memo.png" />
+    <None Include="Resources\ToolIcon_Undo.png" />
+    <None Include="Resources\ToolIcon_Redo.png" />
+    <None Include="Resources\ToolIcon_InvertBrightness.png" />
+    <None Include="Resources\ToolIcon_Timer.png" />
+    <None Include="Resources\ToolIcon_Paste.png" />
+    <None Include="Resources\ToolIcon_MoveUp.png" />
+    <None Include="Resources\ToolIcon_MoveDown.png" />
+    <None Include="Resources\ToolIcon_Insert.png" />
+    <None Include="Resources\ToolIcon_Delete.png" />
+    <None Include="Resources\ToolIcon_Copy.png" />
+    <None Include="Resources\ToolIcon_TopMostOn.png" />
+    <None Include="Resources\ToolIcon_TopMostOff.png" />
+    <None Include="Resources\ToolIcon_TopMost.png" />
+    <None Include="Resources\ToolIcon_Help.png" />
+    <None Include="materials\tool_settings.png" />
+    <None Include="Resources\ToolIcon_Settings.png" />
   </ItemGroup>
+  <ItemGroup>
+    <COMReference Include="IWshRuntimeLibrary">
+      <Guid>{F935DC20-1CF0-11D0-ADB9-00C04FD58A0B}</Guid>
+      <VersionMajor>1</VersionMajor>
+      <VersionMinor>0</VersionMinor>
+      <Lcid>0</Lcid>
+      <WrapperTool>tlbimp</WrapperTool>
+      <Isolated>False</Isolated>
+      <EmbedInteropTypes>True</EmbedInteropTypes>
+    </COMReference>
+  </ItemGroup>
+  <ItemGroup />
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
 </Project>
