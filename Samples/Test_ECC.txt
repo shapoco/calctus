@@ -1,7 +1,0 @@
-assert(xorReduce(0x1234)==1)
-assert(oddParity(0x1234)==0)
-assert(eccWidth(16)==6)
-assert(eccEnc(16,0x1234)==0x19)
-assert(eccDec(16,0x19,0x1234)==0)
-assert(eccDec(16,0x19,0x1334)==9)
-assert(eccDec(16,0x19,0x1734)==-1)

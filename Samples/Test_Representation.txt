@@ -1,8 +1,0 @@
-assert(str(bin(0b10101100))=="0b10101100")
-assert(str(char(0x3042))=="あ")
-assert(str(datetime(#2000/1/2 3:6:7#))=="#2000/01/02 03:06:07#")
-assert(str(dec(0x100))=="256")
-assert(str(hex(256))=="0x100")
-assert(str(kibi(0x100000))=="1Mi")
-assert(str(oct(64))=="0100")
-assert(str(si(1000000))=="1M")

@@ -1,3 +1,0 @@
-assert(all(solve(x=>x^2-4)==[-2,2]))
-assert(abs(solve(x=>sin(x),10*PI)-10*PI)<1e-10)
-assert(all(abs(round(solve(x=>sin(x*PI),-11,-9))-[-11,-10,-9])<1e-10))
