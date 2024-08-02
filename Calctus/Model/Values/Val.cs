@@ -106,6 +106,7 @@ namespace Shapoco.Calctus.Model.Values {
                 throw new InvalidCastException(this.CalctusTypeName + " cannot be converted to string.");
             }
         }
+        public string ToStringForLiteral() => Formatter.ObjectToString(Raw, ToStringArgs.ForLiteral());
 
         public override int GetHashCode() => Raw.GetHashCode();
     }

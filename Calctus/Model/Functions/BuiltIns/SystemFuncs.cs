@@ -13,6 +13,15 @@ namespace Shapoco.Calctus.Model.Functions.BuiltIns {
         public static SystemFuncs Instance => _instance != null ? _instance : _instance = new SystemFuncs();
         private SystemFuncs() { }
 
+        public readonly BuiltInFuncDef assert = new BuiltInFuncDef("assert(x)",
+            "Raises an error if the `x` is false.",
+            (e, a) => {
+                if (!a[0].ToBool()) {
+                    throw new CalctusError("Assertion failed.");
+                }
+                return a[0];
+            });
+
         public readonly BuiltInFuncDef version = new BuiltInFuncDef("version()",
             "Returns current version of " + Application.ProductName + ".",
             (e, a) => Application.ProductVersion.ToVal()

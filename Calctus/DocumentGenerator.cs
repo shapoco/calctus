@@ -11,6 +11,21 @@ namespace Shapoco.Calctus {
     static class DocumentGenerator {
         public static readonly string ReadMeFilename = "README.md";
         public static readonly string FunctionsFilename = "FUNCTIONS.md";
+        public static readonly string RestRoot = @"..\..\docsrc\source";
+        public static readonly string RestFunctionDir = RestRoot + @"\functions";
+
+        public static string VersionString {
+            get {
+                var vers = System.Windows.Forms.Application.ProductVersion.Split('.');
+                return vers[0] + "." + vers[1];
+            }
+        }
+
+        public static void WriteVersion() {
+            using (var writer = new System.IO.StreamWriter("..\\..\\doc_version.txt")) {
+                writer.Write(VersionString);
+            }
+        }
 
         public static string MarkdownLinkIdOf(string filename, string title) {
             var sb = new StringBuilder("./" + filename + "#");
@@ -28,6 +43,61 @@ namespace Shapoco.Calctus {
         public static string MarkdownEscape(string text) => text.Replace("*", "\\*");
 
 #if DEBUG
+        public static void GenerateDocumentRst() {
+            Console.WriteLine("AppDataManager.AssemblyPath = '" + AppDataManager.AssemblyPath + "'");
+            if (!AppDataManager.AssemblyPath.EndsWith(@"\bin\Debug")) return;
+            Console.WriteLine("Generating embedded function documentation...");
+
+            var categories = BuiltInFuncLibrary.Instance.Categories.OrderBy(p => p.DocTitle).ToArray();
+
+            int numFuncs = categories.Sum(p => p.Functions.Length);
+
+
+            Directory.CreateDirectory(RestFunctionDir);
+
+            using (var writer = new StreamWriter(RestFunctionDir + @"\index.rst")) {
+                writer.WriteLine("Built-In Functions");
+                writer.WriteLine("#################");
+                writer.WriteLine();
+                writer.WriteLine(".. toctree::");
+                foreach (var cat in categories) {
+                    writer.WriteLine("    " + cat.DocFileNameBase + ".rst");
+                }
+            }
+
+            foreach (var cat in categories) {
+                using (var writer = new StreamWriter(RestFunctionDir + @"\" + cat.DocFileNameBase + ".rst")) {
+                    writer.WriteLine(cat.Name);
+                    writer.WriteLine("#################");
+                    writer.WriteLine();
+                    foreach (var f in cat.Functions.OrderBy(p => p.DocTitle)) {
+                        var validTests = f.HasTest ? f.Tests.Where(p => p.Done).ToArray() : null;
+                        var testExists = validTests != null && validTests.Length > 0;
+                        writer.WriteLine(f.GetDeclarationText());
+                        writer.WriteLine("*****************");
+                        writer.WriteLine();
+                        writer.WriteLine(f.Description + (testExists ? " ::" : ""));
+                        writer.WriteLine();
+                        if (testExists) {
+                            var indent = validTests.Max(p => p.Result.Expr.Length) + 1;
+                            if (indent > 32) indent = indent * 3 / 4;
+                            foreach (var test in validTests) {
+                                if (test.Result.Expr.Length < indent) {
+                                    writer.WriteLine("    " + test.Result.Expr.PadRight(indent) + "//--> " + test.Result.ActualValue);
+                                }
+                                else {
+                                    writer.WriteLine("    " + test.Result.Expr);
+                                    writer.WriteLine("    " + new string(' ', indent) + "//--> " + test.Result.ActualValue);
+                                }
+                            }
+                            writer.WriteLine();
+                        }
+                    }
+                    writer.WriteLine();
+                }
+            }
+        }
+
         public static void GenerateDocumentation() {
             Console.WriteLine("AppDataManager.AssemblyPath = '" + AppDataManager.AssemblyPath + "'");
             if (!AppDataManager.AssemblyPath.EndsWith(@"\bin\Debug")) return;
@@ -50,7 +120,7 @@ namespace Shapoco.Calctus {
                         writer.WriteLine();
                         var validTests = f.HasTest ? f.Tests.Where(p => p.Done).ToArray() : null;
                         if (validTests != null && validTests.Length > 0) {
-                            writer.WriteLine("```");
+                            writer.WriteLine("```c++");
                             var indent = validTests.Max(p => p.Result.Expr.Length) + 1;
                             if (indent > 32) indent = indent * 3 / 4;
                             foreach (var test in validTests) {
@@ -63,9 +133,11 @@ namespace Shapoco.Calctus {
                                 }
                             }
                             writer.WriteLine("```");
+                            writer.WriteLine();
                         }
                     }
                     writer.WriteLine("----");
+                    writer.WriteLine();
                 }
             }
 

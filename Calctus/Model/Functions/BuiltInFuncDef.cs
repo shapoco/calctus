@@ -11,12 +11,12 @@ namespace Shapoco.Calctus.Model.Functions {
         public const string EmbeddedLibraryNamespace = "Shapoco.Calctus.Model.Functions.BuiltIns";
 
         public Func<EvalContext, Val[], Val> Method { get; protected set; }
-        public readonly FuncTest[] Tests;
+        public readonly ExprTest[] Tests;
 
         public BuiltInFuncDef(string prototype, string desc, Func<EvalContext, Val[], Val> method, params FuncTest[] tests)
             : base(prototype, desc) {
             this.Method = method;
-            this.Tests = tests;
+            this.Tests = tests.Select(p => p.GenTest(this)).ToArray();
         }
 
         public string DocTitle => GetDeclarationText();
@@ -29,12 +29,15 @@ namespace Shapoco.Calctus.Model.Functions {
         public void DoTest(EvalContext e) {
             if (HasTest) {
                 foreach (var test in Tests) {
-                    test.DoTest(e, this);
+                    test.DoTest(e);
                 }
+            }
+            else {
+                Test.Untested("No test defined: " + this);
             }
         }
 
-        public bool HasTest => (Tests != null || Tests.Length > 0);
+        public bool HasTest => (Tests != null && Tests.Length > 0);
 #endif
     }
 }

@@ -58,7 +58,7 @@ namespace Shapoco.Calctus.UI {
 
             sidePaneBodyPanel.Visible = false;
 
-            this.KeyPreview = true; 
+            this.KeyPreview = true;
             this.KeyDown += MainForm_KeyDown;
             this.Load += MainForm_Load;
             this.Activated += MainForm_Activated;
@@ -81,7 +81,7 @@ namespace Shapoco.Calctus.UI {
             notifyIcon.MouseClick += NotifyIcon_MouseClick;
 
             var repFuncs = RepresentaionFuncs.Instance;
-            radixAutoButton.Click += (sender, e) => { _activeBookItem.View.ReplaceFormatterFunction(null); _activeBookItem.View.Focus(); }; 
+            radixAutoButton.Click += (sender, e) => { _activeBookItem.View.ReplaceFormatterFunction(null); _activeBookItem.View.Focus(); };
             radixDecButton.Click += (sender, e) => { _activeBookItem.View.ReplaceFormatterFunction(repFuncs.dec); _activeBookItem.View.Focus(); };
             radixHexButton.Click += (sender, e) => { _activeBookItem.View.ReplaceFormatterFunction(repFuncs.hex); _activeBookItem.View.Focus(); };
             radixBinButton.Click += (sender, e) => { _activeBookItem.View.ReplaceFormatterFunction(repFuncs.bin); _activeBookItem.View.Focus(); };
@@ -123,6 +123,43 @@ namespace Shapoco.Calctus.UI {
             onBookItemSelected();
 
             _focusTimer.Tick += _focusTimer_Tick;
+#if DEBUG
+            var testResultLabel = new Label();
+            testResultLabel.Dock = DockStyle.Right;
+            testResultLabel.AutoSize = true;
+            if (Test.NumErrors != 0 || Test.NumWarnings != 0 || Test.NumUntested != 0) {
+                testResultLabel.Text = Test.NumSuccess + " Success";
+                if (Test.NumErrors > 0) {
+                    testResultLabel.Text += ", " + Test.NumErrors + " Errors";
+                }
+                if (Test.NumWarnings > 0) {
+                    testResultLabel.Text += ", " + Test.NumWarnings + " Warnings";
+                }
+                if (Test.NumUntested > 0) {
+                    testResultLabel.Text += ", " + Test.NumUntested + " Untested";
+                }
+            }
+            else {
+                testResultLabel.Text = "All Test Passed";
+            }
+            if (Test.NumErrors > 0) {
+                testResultLabel.BackColor = Color.Red;
+                testResultLabel.ForeColor = Color.White;
+            }
+            else if (Test.NumWarnings > 0) {
+                testResultLabel.BackColor = Color.Yellow;
+                testResultLabel.ForeColor = Color.Black;
+            }
+            else if (Test.NumUntested > 0) {
+                testResultLabel.BackColor = Color.Magenta;
+                testResultLabel.ForeColor = Color.Black;
+            }
+            else {
+                testResultLabel.BackColor = Color.Lime;
+                testResultLabel.ForeColor = Color.Black;
+            }
+            bottomPanel.Controls.Add(testResultLabel);
+#endif
         }
 
         private void MainForm_Load(object sender, EventArgs e) {

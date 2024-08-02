@@ -46,6 +46,8 @@ namespace Shapoco.Calctus.Model.Functions {
             .ToArray();
 
         public string DocTitle => Name;
+
+        public string DocFileNameBase => this.GetType().Name.ToLower();
     }
 }
 

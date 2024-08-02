@@ -60,6 +60,7 @@
     <Compile Include="Calctus\BasicExtensions.cs" />
     <Compile Include="Calctus\CalctusUtils.cs" />
     <Compile Include="Calctus\DocumentGenerator.cs" />
+    <Compile Include="Calctus\ExprTest.cs" />
     <Compile Include="Calctus\Model\Formats\NumericFormat.cs" />
     <Compile Include="Calctus\Model\Formats\ToStringArgs.cs" />
     <Compile Include="Calctus\Model\Functions\ArgDef.cs" />
@@ -76,7 +77,6 @@
     <Compile Include="Calctus\Model\Functions\ArgDefList.cs" />
     <Compile Include="Calctus\Model\Functions\BuiltInFuncLibrary.cs" />
     <Compile Include="Calctus\Model\Functions\BuiltIns\ArrayFuncs.cs" />
-    <Compile Include="Calctus\Model\Functions\BuiltIns\AssertionFuncs.cs" />
     <Compile Include="Calctus\Model\Functions\BuiltIns\Bit_ByteOperationFuncs.cs" />
     <Compile Include="Calctus\Model\Functions\BuiltIns\CastFuncs.cs" />
     <Compile Include="Calctus\Model\Functions\BuiltIns\ColorFuncs.cs" />
@@ -102,7 +102,7 @@
     <Compile Include="Calctus\Model\Functions\BuiltIns\Sum_AverageFuncs.cs" />
     <Compile Include="Calctus\Model\Functions\BuiltIns\TrigonometricFuncs.cs" />
     <Compile Include="Calctus\Model\Functions\FuncTest.cs" />
-    <Compile Include="Calctus\Model\Functions\TestResult.cs" />
+    <Compile Include="Calctus\TestResult.cs" />
     <Compile Include="Calctus\Model\Functions\Types.cs" />
     <Compile Include="Calctus\Model\Graphs\AxisSettings.cs" />
     <Compile Include="Calctus\Model\Graphs\PlotCall.cs" />
@@ -172,6 +172,7 @@
     <Compile Include="Calctus\Model\Values\BaseVal.cs" />
     <Compile Include="Calctus\Model\Values\ValExtensions.cs" />
     <Compile Include="Calctus\Settings.cs" />
+    <Compile Include="Calctus\Test.cs" />
     <Compile Include="Calctus\UI\AxisSettingsPanel.cs">
       <SubType>Component</SubType>
     </Compile>

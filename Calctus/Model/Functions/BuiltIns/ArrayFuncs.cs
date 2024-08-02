@@ -76,7 +76,8 @@ namespace Shapoco.Calctus.Model.Functions.BuiltIns {
                 var array = a[0].ToCollectionVal().ToValArray();
                 var func = (FuncDef)a[1].Raw;
                 return new ListVal(array.Select(p => func.Call(e, p)).ToArray());
-            });
+            },
+            new FuncTest("0..5,x=>x*x", "[0,1,4,9,16]"));
 
         public readonly BuiltInFuncDef filter = new BuiltInFuncDef("filter(array,func)",
             "Filter the `array` using a tester function `func(x)`.",
@@ -84,7 +85,8 @@ namespace Shapoco.Calctus.Model.Functions.BuiltIns {
                 var array = a[0].ToCollectionVal().ToValArray();
                 var func = (FuncDef)a[1].Raw;
                 return new ListVal(array.Where(p => func.Call(e, p).ToBool()).ToArray());
-            });
+            },
+            new FuncTest("0..10,x=>x%3==0", "[0,3,6,9]"));
 
         public readonly BuiltInFuncDef count = new BuiltInFuncDef("count(array,func)",
             "Count specific elements in the `array` using a tester function `func(x)`.",
@@ -92,14 +94,16 @@ namespace Shapoco.Calctus.Model.Functions.BuiltIns {
                 var array = a[0].ToCollectionVal().ToValArray();
                 var func = (FuncDef)a[1].Raw;
                 return new RealVal(array.Count(p => func.Call(e, p).ToBool()));
-            });
+            },
+            new FuncTest("0..10,x=>x%3==0", "4"));
 
         public readonly BuiltInFuncDef sort_1 = new BuiltInFuncDef("sort(array@)",
             "Sort the `array`.",
             (e, a) => {
                 var array = a[0].ToCollectionVal().ToValArray();
                 return new ListVal(array.OrderBy(p => p, new ValComparer(e)).ToArray());
-            });
+            },
+            new FuncTest("[4,3,5,1,2]", "[1,2,3,4,5]"));
 
         public readonly BuiltInFuncDef sort_2 = new BuiltInFuncDef("sort(array@,func)",
             "Sort the `array` using a evaluator function `func(x)`.",
@@ -107,7 +111,8 @@ namespace Shapoco.Calctus.Model.Functions.BuiltIns {
                 var array = a[0].ToCollectionVal().ToValArray();
                 var func = (FuncDef)a[1].Raw;
                 return new ListVal(array.OrderBy(p => func.Call(e, p).AsDecimal).ToArray());
-            });
+            },
+            new FuncTest("[14,23,35,41,52],x=>x%10", "[41,52,23,14,35]"));
 
         public readonly BuiltInFuncDef extend = new BuiltInFuncDef("extend(array,func,count)",
             "Extends the `array` using converter function `func(array)`.",
@@ -122,7 +127,8 @@ namespace Shapoco.Calctus.Model.Functions.BuiltIns {
                     list.Add(func.Call(e, new ListVal(list.ToArray())));
                 }
                 return new ListVal(list.ToArray());
-            });
+            },
+            new FuncTest("[0,1],a=>a[-2]+a[-1],5", "[0,1,1,2,3,5,8]"));
 
         public readonly BuiltInFuncDef aggregate = new BuiltInFuncDef("aggregate(array,func)",
             "Apply the aggregate function `func(a,b)` for the `array`.",
@@ -167,7 +173,9 @@ namespace Shapoco.Calctus.Model.Functions.BuiltIns {
                 var array = a[0].ToCollectionVal().ToValArray();
                 var func = (FuncDef)a[1].Raw;
                 return BoolVal.From(array.Any(p => func.Call(e, p).ToBool()));
-            });
+            },
+            new FuncTest("[1,2,3,4,5],x=>x%2==0", "true"),
+            new FuncTest("[1,3,5,7,9],x=>x%2==0", "false"));
 
         public readonly BuiltInFuncDef concat = new BuiltInFuncDef("concat(array0@,array1)",
             "Concatenate array0 and array1.",
@@ -175,14 +183,16 @@ namespace Shapoco.Calctus.Model.Functions.BuiltIns {
                 var array0 = a[0].ToCollectionVal().ToValArray();
                 var array1 = a[1].ToCollectionVal().ToValArray();
                 return new ListVal(array0.Concat(array1).ToArray());
-            });
+            },
+            new FuncTest("[1,2,3],[4,5,6]", "[1,2,3,4,5,6]"));
 
         public readonly BuiltInFuncDef unique_1 = new BuiltInFuncDef("unique(array@)",
             "Returns an array of unique elements.",
             (e, a) => {
                 var array = a[0].ToCollectionVal().ToValArray();
                 return new ListVal(array.Distinct(new ValEqualityComparer(e)).ToArray());
-            });
+            },
+            new FuncTest("[3,0,1,2,2,1,3,4]", "[3,0,1,2,4]"));
 
         public readonly BuiltInFuncDef unique_2 = new BuiltInFuncDef("unique(array@,func)",
             "Return unique elements using evaluator function `func(x)`.",
@@ -190,7 +200,8 @@ namespace Shapoco.Calctus.Model.Functions.BuiltIns {
                 var array = a[0].ToCollectionVal().ToValArray();
                 var func = (FuncDef)a[1].Raw;
                 return new ListVal(array.Distinct(new EqualityComparerFunc(e, func)).ToArray());
-            });
+            },
+            new FuncTest("[13,20,31,42,52,61,73,84],(a,b)=>a%10==b%10", "[13,20,31,42,84]"));
 
         public readonly BuiltInFuncDef except = new BuiltInFuncDef("except(array0@,array1)",
             "Returns the difference set of the two arrays.",
@@ -198,7 +209,8 @@ namespace Shapoco.Calctus.Model.Functions.BuiltIns {
                 var array0 = a[0].ToCollectionVal().ToValArray();
                 var array1 = a[1].ToCollectionVal().ToValArray();
                 return new ListVal(array0.Except(array1, new ValEqualityComparer(e)).ToArray());
-            });
+            },
+            new FuncTest("0..10,[1,4,7,10,13,16]", "[0,2,3,5,6,8,9]"));
 
         public readonly BuiltInFuncDef intersect = new BuiltInFuncDef("intersect(array0@,array1)",
             "Returns the product set of the two arrays.",
@@ -206,7 +218,8 @@ namespace Shapoco.Calctus.Model.Functions.BuiltIns {
                 var array0 = a[0].ToCollectionVal().ToValArray();
                 var array1 = a[1].ToCollectionVal().ToValArray();
                 return new ListVal(array0.Intersect(array1, new ValEqualityComparer(e)).ToArray());
-            });
+            },
+            new FuncTest("0..10,[1,4,7,10,13,16]", "[1,4,7]"));
 
         public readonly BuiltInFuncDef union = new BuiltInFuncDef("union(array0@,array1)",
             "Returns the union of the two arrays.",
@@ -214,19 +227,26 @@ namespace Shapoco.Calctus.Model.Functions.BuiltIns {
                 var array0 = a[0].ToCollectionVal().ToValArray();
                 var array1 = a[1].ToCollectionVal().ToValArray();
                 return new ListVal(array0.Union(array1, new ValEqualityComparer(e)).ToArray());
-            });
+            },
+            new FuncTest("0..10,[1,4,7,10,13,16]", "[0,1,2,3,4,5,6,7,8,9,10,13,16]"));
 
         public readonly BuiltInFuncDef indexOf = new BuiltInFuncDef("indexOf(array,*val)",
             "Returns the index of the first element in the `array` whose value matches `val`.",
-            (e, a) => indexOfCore(e, a[0], a[1]).ToRealVal());
+            (e, a) => indexOfCore(e, a[0], a[1]).ToRealVal(),
+            new FuncTest("[8,1,4,0,7,2,5,4,3],4", "2"),
+            new FuncTest("[8,1,4,0,7,2,5,4,3],6", "-1"));
 
         public readonly BuiltInFuncDef lastIndexOf = new BuiltInFuncDef("lastIndexOf(array,*val)",
             "Returns the index of the last element in the `array` whose value matches `val`.",
-            (e, a) => lastIndexOfCore(e, a[0], a[1]).ToRealVal());
+            (e, a) => lastIndexOfCore(e, a[0], a[1]).ToRealVal(),
+            new FuncTest("[8,1,4,0,7,2,5,4,3],4", "7"),
+            new FuncTest("[8,1,4,0,7,2,5,4,3],6", "-1"));
 
         public readonly BuiltInFuncDef contains = new BuiltInFuncDef("contains(array,*val)",
             "Returns whether the `array` contains `val`.",
-            (e, a) => BoolVal.From(indexOfCore(e, a[0], a[1]) >= 0));
+            (e, a) => BoolVal.From(indexOfCore(e, a[0], a[1]) >= 0),
+            new FuncTest("[8,1,4,0,7,2,5,4,3],4", "true"),
+            new FuncTest("[8,1,4,0,7,2,5,4,3],6", "false"));
 
         private static int indexOfCore(EvalContext e, Val arrayVal, Val keyVal) {
             if (arrayVal is StrVal sVal0 && keyVal is StrVal sVal1) {

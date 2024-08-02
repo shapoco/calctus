@@ -1,0 +1,208 @@
+<!DOCTYPE html>
+<html class="writer-html5" lang="en" data-content_root="../">
+<head>
+  <meta charset="utf-8" /><meta name="viewport" content="width=device-width, initial-scale=1" />
+
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Bit/Byte Operation &mdash; Calctus  documentation</title>
+      <link rel="stylesheet" type="text/css" href="../_static/pygments.css?v=80d5e7a1" />
+      <link rel="stylesheet" type="text/css" href="../_static/css/theme.css?v=19f00094" />
+
+  
+  <!--[if lt IE 9]>
+    <script src="../_static/js/html5shiv.min.js"></script>
+  <![endif]-->
+  
+        <script src="../_static/jquery.js?v=5d32c60e"></script>
+        <script src="../_static/_sphinx_javascript_frameworks_compat.js?v=2cd50e6c"></script>
+        <script src="../_static/documentation_options.js?v=5929fcd5"></script>
+        <script src="../_static/doctools.js?v=9a2dae69"></script>
+        <script src="../_static/sphinx_highlight.js?v=dc90522c"></script>
+    <script src="../_static/js/theme.js"></script>
+    <link rel="index" title="Index" href="../genindex.html" />
+    <link rel="search" title="Search" href="../search.html" />
+    <link rel="next" title="Cast" href="castfuncs.html" />
+    <link rel="prev" title="Array" href="arrayfuncs.html" /> 
+</head>
+
+<body class="wy-body-for-nav"> 
+  <div class="wy-grid-for-nav">
+    <nav data-toggle="wy-nav-shift" class="wy-nav-side">
+      <div class="wy-side-scroll">
+        <div class="wy-side-nav-search" >
+
+          
+          
+          <a href="../index.html" class="icon icon-home">
+            Calctus
+          </a>
+<div role="search">
+  <form id="rtd-search-form" class="wy-form" action="../search.html" method="get">
+    <input type="text" name="q" placeholder="Search docs" aria-label="Search docs" />
+    <input type="hidden" name="check_keywords" value="yes" />
+    <input type="hidden" name="area" value="default" />
+  </form>
+</div>
+        </div><div class="wy-menu wy-menu-vertical" data-spy="affix" role="navigation" aria-label="Navigation menu">
+              <ul class="current">
+<li class="toctree-l1 current"><a class="reference internal" href="index.html">Built-In Functions</a><ul class="current">
+<li class="toctree-l2"><a class="reference internal" href="absolute_signfuncs.html">Absolute/Sign</a></li>
+<li class="toctree-l2"><a class="reference internal" href="arrayfuncs.html">Array</a></li>
+<li class="toctree-l2 current"><a class="current reference internal" href="#">Bit/Byte Operation</a><ul>
+<li class="toctree-l3"><a class="reference internal" href="#count1-x">count1(*x)</a></li>
+<li class="toctree-l3"><a class="reference internal" href="#pack-b-array">pack(b, array[]…)</a></li>
+<li class="toctree-l3"><a class="reference internal" href="#reversebits-b-x">reverseBits(b, *x)</a></li>
+<li class="toctree-l3"><a class="reference internal" href="#reversebytes-b-x">reverseBytes(b, *x)</a></li>
+<li class="toctree-l3"><a class="reference internal" href="#rotatel-b-x">rotateL(b, *x)</a></li>
+<li class="toctree-l3"><a class="reference internal" href="#rotatel-b-n-x">rotateL(b, n, *x)</a></li>
+<li class="toctree-l3"><a class="reference internal" href="#rotater-b-x">rotateR(b, *x)</a></li>
+<li class="toctree-l3"><a class="reference internal" href="#rotater-b-n-x">rotateR(b, n, *x)</a></li>
+<li class="toctree-l3"><a class="reference internal" href="#swap2-x">swap2(*x)</a></li>
+<li class="toctree-l3"><a class="reference internal" href="#swap4-x">swap4(*x)</a></li>
+<li class="toctree-l3"><a class="reference internal" href="#swap8-x">swap8(*x)</a></li>
+<li class="toctree-l3"><a class="reference internal" href="#swapnib-x">swapNib(*x)</a></li>
+<li class="toctree-l3"><a class="reference internal" href="#unpack-array-x">unpack(array, x)</a></li>
+<li class="toctree-l3"><a class="reference internal" href="#unpack-b-n-x">unpack(b, n, x)</a></li>
+</ul>
+</li>
+<li class="toctree-l2"><a class="reference internal" href="castfuncs.html">Cast</a></li>
+<li class="toctree-l2"><a class="reference internal" href="colorfuncs.html">Color</a></li>
+<li class="toctree-l2"><a class="reference internal" href="datetimefuncs.html">Date Time</a></li>
+<li class="toctree-l2"><a class="reference internal" href="eseriesfuncs.html">E Series</a></li>
+<li class="toctree-l2"><a class="reference internal" href="encodingfuncs.html">Encoding</a></li>
+<li class="toctree-l2"><a class="reference internal" href="exponentialfuncs.html">Exponential</a></li>
+<li class="toctree-l2"><a class="reference internal" href="gcd_lcmfuncs.html">Gcd/Lcm</a></li>
+<li class="toctree-l2"><a class="reference internal" href="graycodefuncs.html">Gray Code</a></li>
+<li class="toctree-l2"><a class="reference internal" href="min_maxfuncs.html">Min/Max</a></li>
+<li class="toctree-l2"><a class="reference internal" href="parity_eccfuncs.html">Parity/Ecc</a></li>
+<li class="toctree-l2"><a class="reference internal" href="plottingfuncs.html">Plotting</a></li>
+<li class="toctree-l2"><a class="reference internal" href="primenumberfuncs.html">Prime Number</a></li>
+<li class="toctree-l2"><a class="reference internal" href="randomfuncs.html">Random</a></li>
+<li class="toctree-l2"><a class="reference internal" href="representaionfuncs.html">Representaion</a></li>
+<li class="toctree-l2"><a class="reference internal" href="roundingfuncs.html">Rounding</a></li>
+<li class="toctree-l2"><a class="reference internal" href="solvefuncs.html">Solve</a></li>
+<li class="toctree-l2"><a class="reference internal" href="stringfuncs.html">String</a></li>
+<li class="toctree-l2"><a class="reference internal" href="sum_averagefuncs.html">Sum/Average</a></li>
+<li class="toctree-l2"><a class="reference internal" href="systemfuncs.html">System</a></li>
+<li class="toctree-l2"><a class="reference internal" href="trigonometricfuncs.html">Trigonometric</a></li>
+</ul>
+</li>
+</ul>
+
+        </div>
+      </div>
+    </nav>
+
+    <section data-toggle="wy-nav-shift" class="wy-nav-content-wrap"><nav class="wy-nav-top" aria-label="Mobile navigation menu" >
+          <i data-toggle="wy-nav-top" class="fa fa-bars"></i>
+          <a href="../index.html">Calctus</a>
+      </nav>
+
+      <div class="wy-nav-content">
+        <div class="rst-content">
+          <div role="navigation" aria-label="Page navigation">
+  <ul class="wy-breadcrumbs">
+      <li><a href="../index.html" class="icon icon-home" aria-label="Home"></a></li>
+          <li class="breadcrumb-item"><a href="index.html">Built-In Functions</a></li>
+      <li class="breadcrumb-item active">Bit/Byte Operation</li>
+      <li class="wy-breadcrumbs-aside">
+            <a href="../_sources/functions/bit_byteoperationfuncs.rst.txt" rel="nofollow"> View page source</a>
+      </li>
+  </ul>
+  <hr/>
+</div>
+          <div role="main" class="document" itemscope="itemscope" itemtype="http://schema.org/Article">
+           <div itemprop="articleBody">
+             
+  <section id="bit-byte-operation">
+<h1>Bit/Byte Operation<a class="headerlink" href="#bit-byte-operation" title="Link to this heading"></a></h1>
+<section id="count1-x">
+<h2>count1(<a href="#id1"><span class="problematic" id="id2">*</span></a>x)<a class="headerlink" href="#count1-x" title="Link to this heading"></a></h2>
+<p>Number of bits of <cite>x</cite> that have the value 1.</p>
+</section>
+<section id="pack-b-array">
+<h2>pack(b, array[]…)<a class="headerlink" href="#pack-b-array" title="Link to this heading"></a></h2>
+<p>Packs array values at b-bit intervals.</p>
+</section>
+<section id="reversebits-b-x">
+<h2>reverseBits(b, <a href="#id3"><span class="problematic" id="id4">*</span></a>x)<a class="headerlink" href="#reversebits-b-x" title="Link to this heading"></a></h2>
+<p>Reverses the lower <cite>b</cite> bits of <cite>x</cite>.</p>
+</section>
+<section id="reversebytes-b-x">
+<h2>reverseBytes(b, <a href="#id5"><span class="problematic" id="id6">*</span></a>x)<a class="headerlink" href="#reversebytes-b-x" title="Link to this heading"></a></h2>
+<p>Reverses the lower <cite>b</cite> bytes of <cite>x</cite>.</p>
+</section>
+<section id="rotatel-b-x">
+<h2>rotateL(b, <a href="#id7"><span class="problematic" id="id8">*</span></a>x)<a class="headerlink" href="#rotatel-b-x" title="Link to this heading"></a></h2>
+<p>Rotates the lower <cite>b</cite> bits of <cite>x</cite> to the left by 1 bit.</p>
+</section>
+<section id="rotatel-b-n-x">
+<h2>rotateL(b, n, <a href="#id9"><span class="problematic" id="id10">*</span></a>x)<a class="headerlink" href="#rotatel-b-n-x" title="Link to this heading"></a></h2>
+<p>Rotates the lower <cite>b</cite> bits of <cite>x</cite> to the left by <cite>n</cite> bits.</p>
+</section>
+<section id="rotater-b-x">
+<h2>rotateR(b, <a href="#id11"><span class="problematic" id="id12">*</span></a>x)<a class="headerlink" href="#rotater-b-x" title="Link to this heading"></a></h2>
+<p>Rotates the lower <cite>b</cite> bits of <cite>x</cite> to the right by 1 bit.</p>
+</section>
+<section id="rotater-b-n-x">
+<h2>rotateR(b, n, <a href="#id13"><span class="problematic" id="id14">*</span></a>x)<a class="headerlink" href="#rotater-b-n-x" title="Link to this heading"></a></h2>
+<p>Rotates the lower <cite>b</cite> bits of <cite>x</cite> to the right by <cite>n</cite> bits.</p>
+</section>
+<section id="swap2-x">
+<h2>swap2(<a href="#id15"><span class="problematic" id="id16">*</span></a>x)<a class="headerlink" href="#swap2-x" title="Link to this heading"></a></h2>
+<p>Swaps even and odd bytes of <cite>x</cite>.</p>
+</section>
+<section id="swap4-x">
+<h2>swap4(<a href="#id17"><span class="problematic" id="id18">*</span></a>x)<a class="headerlink" href="#swap4-x" title="Link to this heading"></a></h2>
+<p>Reverses the order of each 4 bytes of <cite>x</cite>.</p>
+</section>
+<section id="swap8-x">
+<h2>swap8(<a href="#id19"><span class="problematic" id="id20">*</span></a>x)<a class="headerlink" href="#swap8-x" title="Link to this heading"></a></h2>
+<p>Reverses the byte-order of <cite>x</cite>.</p>
+</section>
+<section id="swapnib-x">
+<h2>swapNib(<a href="#id21"><span class="problematic" id="id22">*</span></a>x)<a class="headerlink" href="#swapnib-x" title="Link to this heading"></a></h2>
+<p>Swaps the nibble of each byte of <cite>x</cite>.</p>
+</section>
+<section id="unpack-array-x">
+<h2>unpack(array, x)<a class="headerlink" href="#unpack-array-x" title="Link to this heading"></a></h2>
+<p>Divide the value of <cite>x</cite> into <cite>n</cite> elements of <cite>b</cite> bit width.</p>
+</section>
+<section id="unpack-b-n-x">
+<h2>unpack(b, n, x)<a class="headerlink" href="#unpack-b-n-x" title="Link to this heading"></a></h2>
+<p>Separate the value of <cite>x</cite> into <cite>n</cite> elements of <cite>b</cite> bit width.</p>
+</section>
+</section>
+
+
+           </div>
+          </div>
+          <footer><div class="rst-footer-buttons" role="navigation" aria-label="Footer">
+        <a href="arrayfuncs.html" class="btn btn-neutral float-left" title="Array" accesskey="p" rel="prev"><span class="fa fa-arrow-circle-left" aria-hidden="true"></span> Previous</a>
+        <a href="castfuncs.html" class="btn btn-neutral float-right" title="Cast" accesskey="n" rel="next">Next <span class="fa fa-arrow-circle-right" aria-hidden="true"></span></a>
+    </div>
+
+  <hr/>
+
+  <div role="contentinfo">
+    <p>&#169; Copyright 2024, Shapoco.</p>
+  </div>
+
+  Built with <a href="https://www.sphinx-doc.org/">Sphinx</a> using a
+    <a href="https://github.com/readthedocs/sphinx_rtd_theme">theme</a>
+    provided by <a href="https://readthedocs.org">Read the Docs</a>.
+   
+
+</footer>
+        </div>
+      </div>
+    </section>
+  </div>
+  <script>
+      jQuery(function () {
+          SphinxRtdTheme.Navigation.enable(true);
+      });
+  </script> 
+
+</body>
+</html>

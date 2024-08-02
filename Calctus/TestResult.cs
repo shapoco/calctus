@@ -4,7 +4,7 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 
-namespace Shapoco.Calctus.Model.Functions {
+namespace Shapoco.Calctus {
     class TestResult {
         public readonly bool Success;
         public readonly string Expr;

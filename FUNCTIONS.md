@@ -6,190 +6,271 @@
 
 Absolute value of `x`
 
-```
+```c++
 abs(-12.34) //--> 12.34
 abs(0)      //--> 0
 abs(56.78)  //--> 56.78
 ```
+
 ### `mag(x[]...)`
 
 Magnitude of vector `x`
 
-```
+```c++
 mag(3,4)   //--> 5
 mag(3,4,5) //--> 7.071067812
 ```
+
 ### `sign(*x)`
 
 Returns 1 for positives, -1 for negatives, 0 otherwise.
 
-```
+```c++
 sign(-12.34) //--> -1
 sign(0)      //--> 0
 sign(56.78)  //--> 1
 ```
+
 ----
+
 ## Array
 
 ### `aggregate(array, func)`
 
 Apply the aggregate function `func(a,b)` for the `array`.
 
-```
+```c++
 aggregate([1,2,3,4,5],(a,b)=>a+b)
                          //--> 15
 ```
+
 ### `all(array)`
 
 Returns true if all `array` elements are true.
 
-```
+```c++
 all([true,false,true]) //--> false
 all([true,true,true])  //--> true
 ```
+
 ### `all(array, func)`
 
 Returns true if tester function `func(x)` returns true for all elements of the `array`.
 
-```
+```c++
 all([2,3,5,7],isPrime)   //--> true
 all([2,3,5,7,9],isPrime) //--> false
 ```
+
 ### `any(array)`
 
 Returns true if at least one element is true.
 
-```
+```c++
 any([false,false,false]) //--> false
 any([false,true,false])  //--> true
 ```
+
 ### `any(array, func)`
 
 Returns true if tester function `func(x)` returns true for at least one element of the `array`.
+
+```c++
+any([1,2,3,4,5],x=>x%2==0) //--> true
+any([1,3,5,7,9],x=>x%2==0) //--> false
+```
 
 ### `arrayComp(array0, array1)`
 
 Returns true if all elements of the two arrays are the same.
 
-```
+```c++
 arrayComp([1,2,3], [1,2,3])   //--> true
 arrayComp([1,2,3], [1,2,3,4]) //--> false
 arrayComp([1,2,3], [1,2,10])  //--> false
 arrayComp([], [])             //--> true
 arrayComp([], [1,2,3])        //--> false
 ```
+
 ### `concat(array0, array1)`
 
 Concatenate array0 and array1.
+
+```c++
+concat([1,2,3],[4,5,6]) //--> [1, 2, 3, 4, 5, 6]
+```
 
 ### `contains(array, *val)`
 
 Returns whether the `array` contains `val`.
 
+```c++
+contains([8,1,4,0,7,2,5,4,3],4) //--> true
+contains([8,1,4,0,7,2,5,4,3],6) //--> false
+```
+
 ### `count(array, func)`
 
 Count specific elements in the `array` using a tester function `func(x)`.
+
+```c++
+count(0..10,x=>x%3==0) //--> 4
+```
 
 ### `except(array0, array1)`
 
 Returns the difference set of the two arrays.
 
+```c++
+except(0..10,[1,4,7,10,13,16]) //--> [0, 2, 3, 5, 6, 8, 9]
+```
+
 ### `extend(array, func, count)`
 
 Extends the `array` using converter function `func(array)`.
+
+```c++
+extend([0,1],a=>a[-2]+a[-1],5) //--> [0, 1, 1, 2, 3, 5, 8]
+```
 
 ### `filter(array, func)`
 
 Filter the `array` using a tester function `func(x)`.
 
+```c++
+filter(0..10,x=>x%3==0) //--> [0, 3, 6, 9]
+```
+
 ### `indexOf(array, *val)`
 
 Returns the index of the first element in the `array` whose value matches `val`.
+
+```c++
+indexOf([8,1,4,0,7,2,5,4,3],4) //--> 2
+indexOf([8,1,4,0,7,2,5,4,3],6) //--> -1
+```
 
 ### `intersect(array0, array1)`
 
 Returns the product set of the two arrays.
 
+```c++
+intersect(0..10,[1,4,7,10,13,16])
+                         //--> [1, 4, 7]
+```
+
 ### `lastIndexOf(array, *val)`
 
 Returns the index of the last element in the `array` whose value matches `val`.
+
+```c++
+lastIndexOf([8,1,4,0,7,2,5,4,3],4)
+                          //--> 7
+lastIndexOf([8,1,4,0,7,2,5,4,3],6)
+                          //--> -1
+```
 
 ### `len(array)`
 
 Length of `array`
 
-```
+```c++
 len([])            //--> 0
 len([12,34,56,78]) //--> 4
 len("Hello")       //--> 5
 ```
+
 ### `map(array, func)`
 
 Map the `array` using a converter function `func(x)`.
+
+```c++
+map(0..5,x=>x*x) //--> [0, 1, 4, 9, 16]
+```
 
 ### `range(start, stop)`
 
 Returns an array consists of sequence of numbers greater than or equal to `start` and less than `stop`.
 
-```
+```c++
 range(3,9) //--> [3, 4, 5, 6, 7, 8]
 ```
+
 ### `range(start, stop, step)`
 
 Returns an array consists of sequence of numbers greater than or equal to `start` and less than `stop` with common difference `step`.
 
-```
+```c++
 range(3,9,2) //--> [3, 5, 7]
 ```
+
 ### `rangeInclusive(start, stop)`
 
 Returns an array consists of sequence of numbers greater than or equal to `start` and less than or equal to `stop`.
 
-```
+```c++
 rangeInclusive(3,9) //--> [3, 4, 5, 6, 7, 8, 9]
 ```
+
 ### `rangeInclusive(start, stop, step)`
 
 Returns an array consists of sequence of numbers greater than or equal to `start` and less than or equal to `stop` with common difference `step`.
 
-```
+```c++
 rangeInclusive(3,9,2) //--> [3, 5, 7, 9]
 ```
+
 ### `reverseArray(array)`
 
 Reverses the order of elements of `array`
 
-```
+```c++
 reverseArray([12,3,4567,890]) //--> [890, 4567, 3, 12]
 ```
+
 ### `sort(array)`
 
 Sort the `array`.
+
+```c++
+sort([4,3,5,1,2]) //--> [1, 2, 3, 4, 5]
+```
 
 ### `sort(array, func)`
 
 Sort the `array` using a evaluator function `func(x)`.
 
+```c++
+sort([14,23,35,41,52],x=>x%10) //--> [41, 52, 23, 14, 35]
+```
+
 ### `union(array0, array1)`
 
 Returns the union of the two arrays.
+
+```c++
+union(0..10,[1,4,7,10,13,16]) //--> [0, 1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 13, 16]
+```
 
 ### `unique(array)`
 
 Returns an array of unique elements.
 
+```c++
+unique([3,0,1,2,2,1,3,4]) //--> [3, 0, 1, 2, 4]
+```
+
 ### `unique(array, func)`
 
 Return unique elements using evaluator function `func(x)`.
 
-----
-## Assertion
-
-### `assert(x)`
-
-Raises an error if the `x` is false.
+```c++
+unique([13,20,31,42,52,61,73,84],(a,b)=>a%10==b%10)
+                                       //--> [13, 20, 31, 42, 84]
+```
 
 ----
+
 ## Bit/Byte Operation
 
 ### `count1(*x)`
@@ -249,16 +330,18 @@ Divide the value of `x` into `n` elements of `b` bit width.
 Separate the value of `x` into `n` elements of `b` bit width.
 
 ----
+
 ## Cast
 
 ### `array(x)`
 
 Converts value `x` to an list.
 
-```
+```c++
 array([1,2,3]) //--> [1, 2, 3]
 array("abc")   //--> ['a', 'b', 'c']
 ```
+
 ### `rat(*x)`
 
 Rational fraction approximation of `x`.
@@ -276,6 +359,7 @@ Converts the `x` to a real number.
 Converts `x` to a string.
 
 ----
+
 ## Color
 
 ### `hsl2rgb(h, s, l)`
@@ -335,6 +419,7 @@ Converts the 24 bit YUV color to 24 bit RGB.
 Converts Y, U, V to 24 bit RGB color.
 
 ----
+
 ## Date Time
 
 ### `datetime(year, mon, day)`
@@ -361,30 +446,34 @@ Returns day of year of datetime, expressed as 1..366.
 
 Converts from days to epoch time.
 
+```c++
+fromDays(123.45) //--> 10666080
 ```
-fromDays(123.45) //--> +123.10:48:00.000
-```
+
 ### `fromHours(*x)`
 
 Converts from hours to epoch time.
 
+```c++
+fromHours(123.45) //--> 444420
 ```
-fromHours(123.45) //--> +5.3:27:00.000
-```
+
 ### `fromMinutes(*x)`
 
 Converts from minutes to epoch time.
 
+```c++
+fromMinutes(123.45) //--> 7407
 ```
-fromMinutes(123.45) //--> +2:03:27.000
-```
+
 ### `fromSeconds(*x)`
 
 Converts from seconds to epoch time.
 
+```c++
+fromSeconds(123.45) //--> 123.45
 ```
-fromSeconds(123.45) //--> +0:02:03
-```
+
 ### `hourOf(*t)`
 
 Returns hour component of datetime, expressed as 0..23.
@@ -413,35 +502,40 @@ Returns datetime of today's 00:00:00.
 
 Converts from epoch time to days.
 
-```
+```c++
 toDays(#+123.12:34:56.789#) //--> 123.524268391
 ```
+
 ### `toHours(*x)`
 
 Converts from epoch time to hours.
 
-```
+```c++
 toHours(#+123.12:34:56.789#) //--> 2964.582441389
 ```
+
 ### `toMinutes(*x)`
 
 Converts from epoch time to minutes.
 
-```
+```c++
 toMinutes(#+123.12:34:56.789#) //--> 177874.946483333
 ```
+
 ### `toSeconds(*x)`
 
 Converts from epoch time to seconds.
 
-```
+```c++
 toSeconds(#+123.12:34:56.789#) //--> 10672496.789
 ```
+
 ### `yearOf(*t)`
 
 Returns year component of datetime.
 
 ----
+
 ## E Series
 
 ### `esCeil(series, *x)`
@@ -461,6 +555,7 @@ Two E-series resistor values that provide the closest value to the voltage divid
 Nearest E-series value (`series`=3, 6, 12, 24, 48, 96, or 192).
 
 ----
+
 ## Encoding
 
 ### `base64Dec(str)`
@@ -496,6 +591,7 @@ Decode UTF8 byte sequence.
 Encode `str` to UTF8 byte sequence.
 
 ----
+
 ## Exponential
 
 ### `clog10(*x)`
@@ -531,6 +627,7 @@ Binary logarithm of `x`
 Square root of `x`
 
 ----
+
 ## Gcd/Lcm
 
 ### `gcd(array...)`
@@ -542,6 +639,7 @@ Greatest common divisor of elements of the `array`.
 Least common multiple of elements of the `array`.
 
 ----
+
 ## Gray Code
 
 ### `fromGray(*x)`
@@ -553,6 +651,7 @@ Converts the value from gray-code to binary.
 Converts the value from binary to gray-code.
 
 ----
+
 ## Min/Max
 
 ### `clip(a, b, *x)`
@@ -568,6 +667,7 @@ Maximum value of elements of the `array`.
 Minimum value of elements of the `array`.
 
 ----
+
 ## Parity/Ecc
 
 ### `eccDec(b, ecc, x)`
@@ -591,6 +691,7 @@ Odd parity of `x`.
 Reduction XOR of `x` (Same as even parity).
 
 ----
+
 ## Plotting
 
 ### `plot(func)`
@@ -598,6 +699,7 @@ Reduction XOR of `x` (Same as even parity).
 Plot graph of `func(x)`.
 
 ----
+
 ## Prime Number
 
 ### `isPrime(*x)`
@@ -613,6 +715,7 @@ Returns whether `x` is prime or not.
 Returns prime factors of `x`.
 
 ----
+
 ## Random
 
 ### `rand()`
@@ -632,6 +735,7 @@ Generates a 32bit random integer.
 Generates a 64bit random integer.
 
 ----
+
 ## Representaion
 
 ### `bin(*x)`
@@ -667,6 +771,7 @@ Converts `x` to octal representation.
 Converts `x` to SI prefixed representation.
 
 ----
+
 ## Rounding
 
 ### `ceil(*x)`
@@ -686,6 +791,7 @@ Nearest integer to `x`
 Integral part of `x`
 
 ----
+
 ## Solve
 
 ### `solve(func)`
@@ -701,6 +807,7 @@ Returns solutions of `func(x)=0` using Newton's Method with initial value in `ar
 Returns solutions of `func(x)=0` using Newton's Method with initial value between `min` and `max`.
 
 ----
+
 ## String
 
 ### `endsWith(*s, key)`
@@ -744,6 +851,7 @@ Removes whitespace characters from far end of string `s`.
 Removes whitespace characters from near end of string `s`.
 
 ----
+
 ## Sum/Average
 
 ### `ave(array...)`
@@ -767,7 +875,12 @@ Inverse of the sum of the inverses. Composite resistance of parallel resistors.
 Sum of elements of the `array`.
 
 ----
+
 ## System
+
+### `assert(x)`
+
+Raises an error if the `x` is false.
 
 ### `isDebugBuild()`
 
@@ -778,6 +891,7 @@ Whether or not the running Calctus is a debug build.
 Returns current version of Calctus.
 
 ----
+
 ## Trigonometric
 
 ### `acos(*x)`
@@ -821,3 +935,4 @@ Tangent
 Hyperbolic tangent
 
 ----
+

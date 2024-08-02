@@ -1,0 +1,262 @@
+<!DOCTYPE html>
+<html class="writer-html5" lang="en" data-content_root="../">
+<head>
+  <meta charset="utf-8" /><meta name="viewport" content="width=device-width, initial-scale=1" />
+
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Date Time &mdash; Calctus  documentation</title>
+      <link rel="stylesheet" type="text/css" href="../_static/pygments.css?v=80d5e7a1" />
+      <link rel="stylesheet" type="text/css" href="../_static/css/theme.css?v=19f00094" />
+
+  
+  <!--[if lt IE 9]>
+    <script src="../_static/js/html5shiv.min.js"></script>
+  <![endif]-->
+  
+        <script src="../_static/jquery.js?v=5d32c60e"></script>
+        <script src="../_static/_sphinx_javascript_frameworks_compat.js?v=2cd50e6c"></script>
+        <script src="../_static/documentation_options.js?v=5929fcd5"></script>
+        <script src="../_static/doctools.js?v=9a2dae69"></script>
+        <script src="../_static/sphinx_highlight.js?v=dc90522c"></script>
+    <script src="../_static/js/theme.js"></script>
+    <link rel="index" title="Index" href="../genindex.html" />
+    <link rel="search" title="Search" href="../search.html" />
+    <link rel="next" title="E Series" href="eseriesfuncs.html" />
+    <link rel="prev" title="Color" href="colorfuncs.html" /> 
+</head>
+
+<body class="wy-body-for-nav"> 
+  <div class="wy-grid-for-nav">
+    <nav data-toggle="wy-nav-shift" class="wy-nav-side">
+      <div class="wy-side-scroll">
+        <div class="wy-side-nav-search" >
+
+          
+          
+          <a href="../index.html" class="icon icon-home">
+            Calctus
+          </a>
+<div role="search">
+  <form id="rtd-search-form" class="wy-form" action="../search.html" method="get">
+    <input type="text" name="q" placeholder="Search docs" aria-label="Search docs" />
+    <input type="hidden" name="check_keywords" value="yes" />
+    <input type="hidden" name="area" value="default" />
+  </form>
+</div>
+        </div><div class="wy-menu wy-menu-vertical" data-spy="affix" role="navigation" aria-label="Navigation menu">
+              <ul class="current">
+<li class="toctree-l1 current"><a class="reference internal" href="index.html">Built-In Functions</a><ul class="current">
+<li class="toctree-l2"><a class="reference internal" href="absolute_signfuncs.html">Absolute/Sign</a></li>
+<li class="toctree-l2"><a class="reference internal" href="arrayfuncs.html">Array</a></li>
+<li class="toctree-l2"><a class="reference internal" href="bit_byteoperationfuncs.html">Bit/Byte Operation</a></li>
+<li class="toctree-l2"><a class="reference internal" href="castfuncs.html">Cast</a></li>
+<li class="toctree-l2"><a class="reference internal" href="colorfuncs.html">Color</a></li>
+<li class="toctree-l2 current"><a class="current reference internal" href="#">Date Time</a><ul>
+<li class="toctree-l3"><a class="reference internal" href="#datetime-year-mon-day">datetime(year, mon, day)</a></li>
+<li class="toctree-l3"><a class="reference internal" href="#datetime-year-mon-day-hour-min-sec">datetime(year, mon, day, hour, min, sec)</a></li>
+<li class="toctree-l3"><a class="reference internal" href="#dayofmonth-t">dayOfMonth(*t)</a></li>
+<li class="toctree-l3"><a class="reference internal" href="#dayofweek-t">dayOfWeek(*t)</a></li>
+<li class="toctree-l3"><a class="reference internal" href="#dayofyear-t">dayOfYear(*t)</a></li>
+<li class="toctree-l3"><a class="reference internal" href="#fromdays-x">fromDays(*x)</a></li>
+<li class="toctree-l3"><a class="reference internal" href="#fromhours-x">fromHours(*x)</a></li>
+<li class="toctree-l3"><a class="reference internal" href="#fromminutes-x">fromMinutes(*x)</a></li>
+<li class="toctree-l3"><a class="reference internal" href="#fromseconds-x">fromSeconds(*x)</a></li>
+<li class="toctree-l3"><a class="reference internal" href="#hourof-t">hourOf(*t)</a></li>
+<li class="toctree-l3"><a class="reference internal" href="#minuteof-t">minuteOf(*t)</a></li>
+<li class="toctree-l3"><a class="reference internal" href="#monthof-t">monthOf(*t)</a></li>
+<li class="toctree-l3"><a class="reference internal" href="#now">now()</a></li>
+<li class="toctree-l3"><a class="reference internal" href="#secondof-t">secondOf(*t)</a></li>
+<li class="toctree-l3"><a class="reference internal" href="#today">today()</a></li>
+<li class="toctree-l3"><a class="reference internal" href="#todays-x">toDays(*x)</a></li>
+<li class="toctree-l3"><a class="reference internal" href="#tohours-x">toHours(*x)</a></li>
+<li class="toctree-l3"><a class="reference internal" href="#tominutes-x">toMinutes(*x)</a></li>
+<li class="toctree-l3"><a class="reference internal" href="#toseconds-x">toSeconds(*x)</a></li>
+<li class="toctree-l3"><a class="reference internal" href="#yearof-t">yearOf(*t)</a></li>
+</ul>
+</li>
+<li class="toctree-l2"><a class="reference internal" href="eseriesfuncs.html">E Series</a></li>
+<li class="toctree-l2"><a class="reference internal" href="encodingfuncs.html">Encoding</a></li>
+<li class="toctree-l2"><a class="reference internal" href="exponentialfuncs.html">Exponential</a></li>
+<li class="toctree-l2"><a class="reference internal" href="gcd_lcmfuncs.html">Gcd/Lcm</a></li>
+<li class="toctree-l2"><a class="reference internal" href="graycodefuncs.html">Gray Code</a></li>
+<li class="toctree-l2"><a class="reference internal" href="min_maxfuncs.html">Min/Max</a></li>
+<li class="toctree-l2"><a class="reference internal" href="parity_eccfuncs.html">Parity/Ecc</a></li>
+<li class="toctree-l2"><a class="reference internal" href="plottingfuncs.html">Plotting</a></li>
+<li class="toctree-l2"><a class="reference internal" href="primenumberfuncs.html">Prime Number</a></li>
+<li class="toctree-l2"><a class="reference internal" href="randomfuncs.html">Random</a></li>
+<li class="toctree-l2"><a class="reference internal" href="representaionfuncs.html">Representaion</a></li>
+<li class="toctree-l2"><a class="reference internal" href="roundingfuncs.html">Rounding</a></li>
+<li class="toctree-l2"><a class="reference internal" href="solvefuncs.html">Solve</a></li>
+<li class="toctree-l2"><a class="reference internal" href="stringfuncs.html">String</a></li>
+<li class="toctree-l2"><a class="reference internal" href="sum_averagefuncs.html">Sum/Average</a></li>
+<li class="toctree-l2"><a class="reference internal" href="systemfuncs.html">System</a></li>
+<li class="toctree-l2"><a class="reference internal" href="trigonometricfuncs.html">Trigonometric</a></li>
+</ul>
+</li>
+</ul>
+
+        </div>
+      </div>
+    </nav>
+
+    <section data-toggle="wy-nav-shift" class="wy-nav-content-wrap"><nav class="wy-nav-top" aria-label="Mobile navigation menu" >
+          <i data-toggle="wy-nav-top" class="fa fa-bars"></i>
+          <a href="../index.html">Calctus</a>
+      </nav>
+
+      <div class="wy-nav-content">
+        <div class="rst-content">
+          <div role="navigation" aria-label="Page navigation">
+  <ul class="wy-breadcrumbs">
+      <li><a href="../index.html" class="icon icon-home" aria-label="Home"></a></li>
+          <li class="breadcrumb-item"><a href="index.html">Built-In Functions</a></li>
+      <li class="breadcrumb-item active">Date Time</li>
+      <li class="wy-breadcrumbs-aside">
+            <a href="../_sources/functions/datetimefuncs.rst.txt" rel="nofollow"> View page source</a>
+      </li>
+  </ul>
+  <hr/>
+</div>
+          <div role="main" class="document" itemscope="itemscope" itemtype="http://schema.org/Article">
+           <div itemprop="articleBody">
+             
+  <section id="date-time">
+<h1>Date Time<a class="headerlink" href="#date-time" title="Link to this heading"></a></h1>
+<section id="datetime-year-mon-day">
+<h2>datetime(year, mon, day)<a class="headerlink" href="#datetime-year-mon-day" title="Link to this heading"></a></h2>
+<p>Returns datetime from year, month, and day.</p>
+</section>
+<section id="datetime-year-mon-day-hour-min-sec">
+<h2>datetime(year, mon, day, hour, min, sec)<a class="headerlink" href="#datetime-year-mon-day-hour-min-sec" title="Link to this heading"></a></h2>
+<p>Returns datetime from year, month, day, hour, minute, and second.</p>
+</section>
+<section id="dayofmonth-t">
+<h2>dayOfMonth(<a href="#id1"><span class="problematic" id="id2">*</span></a>t)<a class="headerlink" href="#dayofmonth-t" title="Link to this heading"></a></h2>
+<p>Returns day component of datetime, expressed as 1..31.</p>
+</section>
+<section id="dayofweek-t">
+<h2>dayOfWeek(<a href="#id3"><span class="problematic" id="id4">*</span></a>t)<a class="headerlink" href="#dayofweek-t" title="Link to this heading"></a></h2>
+<p>Returns day of week of datetime, expressed as 0 (Sunday)..6 (Saturday).</p>
+</section>
+<section id="dayofyear-t">
+<h2>dayOfYear(<a href="#id5"><span class="problematic" id="id6">*</span></a>t)<a class="headerlink" href="#dayofyear-t" title="Link to this heading"></a></h2>
+<p>Returns day of year of datetime, expressed as 1..366.</p>
+</section>
+<section id="fromdays-x">
+<h2>fromDays(<a href="#id7"><span class="problematic" id="id8">*</span></a>x)<a class="headerlink" href="#fromdays-x" title="Link to this heading"></a></h2>
+<p>Converts from days to epoch time.</p>
+<div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="n">fromDays</span><span class="p">(</span><span class="mf">123.45</span><span class="p">)</span> <span class="o">//--&gt;</span> <span class="mi">10666080</span>
+</pre></div>
+</div>
+</section>
+<section id="fromhours-x">
+<h2>fromHours(<a href="#id9"><span class="problematic" id="id10">*</span></a>x)<a class="headerlink" href="#fromhours-x" title="Link to this heading"></a></h2>
+<p>Converts from hours to epoch time.</p>
+<div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="n">fromHours</span><span class="p">(</span><span class="mf">123.45</span><span class="p">)</span> <span class="o">//--&gt;</span> <span class="mi">444420</span>
+</pre></div>
+</div>
+</section>
+<section id="fromminutes-x">
+<h2>fromMinutes(<a href="#id11"><span class="problematic" id="id12">*</span></a>x)<a class="headerlink" href="#fromminutes-x" title="Link to this heading"></a></h2>
+<p>Converts from minutes to epoch time.</p>
+<div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="n">fromMinutes</span><span class="p">(</span><span class="mf">123.45</span><span class="p">)</span> <span class="o">//--&gt;</span> <span class="mi">7407</span>
+</pre></div>
+</div>
+</section>
+<section id="fromseconds-x">
+<h2>fromSeconds(<a href="#id13"><span class="problematic" id="id14">*</span></a>x)<a class="headerlink" href="#fromseconds-x" title="Link to this heading"></a></h2>
+<p>Converts from seconds to epoch time.</p>
+<div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="n">fromSeconds</span><span class="p">(</span><span class="mf">123.45</span><span class="p">)</span> <span class="o">//--&gt;</span> <span class="mf">123.45</span>
+</pre></div>
+</div>
+</section>
+<section id="hourof-t">
+<h2>hourOf(<a href="#id15"><span class="problematic" id="id16">*</span></a>t)<a class="headerlink" href="#hourof-t" title="Link to this heading"></a></h2>
+<p>Returns hour component of datetime, expressed as 0..23.</p>
+</section>
+<section id="minuteof-t">
+<h2>minuteOf(<a href="#id17"><span class="problematic" id="id18">*</span></a>t)<a class="headerlink" href="#minuteof-t" title="Link to this heading"></a></h2>
+<p>Returns minute component of datetime, expressed as 0..59.</p>
+</section>
+<section id="monthof-t">
+<h2>monthOf(<a href="#id19"><span class="problematic" id="id20">*</span></a>t)<a class="headerlink" href="#monthof-t" title="Link to this heading"></a></h2>
+<p>Returns month component of datetime, expressed as 1..12.</p>
+</section>
+<section id="now">
+<h2>now()<a class="headerlink" href="#now" title="Link to this heading"></a></h2>
+<p>Returns current datetime.</p>
+</section>
+<section id="secondof-t">
+<h2>secondOf(<a href="#id21"><span class="problematic" id="id22">*</span></a>t)<a class="headerlink" href="#secondof-t" title="Link to this heading"></a></h2>
+<p>Returns second component of datetime, expressed as 0..60.</p>
+</section>
+<section id="today">
+<h2>today()<a class="headerlink" href="#today" title="Link to this heading"></a></h2>
+<p>Returns datetime of today’s 00:00:00.</p>
+</section>
+<section id="todays-x">
+<h2>toDays(<a href="#id23"><span class="problematic" id="id24">*</span></a>x)<a class="headerlink" href="#todays-x" title="Link to this heading"></a></h2>
+<p>Converts from epoch time to days.</p>
+<div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="n">toDays</span><span class="p">(</span><span class="c1">#+123.12:34:56.789#) //--&gt; 123.524268391</span>
+</pre></div>
+</div>
+</section>
+<section id="tohours-x">
+<h2>toHours(<a href="#id25"><span class="problematic" id="id26">*</span></a>x)<a class="headerlink" href="#tohours-x" title="Link to this heading"></a></h2>
+<p>Converts from epoch time to hours.</p>
+<div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="n">toHours</span><span class="p">(</span><span class="c1">#+123.12:34:56.789#) //--&gt; 2964.582441389</span>
+</pre></div>
+</div>
+</section>
+<section id="tominutes-x">
+<h2>toMinutes(<a href="#id27"><span class="problematic" id="id28">*</span></a>x)<a class="headerlink" href="#tominutes-x" title="Link to this heading"></a></h2>
+<p>Converts from epoch time to minutes.</p>
+<div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="n">toMinutes</span><span class="p">(</span><span class="c1">#+123.12:34:56.789#) //--&gt; 177874.946483333</span>
+</pre></div>
+</div>
+</section>
+<section id="toseconds-x">
+<h2>toSeconds(<a href="#id29"><span class="problematic" id="id30">*</span></a>x)<a class="headerlink" href="#toseconds-x" title="Link to this heading"></a></h2>
+<p>Converts from epoch time to seconds.</p>
+<div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="n">toSeconds</span><span class="p">(</span><span class="c1">#+123.12:34:56.789#) //--&gt; 10672496.789</span>
+</pre></div>
+</div>
+</section>
+<section id="yearof-t">
+<h2>yearOf(<a href="#id31"><span class="problematic" id="id32">*</span></a>t)<a class="headerlink" href="#yearof-t" title="Link to this heading"></a></h2>
+<p>Returns year component of datetime.</p>
+</section>
+</section>
+
+
+           </div>
+          </div>
+          <footer><div class="rst-footer-buttons" role="navigation" aria-label="Footer">
+        <a href="colorfuncs.html" class="btn btn-neutral float-left" title="Color" accesskey="p" rel="prev"><span class="fa fa-arrow-circle-left" aria-hidden="true"></span> Previous</a>
+        <a href="eseriesfuncs.html" class="btn btn-neutral float-right" title="E Series" accesskey="n" rel="next">Next <span class="fa fa-arrow-circle-right" aria-hidden="true"></span></a>
+    </div>
+
+  <hr/>
+
+  <div role="contentinfo">
+    <p>&#169; Copyright 2024, Shapoco.</p>
+  </div>
+
+  Built with <a href="https://www.sphinx-doc.org/">Sphinx</a> using a
+    <a href="https://github.com/readthedocs/sphinx_rtd_theme">theme</a>
+    provided by <a href="https://readthedocs.org">Read the Docs</a>.
+   
+
+</footer>
+        </div>
+      </div>
+    </section>
+  </div>
+  <script>
+      jQuery(function () {
+          SphinxRtdTheme.Navigation.enable(true);
+      });
+  </script> 
+
+</body>
+</html>

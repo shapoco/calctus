@@ -22,12 +22,15 @@ namespace Shapoco.Calctus
             }
             else {
 #if DEBUG
+                DocumentGenerator.WriteVersion();
+
                 //Model.Formats.ValFormat.Test();
                 Model.Standards.PreferredNumbers.Test();
                 Model.ufixed113.Test();
                 Model.quad.Test();
                 Model.Maths.QuadMath.Test();
                 Model.Functions.BuiltInFuncLibrary.Instance.DoTest();
+                DocumentGenerator.GenerateDocumentRst();
                 DocumentGenerator.GenerateDocumentation();
 #endif
                 Application.EnableVisualStyles();
