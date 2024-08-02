@@ -61,46 +61,34 @@ namespace Shapoco.Calctus.Model.Expressions {
                 else if (A is PartRefExpr aPart && aPart.Target is IdExpr aPartTarget) {
                     // Part Select を使った参照
                     var single = aPart.IsSingleIndex;
-                    var aNear = aPart.IndexFrom.Eval(e).AsInt;
-                    var aFar = single ? aNear : aPart.IndexTo.Eval(e).AsInt;
+
+                    // to index の整数判定
+                    var iLeft = aPart.IndexLeft.Eval(e).AsInt;
+                    var iRight = single ? iLeft : aPart.IndexRight.Eval(e).AsInt;
 
                     var bVal = B.Eval(e);
                     var aVarRef = e.Ref(aPartTarget.Id, allowCreate: false);
                     var aVal = aVarRef.Value;
-                    if (aVal is ListVal aArray) {
+                    if (aVal is ICollectionVal aArray) {
                         // 配列の書き換え
-                        if (aNear < 0) aNear = aArray.Length + aNear;
-                        if (aFar < 0) aFar = aArray.Length + aFar;
-                        if (aNear > aFar) throw new ArgumentOutOfRangeException();
-                        if (aNear == aFar) {
-                            aArray = aArray.Modify(aNear, aFar, new Val[] { bVal });
+                        if (single) {
+                            aVal = aArray.SetSelement(e, iLeft, bVal);
                         }
                         else {
-                            aArray = aArray.Modify(aNear, aFar, (Val[])bVal.Raw);
+                            aVal = aArray.SetRange(e, iLeft, iRight, bVal);
                         }
-                        aVal = aArray;
-                    }
-                    else if (aVal is StrVal strVal) {
-                        // 部分文字列の書き換え
-                        var str = strVal.ToStringForValue(e);
-                        if (aNear < 0) aNear = str.Length + aNear;
-                        if (aFar < 0) aFar = str.Length + aFar;
-                        if (aNear > aFar) throw new ArgumentOutOfRangeException();
-                        if (aNear < 0) throw new ArgumentOutOfRangeException();
-                        if (aFar > str.Length) throw new ArgumentOutOfRangeException();
-                        aVal = new StrVal(str.Substring(0, aNear) + bVal.ToStringForValue(e) + str.Substring(aFar));
                     }
                     else {
                         // ビットフィールドの書き換え
-                        if (aNear < aFar) throw new ArgumentOutOfRangeException();
-                        if (aNear < 0) throw new ArgumentOutOfRangeException();
-                        if (aFar > 63) throw new ArgumentOutOfRangeException();
-                        var w = aNear - aFar + 1;
+                        if (iLeft < iRight) throw new ArgumentOutOfRangeException();
+                        if (iLeft < 0) throw new ArgumentOutOfRangeException();
+                        if (iRight > 63) throw new ArgumentOutOfRangeException();
+                        var w = iLeft - iRight + 1;
                         var mask = w < 64 ? ((1L << w) - 1L) : unchecked((long)0xffffffffffffffff);
-                        mask <<= aFar;
+                        mask <<= iRight;
                         var buff = aVal.AsLong;
                         buff &= ~mask;
-                        buff |= (bVal.AsLong << aFar) & mask;
+                        buff |= (bVal.AsLong << iRight) & mask;
                         aVal = new RealVal(buff, aVal.FormatFlags);
                     }
                     aVarRef.Value = aVal;
@@ -204,7 +192,7 @@ namespace Shapoco.Calctus.Model.Expressions {
                 // pass
             }
             else if (!TryAutoCast(e, ref a, ref b)) {
-                throw new InvalidCastException(OpCode + " cannot be applied for " + a.CalctusTypeName + " and " + b.CalctusTypeName);
+                throw new InvalidCastException("Operator '" + OpCode.GetSymbol() + "' cannot be applied for " + a.CalctusTypeName + " and " + b.CalctusTypeName);
             }
 
             // todo cast str --> array

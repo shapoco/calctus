@@ -68,5 +68,35 @@ namespace Shapoco.Calctus.Model.Values {
         public ListVal ToListVal() => this;
         public Val[] ToValArray() => (Val[])_raw.Clone();
         public Array ToRawArray() => (Val[])_raw.Clone();
+
+        public Val GetElement(EvalContext e, int index)
+            => _raw[this.NormalizeIndex(index)];
+        
+        public Val GetSlice(EvalContext e, int from, int to) {
+            this.NormalizeIndex(ref from, ref to);
+            var partLen = to - from;
+            var ret = new Val[partLen];
+            for(int i = 0; i < partLen; i++) {
+                ret[i] = _raw[from + i];
+            }
+            return ret.ToVal();
+        }
+
+        public Val SetSelement(EvalContext e, int index, Val val) {
+            var ret = (Val[])_raw.Clone();
+            ret[this.NormalizeIndex(index)] = val;
+            return ret.ToVal();
+        }
+
+        public Val SetRange(EvalContext e, int from, int to, Val val) {
+            this.NormalizeIndex(ref from, ref to);
+            var partLen = to - from;
+            var valArray = ((ListVal)val).Raw;
+            var ret = (Val[])_raw.Clone();
+            for (int i = 0; i < partLen; i++) {
+                ret[i + from] = valArray[i];
+            }
+            return ret.ToVal();
+        }
     }
 }

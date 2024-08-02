@@ -127,5 +127,22 @@ namespace Shapoco.Calctus.Model.Values {
             }
             return array;
         }
+
+        public static int NormalizeIndex(this ICollectionVal val, int index, bool includeTail = false) {
+            var len = val.Length;
+            var ret = index;
+            if (ret < 0) ret = len + ret;
+            int max = includeTail ? len : len - 1;
+            if (ret < 0 || max < ret) throw new IndexOutOfRangeException("Index " + index + " out of range.");
+            return ret;
+        }
+
+        public static void NormalizeIndex(this ICollectionVal val, ref int from, ref int to) {
+            var tempFrom = val.NormalizeIndex(from, false);
+            var tempTo = val.NormalizeIndex(to, true);
+            if (tempFrom > tempTo) throw new IndexOutOfRangeException("Range [" + from + ":" + to + "] broken.");
+            from = tempFrom;
+            to = tempTo;
+        }
     }
 }

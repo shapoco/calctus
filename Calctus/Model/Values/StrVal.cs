@@ -1,12 +1,11 @@
-﻿using Shapoco.Calctus.Model.Formats;
-using System;
+﻿using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Text;
 using System.Text.RegularExpressions;
 using System.Threading.Tasks;
-
 using Shapoco.Calctus.Model.Evaluations;
+using Shapoco.Calctus.Model.Formats;
 
 namespace Shapoco.Calctus.Model.Values {
     // TElem を ApFixedVal にする
@@ -17,7 +16,7 @@ namespace Shapoco.Calctus.Model.Values {
             if (length > Settings.Instance.Calculation_Limit_MaxStringLength) throw new CalctusError("String length exceeds limit.");
         }
 
-        public StrVal(string val) : base (val) {
+        public StrVal(string val) : base(val) {
             CheckStringLength(val.Length);
         }
 
@@ -61,5 +60,24 @@ namespace Shapoco.Calctus.Model.Values {
         public Array ToRawArray() => _raw.ToCharArray();
         public Val[] ToValArray() => _raw.ToCharArray().ToValArray();
         public ListVal ToListVal() => new ListVal(ToValArray());
+
+        public Val GetElement(EvalContext e, int index)
+            => _raw[this.NormalizeIndex(index)].ToRealVal();
+
+        public Val GetSlice(EvalContext e, int from, int to) {
+            this.NormalizeIndex(ref from, ref to);
+            return _raw.Substring(from, to - from).ToVal();
+        }
+
+        public Val SetSelement(EvalContext e, int index, Val val) {
+            index = this.NormalizeIndex(index);
+            return (_raw.Substring(0, index) + val.ToStringForValue(e) + _raw.Substring(index + 1)).ToVal();
+        }
+
+        // todo StrVal.SetRange(): from..to の長さと val の長さが違うのを許容するか？
+        public Val SetRange(EvalContext e, int from, int to, Val val) {
+            this.NormalizeIndex(ref from, ref to);
+            return (_raw.Substring(0, from) + val.ToStringForValue(e) + _raw.Substring(to)).ToVal();
+        }
     }
 }

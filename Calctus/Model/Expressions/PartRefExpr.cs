@@ -7,51 +7,40 @@ namespace Shapoco.Calctus.Model.Expressions {
     class PartRefExpr : Expr {
         public Token Name => Token;
         public readonly Expr Target;
-        public readonly Expr IndexFrom;
-        public readonly Expr IndexTo;
-        public bool IsSingleIndex => IndexTo == null;
+        public readonly Expr IndexLeft;
+        public readonly Expr IndexRight;
+        public bool IsSingleIndex => IndexRight == null;
 
         public PartRefExpr(Token startBracket, Expr target, Expr index) : this(startBracket, target, index, null) { }
 
-        public PartRefExpr(Token startBracket, Expr target, Expr from, Expr to) : base(startBracket) {
+        public PartRefExpr(Token startBracket, Expr target, Expr iLeft, Expr iRight) : base(startBracket) {
             Target = target;
-            IndexFrom = from;
-            IndexTo = to;
+            IndexLeft = iLeft;
+            IndexRight = iRight;
         }
 
         public override bool CausesValueChange() => true;
 
-        protected override Val OnEval(EvalContext ctx) {
-            var from = IndexFrom.Eval(ctx).AsInt;
-            var to = IndexTo == null ? from : IndexTo.Eval(ctx).AsInt;
-            var obj = Target.Eval(ctx);
-            if (obj is ListVal array) {
-                if (from < 0) from = array.Length + from;
-                if (to < 0) to = array.Length + to;
-                if (from == to) {
-                    return array[from];
+        protected override Val OnEval(EvalContext e) {
+            bool single = IsSingleIndex;
+            var iLeft = IndexLeft.Eval(e).AsInt;
+            var iRight = IndexRight == null ? iLeft : IndexRight.Eval(e).AsInt;
+            var obj = Target.Eval(e);
+            if (obj is ICollectionVal collection) {
+                if (single) {
+                    return collection.GetElement(e, iLeft);
                 }
                 else {
-                    return array.Slice(from, to);
-                }
-            }
-            else if (obj is StrVal str) {
-                if (from < 0) from = str.Length + from;
-                if (to < 0) to = str.Length + to;
-                if (from == to) {
-                    return str.Raw[from].ToCharVal();
-                }
-                else {
-                    return new StrVal(str.Raw.Substring(from, to - from));
+                    return collection.GetSlice(e, iLeft, iRight);
                 }
             }
             else {
-                if (from < to) throw new ArgumentOutOfRangeException();
-                if (from < 0 || 63 < from) throw new ArgumentOutOfRangeException();
-                if (to < 0 || 63 < to) throw new ArgumentOutOfRangeException();
+                if (iLeft < iRight) throw new ArgumentOutOfRangeException();
+                if (iLeft < 0 || 63 < iLeft) throw new ArgumentOutOfRangeException();
+                if (iRight < 0 || 63 < iRight) throw new ArgumentOutOfRangeException();
                 var val = obj.AsLong;
-                val >>= to;
-                int w = from - to + 1;
+                val >>= iRight;
+                int w = iLeft - iRight + 1;
                 if (w < 64) {
                     val &= (1L << w) - 1L;
                 }
