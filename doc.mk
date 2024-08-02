@@ -29,7 +29,6 @@ $(INDEX_HTML): $(DEPENDENCY_LIST)
 	rm -rf $(OUTPUT_DIR)
 	mkdir -p $(OUTPUT_DIR)
 	cp -rp $(PROJECT_DIR)/build/html/* $(OUTPUT_DIR)
-	cp -p $(PROJECT_DIR)/build/html/.nojekyll $(OUTPUT_DIR)/.
 	find $(OUTPUT_DIR) -exec touch {} +
 
 docker_build:
