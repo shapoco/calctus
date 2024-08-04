@@ -1,6 +1,7 @@
 ﻿using System;
 using System.Text.RegularExpressions;
-using Shapoco.Calctus.Model.Maths;
+using Shapoco.Texts;
+using Shapoco.Maths;
 using Shapoco.Calctus.Model.Formats;
 
 namespace Shapoco.Calctus.Model.Standards {
@@ -14,7 +15,7 @@ namespace Shapoco.Calctus.Model.Standards {
         public const int MinExp = 0;
         public const int MaxExp = 9;
 
-        public static bool TryCharToExp(int prefix, out int exp) {
+        public static bool TryCharToExp(char prefix, out int exp) {
             for (int i = 0; i < Chars.Length; i++) {
                 if (Chars[i] == prefix) {
                     exp = i;
@@ -25,9 +26,9 @@ namespace Shapoco.Calctus.Model.Standards {
             return false;
         }
 
-        public static int CharToExp(int prefix) {
+        public static int CharToExp(char prefix) {
             if (!TryCharToExp(prefix, out int exp)) {
-                throw new CalctusArgError(nameof(CharToExp), "Invalid SI prefix: " + CalctusUtils.ToString(prefix) + ".");
+                throw new CalctusArgError(nameof(CharToExp), "Invalid SI prefix: " + CStyleEscaping.EscapeAndQuote(prefix) + ".");
             }
             return exp;
         }

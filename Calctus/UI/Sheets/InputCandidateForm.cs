@@ -30,7 +30,7 @@ namespace Shapoco.Calctus.UI.Sheets {
             FormBorderStyle = FormBorderStyle.None;
             TopMost = true;
             Size = new Size(250, 250);
-            Font = new Font(Settings.Instance.Appearance_Font_Button_Name, Settings.Instance.Appearance_Font_Size, FontStyle.Regular);
+            Font = s.Appearance_Font_Button.GetFontObject();
             BackColor = s.Appearance_Color_Background;
             ForeColor = s.Appearance_Color_Text;
             Padding = new Padding(1, 1, 1, 1);

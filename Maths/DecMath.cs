@@ -2,7 +2,7 @@
 using System.Globalization;
 using System.Text.RegularExpressions;
 
-namespace Shapoco.Calctus.Model.Maths {
+namespace Shapoco.Maths {
     static class DecMath {
         public static readonly Regex Pattern = new Regex(@"^(?<frac>-?([1-9][0-9]*(_[0-9]+)*|0)*(\.[0-9]+(_[0-9]+)*)?)(?<exppart>(?<echar>e|E)(?<exp>[+\-]?[0-9]+(_[0-9]+)*))?$");
         public const decimal PI = 3.1415926535897932384626433833m;
@@ -29,7 +29,7 @@ namespace Shapoco.Calctus.Model.Maths {
 
         public static void Parse(string str, out decimal frac, out char eChar, out int exp) {
             if (!TryParse(str, out frac, out eChar, out exp)) {
-                throw new CalctusError("Invalid number format.");
+                throw new Exception("Invalid number format.");
             }
         }
 

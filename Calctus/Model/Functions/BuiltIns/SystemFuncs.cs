@@ -32,10 +32,6 @@ namespace Shapoco.Calctus.Model.Functions.BuiltIns {
 
         public readonly BuiltInFuncDef isDebugBuild = new BuiltInFuncDef("isDebugBuild()",
             "Whether or not the running " + Application.ProductName + " is a debug build.",
-#if DEBUG
-            (e, a) => BoolVal.True);
-#else
-            (e, a) => BoolVal.False);
-#endif
+            (e, a) => Program.DebugMode.ToVal());
     }
 }

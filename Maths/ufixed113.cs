@@ -5,7 +5,7 @@ using System.Runtime.InteropServices.WindowsRuntime;
 using System.Text;
 using System.Threading.Tasks;
 
-namespace Shapoco.Calctus.Model {
+namespace Shapoco.Maths {
     // todo Delete ufixed113
     //[Obsolete("Deprecated", false)]
     struct ufixed113 {

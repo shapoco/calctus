@@ -3,10 +3,10 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
+using Shapoco.Maths;
 using Shapoco.Calctus.Model;
 using Shapoco.Calctus.Model.Formats;
 using Shapoco.Calctus.Model.Evaluations;
-
 
 namespace Shapoco.Calctus.Model.Values {
     abstract class Val {
@@ -42,7 +42,7 @@ namespace Shapoco.Calctus.Model.Values {
         protected abstract RealVal OnAsRealVal();
 
         public abstract decimal AsDecimal { get; }
-        public abstract frac AsFrac { get; }
+        public abstract Frac AsFrac { get; }
         public abstract double AsDouble { get; }
         public abstract long AsLong { get; }
         public abstract int AsInt { get; }

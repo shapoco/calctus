@@ -76,23 +76,22 @@ namespace Shapoco.Calctus.UI.Books {
             _fileScanTimer.Tick += _fileScanTimer_Tick;
         }
 
-        public void ReloadSettings() {
+        public void ReloadColorSettings() {
             var iconWidth = 16 * this.DeviceDpi / 96;
             var iconSize = new Size(iconWidth, iconWidth);
             IconImageList.ColorDepth = ColorDepth.Depth32Bit;
             IconImageList.ImageSize = iconSize;
             IconImageList.Images.Clear();
-            IconImageList.Images.Add(ToolIconGenerator.GenerateToolIcon(iconSize, Properties.Resources.ToolIcon_Folder));
-            IconImageList.Images.Add(ToolIconGenerator.GenerateToolIcon(iconSize, Properties.Resources.ToolIcon_Sheet_Close));
-            IconImageList.Images.Add(ToolIconGenerator.GenerateToolIcon(iconSize, Properties.Resources.ToolIcon_Sheet_Open));
+            IconImageList.Images.Add(ToolIconGenerator.GenerateToolIcon(iconSize, nameof(Properties.Resources.ToolIcon_Folder)));
+            IconImageList.Images.Add(ToolIconGenerator.GenerateToolIcon(iconSize, nameof(Properties.Resources.ToolIcon_Sheet_Close)));
+            IconImageList.Images.Add(ToolIconGenerator.GenerateToolIcon(iconSize, nameof(Properties.Resources.ToolIcon_Sheet_Open)));
 
             _fileSystemWatcher.Filter = "*.txt";
             _fileSystemWatcher.Path = AppDataManager.ActiveDataPath;
             _fileSystemWatcher.SynchronizingObject = this;
             _fileSystemWatcher.IncludeSubdirectories = true;
             _fileSystemWatcher.EnableRaisingEvents = true;
-            RequestScanFiles();
-            foreach(var node in Nodes) {
+            foreach (var node in Nodes) {
                 updateItemColor((TreeNode)node, true);
             }
         }

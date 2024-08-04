@@ -10,7 +10,7 @@ namespace Shapoco.Calctus.Model.Parsers {
         public readonly Val Value;
         public readonly int PostfixLength;
 
-        public LiteralToken(TokenType t, TextPosition pos, string text, int postfixLen, Val val) : base(t, pos, text) {
+        public LiteralToken(TokenType t, DeprecatedTextPosition pos, string text, int postfixLen, Val val) : base(t, pos, text) {
 #if DEBUG
             System.Diagnostics.Debug.Assert(postfixLen >= 0);
             System.Diagnostics.Debug.Assert(postfixLen < text.Length);

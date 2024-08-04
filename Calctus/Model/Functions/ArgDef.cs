@@ -10,7 +10,7 @@ namespace Shapoco.Calctus.Model.Functions {
         public readonly Token Name;
 
         public ArgDef(string name) {
-            Name = new Token(TokenType.Identifier, TextPosition.Nowhere, name);
+            Name = new Token(TokenType.Identifier, DeprecatedTextPosition.Nowhere, name);
         }
 
         public ArgDef(Token name) {

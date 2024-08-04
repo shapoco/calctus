@@ -17,7 +17,7 @@ namespace Shapoco.Calctus.UI {
         public ScriptFilterEditForm() {
             InitializeComponent();
 
-            Windows.DwmApi.SetDarkModeEnable(this, Settings.Instance.GetIsDarkMode());
+            Windows.DwmApi.SetDarkModeEnable(this, Settings.Instance.Appearance_IsDarkTheme);
 
             try {
                 this.Font = new Font("Arial", SystemFonts.DefaultFont.Size);

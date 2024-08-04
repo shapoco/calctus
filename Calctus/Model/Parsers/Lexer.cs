@@ -4,7 +4,8 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 using System.IO;
-
+using Shapoco.Maths;
+using Shapoco.Texts;
 using Shapoco.Calctus.Model.Expressions;
 using Shapoco.Calctus.Model.Values;
 using Shapoco.Calctus.Model.Maths;
@@ -23,7 +24,7 @@ namespace Shapoco.Calctus.Model.Parsers {
         //private static readonly Regex KeywordRule
         //    = new Regex(@"(" + String.Join("|", Keyword.EnumKeywords().Select(p => p.Token)) + @")\b");
 
-        private StringReader _sr;
+        private StringReaderDep _sr;
         private bool _eosReaded = false;
 
         // 長い順に並べた演算子記号
@@ -45,11 +46,11 @@ namespace Shapoco.Calctus.Model.Parsers {
             //_numberFormatters = ValFormat.NativeFormats;
             //_literalRegexes = _numberFormatters.Select(p => p.Pattern).ToArray();
 
-            _sr = new StringReader(exprStr, pos);
+            _sr = new StringReaderDep(exprStr, pos);
 
         }
 
-        public TextPosition Position => _sr.Position;
+        public DeprecatedTextPosition Position => _sr.Position;
         public bool Eos {
             get {
                 _sr.SkipWhite();
@@ -92,7 +93,7 @@ namespace Shapoco.Calctus.Model.Parsers {
                 return tok;
             }
 
-            throw new LexerError(Position, "Unknown token starts with " + CalctusUtils.ToString((char)_sr.Peek()));
+            throw new LexerError(Position, "Unknown token starts with " + CStyleEscaping.EscapeAndQuote((char)_sr.Peek()));
         }
 
         private bool readIfNumericLiteral(out Token tok) {
@@ -163,7 +164,7 @@ namespace Shapoco.Calctus.Model.Parsers {
                     return _sr.FinishToken(TokenType.Literal, new RealVal(val, FormatFlags.BinaryPrefixed), postfix.Length);
                 }
                 else {
-                    throw new LexerError(postfixPos, _sr.Position.Index - postfixPos.Index, "Invalid postfix: " + CalctusUtils.ToString(postfix));
+                    throw new LexerError(postfixPos, _sr.Position.Index - postfixPos.Index, "Invalid postfix: " + CStyleEscaping.EscapeAndQuote(postfix));
                 }
             }
             else {
@@ -305,7 +306,7 @@ namespace Shapoco.Calctus.Model.Parsers {
                         code.Append(NumberLexer.ExpectChar(_sr, Radix.Hexadecimal));
                         return (char)code.ToInt();
                     default:
-                        throw new LexerError(_sr.TokenPosition, "Unrecognized escaped char: \\" + CalctusUtils.ToString(c));
+                        throw new LexerError(_sr.TokenPosition, "Unrecognized escaped char: " + CStyleEscaping.EscapeAndQuote(c));
                 }
             }
             else {

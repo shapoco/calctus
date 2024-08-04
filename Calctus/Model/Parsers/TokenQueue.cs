@@ -8,7 +8,7 @@ using Shapoco.Calctus.Model.Formats;
 
 namespace Shapoco.Calctus.Model.Parsers {
     class TokenQueue : List<Token>, ICloneable {
-        private TextPosition _lastPos = TextPosition.Empty;
+        private DeprecatedTextPosition _lastPos = DeprecatedTextPosition.Empty;
 
         public void PushBack(Token token) {
             Add(token);
@@ -21,7 +21,7 @@ namespace Shapoco.Calctus.Model.Parsers {
             return t;
         }
 
-        public TextPosition Position {
+        public DeprecatedTextPosition Position {
             get {
                 if (Count > 0) {
                     return this[0].Position;
@@ -45,7 +45,7 @@ namespace Shapoco.Calctus.Model.Parsers {
                 }
             }
             while (depth < 0) {
-                Insert(0, new Token(TokenType.GeneralSymbol, TextPosition.Nowhere, "("));
+                Insert(0, new Token(TokenType.GeneralSymbol, DeprecatedTextPosition.Nowhere, "("));
                 depth++;
             }
         }

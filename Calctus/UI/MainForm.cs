@@ -9,6 +9,7 @@ using System.Threading.Tasks;
 using System.Windows.Forms;
 using System.Runtime.InteropServices;
 using System.IO;
+using Shapoco.Drawings;
 using Shapoco.Calctus.Model;
 using Shapoco.Calctus.Model.Sheets;
 using Shapoco.Calctus.UI.Books;
@@ -24,7 +25,6 @@ namespace Shapoco.Calctus.UI {
         [DllImport("user32.dll")]
         public static extern IntPtr GetForegroundWindow();
 
-        private Font _sheetViewFont = null;
         private BookItem _activeBookItem = null;
 
         private HotKey _hotkey = null;
@@ -70,14 +70,16 @@ namespace Shapoco.Calctus.UI {
             this.Resize += MainForm_Resize;
             this.LocationChanged += MainForm_LocationChanged;
 
-#if DEBUG
-            // デバッグ実行中のウィンドウをタスクバー上で見分けられるようにする
-            notifyIcon.Text = Application.ProductName + " (Debug)";
-            this.Icon = Properties.Resources.Icon_Debug;
-            this.notifyIcon.Icon = Properties.Resources.Icon_Debug;
-#else
-            notifyIcon.Text = Application.ProductName;
-#endif
+            if(Program.DebugMode) {
+                // デバッグ実行中のウィンドウをタスクバー上で見分けられるようにする
+                notifyIcon.Text = Application.ProductName + " (Debug)";
+                this.Icon = Properties.Resources.Icon_Debug;
+                this.notifyIcon.Icon = Properties.Resources.Icon_Debug;
+            }
+            else {
+                notifyIcon.Text = Application.ProductName;
+
+            }
             notifyIcon.MouseClick += NotifyIcon_MouseClick;
 
             var repFuncs = RepresentaionFuncs.Instance;
@@ -123,10 +125,14 @@ namespace Shapoco.Calctus.UI {
             onBookItemSelected();
 
             _focusTimer.Tick += _focusTimer_Tick;
+        }
+
+        private void MainForm_Load(object sender, EventArgs e) {
+            reloadSettings();
+
 #if DEBUG
             var testResultLabel = new Label();
             testResultLabel.Dock = DockStyle.Right;
-            testResultLabel.AutoSize = true;
             if (Test.NumErrors != 0 || Test.NumWarnings != 0 || Test.NumUntested != 0) {
                 testResultLabel.Text = Test.NumSuccess + " Success";
                 if (Test.NumErrors > 0) {
@@ -159,11 +165,8 @@ namespace Shapoco.Calctus.UI {
                 testResultLabel.ForeColor = Color.Black;
             }
             bottomPanel.Controls.Add(testResultLabel);
+            testResultLabel.Width = testResultLabel.PreferredWidth * 11 / 10;
 #endif
-        }
-
-        private void MainForm_Load(object sender, EventArgs e) {
-            reloadSettings();
 
             try {
                 if (Settings.Instance.Window_RememberPosition) {
@@ -273,86 +276,94 @@ namespace Shapoco.Calctus.UI {
                 disableHotkey();
                 enableHotkey();
 
-                Windows.DwmApi.SetDarkModeEnable(this, s.GetIsDarkMode());
+                ReloadFontSettings();
+                ReloadColorSettings();
 
-                var font_large_coeff = 1.25f;
-                var font_style = s.Appearance_Font_Bold ? FontStyle.Bold : FontStyle.Regular;
-                var font_ui_normal = new Font(s.Appearance_Font_Button_Name, s.Appearance_Font_Size, font_style);
-                var font_mono_normal = new Font(s.Appearance_Font_Expr_Name, s.Appearance_Font_Size, font_style);
-                this.Font = font_ui_normal;
-                _sheetViewFont = new Font(s.Appearance_Font_Expr_Name, s.Appearance_Font_Size * font_large_coeff, font_style);
-
-                using (var g = this.CreateGraphics()) {
-                    var bottomButtonTextSize = Size.Ceiling(g.MeasureString("AAAA", font_ui_normal));
-                    this.bottomPanel.Height = bottomButtonTextSize.Height;
-                    foreach (var btn in bottomPanel.Controls) {
-                        ((Control)btn).Width = bottomButtonTextSize.Width;
-                    }
-                    this.sidePaneBodyPanel.Width = bottomButtonTextSize.Width * 4;
-                    this.sidePaneHeaderPanel.Width = bottomButtonTextSize.Height;
-                    this.sidePaneOpenButton.Height = bottomButtonTextSize.Height;
-                }
-
-                var iconSize = getToolIconSize();
-                undoButton.Image = ToolIconGenerator.GenerateToolIcon(iconSize, Properties.Resources.ToolIcon_Undo);
-                redoButton.Image = ToolIconGenerator.GenerateToolIcon(iconSize, Properties.Resources.ToolIcon_Redo);
-                copyButton.Image = ToolIconGenerator.GenerateToolIcon(iconSize, Properties.Resources.ToolIcon_Copy);
-                pasteButton.Image = ToolIconGenerator.GenerateToolIcon(iconSize, Properties.Resources.ToolIcon_Paste);
-                insertButton.Image = ToolIconGenerator.GenerateToolIcon(iconSize, Properties.Resources.ToolIcon_Insert);
-                deleteButton.Image = ToolIconGenerator.GenerateToolIcon(iconSize, Properties.Resources.ToolIcon_Delete);
-                moveUpButton.Image = ToolIconGenerator.GenerateToolIcon(iconSize, Properties.Resources.ToolIcon_MoveUp);
-                moveDownButton.Image = ToolIconGenerator.GenerateToolIcon(iconSize, Properties.Resources.ToolIcon_MoveDown);
-                settingsButton.Image = ToolIconGenerator.GenerateToolIcon(iconSize, Properties.Resources.ToolIcon_Settings);
-                updateTopMostButtonIcon();
-                helpButton.Image = ToolIconGenerator.GenerateToolIcon(iconSize, Properties.Resources.ToolIcon_Help);
-
-                ToolStripManager.Renderer = new ToolStripProfessionalRenderer(new CustomProfessionalColors());
-
-                foreach(var ctl in Controls) {
-                    if (ctl is SheetView view) {
-                        setViewAppearance(view);
-                    }
-                }
-
-                Color panelColor = ColorUtils.Blend(s.Appearance_Color_Background, s.Appearance_Color_Button_Face);
-
-                bottomPanel.BackColor = s.Appearance_Color_Background;
-                bookTreeView.BackColor = s.Appearance_Color_Background;
-                bookTreeView.ForeColor = s.Appearance_Color_Text;
-                radixAutoButton.BackColor = s.Appearance_Color_Button_Face;
-                radixDecButton.BackColor = s.Appearance_Color_Button_Face;
-                radixHexButton.BackColor = s.Appearance_Color_Button_Face;
-                radixBinButton.BackColor = s.Appearance_Color_Button_Face;
-                radixOctButton.BackColor = s.Appearance_Color_Button_Face;
-                radixSiButton.BackColor = s.Appearance_Color_Button_Face;
-                radixKibiButton.BackColor = s.Appearance_Color_Button_Face;
-                radixCharButton.BackColor = s.Appearance_Color_Button_Face;
-                bottomPanel.BackColor = panelColor;
-                sidePaneHeaderPanel.BackColor = panelColor;
-                sidePaneOpenButton.BackColor = s.Appearance_Color_Button_Face;
-                radixAutoButton.ForeColor = s.Appearance_Color_Text;
-                radixDecButton.ForeColor = s.Appearance_Color_Text;
-                radixHexButton.ForeColor = s.Appearance_Color_Text;
-                radixBinButton.ForeColor = s.Appearance_Color_Text;
-                radixOctButton.ForeColor = s.Appearance_Color_Text;
-                radixSiButton.ForeColor = s.Appearance_Color_Text;
-                radixKibiButton.ForeColor = s.Appearance_Color_Text;
-                radixCharButton.ForeColor = s.Appearance_Color_Text;
-                sidePaneOpenButton.ForeColor = s.Appearance_Color_Text;
-
-                bookTreeView.ReloadSettings();
+                bookTreeView.RequestScanFiles();
             }
             catch { }
             _activeBookItem.View.RequestRecalc();
             GraphForm.ReloadSettingsAll();
         }
 
-        private void setViewAppearance(SheetView view) {
+        public void ReloadFontSettings() {
             var s = Settings.Instance;
-            view.Font = _sheetViewFont;
-            view.BackColor = s.Appearance_Color_Background;
-            view.ForeColor = s.Appearance_Color_Text;
-            view.RelayoutText();
+
+            this.Font = s.Appearance_Font_Button.GetFontObject();
+
+            using (var g = this.CreateGraphics()) {
+                var bottomButtonTextSize = Size.Ceiling(g.MeasureString("AAAA", this.Font));
+                this.bottomPanel.Height = bottomButtonTextSize.Height;
+                foreach (var c in bottomPanel.Controls) {
+                    if (c is Button btn) {
+                        btn.Width = bottomButtonTextSize.Width;
+                    }
+                }
+                this.sidePaneBodyPanel.Width = bottomButtonTextSize.Width * 4;
+                this.sidePaneHeaderPanel.Width = bottomButtonTextSize.Height;
+                this.sidePaneOpenButton.Height = bottomButtonTextSize.Height;
+            }
+
+            foreach (var ctl in Controls) {
+                if (ctl is SheetView view) {
+                    view.ReloadFontSettings(s);
+                }
+            }
+        }
+
+        public void ReloadColorSettings() {
+            var s = Settings.Instance;
+
+            ToolStripManager.Renderer = new ToolStripProfessionalRenderer(new CustomProfessionalColors());
+
+            Color panelColor = ColorEx.Blend(s.Appearance_Color_Background, s.Appearance_Color_Button_Face);
+
+            bottomPanel.BackColor = s.Appearance_Color_Background;
+            bookTreeView.BackColor = s.Appearance_Color_Background;
+            bookTreeView.ForeColor = s.Appearance_Color_Text;
+            radixAutoButton.BackColor = s.Appearance_Color_Button_Face;
+            radixDecButton.BackColor = s.Appearance_Color_Button_Face;
+            radixHexButton.BackColor = s.Appearance_Color_Button_Face;
+            radixBinButton.BackColor = s.Appearance_Color_Button_Face;
+            radixOctButton.BackColor = s.Appearance_Color_Button_Face;
+            radixSiButton.BackColor = s.Appearance_Color_Button_Face;
+            radixKibiButton.BackColor = s.Appearance_Color_Button_Face;
+            radixCharButton.BackColor = s.Appearance_Color_Button_Face;
+            bottomPanel.BackColor = panelColor;
+            sidePaneHeaderPanel.BackColor = panelColor;
+            sidePaneOpenButton.BackColor = s.Appearance_Color_Button_Face;
+            radixAutoButton.ForeColor = s.Appearance_Color_Text;
+            radixDecButton.ForeColor = s.Appearance_Color_Text;
+            radixHexButton.ForeColor = s.Appearance_Color_Text;
+            radixBinButton.ForeColor = s.Appearance_Color_Text;
+            radixOctButton.ForeColor = s.Appearance_Color_Text;
+            radixSiButton.ForeColor = s.Appearance_Color_Text;
+            radixKibiButton.ForeColor = s.Appearance_Color_Text;
+            radixCharButton.ForeColor = s.Appearance_Color_Text;
+            sidePaneOpenButton.ForeColor = s.Appearance_Color_Text;
+
+            foreach (var ctl in Controls) {
+                if (ctl is SheetView view) {
+                    view.ReloadColorSettings(s);
+                }
+            }
+
+            var iconSize = getToolIconSize();
+            undoButton.Image = ToolIconGenerator.GenerateToolIcon(iconSize, nameof(Properties.Resources.ToolIcon_Undo));
+            redoButton.Image = ToolIconGenerator.GenerateToolIcon(iconSize, nameof(Properties.Resources.ToolIcon_Redo));
+            copyButton.Image = ToolIconGenerator.GenerateToolIcon(iconSize, nameof(Properties.Resources.ToolIcon_Copy));
+            pasteButton.Image = ToolIconGenerator.GenerateToolIcon(iconSize, nameof(Properties.Resources.ToolIcon_Paste));
+            insertButton.Image = ToolIconGenerator.GenerateToolIcon(iconSize, nameof(Properties.Resources.ToolIcon_Insert));
+            deleteButton.Image = ToolIconGenerator.GenerateToolIcon(iconSize, nameof(Properties.Resources.ToolIcon_Delete));
+            moveUpButton.Image = ToolIconGenerator.GenerateToolIcon(iconSize, nameof(Properties.Resources.ToolIcon_MoveUp));
+            moveDownButton.Image = ToolIconGenerator.GenerateToolIcon(iconSize, nameof(Properties.Resources.ToolIcon_MoveDown));
+            settingsButton.Image = ToolIconGenerator.GenerateToolIcon(iconSize, nameof(Properties.Resources.ToolIcon_Settings));
+            updateTopMostButtonIcon();
+            helpButton.Image = ToolIconGenerator.GenerateToolIcon(iconSize, nameof(Properties.Resources.ToolIcon_Help));
+
+            bookTreeView.ReloadColorSettings();
+
+            Windows.DwmApi.SetDarkModeEnable(this, s.Appearance_IsDarkTheme);
         }
 
         private void enableHotkey() {
@@ -440,9 +451,11 @@ namespace Shapoco.Calctus.UI {
                 (_activeBookItem != null ? _activeBookItem.Name : "(null)") +
                 " - " + Application.ProductName +
                 " (v" + System.Reflection.Assembly.GetExecutingAssembly().GetName().Version + ")";
-#if DEBUG
-            windowTitle += " (Debug)";
-#endif
+
+            if (Program.DebugMode) {
+                windowTitle += " (Debug)";
+            }
+
             this.Text = windowTitle;
 
             if (requestCheckFileChange) {
@@ -459,7 +472,7 @@ namespace Shapoco.Calctus.UI {
             }
             view.BringToFront();
             view.Visible = true;
-            setViewAppearance(view);
+            view.ReloadSettings(Settings.Instance);
         }
 
         private void removeView(SheetView view, bool saveChanges) {
@@ -522,10 +535,10 @@ namespace Shapoco.Calctus.UI {
         }
 
         private void updateTopMostButtonIcon() {
-            var img = _topMost ?
-                Properties.Resources.ToolIcon_TopMostOn :
-                Properties.Resources.ToolIcon_TopMostOff;
-            topMostButton.Image = ToolIconGenerator.GenerateToolIcon(getToolIconSize(), img);
+            var resName = _topMost ?
+                nameof(Properties.Resources.ToolIcon_TopMostOn) :
+                nameof(Properties.Resources.ToolIcon_TopMostOff);
+            topMostButton.Image = ToolIconGenerator.GenerateToolIcon(getToolIconSize(), resName);
         }
 
         private Size getToolIconSize() {

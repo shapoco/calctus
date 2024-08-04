@@ -3,10 +3,10 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
+using Shapoco.Maths;
 using Shapoco.Calctus.Model.Formats;
 using Shapoco.Calctus.Model.Maths;
 using Shapoco.Calctus.Model.Evaluations;
-
 
 namespace Shapoco.Calctus.Model.Values {
     class RealVal : ScalarVal<decimal> {
@@ -60,7 +60,7 @@ namespace Shapoco.Calctus.Model.Values {
 
         protected override RealVal OnAsRealVal() => new RealVal((decimal)Raw, FormatFlags);
         public override decimal AsDecimal => _raw;
-        public override frac AsFrac => (frac)_raw;
+        public override Frac AsFrac => (Frac)_raw;
         public override double AsDouble => (double)_raw;
         public override long AsLong => MathEx.ToLong(_raw);
         public override int AsInt => MathEx.ToInt(_raw);

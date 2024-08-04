@@ -30,6 +30,7 @@ namespace Shapoco.Calctus.UI.Sheets {
         private RpnOperation _focusedRpnOperation = null;
         private bool _recalcRequested = true;
         private bool _layoutValidated = false;
+        private bool _deepRelayout = false;
         private GdiBox _innerBox;
         private VScrollBar _scrollBar = new VScrollBar();
         private bool _disposed = false;
@@ -200,8 +201,25 @@ namespace Shapoco.Calctus.UI.Sheets {
             get => _equalWidth;
         }
 
-        public void InvalidateLayout() {
+        public void ReloadSettings(Settings s) {
+            ReloadFontSettings(s);
+            ReloadColorSettings(s);
+        }
+
+        public void ReloadFontSettings(Settings s) {
+            this.Font = s.Appearance_Font_Expr.GetFontObject();
+            this.InvalidateLayout(true);
+        }
+
+        public void ReloadColorSettings(Settings s) {
+            this.BackColor = s.Appearance_Color_Background;
+            this.ForeColor = s.Appearance_Color_Text;
+            this.InvalidateLayout(true);
+        }
+
+        public void InvalidateLayout(bool deep = false) {
             _layoutValidated = false;
+            if (deep) _deepRelayout = true;
             Invalidate();
 #if DEBUG
             Console.WriteLine("Layout Invalidated");
@@ -385,13 +403,6 @@ namespace Shapoco.Calctus.UI.Sheets {
         public void RequestRecalc() {
             _recalcRequested = true;
             Invalidate();
-        }
-
-        public void RelayoutText() {
-            if (_sheet == null) return;
-            foreach (var noteItem in _sheet.Items) {
-                ((SheetViewItem)noteItem.Tag).RelayoutText();
-            }
         }
 
         public void CandidateHide() => FocusedViewItem?.ExprBox.CandidateHide();
@@ -612,7 +623,7 @@ namespace Shapoco.Calctus.UI.Sheets {
         protected override void OnFontChanged(EventArgs e) {
             base.OnFontChanged(e);
             if (_sheet == null) return;
-            RelayoutText();
+            InvalidateLayout(true);
         }
 
         protected override void Dispose(bool disposing) {
@@ -657,7 +668,7 @@ namespace Shapoco.Calctus.UI.Sheets {
             if (index < 0 || _sheet.Items.Count <= index) return null;
 
             // 式が演算子のみで構成されている場合は RPN操作とみなす
-            if (!Lexer.TryGetRpnSymbols(_sheet.Items[index].ExprText, out Token[] symbols)) {
+            if (!Model.Parsers.Lexer.TryGetRpnSymbols(_sheet.Items[index].ExprText, out Token[] symbols)) {
                 return null;
             }
 
@@ -907,6 +918,13 @@ namespace Shapoco.Calctus.UI.Sheets {
 #if DEBUG
             Console.WriteLine("Relayout");
 #endif
+            if (_deepRelayout) {
+                foreach (var noteItem in _sheet.Items) {
+                    ((SheetViewItem)noteItem.Tag).RelayoutText();
+                }
+                _deepRelayout = false;
+            }
+
             var equalSize = g.MeasureString("==", Font);
             _equalWidth = (int)equalSize.Width;
             var bottomPadding = (int)equalSize.Height;

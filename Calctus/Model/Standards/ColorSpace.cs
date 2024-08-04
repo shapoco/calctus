@@ -4,6 +4,7 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 using System.Drawing;
+using Shapoco.Maths;
 using Shapoco.Calctus.Model.Values;
 using Shapoco.Calctus.Model.Maths;
 

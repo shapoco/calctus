@@ -8,10 +8,10 @@ namespace Shapoco.Calctus.Model.Parsers {
     class NumberSequence {
         private readonly List<int> _buf = new List<int>();
         public Radix Radix { get; private set; }
-        public readonly TextPosition Start;
+        public readonly DeprecatedTextPosition Start;
         public int Length { get; private set; } = 0;
 
-        public NumberSequence(Radix radix, TextPosition start) { 
+        public NumberSequence(Radix radix, DeprecatedTextPosition start) { 
             this.Radix = radix;
             this.Start = start;
         }

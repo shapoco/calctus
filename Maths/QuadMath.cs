@@ -3,10 +3,8 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
-using Shapoco.Calctus.Model.Values;
 
-
-namespace Shapoco.Calctus.Model.Maths {
+namespace Shapoco.Maths {
     // todo Delete QMath
     //[Obsolete("Deprecated", false)]
     static class QuadMath {

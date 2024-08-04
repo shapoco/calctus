@@ -1,6 +1,7 @@
 ﻿using System;
 using System.Text;
 using System.Globalization;
+using Shapoco.Maths;
 
 namespace Shapoco.Calctus.Model.Formats {
     class TimeSpanFormat {

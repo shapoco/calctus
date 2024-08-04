@@ -5,6 +5,7 @@ using System.Text;
 using System.Threading.Tasks;
 using System.Windows.Forms;
 using System.Drawing;
+using Shapoco.Drawings;
 
 namespace Shapoco.Calctus.UI {
     public class FlatRadioButton : RadioButton {
@@ -38,10 +39,10 @@ namespace Shapoco.Calctus.UI {
         protected override void OnPaint(PaintEventArgs pevent) {
             var g = pevent.Graphics;
             if (_mouseDown || this.Checked) {
-                g.Clear(ColorUtils.Grayish(this.BackColor, 20));
+                g.Clear(ColorEx.Grayish(this.BackColor, 20));
             }
             else if (_hovered || this.Focused) {
-                g.Clear(ColorUtils.Grayish(this.BackColor, 10));
+                g.Clear(ColorEx.Grayish(this.BackColor, 10));
             }
             else {
                 g.Clear(this.BackColor);

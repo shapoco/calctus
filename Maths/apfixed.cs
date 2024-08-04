@@ -5,7 +5,7 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 
-namespace Shapoco.Calctus.Model {
+namespace Shapoco.Maths {
     struct apfixed {
         private const int Stride = 32;
         public readonly bool Signed;

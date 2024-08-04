@@ -6,20 +6,24 @@ using System.Threading.Tasks;
 using System.Windows.Forms;
 using System.Drawing;
 using System.IO;
+using Shapoco.Texts;
+using Shapoco.Drawings;
 using Shapoco.Calctus.Model;
+using Shapoco.Calctus.Model.Standards;
 using Shapoco.Calctus.Model.Evaluations;
 using Shapoco.Calctus.UI;
 
 namespace Shapoco.Calctus {
     internal class Settings {
-        public static readonly string PathInInstallDirectory = Path.Combine(AppDataManager.AssemblyPath, Filename);
-        public static readonly string PathInRoamingDirectory = Path.Combine(AppDataManager.RoamingUserDataPath, Filename);
-        public static readonly Settings Instance = new Settings();
-#if DEBUG
-        public const string Filename = "Settings.Debug.cfg";
-#else
-        public const string Filename = "Settings.cfg";
-#endif
+        public static string PathInInstallDirectory => Path.Combine(AppDataManager.AssemblyPath, Filename);
+        public static string PathInRoamingDirectory => Path.Combine(AppDataManager.RoamingUserDataPath, Filename);
+
+        private const string ColorSettingNamePrefix = "Appearance_Color_";
+
+        private static Settings _instance = null;
+        public static readonly Settings Instance = _instance == null ? (_instance = new Settings()) : _instance;
+
+        public static string Filename => Program.DebugMode ? "Settings.Debug.cfg" : "Settings.cfg";
 
         private Settings() {
             try {
@@ -32,12 +36,34 @@ namespace Shapoco.Calctus {
 #if DEBUG
             Console.WriteLine("Setting file path: \"" + AppDataManager.ActiveDataPath + "\"");
 #endif
-            AppDataManager.LoadPropertiesFromRoamingAppData(this, Filename);
+            var dic = new Dictionary<string, string>();
+            AppDataManager.LoadPropertiesFromRoamingAppData(this, Filename, dic);
+            migrateOldSettings(dic);
+        }
+
+        private void migrateOldSettings(Dictionary<string, string> dic) {
+            string s; bool b; float f;
+            if (dic.TryGetValue("Appearance_Font_Button_Name", out s)) {
+                Appearance_Font_Button.Face = CStyleEscaping.UnquoteAndUnescape(s);
+            }
+            if (dic.TryGetValue("Appearance_Font_Expr_Name", out s)) {
+                Appearance_Font_Expr.Face = CStyleEscaping.UnquoteAndUnescape(s);
+            }
+            if (dic.TryGetValue("Appearance_Font_Size", out s) && float.TryParse(s, out f)) {
+                Appearance_Font_Button.Size = f;
+                Appearance_Font_Expr.Size = f * 1.25f;
+            }
+            if (dic.TryGetValue("Appearance_Font_Bold", out s) && bool.TryParse(s, out b)) {
+                Appearance_Font_Button.Bold = b;
+                Appearance_Font_Expr.Bold = b;
+            }
         }
 
         public void Save() {
             AppDataManager.SavePropertiesToRoamingAppData(this, Filename);
         }
+
+        public string LastVersion => Application.ProductVersion;
 
         public bool Startup_TrayIcon { get; set; } = false;
 
@@ -68,12 +94,18 @@ namespace Shapoco.Calctus {
         public bool NumberFormat_Separator_Thousands { get; set; } = true;
         public bool NumberFormat_Separator_Hexadecimal { get; set; } = true;
 
-        public string Appearance_Font_Button_Name { get; set; } = "Arial";
-        public string Appearance_Font_Expr_Name { get; set; } = "Consolas";
-        public int Appearance_Font_Size { get; set; } = 9;
-        public bool Appearance_Font_Bold { get; set; } = false;
+        public FontSettings Appearance_Font_Button { get;} = new FontSettings("Arial", 12, FontStyle.Regular);
+        public FontSettings Appearance_Font_Expr { get; } = new FontSettings("Consolas", 18, FontStyle.Regular);
 
-        public Color Appearance_Color_Background { get; set; } = Color.FromArgb(28, 32, 36);
+        private Color _backColor = Color.FromArgb(28, 32, 36);
+        public bool Appearance_IsDarkTheme { get; private set; }
+        public Color Appearance_Color_Background { 
+            get => _backColor;
+            set {
+                _backColor = value;
+                Appearance_IsDarkTheme = value.GrayScale().R < 128;
+            }
+        } 
         public Color Appearance_Color_Active_Background { get; set; } = Color.FromArgb(0, 0, 0);
         public Color Appearance_Color_Button_Face { get; set; } = Color.FromArgb(56, 64, 72);
         public Color Appearance_Color_Text { get; set; } = Color.FromArgb(255, 255, 255);
@@ -88,9 +120,49 @@ namespace Shapoco.Calctus {
         public Color Appearance_Color_Parenthesis_3 { get; set; } = Color.FromArgb(255, 128, 192);
         public Color Appearance_Color_Parenthesis_4 { get; set; } = Color.FromArgb(255, 192, 64);
         public Color Appearance_Color_Error { get; set; } = Color.FromArgb(255, 128, 128);
-        public bool GetIsDarkMode() {
-            var col = Appearance_Color_Background;
-            return col.R + col.G + col.B < 128 * 3;
+
+        private static Dictionary<string, System.Reflection.PropertyInfo> _colorProperties = null;
+        public static Dictionary<string, System.Reflection.PropertyInfo> ColorProperties {
+            get {
+                if (_colorProperties == null) {
+                    var props = typeof(Settings).GetProperties()
+                        .Where(p => p.Name.StartsWith(ColorSettingNamePrefix) && p.PropertyType.Equals(typeof(Color)));
+                    _colorProperties = new Dictionary<string, System.Reflection.PropertyInfo>();
+                    foreach (var prop in props) {
+                        var displayNemae = prop.Name.Substring(ColorSettingNamePrefix.Length);
+                        if (displayNemae == "SI_Prefix") {
+                            displayNemae = "Exponent / SI Prefix";
+                        }
+                        else {
+                            displayNemae = displayNemae.Replace('_', ' ');
+                        }
+                        _colorProperties.Add(displayNemae, prop);
+                    }
+                }
+                return _colorProperties;
+            }
+        }
+
+        public void InvertColors() {
+            foreach(var prop in ColorProperties.Values) {
+                var color = (Color)prop.GetValue(this);
+                prop.SetValue(this, ColorEx.InvertHsvValue(color));
+            }
+        }
+
+        public void RotateColorHue(int delta) {
+            foreach (var prop in ColorProperties.Values) {
+                var color = (Color)prop.GetValue(this);
+                color.ToHsv(out float h, out float s, out float v);
+                prop.SetValue(this, ColorEx.HsvToRgb(h + delta, s, v));
+            }
+        }
+
+        public void SwapColorRb() {
+            foreach (var prop in ColorProperties.Values) {
+                var color = (Color)prop.GetValue(this);
+                prop.SetValue(this, Color.FromArgb(255, color.B, color.G, color.R));
+            }
         }
 
         public string UserConstants { get; set; } = "";
@@ -102,7 +174,7 @@ namespace Shapoco.Calctus {
                 var cols = row.Split('\t');
                 if (cols.Length == 3) {
                     for (int i = 0; i < cols.Length; i++) {
-                        cols[i] = AppDataManager.UnescapeValue(cols[i]);
+                        cols[i] = CStyleEscaping.Unescape(cols[i]);
                     }
                     list.Add(new UserConstant(cols[0], cols[1], cols[2]));
                 }
@@ -114,7 +186,7 @@ namespace Shapoco.Calctus {
             foreach (var c in consts) {
                 var cols = new string[] { c.Id, c.ValueString, c.Description };
                 for (int i = 0; i < cols.Length; i++) {
-                    cols[i] = AppDataManager.EscapeValue(cols[i]);
+                    cols[i] = CStyleEscaping.Escape(cols[i]);
                 }
                 sb.Append(string.Join("\t", cols) + '\n');
             }
@@ -140,7 +212,7 @@ namespace Shapoco.Calctus {
                 var cols = row.Split('\t');
                 if (cols.Length == 3) {
                     for (int i = 0; i < cols.Length; i++) {
-                        cols[i] = AppDataManager.UnescapeValue(cols[i]);
+                        cols[i] = CStyleEscaping.Unescape(cols[i]);
                     }
                     list.Add(new ScriptFilter(cols[0], cols[1], cols[2]));
                 }
@@ -152,7 +224,7 @@ namespace Shapoco.Calctus {
             foreach (var sf in filters) {
                 var cols = new string[] { sf.Filter, sf.Command, sf.Parameter };
                 for (int i = 0; i < cols.Length; i++) {
-                    cols[i] = AppDataManager.EscapeValue(cols[i]);
+                    cols[i] = CStyleEscaping.Escape(cols[i]);
                 }
                 sb.Append(string.Join("\t", cols) + '\n');
             }

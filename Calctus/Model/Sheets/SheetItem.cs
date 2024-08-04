@@ -40,7 +40,7 @@ namespace Shapoco.Calctus.Model.Sheets {
         private void parse(string exprText) {
             try {
                 // 字句解析
-                var tokens = new Lexer(exprText).PopToEnd();
+                var tokens = new Parsers.Lexer(exprText).PopToEnd();
 
                 // 不足している括弧の補完
                 tokens.CompleteParentheses();

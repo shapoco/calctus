@@ -1,6 +1,7 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Linq;
+using Shapoco.Maths;
 using Shapoco.Calctus.Model.Values;
 using Shapoco.Calctus.Model.Parsers;
 using Shapoco.Calctus.Model.Evaluations;
@@ -120,7 +121,7 @@ namespace Shapoco.Calctus.Model.Expressions {
                     return a.AsRealVal().Div(e, b);
                 }
                 else {
-                    return FracVal.Normalize(new frac(a.AsDecimal, b.AsDecimal));
+                    return FracVal.Normalize(new Frac(a.AsDecimal, b.AsDecimal));
                 }
             }
             else if (OpCode == OpCodes.Pow) {

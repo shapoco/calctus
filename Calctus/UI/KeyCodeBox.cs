@@ -48,10 +48,10 @@ namespace Shapoco.Calctus.UI {
             _altBox.Text = "Alt";
             _ctrlBox.Text = "Ctrl";
             _shiftBox.Text = "Shift";
-            _winBox.Size = _winBox.PreferredSize;
-            _altBox.Size = _altBox.PreferredSize;
-            _ctrlBox.Size = _ctrlBox.PreferredSize;
-            _shiftBox.Size = _shiftBox.PreferredSize;
+            _winBox.Width = _winBox.PreferredSize.Width * 4 / 3;
+            _altBox.Width = _altBox.PreferredSize.Width * 4 / 3;
+            _ctrlBox.Width = _ctrlBox.PreferredSize.Width * 4 / 3;
+            _shiftBox.Width = _shiftBox.PreferredSize.Width * 4 / 3;
             this.Controls.Add(_keyCodeBox);
             this.Controls.Add(_shiftBox);
             this.Controls.Add(_ctrlBox);

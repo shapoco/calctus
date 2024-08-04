@@ -5,16 +5,37 @@ using System.Threading.Tasks;
 using System.Windows.Forms;
 using System.Diagnostics;
 
-namespace Shapoco.Calctus
-{
-    static class Program
-    {
+namespace Shapoco.Calctus {
+    static class Program {
+#if DEBUG
+        private static bool _debugModeFirstRef = true;
+        private static bool _debugMode = true;
+        public static bool DebugMode {
+            get {
+                if (_debugModeFirstRef) {
+                    if (Control.ModifierKeys == Keys.Shift) {
+                        _debugMode = false;
+                    }
+                    _debugModeFirstRef = false;
+                }
+                return _debugMode;
+            }
+        }
+#else
+        public const bool DebugMode = false;
+#endif
+
         /// <summary>
         /// アプリケーションのメイン エントリ ポイントです。
         /// </summary>
         [STAThread]
-        static void Main(string[] args)
-        {
+        static void Main(string[] args) {
+#if DEBUG
+            if (!DebugMode) {
+                Console.WriteLine("==== DEBUG MODE DISABLED ====");
+            }
+#endif
+
             bool cliMode = (args.Length >= 2) && (args[0] == "-c");
             if (cliMode) {
                 var cli = new UI.CLI.Command();
@@ -26,9 +47,9 @@ namespace Shapoco.Calctus
 
                 //Model.Formats.ValFormat.Test();
                 Model.Standards.PreferredNumbers.Test();
-                Model.ufixed113.Test();
-                Model.quad.Test();
-                Model.Maths.QuadMath.Test();
+                Maths.ufixed113.Test();
+                Maths.quad.Test();
+                Maths.QuadMath.Test();
                 Model.Functions.BuiltInFuncLibrary.Instance.DoTest();
                 DocumentGenerator.GenerateDocumentRst();
                 DocumentGenerator.GenerateDocumentation();

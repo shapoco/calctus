@@ -6,12 +6,12 @@ using System.Threading.Tasks;
 
 namespace Shapoco.Calctus.Model.Parsers {
     // todo 廃止 TextPosition
-    struct TextPosition {
-        public static readonly TextPosition Empty = new TextPosition(0);
-        public static readonly TextPosition Nowhere = new TextPosition(-1);
+    struct DeprecatedTextPosition {
+        public static readonly DeprecatedTextPosition Empty = new DeprecatedTextPosition(0);
+        public static readonly DeprecatedTextPosition Nowhere = new DeprecatedTextPosition(-1);
 
         public int Index;
-        public TextPosition(int pos = 0) {
+        public DeprecatedTextPosition(int pos = 0) {
             Index = pos;
         }
         public void Count(int c) {
@@ -23,7 +23,7 @@ namespace Shapoco.Calctus.Model.Parsers {
         }
 
         public override bool Equals(object other) {
-            if (other is TextPosition otherTp) {
+            if (other is DeprecatedTextPosition otherTp) {
                 return Index == otherTp.Index;
             }
             else {
@@ -35,7 +35,7 @@ namespace Shapoco.Calctus.Model.Parsers {
 
         public override string ToString() => Index.ToString();
 
-        public static bool operator ==(TextPosition left, TextPosition right) => left.Equals(right);
-        public static bool operator !=(TextPosition left, TextPosition right) => !left.Equals(right);
+        public static bool operator ==(DeprecatedTextPosition left, DeprecatedTextPosition right) => left.Equals(right);
+        public static bool operator !=(DeprecatedTextPosition left, DeprecatedTextPosition right) => !left.Equals(right);
     }
 }

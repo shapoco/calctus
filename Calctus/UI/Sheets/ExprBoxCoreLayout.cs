@@ -6,6 +6,7 @@ using System.Text.RegularExpressions;
 using System.Threading.Tasks;
 using System.Windows.Forms;
 using System.Drawing;
+using Shapoco.Drawings;
 using Shapoco.Calctus.Model;
 using Shapoco.Calctus.Model.Parsers;
 using Shapoco.Calctus.Model.Formats;
@@ -72,7 +73,7 @@ namespace Shapoco.Calctus.UI.Sheets {
             else {
                 try {
                     // 字句解析
-                    _tokens = new Lexer(text).PopToEnd();
+                    _tokens = new Model.Parsers.Lexer(text).PopToEnd();
 
                     // 不足している括弧の補完
                     _tokens.CompleteParentheses();
@@ -169,7 +170,7 @@ namespace Shapoco.Calctus.UI.Sheets {
                 }
 
                 // 位置情報を持たないトークンは無視する
-                if (t.Position == TextPosition.Nowhere) continue;
+                if (t.Position == DeprecatedTextPosition.Nowhere) continue;
 
                 // トークン種別に応じた強調表示
                 switch (t.Type) {
@@ -189,7 +190,7 @@ namespace Shapoco.Calctus.UI.Sheets {
                             else if (fmt == FormatFlags.WebColor) {
                                 // WebColorの強調表示
                                 var back = Color.FromArgb((0xff << 24) | lt.Value.AsInt);
-                                var gray = ColorUtils.GrayScale(back);
+                                var gray = ColorEx.GrayScale(back);
                                 var fore = gray.R < 128 ? Color.White : Color.Black;
                                 setBackColor(t, back);
                                 setForeColor(t, fore);

@@ -130,14 +130,14 @@ namespace Shapoco.Calctus.UI {
             var s = Settings.Instance;
 
             try {
-                Font = new Font(s.Appearance_Font_Button_Name, s.Appearance_Font_Size);
+                Font = s.Appearance_Font_Button.GetFontObject();
             }
             catch { }
 
             var iconWidth = 16 * this.DeviceDpi / 96;
             var iconSize = new Size(iconWidth, iconWidth);
-            copyButton.Image = ToolIconGenerator.GenerateToolIcon(iconSize, Properties.Resources.ToolIcon_Copy);
-            whiteBackModeButton.Image = ToolIconGenerator.GenerateToolIcon(iconSize, Properties.Resources.ToolIcon_InvertBrightness);
+            copyButton.Image = ToolIconGenerator.GenerateToolIcon(iconSize, nameof(Properties.Resources.ToolIcon_Copy));
+            whiteBackModeButton.Image = ToolIconGenerator.GenerateToolIcon(iconSize, nameof(Properties.Resources.ToolIcon_InvertBrightness));
 
             var size = axisSettingsX.PreferredSize;
             sidePanel.Width = size.Width;

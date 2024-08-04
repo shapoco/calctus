@@ -4,7 +4,7 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 
-namespace Shapoco.Calctus.Model.Maths {
+namespace Shapoco.Maths {
     class LongMath {
         public static long ToGray(long val) {
             return val ^ ((val >> 1) & 0x7fffffffffffffff);

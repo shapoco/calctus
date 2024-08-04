@@ -4,14 +4,14 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
+using Shapoco.Maths;
 using Shapoco.Calctus.Model.Maths;
 using Shapoco.Calctus.Model.Evaluations;
 
-
 namespace Shapoco.Calctus.Model.Values {
-    class FracVal : BaseVal<frac> {
+    class FracVal : BaseVal<Frac> {
 
-        public FracVal(frac val) : base(val) { }
+        public FracVal(Frac val) : base(val) { }
 
         public override bool IsScalar => true;
         public override bool IsInteger => false;
@@ -19,7 +19,7 @@ namespace Shapoco.Calctus.Model.Values {
         public override bool IsSerializable => true;
 
         public override decimal AsDecimal => (decimal)_raw;
-        public override frac AsFrac => _raw;
+        public override Frac AsFrac => _raw;
         public override double AsDouble => (double)_raw;
         public override long AsLong => MathEx.ToLong((decimal)_raw);
         public override int AsInt => MathEx.ToInt((decimal)_raw);
@@ -31,7 +31,7 @@ namespace Shapoco.Calctus.Model.Values {
         public override int[] AsIntArray => new int[] { (int)_raw };
         public override byte[] AsByteArray => new byte[] { (byte)_raw };
 
-        public static Val Normalize(frac f) {
+        public static Val Normalize(Frac f) {
             if (f.Deno == 1) {
                 return new RealVal(f.Nume);
             }

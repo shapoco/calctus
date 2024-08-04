@@ -7,6 +7,7 @@ using System.Threading.Tasks;
 using System.Windows.Forms;
 using System.Drawing;
 using System.Globalization;
+using Shapoco.Maths;
 using Shapoco.Calctus.Model;
 using Shapoco.Calctus.Model.Formats;
 using Shapoco.Calctus.Model.Sheets;
@@ -339,13 +340,13 @@ namespace Shapoco.Calctus.UI.Sheets {
 
                 selStart = SelectionStart;
                 var prevChar = selStart >= 2 ? text[selStart - 2] : '\0';
-                if (!Lexer.IsFollowingIdChar(prevChar) && prevChar != '\'' && prevChar != '\"' && prevChar != '#' && prevChar != '\\' && Lexer.IsFirstIdChar(e.KeyChar)) {
+                if (!Model.Parsers.Lexer.IsFollowingIdChar(prevChar) && prevChar != '\'' && prevChar != '\"' && prevChar != '#' && prevChar != '\\' && Model.Parsers.Lexer.IsFirstIdChar(e.KeyChar)) {
                     if (Settings.Instance.Input_IdAutoCompletion) {
                         // 識別子の先頭文字が入力されたら補完候補を表示する
                         CandidatesShow();
                     }
                 }
-                else if (_candKeyStart + 1 < selStart && Lexer.IsFollowingIdChar(e.KeyChar)) {
+                else if (_candKeyStart + 1 < selStart && Model.Parsers.Lexer.IsFollowingIdChar(e.KeyChar)) {
                     // 識別子の2文字目以降が表示されたら補完候補を更新する
                     CandidatesUpdate();
                 }
@@ -540,7 +541,7 @@ namespace Shapoco.Calctus.UI.Sheets {
                 // そうでなければ入力候補を隠す
                 bool keyExtend = true;
                 for (int i = _candKeyEnd; i < selEnd; i++) {
-                    if (!Lexer.IsFollowingIdChar(Text[i])) {
+                    if (!Model.Parsers.Lexer.IsFollowingIdChar(Text[i])) {
                         keyExtend = false;
                         break;
                     }
@@ -601,7 +602,7 @@ namespace Shapoco.Calctus.UI.Sheets {
             var selStart = SelectionStart;
             var candStart = selStart;
             var candEnd = selStart;
-            while (candStart > 0 && Lexer.IsFollowingIdChar(text[candStart - 1])) {
+            while (candStart > 0 && Model.Parsers.Lexer.IsFollowingIdChar(text[candStart - 1])) {
                 candStart--;
             }
             _candKeyStart = candStart;

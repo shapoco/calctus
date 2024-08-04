@@ -8,6 +8,7 @@ using System.Text;
 using System.Threading.Tasks;
 using System.Drawing;
 using System.Reflection;
+using Shapoco.Texts;
 
 namespace Shapoco {
     internal static class AppDataManager {
@@ -39,10 +40,10 @@ namespace Shapoco {
         public static void SavePropertiesToRoamingAppData(object targetObject, string fileName) {
             StringBuilder sb = new StringBuilder();
             foreach (var p in targetObject.GetType().GetProperties()) {
+                if (p.GetGetMethod().IsStatic) continue;
                 if (p.PropertyType.Equals(typeof(String))) {
                     // 文字列
-                    var value = EscapeValue((string)p.GetValue(targetObject));
-                    sb.AppendLine(p.Name + "=\"" + value + "\"");
+                    sb.AppendLine(p.Name + "=" + CStyleEscaping.EscapeAndQuote((string)p.GetValue(targetObject)));
                 }
                 else if (p.PropertyType.Equals(typeof(Color))) {
                     // 色
@@ -55,6 +56,10 @@ namespace Shapoco {
                     // プリミティブ型または列挙型
                     sb.AppendLine(p.Name + "=" + FormattableString.Invariant($"{p.GetValue(targetObject)}"));
                 }
+                else if (p.PropertyType.GetInterfaces().Contains(typeof(IParsable))) {
+                    // 文字列から復元可能なオブジェクト
+                    sb.AppendLine(p.Name + "=" + CStyleEscaping.EscapeAndQuote(p.GetValue(targetObject).ToString()));
+                }
             }
 
             var filePath = Path.Combine(ActiveDataPath, fileName);
@@ -64,8 +69,8 @@ namespace Shapoco {
             }
         }
 
-        public static void LoadPropertiesFromRoamingAppData(object targetObject, string fileName) {
-            var dictionary = new Dictionary<string, string>();
+        public static void LoadPropertiesFromRoamingAppData(object targetObject, string fileName, Dictionary<string, string> dictionary = null) {
+            if (dictionary == null) dictionary = new Dictionary<string, string>();
             var filePath = Path.Combine(ActiveDataPath, fileName);
             if (!File.Exists(filePath)) return;
 
@@ -91,16 +96,12 @@ namespace Shapoco {
 
             foreach (var p in targetObject.GetType().GetProperties()) {
                 if (!dictionary.ContainsKey(p.Name)) continue;
+                if (p.GetGetMethod().IsStatic) continue;
+                if (!p.CanWrite) continue;
                 var valueStr = dictionary[p.Name];
 
                 try {
-                    if (p.PropertyType.Equals(typeof(String))) {
-                        // 文字列型
-                        // "～" の形式でないものは無視
-                        if (!valueStr.StartsWith("\"") || !valueStr.EndsWith("\"")) continue;
-                        valueStr = UnescapeValue(valueStr.Substring(1, valueStr.Length - 2)); // "～"の中身を取り出す
-                        p.SetValue(targetObject, valueStr);
-                    }
+                    if (p.PropertyType.Equals(typeof(String))) { p.SetValue(targetObject, CStyleEscaping.UnquoteAndUnescape(valueStr)); }
                     else if (p.PropertyType.Equals(typeof(Boolean))) { p.SetValue(targetObject, Boolean.Parse(valueStr)); }
                     else if (p.PropertyType.Equals(typeof(Byte))) { p.SetValue(targetObject, Byte.Parse(valueStr, CultureInfo.InvariantCulture)); }
                     else if (p.PropertyType.Equals(typeof(SByte))) { p.SetValue(targetObject, SByte.Parse(valueStr, CultureInfo.InvariantCulture)); }
@@ -116,6 +117,9 @@ namespace Shapoco {
                     else if (p.PropertyType.Equals(typeof(Decimal))) { p.SetValue(targetObject, Decimal.Parse(valueStr, CultureInfo.InvariantCulture)); }
                     else if (p.PropertyType.IsEnum) { p.SetValue(targetObject, Enum.Parse(p.PropertyType, valueStr)); }
                     else if (p.PropertyType.Equals(typeof(Color))) { p.SetValue(targetObject, Color.FromArgb(Convert.ToInt32(valueStr.Substring(1), 16))); }
+                    else if (p.PropertyType.GetInterfaces().Contains(typeof(IParsable))) {
+                        ((IParsable)p.GetValue(targetObject)).TryParse(CStyleEscaping.UnquoteAndUnescape(valueStr)); 
+                    }
                     else {
                         throw new NotImplementedException($"Unsupported type {p.PropertyType}.");
                     }
@@ -124,54 +128,6 @@ namespace Shapoco {
                     Console.Error.WriteLine(ex);
                 }
             }
-
         }
-
-        public static string EscapeValue(string src) {
-            var sb = new StringBuilder();
-            int n = src.Length;
-            for (int i = 0; i < n; i++) {
-                char c = src[i];
-                switch (c) {
-                    case '\r': sb.Append(@"\r"); break;
-                    case '\n': sb.Append(@"\n"); break;
-                    case '\0': sb.Append(@"\0"); break;
-                    case '\t': sb.Append(@"\t"); break;
-                    case '\\': sb.Append(@"\\"); break;
-                    case '"': sb.Append("\\\""); break;
-                    default: sb.Append(c); break;
-                }
-            }
-            return sb.ToString();
-        }
-
-        public static string UnescapeValue(string src) {
-            var sb = new StringBuilder();
-            int n = src.Length;
-            bool escaped = false;
-            for (int i = 0; i < n; i++) {
-                char c = src[i];
-                if (escaped) {
-                    switch (c) {
-                        case 'r': sb.Append('\r'); break;
-                        case 'n': sb.Append('\n'); break;
-                        case '0': sb.Append('\0'); break;
-                        case 't': sb.Append('\t'); break;
-                        case '\\': sb.Append('\\'); break;
-                        case '"': sb.Append('"'); break;
-                        default: sb.Append('\\').Append(c); break;
-                    }
-                    escaped = false;
-                }
-                else if (c == '\\') {
-                    escaped = true;
-                }
-                else {
-                    sb.Append(c);
-                }
-            }
-            return sb.ToString();
-        }
-
     }
 }

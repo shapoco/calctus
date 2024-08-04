@@ -3,6 +3,7 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
+using Shapoco.Maths;
 using Shapoco.Calctus.Model.Values;
 using Shapoco.Calctus.Model.Maths;
 using Shapoco.Calctus.Model.Formats;

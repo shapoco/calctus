@@ -7,15 +7,15 @@ using Shapoco.Calctus.Model.Values;
 
 namespace Shapoco.Calctus.Model.Parsers {
     class Token {
-        public static readonly Token Empty = new Token(TokenType.Empty, TextPosition.Nowhere, "");
+        public static readonly Token Empty = new Token(TokenType.Empty, DeprecatedTextPosition.Nowhere, "");
 
         public static bool IsNullOrEmpty(Token t) => t == null || string.IsNullOrEmpty(t.Text);
 
         public readonly TokenType Type;
-        public readonly TextPosition Position;
+        public readonly DeprecatedTextPosition Position;
         public readonly string Text;
 
-        public Token(TokenType t, TextPosition pos, string text) {
+        public Token(TokenType t, DeprecatedTextPosition pos, string text) {
             this.Type = t;
             this.Position = pos;
             this.Text = text;
@@ -30,6 +30,6 @@ namespace Shapoco.Calctus.Model.Parsers {
             }
         }
 
-        public static Token FromWord(string s) => new Token(TokenType.Identifier, TextPosition.Nowhere, s);
+        public static Token FromWord(string s) => new Token(TokenType.Identifier, DeprecatedTextPosition.Nowhere, s);
     }
 }

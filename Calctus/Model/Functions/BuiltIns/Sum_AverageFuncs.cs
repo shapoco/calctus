@@ -3,9 +3,9 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
+using Shapoco.Maths;
 using Shapoco.Calctus.Model.Values;
 using Shapoco.Calctus.Model.Maths;
-
 
 namespace Shapoco.Calctus.Model.Functions.BuiltIns {
     class Sum_AverageFuncs : BuiltInFuncCategory {

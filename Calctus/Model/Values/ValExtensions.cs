@@ -3,16 +3,16 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
+using Shapoco.Maths;
 using Shapoco.Calctus.Model;
 using Shapoco.Calctus.Model.Formats;
 using Shapoco.Calctus.Model.Evaluations;
-
 
 namespace Shapoco.Calctus.Model.Values {
     static class ValExtensions {
         public static BoolVal ToVal(this bool val) => BoolVal.From(val);
         public static RealVal ToVal(this decimal val, FormatFlags fmt = FormatFlags.Default) => new RealVal(val, fmt);
-        public static Val ToVal(this frac val) => FracVal.Normalize(val);
+        public static Val ToVal(this Frac val) => FracVal.Normalize(val);
         public static StrVal ToVal(this string val) => new StrVal(val);
         public static RealVal ToVal(this DayOfWeek val) => (RealVal)DateTimeVal.DayOfWeekList[(int)val];
 

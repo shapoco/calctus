@@ -6,7 +6,7 @@ using System.Threading.Tasks;
 
 namespace Shapoco.Calctus.Model.Parsers {
     static class NumberLexer {
-        public static NumberSequence Expect(StringReader sr, Radix radix, bool allowUnderscore) {
+        public static NumberSequence Expect(StringReaderDep sr, Radix radix, bool allowUnderscore) {
             if (TryParse(sr, radix, allowUnderscore, out NumberSequence num)) {
                 return num;
             }
@@ -15,8 +15,8 @@ namespace Shapoco.Calctus.Model.Parsers {
             }
         }
 
-        public static bool TryParse(StringReader sr, Radix radix, bool allowUnderscore, out NumberSequence num) {
-            TextPosition pos = sr.Position;
+        public static bool TryParse(StringReaderDep sr, Radix radix, bool allowUnderscore, out NumberSequence num) {
+            DeprecatedTextPosition pos = sr.Position;
             if (TryParseChar(sr, radix, out char c)) {
                 num = new NumberSequence(radix, pos);
                 num.Append(c);
@@ -29,7 +29,7 @@ namespace Shapoco.Calctus.Model.Parsers {
             }
         }
 
-        public static char ExpectChar(StringReader sr, Radix radix) {
+        public static char ExpectChar(StringReaderDep sr, Radix radix) {
             if (TryParseChar(sr, radix, out char c)) {
                 return c;
             }
@@ -38,7 +38,7 @@ namespace Shapoco.Calctus.Model.Parsers {
             }
         }
 
-        public static bool TryParseChar(StringReader sr, Radix radix, out char c) {
+        public static bool TryParseChar(StringReaderDep sr, Radix radix, out char c) {
             bool hit;
             switch (radix) {
                 case Radix.Decimal: hit = sr.ReadIf('0', '9', out c); break;
@@ -50,7 +50,7 @@ namespace Shapoco.Calctus.Model.Parsers {
             return hit;
         }
 
-        public static void ReadFollowing(StringReader sr, NumberSequence num, bool allowUnderscore) {
+        public static void ReadFollowing(StringReaderDep sr, NumberSequence num, bool allowUnderscore) {
             var radix = (num.Radix == Radix.Hexadecimal) ? Radix.Hexadecimal : Radix.Decimal;
             char c;
             while (true) {

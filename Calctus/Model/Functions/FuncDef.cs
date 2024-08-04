@@ -59,7 +59,7 @@ namespace Shapoco.Calctus.Model.Functions {
                     args.Add(new ArgDef(argName));
                 }
             }
-            this.Name = new Token(TokenType.Identifier, TextPosition.Nowhere, m.Groups["name"].Value);
+            this.Name = new Token(TokenType.Identifier, DeprecatedTextPosition.Nowhere, m.Groups["name"].Value);
             this.Args = new ArgDefList(args.ToArray(), mode, vecArgIndex, fmtSrcArgIndex);
             this.Description = desc;
         }

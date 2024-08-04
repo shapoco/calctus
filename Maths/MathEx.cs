@@ -1,8 +1,10 @@
 ﻿using System;
 using System.Collections.Generic;
 
-namespace Shapoco.Calctus.Model.Maths {
+namespace Shapoco.Maths {
     static class MathEx {
+        public static bool IsInteger(this decimal x) => x == Math.Floor(x);
+
         /// <summary>a と b の最大公約数</summary>
         public static decimal Gcd(decimal a, decimal b) {
             Assert.ArgIsInteger(nameof(Gcd), nameof(a), a);
@@ -212,6 +214,10 @@ namespace Shapoco.Calctus.Model.Maths {
 
         // 最大最小
         public static decimal Clip(decimal min, decimal max, decimal x) {
+            Assert.ArgInRange(nameof(Clip), min <= max, "min > max");
+            return x < min ? min : (x > max ? max : x);
+        }
+        public static float Clip(float min, float max, float x) {
             Assert.ArgInRange(nameof(Clip), min <= max, "min > max");
             return x < min ? min : (x > max ? max : x);
         }

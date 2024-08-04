@@ -3,6 +3,7 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
+using Shapoco.Texts;
 
 namespace Shapoco.Calctus.Model.Parsers {
     class SymbolLexer {
@@ -25,7 +26,7 @@ namespace Shapoco.Calctus.Model.Parsers {
             }
         }
 
-        public bool TryRead(StringReader sr, out Token token) {
+        public bool TryRead(StringReaderDep sr, out Token token) {
             SymbolLexerNode node = _root;
             SymbolLexerNode following = null;
             while (node.TryFindFollowing(sr.Peek(), out following)) {
@@ -41,7 +42,7 @@ namespace Shapoco.Calctus.Model.Parsers {
                 return true;
             }
             else {
-                var charList = string.Join(" or ", node.Followings.Select(p => CalctusUtils.ToString(p.Char.ToString())));
+                var charList = string.Join(" or ", node.Followings.Select(p => CStyleEscaping.EscapeAndQuote(p.Char)));
                 throw new LexerError(sr.Position, charList + " is expected");
             }
         }

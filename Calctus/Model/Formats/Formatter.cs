@@ -5,6 +5,8 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 using System.Globalization;
+using Shapoco.Maths;
+using Shapoco.Texts;
 using Shapoco.Calctus.Model.Maths;
 using Shapoco.Calctus.Model.Standards;
 using Shapoco.Calctus.Model.Parsers;
@@ -26,7 +28,7 @@ namespace Shapoco.Calctus.Model.Formats {
             else if (val is bool boolVal) {
                 return ToLiteralString(boolVal);
             }
-            else if (val is frac fracVal) {
+            else if (val is Frac fracVal) {
                 return fracVal.ToString();
             }
             else if (val is Val valVal) {
@@ -185,39 +187,11 @@ namespace Shapoco.Calctus.Model.Formats {
         }
 
         public static string EscapeChar(char c, bool stringMode, StringUsage flag) {
-            if (!flag.HasFlag(StringUsage.CharEscapingFlag)) return c.ToString();
-            switch (c) {
-                case '\a': return "\\a";
-                case '\b': return "\\b";
-                case '\f': return "\\f";
-                case '\n': return "\\n";
-                case '\r': return "\\r";
-                case '\t': return "\\t";
-                case '\v': return "\\v";
-                case '\\': return "\\\\";
-                case '\'':
-                    if (stringMode) {
-                        return c.ToString();
-                    }
-                    else {
-                        return "\\'";
-                    }
-                case '"':
-                    if (stringMode) {
-                        return "\\\"";
-                    }
-                    else {
-                        return c.ToString();
-                    }
-                case '\0': return "\\0";
-                default:
-                    if (char.IsLetterOrDigit(c) || char.IsPunctuation(c) || char.IsSeparator(c) || char.IsSymbol(c)) {
-                        return c.ToString();
-                    }
-                    else {
-                        var hex = "0000" + Convert.ToString(c, 16);
-                        return "\\u" + hex.Substring(hex.Length - 4, 4);
-                    }
+            if (flag.HasFlag(StringUsage.CharEscapingFlag)) {
+                return CStyleEscaping.Escape(c);
+            }
+            else {
+                return c.ToString();
             }
         }
 

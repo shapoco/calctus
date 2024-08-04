@@ -8,23 +8,24 @@ using System.Text;
 using System.Threading.Tasks;
 using System.IO;
 using System.Windows.Forms;
+using Shapoco.Maths;
 using Shapoco.Calctus.Model;
+using Shapoco.Calctus.Model.Maths;
 using Shapoco.Calctus.Model.Evaluations;
 using Shapoco.Calctus.UI.Books;
 using Shapoco.Calctus.UI.Sheets;
 
 namespace Shapoco.Calctus.UI {
     public partial class SettingsDialog : Form {
-        private const string ColorSettingNamePrefix = "Appearance_Color_";
-
         private FolderBrowserDialog _folderBrowserDialog = new FolderBrowserDialog();
-        private ColorDialog _colorDialog = new ColorDialog();
-        private Label[] _colorLabels;
+        private ColorPickerBox[] _colorPickers;
+
+        private Timer _reloadTimer = new Timer();
 
         public SettingsDialog() {
             InitializeComponent();
 
-            Windows.DwmApi.SetDarkModeEnable(this, Settings.Instance.GetIsDarkMode());
+            Windows.DwmApi.SetDarkModeEnable(this, Settings.Instance.Appearance_IsDarkTheme);
 
             try {
                 this.Font = new Font("Arial", SystemFonts.DefaultFont.Size);
@@ -34,47 +35,38 @@ namespace Shapoco.Calctus.UI {
             using (var g = this.CreateGraphics()) {
                 var colorTextSize = Size.Ceiling(g.MeasureString("#AAAAAA", this.Font));
                 var scaleFactor = (float)this.DeviceDpi / 96;
-                var colorLabels = new List<Label>();
+                var colorLabels = new List<ColorPickerBox>();
                 var xPadding = (int)Math.Ceiling(10 * scaleFactor);
                 var centerPadding = (int)Math.Ceiling(30 * scaleFactor);
                 var yPadding = (int)Math.Ceiling(20 * scaleFactor);
                 var x = xPadding;
                 var y = yPadding;
-                var wColor = (int)(colorTextSize.Width * 1.25f);
+                var wColor = (int)(colorTextSize.Width * 1.75f);
                 var wName = (colorGroup.ClientSize.Width - centerPadding - xPadding * 2) / 2 - wColor;
-                var hLabel = (int)(colorTextSize.Height * 1.25f);
+                var hLabel = (int)(colorTextSize.Height * 1.5f);
                 var yStride = (int)(colorTextSize.Height * 1.5f);
-                foreach (var prop in typeof(Settings).GetProperties()) {
-                    if (prop.Name.StartsWith(ColorSettingNamePrefix)) {
-                        var colorName = prop.Name.Substring(ColorSettingNamePrefix.Length);
-                        var nameLabel = new Label();
-                        if (colorName == "SI_Prefix") {
-                            nameLabel.Text = "Exponent / SI Prefix";
-                        }
-                        else {
-                            nameLabel.Text = colorName.Replace('_', ' ');
-                        }
-                        nameLabel.AutoSize = false;
-                        nameLabel.TextAlign = ContentAlignment.MiddleLeft;
-                        nameLabel.SetBounds(x, y, wName, hLabel);
-                        colorGroup.Controls.Add(nameLabel);
-                        var colorLabel = new Label();
-                        colorLabel.Tag = prop.Name;
-                        colorLabel.AutoSize = false;
-                        colorLabel.TextAlign = ContentAlignment.MiddleCenter;
-                        colorLabel.BorderStyle = BorderStyle.Fixed3D;
-                        colorLabel.SetBounds(x + wName, y, wColor, hLabel);
-                        colorLabel.Click += ColorBox_Click;
-                        colorGroup.Controls.Add(colorLabel);
-                        colorLabels.Add(colorLabel);
-                        y += yStride;
-                        if (y + hLabel > toggleLightDarkModeButton.Top) {
-                            x += wName + wColor + centerPadding;
-                            y = yPadding;
-                        }
+                foreach (var dispName in Settings.ColorProperties.Keys) {
+                    var prop = Settings.ColorProperties[dispName];
+                    var nameLabel = new Label();
+                    nameLabel.Text = dispName;
+                    nameLabel.AutoSize = false;
+                    nameLabel.TextAlign = ContentAlignment.MiddleLeft;
+                    nameLabel.SetBounds(x, y, wName, hLabel);
+                    colorGroup.Controls.Add(nameLabel);
+                    var colorLabel = new ColorPickerBox();
+                    colorLabel.Tag = prop.Name;
+                    colorLabel.AutoSize = false;
+                    colorLabel.SetBounds(x + wName, y, wColor, hLabel);
+                    colorLabel.SelectedColorChanged += ColorBox_SelectedColorChanged;
+                    colorGroup.Controls.Add(colorLabel);
+                    colorLabels.Add(colorLabel);
+                    y += yStride;
+                    if (y + hLabel > toggleLightDarkModeButton.Top) {
+                        x += wName + wColor + centerPadding;
+                        y = yPadding;
                     }
                 }
-                _colorLabels = colorLabels.ToArray();
+                _colorPickers = colorLabels.ToArray();
             }
 
             tabControl.SelectedIndex = 0;
@@ -130,12 +122,18 @@ namespace Shapoco.Calctus.UI {
                 Appearance_Font_Button_Name.Items.Add(ff.Name);
                 Appearance_Font_Expr_Name.Items.Add(ff.Name);
             }
-            Appearance_Font_Button_Name.SelectedIndexChanged += (sender, e) => { s.Appearance_Font_Button_Name = ((ComboBox)sender).Text; };
-            Appearance_Font_Button_Name.TextChanged += (sender, e) => { s.Appearance_Font_Button_Name = ((ComboBox)sender).Text; };
-            Appearance_Font_Expr_Name.SelectedIndexChanged += (sender, e) => { s.Appearance_Font_Expr_Name = ((ComboBox)sender).Text; };
-            Appearance_Font_Expr_Name.TextChanged += (sender, e) => { s.Appearance_Font_Expr_Name = ((ComboBox)sender).Text; };
-            Appearance_Font_Size.ValueChanged += (sender, e) => { s.Appearance_Font_Size = (int)((NumericUpDown)sender).Value; };
-            Appearance_Font_Bold.CheckedChanged += (sender, e) => { s.Appearance_Font_Bold = ((CheckBox)sender).Checked; };
+            Appearance_Font_Button_Name.SelectedIndexChanged += (sender, e) => { s.Appearance_Font_Button.Face = ((ComboBox)sender).Text; requestAppearancePreview(); };
+            Appearance_Font_Button_Name.TextChanged += (sender, e) => { s.Appearance_Font_Button.Face = ((ComboBox)sender).Text; requestAppearancePreview(); };
+            Appearance_Font_Size.ValueChanged += (sender, e) => { s.Appearance_Font_Button.Size = (int)((NumericUpDown)sender).Value; requestAppearancePreview(); };
+            Appearance_Font_Button_Bold.CheckedChanged += (sender, e) => { s.Appearance_Font_Button.Bold = ((CheckBox)sender).Checked; requestAppearancePreview(); };
+            Appearance_Font_Button_Italic.CheckedChanged += (sender, e) => { s.Appearance_Font_Button.Italic = ((CheckBox)sender).Checked; requestAppearancePreview(); };
+            Appearance_Font_Expr_Name.SelectedIndexChanged += (sender, e) => { s.Appearance_Font_Expr.Face = ((ComboBox)sender).Text; requestAppearancePreview(); };
+            Appearance_Font_Expr_Name.TextChanged += (sender, e) => { s.Appearance_Font_Expr.Face = ((ComboBox)sender).Text; requestAppearancePreview(); };
+            Appearance_Font_Expr_Size.ValueChanged += (sender, e) => { s.Appearance_Font_Expr.Size = (int)((NumericUpDown)sender).Value; requestAppearancePreview(); };
+            Appearance_Font_Expr_Bold.CheckedChanged += (sender, e) => { s.Appearance_Font_Expr.Bold = ((CheckBox)sender).Checked; requestAppearancePreview(); };
+            Appearance_Font_Expr_Italic.CheckedChanged += (sender, e) => { s.Appearance_Font_Expr.Italic = ((CheckBox)sender).Checked; requestAppearancePreview(); };
+            swapColorRbButton.Click += SwapColorRbButton_Click;
+            shiftColorHueButton.Click += RotateColorHueButton_Click;
             toggleLightDarkModeButton.Click += ToggleLightDarkModeButton_Click;
 
             constList.SelectedIndexChanged += ConstList_SelectedIndexChanged;
@@ -159,6 +157,9 @@ namespace Shapoco.Calctus.UI {
             closeButton.Click += delegate { this.Close(); };
             this.FormClosed += SettingsDialog_FormClosed;
             this.Load += SettingsDialog_Load;
+
+            _reloadTimer.Enabled = false;
+            _reloadTimer.Tick += _previewDelayTimer_Tick;
         }
 
         private void SettingsDialog_Load(object sender, EventArgs e) {
@@ -193,16 +194,16 @@ namespace Shapoco.Calctus.UI {
                 setNudValue(Calculation_Limit_MaxStringLength, s.Calculation_Limit_MaxStringLength);
                 setNudValue(Calculation_Limit_MaxCallRecursions, s.Calculation_Limit_MaxCallRecursions);
 
-                Appearance_Font_Button_Name.Text = s.Appearance_Font_Button_Name;
-                Appearance_Font_Expr_Name.Text = s.Appearance_Font_Expr_Name;
-                setNudValue(Appearance_Font_Size, s.Appearance_Font_Size);
-                Appearance_Font_Bold.Checked = s.Appearance_Font_Bold;
+                Appearance_Font_Button_Name.Text = s.Appearance_Font_Button.Face;
+                Appearance_Font_Button_Bold.Checked = s.Appearance_Font_Button.Bold;
+                Appearance_Font_Button_Italic.Checked = s.Appearance_Font_Button.Italic;
+                setNudValue(Appearance_Font_Size, (decimal)s.Appearance_Font_Button.Size);
+                Appearance_Font_Expr_Name.Text = s.Appearance_Font_Expr.Face;
+                Appearance_Font_Expr_Bold.Checked = s.Appearance_Font_Expr.Bold;
+                Appearance_Font_Expr_Italic.Checked = s.Appearance_Font_Expr.Italic;
+                setNudValue(Appearance_Font_Expr_Size, (decimal)s.Appearance_Font_Expr.Size);
 
-                foreach (var colorLabel in _colorLabels) {
-                    var prop = typeof(Settings).GetProperty((string)colorLabel.Tag);
-                    colorLabel.BackColor = Color.FromArgb(255, (Color)prop.GetValue(s));
-                    backColorToText(colorLabel);
-                }
+                reloadColorSettings();
 
                 foreach (var c in s.GetUserConstants()) {
                     addConst(c);
@@ -224,8 +225,8 @@ namespace Shapoco.Calctus.UI {
             catch { }
         }
 
-        private void setNudValue(NumericUpDown nud, int value) {
-            nud.Value = Math.Max(nud.Minimum, Math.Min(nud.Maximum, value));
+        private void setNudValue(NumericUpDown nud, decimal value) {
+            nud.Value = MathEx.Clip(nud.Minimum, nud.Maximum, value);
         }
 
         private void Startup_AutoStart_CheckedChanged(object sender, EventArgs e) {
@@ -357,31 +358,38 @@ namespace Shapoco.Calctus.UI {
             }
         }
 
-        private void ColorBox_Click(object sender, EventArgs e) {
-            var colorLabel = (Label)sender;
-            _colorDialog.Color = colorLabel.BackColor;
-            if (_colorDialog.ShowDialog() == DialogResult.OK) {
-                colorLabel.BackColor = _colorDialog.Color;
-                backColorToText(colorLabel);
-                backColorToSetting(colorLabel);
+        private void ColorBox_SelectedColorChanged(object sender, EventArgs e) {
+            colorPickerToSetting((ColorPickerBox)sender);
+        }
+        private void colorPickerToSetting(ColorPickerBox picker) {
+            var prop = typeof(Settings).GetProperty((string)picker.Tag);
+            if ((Color)prop.GetValue(Settings.Instance) != picker.SelectedColor) {
+                prop.SetValue(Settings.Instance, picker.SelectedColor);
+                requestAppearancePreview();
             }
         }
+
         private void ToggleLightDarkModeButton_Click(object sender, EventArgs e) {
-            foreach(var colorLabel in _colorLabels) {
-                colorLabel.BackColor = ColorUtils.InvertHsvValue(colorLabel.BackColor);
-                backColorToText(colorLabel);
-                backColorToSetting(colorLabel);
+            Settings.Instance.InvertColors();
+            reloadColorSettings();
+            requestAppearancePreview();
+        }
+        private void RotateColorHueButton_Click(object sender, EventArgs e) {
+            Settings.Instance.RotateColorHue(60);
+            reloadColorSettings();
+            requestAppearancePreview();
+        }
+        private void SwapColorRbButton_Click(object sender, EventArgs e) {
+            Settings.Instance.SwapColorRb();
+            reloadColorSettings();
+            requestAppearancePreview();
+        }
+        private void reloadColorSettings() {
+            var s = Settings.Instance;
+            foreach (var picker in _colorPickers) {
+                var prop = typeof(Settings).GetProperty((string)picker.Tag);
+                picker.SelectedColor = Color.FromArgb(255, (Color)prop.GetValue(s));
             }
-        }
-        private void backColorToText(Label colorLabel) {
-            var color = colorLabel.BackColor;
-            var hexStr = "000000" + Convert.ToString(color.ToArgb(), 16);
-            colorLabel.Text ="#" + hexStr.Substring(hexStr.Length - 6).ToUpper();
-            var gray = ColorUtils.GrayScale(color);
-            colorLabel.ForeColor = gray.R < 128 ? Color.White : Color.Black;
-        }
-        private void backColorToSetting(Label colorLabel) {
-            typeof(Settings).GetProperty((string)colorLabel.Tag).SetValue(Settings.Instance, colorLabel.BackColor);
         }
 
         private void ConstList_SelectedIndexChanged(object sender, EventArgs e) {
@@ -538,6 +546,18 @@ namespace Shapoco.Calctus.UI {
             Settings.Instance.SetScriptFilters(filters);
 
             Settings.Instance.Save();
+        }
+
+        private void requestAppearancePreview() {
+            _reloadTimer.Stop();
+            _reloadTimer.Interval = 100;
+            _reloadTimer.Start();
+        }
+
+        private void _previewDelayTimer_Tick(object sender, EventArgs e) {
+            ((Timer)sender).Stop();
+            MainForm.Instance?.ReloadColorSettings();
+            MainForm.Instance?.ReloadFontSettings();
         }
     }
 }

@@ -4,62 +4,66 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 using System.Drawing;
+using System.Drawing.Imaging;
+using System.Runtime.InteropServices;
 
 namespace Shapoco.Calctus.UI {
     static class ToolIconGenerator {
-        public static Image GenerateToolIcon(Size size, Image image) {
-            var darkMode = Settings.Instance.GetIsDarkMode();
-            if (!darkMode && size == image.Size) {
-                return image;
+        private static readonly Dictionary<string, Image> _cache = new Dictionary<string, Image>();
+        private static readonly Type _typeOfResources = typeof(Properties.Resources);
+
+        public static Image GenerateToolIcon(Size size, string resourceName) {
+            var origImage = (Bitmap)_typeOfResources.GetProperty(resourceName).GetValue(null);
+            var darkMode = Settings.Instance.Appearance_IsDarkTheme;
+
+            if (!darkMode && size == origImage.Size) {
+                return origImage;
+            }
+
+            var cacheKey = resourceName + (darkMode ? "-dark" : "-white");
+
+            Image retBmp = origImage;
+            if (_cache.TryGetValue(cacheKey, out Image cacheBmp) && cacheBmp.Size == size) {
+                retBmp = cacheBmp;
             }
             else {
-                return CreateNegativeImage(size, darkMode, image);
+                _cache[cacheKey] = retBmp = CreateScaledImage(size, darkMode, origImage);
             }
+            return retBmp;
         }
 
-        // 色を反転させた画像（ネガティブイメージ）を表示する - .NET Tips (VB.NET,C#...)
-        // https://dobon.net/vb/dotnet/graphics/drawnegativeimage.html
-        /// <summary>
-        /// 指定された画像からネガティブイメージを作成する
-        /// </summary>
-        /// <param name="origImage">基の画像</param>
-        /// <returns>作成されたネガティブイメージ</returns>
-        public static Image CreateNegativeImage(Size newSize, bool invert, Image origImage) {
-            //ネガティブイメージの描画先となるImageオブジェクトを作成
-            Bitmap newBmp = new Bitmap(newSize.Width, newSize.Height);
-
-            //negaImgのGraphicsオブジェクトを取得
-            using (var g = Graphics.FromImage(newBmp)) {
-                g.InterpolationMode = System.Drawing.Drawing2D.InterpolationMode.HighQualityBilinear;
-                g.PixelOffsetMode = System.Drawing.Drawing2D.PixelOffsetMode.Half;
-
-                if (invert) {
-                    //ColorMatrixオブジェクトの作成
-                    System.Drawing.Imaging.ColorMatrix cm =
-                        new System.Drawing.Imaging.ColorMatrix();
-                    //ColorMatrixの行列の値を変更して、色が反転されるようにする
-                    cm.Matrix00 = -1;
-                    cm.Matrix11 = -1;
-                    cm.Matrix22 = -1;
-                    cm.Matrix33 = 1;
-                    cm.Matrix40 = cm.Matrix41 = cm.Matrix42 = cm.Matrix44 = 1;
-
-                    //ImageAttributesオブジェクトの作成
-                    System.Drawing.Imaging.ImageAttributes ia =
-                        new System.Drawing.Imaging.ImageAttributes();
-                    //ColorMatrixを設定する
-                    ia.SetColorMatrix(cm);
-
-                    //ImageAttributesを使用して色が反転した画像を描画
-                    g.DrawImage(origImage,
-                        new Rectangle(0, 0, newSize.Width, newSize.Height),
-                        0, 0, origImage.Width, origImage.Height, GraphicsUnit.Pixel, ia);
+        public static Image CreateScaledImage(Size newSize, bool invert, Image orig) {
+            Bitmap newBmp;
+            if (newSize == orig.Size) {
+                newBmp = new Bitmap(orig);
+            }
+            else {
+                // resize
+                newBmp = new Bitmap(newSize.Width, newSize.Height);
+                using (var g = Graphics.FromImage(newBmp)) {
+                    g.InterpolationMode = System.Drawing.Drawing2D.InterpolationMode.HighQualityBilinear;
+                    g.PixelOffsetMode = System.Drawing.Drawing2D.PixelOffsetMode.Half;
+                    g.DrawImage(orig,
+                        new Rectangle(0, 0, newSize.Width, newSize.Height), 
+                        0, 0, orig.Width, orig.Height, GraphicsUnit.Pixel);
                 }
-                else {
-                    g.DrawImage(origImage,
-                        new Rectangle(0, 0, newSize.Width, newSize.Height),
-                        0, 0, origImage.Width, origImage.Height, GraphicsUnit.Pixel);
+            }
+
+            if (invert) {
+                // invert color
+                var bmpData = newBmp.LockBits(new Rectangle(Point.Empty, newSize),
+                    ImageLockMode.ReadWrite, PixelFormat.Format32bppArgb);
+                var offset = bmpData.Scan0;
+                for (int y = 0; y < newSize.Height; y++) {
+                    var p = offset;
+                    for (int x = 0; x < newSize.Width; x++) {
+                        var c = Marshal.ReadInt32(p);
+                        Marshal.WriteInt32(p, c ^ 0xffffff);
+                        p += 4;
+                    }
+                    offset += bmpData.Stride;
                 }
+                newBmp.UnlockBits(bmpData);
             }
 
             return newBmp;

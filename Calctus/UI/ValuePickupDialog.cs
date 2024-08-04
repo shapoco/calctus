@@ -47,7 +47,7 @@ namespace Shapoco.Calctus.UI {
                 formattingComboBox.Items.Add((ValuePickupFormatting)item);
             }
 
-            Windows.DwmApi.SetDarkModeEnable(this, Settings.Instance.GetIsDarkMode());
+            Windows.DwmApi.SetDarkModeEnable(this, Settings.Instance.Appearance_IsDarkTheme);
 
             try {
                 this.Font = new Font("Arial", SystemFonts.DefaultFont.Size);

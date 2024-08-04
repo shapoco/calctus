@@ -56,9 +56,8 @@
   </ItemGroup>
   <ItemGroup>
     <Compile Include="AppDataManager.cs" />
-    <Compile Include="Calctus\Assert.cs" />
+    <Compile Include="Assert.cs" />
     <Compile Include="Calctus\BasicExtensions.cs" />
-    <Compile Include="Calctus\CalctusUtils.cs" />
     <Compile Include="Calctus\DocumentGenerator.cs" />
     <Compile Include="Calctus\ExprTest.cs" />
     <Compile Include="Calctus\Model\Formats\NumericFormat.cs" />
@@ -102,6 +101,12 @@
     <Compile Include="Calctus\Model\Functions\BuiltIns\Sum_AverageFuncs.cs" />
     <Compile Include="Calctus\Model\Functions\BuiltIns\TrigonometricFuncs.cs" />
     <Compile Include="Calctus\Model\Functions\FuncTest.cs" />
+    <Compile Include="Calctus\UI\ColorPickerBox.cs">
+      <SubType>Component</SubType>
+    </Compile>
+    <Compile Include="IParsable.cs" />
+    <Compile Include="Texts\CStyleEscaping.cs" />
+    <Compile Include="Texts\SimpleLexer.cs" />
     <Compile Include="Calctus\TestResult.cs" />
     <Compile Include="Calctus\Model\Functions\Types.cs" />
     <Compile Include="Calctus\Model\Graphs\AxisSettings.cs" />
@@ -110,11 +115,11 @@
     <Compile Include="Calctus\Model\Graphs\PlotRequest.cs" />
     <Compile Include="Calctus\Model\Graphs\Types.cs" />
     <Compile Include="Calctus\Model\Functions\FuncDef.cs" />
-    <Compile Include="Calctus\Model\Maths\DecMath.cs" />
-    <Compile Include="Calctus\Model\Maths\MathEx.cs" />
-    <Compile Include="Calctus\Model\Maths\FracMath.cs" />
+    <Compile Include="Maths\DecMath.cs" />
+    <Compile Include="Maths\MathEx.cs" />
+    <Compile Include="Maths\FracMath.cs" />
     <Compile Include="Calctus\Model\Maths\NewtonsMethod.cs" />
-    <Compile Include="Calctus\Model\apfixed.cs" />
+    <Compile Include="Maths\apfixed.cs" />
     <Compile Include="Calctus\Model\OpCodes.cs" />
     <Compile Include="Calctus\Model\Formats\Formatter.cs" />
     <Compile Include="Calctus\Model\Parsers\NumberLexer.cs" />
@@ -133,19 +138,19 @@
     <Compile Include="Calctus\Model\Values\BoolVal.cs" />
     <Compile Include="Calctus\Model\Evaluations\EvalSettings.cs" />
     <Compile Include="Calctus\Model\Functions\ExternalFuncDef.cs" />
-    <Compile Include="Calctus\Model\Maths\LongMath.cs" />
+    <Compile Include="Maths\LongMath.cs" />
     <Compile Include="Calctus\Model\Sheets\Sheet.cs" />
     <Compile Include="Calctus\Model\Sheets\SheetItem.cs" />
-    <Compile Include="Calctus\Model\Maths\QuadMath.cs" />
+    <Compile Include="Maths\QuadMath.cs" />
     <Compile Include="Calctus\Model\Values\FuncVal.cs" />
-    <Compile Include="Calctus\Model\quad.cs" />
+    <Compile Include="Maths\quad.cs" />
     <Compile Include="Calctus\Model\ScriptFilter.cs" />
     <Compile Include="Calctus\Model\Formats\Types.cs" />
     <Compile Include="Calctus\Model\Values\ICollectionVal.cs" />
     <Compile Include="Calctus\Model\Values\ScalarVal.cs" />
     <Compile Include="Calctus\Model\Values\StrVal.cs" />
-    <Compile Include="Calctus\Model\ufixed113.cs" />
-    <Compile Include="Calctus\Model\frac.cs" />
+    <Compile Include="Maths\ufixed113.cs" />
+    <Compile Include="Maths\Frac.cs" />
     <Compile Include="Calctus\Model\Values\FracVal.cs" />
     <Compile Include="Calctus\CalctusError.cs" />
     <Compile Include="Calctus\Model\Evaluations\EvalContext.cs" />
@@ -190,7 +195,7 @@
     <Compile Include="Calctus\UI\ValuePickupDialog.Designer.cs">
       <DependentUpon>ValuePickupDialog.cs</DependentUpon>
     </Compile>
-    <Compile Include="Calctus\UI\ColorUtils.cs" />
+    <Compile Include="Drawings\ColorEx.cs" />
     <Compile Include="Calctus\UI\ConstEditForm.cs">
       <SubType>Form</SubType>
     </Compile>
@@ -279,7 +284,13 @@
     <Compile Include="Calctus\Model\Expressions\PartRefExpr.cs" />
     <Compile Include="Calctus\Model\Expressions\UnaryOpExpr.cs" />
     <Compile Include="Calctus\Model\Expressions\IdExpr.cs" />
+    <Compile Include="FontSettings.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
+    <Compile Include="Texts\TokenBuffer.cs" />
+    <Compile Include="Texts\LexerException.cs" />
+    <Compile Include="Texts\TextPosition.cs" />
+    <Compile Include="Texts\Token.cs" />
+    <Compile Include="Texts\TokenType.cs" />
     <Compile Include="Windows\ClipboardListener.cs" />
     <Compile Include="Windows\DwmApi.cs" />
     <Compile Include="Windows\StartupShortcut.cs" />

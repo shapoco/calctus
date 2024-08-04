@@ -4,26 +4,27 @@ using System.Linq;
 using System.Text;
 using System.Text.RegularExpressions;
 using System.Threading.Tasks;
-
+using Shapoco.Texts;
 using Shapoco.Calctus.Model.Values;
 
 namespace Shapoco.Calctus.Model.Parsers {
-    class StringReader {
+    // todo StringReader に以降
+    class StringReaderDep {
         private readonly string _text;
-        private TextPosition _pos;
+        private DeprecatedTextPosition _pos;
 
-        private TextPosition _tokenPos;
+        private DeprecatedTextPosition _tokenPos;
         private StringBuilder _tokenBuf = new StringBuilder();
 
-        public StringReader(string text, int start = 0) {
+        public StringReaderDep(string text, int start = 0) {
             this._text = text;
-            this._pos = new TextPosition(start);
+            this._pos = new DeprecatedTextPosition(start);
         }
 
-        public TextPosition Position => _pos;
+        public DeprecatedTextPosition Position => _pos;
         public bool Eos => (_pos.Index >= _text.Length);
 
-        public TextPosition TokenPosition => _tokenPos;
+        public DeprecatedTextPosition TokenPosition => _tokenPos;
         public string TokenString => _tokenBuf.ToString();
 
         public void Init() {
@@ -128,7 +129,7 @@ namespace Shapoco.Calctus.Model.Parsers {
                 return "EOS";
             }
             else {
-                return CalctusUtils.ToString((char)c);
+                return CStyleEscaping.EscapeAndQuote((char)c);
             }
         }
     }

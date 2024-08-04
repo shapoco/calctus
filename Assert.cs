@@ -5,8 +5,9 @@ using System.Text;
 using System.Threading.Tasks;
 using Shapoco.Calctus.Model;
 using Shapoco.Calctus.Model.Maths;
+using Shapoco.Maths;
 
-namespace Shapoco.Calctus {
+namespace Shapoco {
     public static class Assert {
         public static void Fail(string msg) {
             Console.Error.WriteLine("TEST FAILD!! : " + msg);
@@ -31,7 +32,7 @@ namespace Shapoco.Calctus {
         }
 
         public static void ArgInRange(string funcName, string argName, bool cond, string msg = null) {
-            if (!cond) throw new CalctusArgError(funcName, argName, msg);
+            if (!cond) throw new ArgumentException(msg, argName + " for " + funcName);
         }
         public static void ArgInRange(string funcName, bool cond, string msg = null)
             => ArgInRange(funcName, null, cond, msg);

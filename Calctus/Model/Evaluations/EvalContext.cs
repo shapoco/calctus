@@ -3,6 +3,7 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
+using Shapoco.Maths;
 using Shapoco.Calctus.Model.Values;
 using Shapoco.Calctus.Model.Parsers;
 using Shapoco.Calctus.Model.Maths;
@@ -20,7 +21,7 @@ namespace Shapoco.Calctus.Model.Evaluations {
         public readonly int Depth;
 
         public void DefConst(string name, Val val, string desc) {
-            _vars.Add(name, new Var(new Token(TokenType.Identifier, TextPosition.Nowhere, name), val, true, desc));
+            _vars.Add(name, new Var(new Token(TokenType.Identifier, DeprecatedTextPosition.Nowhere, name), val, true, desc));
         }
 
         public EvalContext() {
@@ -68,7 +69,7 @@ namespace Shapoco.Calctus.Model.Evaluations {
         }
 
         public Var Ref(string name, bool allowCreate) {
-            return Ref(new Token(TokenType.Identifier, TextPosition.Nowhere, name), allowCreate);
+            return Ref(new Token(TokenType.Identifier, DeprecatedTextPosition.Nowhere, name), allowCreate);
         }
 
         public void Undef(string name, bool ignoreError) {

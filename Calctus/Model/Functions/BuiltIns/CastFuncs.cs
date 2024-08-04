@@ -3,6 +3,7 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
+using Shapoco.Maths;
 using Shapoco.Calctus.Model.Values;
 using Shapoco.Calctus.Model.Maths;
 using Shapoco.Calctus.Model.Parsers;
@@ -21,11 +22,11 @@ namespace Shapoco.Calctus.Model.Functions.BuiltIns {
 
         public readonly BuiltInFuncDef rat_1 = new BuiltInFuncDef("rat(*x)",
             "Rational fraction approximation of `x`.",
-            (e, a) => FracMath.FindFrac(a[0].AsDecimal).ToVal());
+            (e, a) => Frac.FindFrac(a[0].AsDecimal).ToVal());
 
         public readonly BuiltInFuncDef rat_2 = new BuiltInFuncDef("rat(*x, max)",
             "Rational fraction approximation of `x`.",
-            (e, a) => FracMath.FindFrac(a[0].AsDecimal, a[1].AsDecimal, a[1].AsDecimal).ToVal());
+            (e, a) => Frac.FindFrac(a[0].AsDecimal, a[1].AsDecimal, a[1].AsDecimal).ToVal());
 
         public readonly BuiltInFuncDef array = new BuiltInFuncDef("array(x)",
             "Converts value `x` to an list.",
