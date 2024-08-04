@@ -523,6 +523,7 @@
             // 
             // swapColorRbButton
             // 
+            this.swapColorRbButton.Enabled = false;
             this.swapColorRbButton.Location = new System.Drawing.Point(89, 17);
             this.swapColorRbButton.Margin = new System.Windows.Forms.Padding(3, 4, 3, 4);
             this.swapColorRbButton.Name = "swapColorRbButton";
@@ -533,6 +534,7 @@
             // 
             // shiftColorHueButton
             // 
+            this.shiftColorHueButton.Enabled = false;
             this.shiftColorHueButton.Location = new System.Drawing.Point(193, 17);
             this.shiftColorHueButton.Margin = new System.Windows.Forms.Padding(3, 4, 3, 4);
             this.shiftColorHueButton.Name = "shiftColorHueButton";
