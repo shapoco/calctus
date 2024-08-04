@@ -51,6 +51,9 @@
             this.Hotkey_Enabled = new System.Windows.Forms.CheckBox();
             this.tabPage2 = new System.Windows.Forms.TabPage();
             this.colorGroup = new System.Windows.Forms.GroupBox();
+            this.colorSelectAllCheckBox = new System.Windows.Forms.CheckBox();
+            this.resetColorButton = new System.Windows.Forms.Button();
+            this.swapColorRbButton = new System.Windows.Forms.Button();
             this.shiftColorHueButton = new System.Windows.Forms.Button();
             this.toggleLightDarkModeButton = new System.Windows.Forms.Button();
             this.fontGroup = new System.Windows.Forms.GroupBox();
@@ -112,7 +115,6 @@
             this.columnHeader1 = ((System.Windows.Forms.ColumnHeader)(new System.Windows.Forms.ColumnHeader()));
             this.columnHeader5 = ((System.Windows.Forms.ColumnHeader)(new System.Windows.Forms.ColumnHeader()));
             this.columnHeader6 = ((System.Windows.Forms.ColumnHeader)(new System.Windows.Forms.ColumnHeader()));
-            this.swapColorRbButton = new System.Windows.Forms.Button();
             this.eNoteGroup.SuspendLayout();
             ((System.ComponentModel.ISupportInitialize)(this.NumberFormat_Exp_NegativeMax)).BeginInit();
             ((System.ComponentModel.ISupportInitialize)(this.NumberFormat_Exp_PositiveMin)).BeginInit();
@@ -146,7 +148,7 @@
             // closeButton
             // 
             this.closeButton.DialogResult = System.Windows.Forms.DialogResult.Cancel;
-            this.closeButton.Location = new System.Drawing.Point(427, 455);
+            this.closeButton.Location = new System.Drawing.Point(427, 492);
             this.closeButton.Margin = new System.Windows.Forms.Padding(3, 4, 3, 4);
             this.closeButton.Name = "closeButton";
             this.closeButton.Size = new System.Drawing.Size(104, 31);
@@ -270,7 +272,7 @@
             this.tabControl.Margin = new System.Windows.Forms.Padding(3, 4, 3, 4);
             this.tabControl.Name = "tabControl";
             this.tabControl.SelectedIndex = 0;
-            this.tabControl.Size = new System.Drawing.Size(517, 432);
+            this.tabControl.Size = new System.Drawing.Size(517, 469);
             this.tabControl.TabIndex = 0;
             // 
             // tabPage3
@@ -281,7 +283,7 @@
             this.tabPage3.Location = new System.Drawing.Point(4, 22);
             this.tabPage3.Margin = new System.Windows.Forms.Padding(3, 4, 3, 4);
             this.tabPage3.Name = "tabPage3";
-            this.tabPage3.Size = new System.Drawing.Size(509, 406);
+            this.tabPage3.Size = new System.Drawing.Size(509, 443);
             this.tabPage3.TabIndex = 0;
             this.tabPage3.Text = "General";
             this.tabPage3.UseVisualStyleBackColor = true;
@@ -478,13 +480,15 @@
             this.tabPage2.Margin = new System.Windows.Forms.Padding(3, 4, 3, 4);
             this.tabPage2.Name = "tabPage2";
             this.tabPage2.Padding = new System.Windows.Forms.Padding(3, 4, 3, 4);
-            this.tabPage2.Size = new System.Drawing.Size(509, 406);
+            this.tabPage2.Size = new System.Drawing.Size(509, 443);
             this.tabPage2.TabIndex = 0;
             this.tabPage2.Text = "Appearance";
             this.tabPage2.UseVisualStyleBackColor = true;
             // 
             // colorGroup
             // 
+            this.colorGroup.Controls.Add(this.colorSelectAllCheckBox);
+            this.colorGroup.Controls.Add(this.resetColorButton);
             this.colorGroup.Controls.Add(this.swapColorRbButton);
             this.colorGroup.Controls.Add(this.shiftColorHueButton);
             this.colorGroup.Controls.Add(this.toggleLightDarkModeButton);
@@ -492,14 +496,44 @@
             this.colorGroup.Margin = new System.Windows.Forms.Padding(3, 4, 3, 4);
             this.colorGroup.Name = "colorGroup";
             this.colorGroup.Padding = new System.Windows.Forms.Padding(3, 4, 3, 4);
-            this.colorGroup.Size = new System.Drawing.Size(493, 269);
+            this.colorGroup.Size = new System.Drawing.Size(493, 311);
             this.colorGroup.TabIndex = 1;
             this.colorGroup.TabStop = false;
             this.colorGroup.Text = "Color";
             // 
+            // colorSelectAllCheckBox
+            // 
+            this.colorSelectAllCheckBox.AutoSize = true;
+            this.colorSelectAllCheckBox.Location = new System.Drawing.Point(11, 23);
+            this.colorSelectAllCheckBox.Name = "colorSelectAllCheckBox";
+            this.colorSelectAllCheckBox.Size = new System.Drawing.Size(72, 16);
+            this.colorSelectAllCheckBox.TabIndex = 1;
+            this.colorSelectAllCheckBox.Text = "Select all";
+            this.colorSelectAllCheckBox.UseVisualStyleBackColor = true;
+            // 
+            // resetColorButton
+            // 
+            this.resetColorButton.Location = new System.Drawing.Point(6, 274);
+            this.resetColorButton.Margin = new System.Windows.Forms.Padding(3, 4, 3, 4);
+            this.resetColorButton.Name = "resetColorButton";
+            this.resetColorButton.Size = new System.Drawing.Size(67, 29);
+            this.resetColorButton.TabIndex = 0;
+            this.resetColorButton.Text = "Reset";
+            this.resetColorButton.UseVisualStyleBackColor = true;
+            // 
+            // swapColorRbButton
+            // 
+            this.swapColorRbButton.Location = new System.Drawing.Point(89, 17);
+            this.swapColorRbButton.Margin = new System.Windows.Forms.Padding(3, 4, 3, 4);
+            this.swapColorRbButton.Name = "swapColorRbButton";
+            this.swapColorRbButton.Size = new System.Drawing.Size(98, 29);
+            this.swapColorRbButton.TabIndex = 0;
+            this.swapColorRbButton.Text = "Swap R↔B";
+            this.swapColorRbButton.UseVisualStyleBackColor = true;
+            // 
             // shiftColorHueButton
             // 
-            this.shiftColorHueButton.Location = new System.Drawing.Point(182, 232);
+            this.shiftColorHueButton.Location = new System.Drawing.Point(193, 17);
             this.shiftColorHueButton.Margin = new System.Windows.Forms.Padding(3, 4, 3, 4);
             this.shiftColorHueButton.Name = "shiftColorHueButton";
             this.shiftColorHueButton.Size = new System.Drawing.Size(115, 29);
@@ -509,12 +543,12 @@
             // 
             // toggleLightDarkModeButton
             // 
-            this.toggleLightDarkModeButton.Location = new System.Drawing.Point(303, 232);
+            this.toggleLightDarkModeButton.Location = new System.Drawing.Point(357, 274);
             this.toggleLightDarkModeButton.Margin = new System.Windows.Forms.Padding(3, 4, 3, 4);
             this.toggleLightDarkModeButton.Name = "toggleLightDarkModeButton";
-            this.toggleLightDarkModeButton.Size = new System.Drawing.Size(183, 29);
+            this.toggleLightDarkModeButton.Size = new System.Drawing.Size(130, 29);
             this.toggleLightDarkModeButton.TabIndex = 0;
-            this.toggleLightDarkModeButton.Text = "Toggle Light / Dark Mode";
+            this.toggleLightDarkModeButton.Text = "Toggle Light / Dark";
             this.toggleLightDarkModeButton.UseVisualStyleBackColor = true;
             // 
             // fontGroup
@@ -695,7 +729,7 @@
             this.tabPage4.Margin = new System.Windows.Forms.Padding(3, 4, 3, 4);
             this.tabPage4.Name = "tabPage4";
             this.tabPage4.Padding = new System.Windows.Forms.Padding(3, 4, 3, 4);
-            this.tabPage4.Size = new System.Drawing.Size(509, 406);
+            this.tabPage4.Size = new System.Drawing.Size(509, 443);
             this.tabPage4.TabIndex = 3;
             this.tabPage4.Text = "Input";
             this.tabPage4.UseVisualStyleBackColor = true;
@@ -757,7 +791,7 @@
             this.tabPage1.Margin = new System.Windows.Forms.Padding(3, 4, 3, 4);
             this.tabPage1.Name = "tabPage1";
             this.tabPage1.Padding = new System.Windows.Forms.Padding(3, 4, 3, 4);
-            this.tabPage1.Size = new System.Drawing.Size(509, 406);
+            this.tabPage1.Size = new System.Drawing.Size(509, 443);
             this.tabPage1.TabIndex = 2;
             this.tabPage1.Text = "Format";
             this.tabPage1.UseVisualStyleBackColor = true;
@@ -849,7 +883,7 @@
             this.tabPage7.Margin = new System.Windows.Forms.Padding(3, 4, 3, 4);
             this.tabPage7.Name = "tabPage7";
             this.tabPage7.Padding = new System.Windows.Forms.Padding(3, 4, 3, 4);
-            this.tabPage7.Size = new System.Drawing.Size(509, 406);
+            this.tabPage7.Size = new System.Drawing.Size(509, 443);
             this.tabPage7.TabIndex = 6;
             this.tabPage7.Text = "Calculation";
             this.tabPage7.UseVisualStyleBackColor = true;
@@ -977,14 +1011,14 @@
             this.tabPage5.Margin = new System.Windows.Forms.Padding(3, 4, 3, 4);
             this.tabPage5.Name = "tabPage5";
             this.tabPage5.Padding = new System.Windows.Forms.Padding(3, 4, 3, 4);
-            this.tabPage5.Size = new System.Drawing.Size(509, 406);
+            this.tabPage5.Size = new System.Drawing.Size(509, 443);
             this.tabPage5.TabIndex = 4;
             this.tabPage5.Text = "Definitions";
             this.tabPage5.UseVisualStyleBackColor = true;
             // 
             // constEditButton
             // 
-            this.constEditButton.Location = new System.Drawing.Point(425, 364);
+            this.constEditButton.Location = new System.Drawing.Point(424, 406);
             this.constEditButton.Margin = new System.Windows.Forms.Padding(3, 4, 3, 4);
             this.constEditButton.Name = "constEditButton";
             this.constEditButton.Size = new System.Drawing.Size(76, 29);
@@ -994,7 +1028,7 @@
             // 
             // constDelButton
             // 
-            this.constDelButton.Location = new System.Drawing.Point(342, 364);
+            this.constDelButton.Location = new System.Drawing.Point(341, 406);
             this.constDelButton.Margin = new System.Windows.Forms.Padding(3, 4, 3, 4);
             this.constDelButton.Name = "constDelButton";
             this.constDelButton.Size = new System.Drawing.Size(76, 29);
@@ -1004,7 +1038,7 @@
             // 
             // constAddButton
             // 
-            this.constAddButton.Location = new System.Drawing.Point(259, 364);
+            this.constAddButton.Location = new System.Drawing.Point(258, 406);
             this.constAddButton.Margin = new System.Windows.Forms.Padding(3, 4, 3, 4);
             this.constAddButton.Name = "constAddButton";
             this.constAddButton.Size = new System.Drawing.Size(76, 29);
@@ -1023,7 +1057,7 @@
             this.constList.Location = new System.Drawing.Point(7, 8);
             this.constList.Margin = new System.Windows.Forms.Padding(3, 4, 3, 4);
             this.constList.Name = "constList";
-            this.constList.Size = new System.Drawing.Size(493, 348);
+            this.constList.Size = new System.Drawing.Size(493, 390);
             this.constList.TabIndex = 0;
             this.constList.UseCompatibleStateImageBehavior = false;
             this.constList.View = System.Windows.Forms.View.Details;
@@ -1051,7 +1085,7 @@
             this.tabPage6.Margin = new System.Windows.Forms.Padding(3, 4, 3, 4);
             this.tabPage6.Name = "tabPage6";
             this.tabPage6.Padding = new System.Windows.Forms.Padding(3, 4, 3, 4);
-            this.tabPage6.Size = new System.Drawing.Size(509, 406);
+            this.tabPage6.Size = new System.Drawing.Size(509, 443);
             this.tabPage6.TabIndex = 5;
             this.tabPage6.Text = "Scripts";
             this.tabPage6.UseVisualStyleBackColor = true;
@@ -1084,13 +1118,13 @@
             this.scriptGroup.Margin = new System.Windows.Forms.Padding(3, 4, 3, 4);
             this.scriptGroup.Name = "scriptGroup";
             this.scriptGroup.Padding = new System.Windows.Forms.Padding(3, 4, 3, 4);
-            this.scriptGroup.Size = new System.Drawing.Size(493, 385);
+            this.scriptGroup.Size = new System.Drawing.Size(493, 427);
             this.scriptGroup.TabIndex = 1;
             this.scriptGroup.TabStop = false;
             // 
             // scriptFilterMoveDown
             // 
-            this.scriptFilterMoveDown.Location = new System.Drawing.Point(450, 349);
+            this.scriptFilterMoveDown.Location = new System.Drawing.Point(450, 390);
             this.scriptFilterMoveDown.Margin = new System.Windows.Forms.Padding(3, 4, 3, 4);
             this.scriptFilterMoveDown.Name = "scriptFilterMoveDown";
             this.scriptFilterMoveDown.Size = new System.Drawing.Size(36, 29);
@@ -1100,7 +1134,7 @@
             // 
             // scriptFilterMoveUp
             // 
-            this.scriptFilterMoveUp.Location = new System.Drawing.Point(407, 349);
+            this.scriptFilterMoveUp.Location = new System.Drawing.Point(407, 390);
             this.scriptFilterMoveUp.Margin = new System.Windows.Forms.Padding(3, 4, 3, 4);
             this.scriptFilterMoveUp.Name = "scriptFilterMoveUp";
             this.scriptFilterMoveUp.Size = new System.Drawing.Size(36, 29);
@@ -1110,7 +1144,7 @@
             // 
             // scriptFilterEditButton
             // 
-            this.scriptFilterEditButton.Location = new System.Drawing.Point(324, 349);
+            this.scriptFilterEditButton.Location = new System.Drawing.Point(324, 390);
             this.scriptFilterEditButton.Margin = new System.Windows.Forms.Padding(3, 4, 3, 4);
             this.scriptFilterEditButton.Name = "scriptFilterEditButton";
             this.scriptFilterEditButton.Size = new System.Drawing.Size(76, 29);
@@ -1120,7 +1154,7 @@
             // 
             // scriptFilterDelButton
             // 
-            this.scriptFilterDelButton.Location = new System.Drawing.Point(241, 349);
+            this.scriptFilterDelButton.Location = new System.Drawing.Point(241, 390);
             this.scriptFilterDelButton.Margin = new System.Windows.Forms.Padding(3, 4, 3, 4);
             this.scriptFilterDelButton.Name = "scriptFilterDelButton";
             this.scriptFilterDelButton.Size = new System.Drawing.Size(76, 29);
@@ -1150,7 +1184,7 @@
             // 
             // scriptFilterAddButton
             // 
-            this.scriptFilterAddButton.Location = new System.Drawing.Point(159, 349);
+            this.scriptFilterAddButton.Location = new System.Drawing.Point(159, 390);
             this.scriptFilterAddButton.Margin = new System.Windows.Forms.Padding(3, 4, 3, 4);
             this.scriptFilterAddButton.Name = "scriptFilterAddButton";
             this.scriptFilterAddButton.Size = new System.Drawing.Size(76, 29);
@@ -1195,7 +1229,7 @@
             this.scriptFilterList.Location = new System.Drawing.Point(7, 72);
             this.scriptFilterList.Margin = new System.Windows.Forms.Padding(3, 4, 3, 4);
             this.scriptFilterList.Name = "scriptFilterList";
-            this.scriptFilterList.Size = new System.Drawing.Size(479, 268);
+            this.scriptFilterList.Size = new System.Drawing.Size(479, 310);
             this.scriptFilterList.TabIndex = 1;
             this.scriptFilterList.UseCompatibleStateImageBehavior = false;
             this.scriptFilterList.View = System.Windows.Forms.View.Details;
@@ -1215,23 +1249,13 @@
             this.columnHeader6.Text = "Parameter";
             this.columnHeader6.Width = 164;
             // 
-            // swapColorRbButton
-            // 
-            this.swapColorRbButton.Location = new System.Drawing.Point(78, 232);
-            this.swapColorRbButton.Margin = new System.Windows.Forms.Padding(3, 4, 3, 4);
-            this.swapColorRbButton.Name = "swapColorRbButton";
-            this.swapColorRbButton.Size = new System.Drawing.Size(98, 29);
-            this.swapColorRbButton.TabIndex = 0;
-            this.swapColorRbButton.Text = "Swap R↔B";
-            this.swapColorRbButton.UseVisualStyleBackColor = true;
-            // 
             // SettingsDialog
             // 
             this.AcceptButton = this.closeButton;
             this.AutoScaleDimensions = new System.Drawing.SizeF(96F, 96F);
             this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Dpi;
             this.CancelButton = this.closeButton;
-            this.ClientSize = new System.Drawing.Size(545, 501);
+            this.ClientSize = new System.Drawing.Size(545, 536);
             this.Controls.Add(this.tabControl);
             this.Controls.Add(this.closeButton);
             this.FormBorderStyle = System.Windows.Forms.FormBorderStyle.FixedSingle;
@@ -1258,6 +1282,7 @@
             this.groupBox1.PerformLayout();
             this.tabPage2.ResumeLayout(false);
             this.colorGroup.ResumeLayout(false);
+            this.colorGroup.PerformLayout();
             this.fontGroup.ResumeLayout(false);
             this.fontGroup.PerformLayout();
             ((System.ComponentModel.ISupportInitialize)(this.Appearance_Font_Expr_Size)).EndInit();
@@ -1378,5 +1403,7 @@
         private System.Windows.Forms.CheckBox Appearance_Font_Expr_Bold;
         private System.Windows.Forms.Button shiftColorHueButton;
         private System.Windows.Forms.Button swapColorRbButton;
+        private System.Windows.Forms.Button resetColorButton;
+        private System.Windows.Forms.CheckBox colorSelectAllCheckBox;
     }
 }

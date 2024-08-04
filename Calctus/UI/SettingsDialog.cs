@@ -7,6 +7,7 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 using System.IO;
+using System.Reflection;
 using System.Windows.Forms;
 using Shapoco.Maths;
 using Shapoco.Calctus.Model;
@@ -19,6 +20,8 @@ namespace Shapoco.Calctus.UI {
     public partial class SettingsDialog : Form {
         private FolderBrowserDialog _folderBrowserDialog = new FolderBrowserDialog();
         private ColorPickerBox[] _colorPickers;
+        private CheckBox[] _colorCheckBoxes;
+        private bool _suppressColorCheckBoxCheckedChanged = false;
 
         private Timer _reloadTimer = new Timer();
 
@@ -35,38 +38,50 @@ namespace Shapoco.Calctus.UI {
             using (var g = this.CreateGraphics()) {
                 var colorTextSize = Size.Ceiling(g.MeasureString("#AAAAAA", this.Font));
                 var scaleFactor = (float)this.DeviceDpi / 96;
-                var colorLabels = new List<ColorPickerBox>();
-                var xPadding = (int)Math.Ceiling(10 * scaleFactor);
-                var centerPadding = (int)Math.Ceiling(30 * scaleFactor);
-                var yPadding = (int)Math.Ceiling(20 * scaleFactor);
+                var pickers = new List<ColorPickerBox>();
+                var checkBoxes = new List<CheckBox>();
+                var xPadding = colorSelectAllCheckBox.Left;
+                var centerPadding = (int)Math.Ceiling(20 * scaleFactor);
+                var yOffset = (int)Math.Ceiling(20 * scaleFactor);
+                var yBottom = toggleLightDarkModeButton.Top - (int)Math.Ceiling(10 * scaleFactor);
                 var x = xPadding;
-                var y = yPadding;
-                var wColor = (int)(colorTextSize.Width * 1.75f);
+                var y = yOffset = swapColorRbButton.Bottom + (int)Math.Ceiling(10 * scaleFactor);
+                var wColor = (int)(colorTextSize.Width * 1.66f);
                 var wName = (colorGroup.ClientSize.Width - centerPadding - xPadding * 2) / 2 - wColor;
                 var hLabel = (int)(colorTextSize.Height * 1.5f);
                 var yStride = (int)(colorTextSize.Height * 1.5f);
                 foreach (var dispName in Settings.ColorProperties.Keys) {
                     var prop = Settings.ColorProperties[dispName];
-                    var nameLabel = new Label();
-                    nameLabel.Text = dispName;
-                    nameLabel.AutoSize = false;
-                    nameLabel.TextAlign = ContentAlignment.MiddleLeft;
-                    nameLabel.SetBounds(x, y, wName, hLabel);
-                    colorGroup.Controls.Add(nameLabel);
-                    var colorLabel = new ColorPickerBox();
-                    colorLabel.Tag = prop.Name;
-                    colorLabel.AutoSize = false;
-                    colorLabel.SetBounds(x + wName, y, wColor, hLabel);
-                    colorLabel.SelectedColorChanged += ColorBox_SelectedColorChanged;
-                    colorGroup.Controls.Add(colorLabel);
-                    colorLabels.Add(colorLabel);
+                    var checkBox = new CheckBox();
+                    var picker = new ColorPickerBox();
+                    checkBox.Tag = prop;
+                    checkBox.Text = dispName;
+                    checkBox.AutoSize = false;
+                    checkBox.TextAlign = ContentAlignment.MiddleLeft;
+                    checkBox.SetBounds(x, y, wName, hLabel);
+                    picker.Tag = prop;
+                    picker.AutoSize = false;
+                    picker.SetBounds(x + wName, y, wColor, hLabel);
+                    checkBox.CheckedChanged += ColorCheckBox_CheckedChanged;
+                    picker.SelectedColorChanged += ColorBox_SelectedColorChanged;
+                    colorGroup.Controls.Add(checkBox);
+                    colorGroup.Controls.Add(picker);
+                    checkBoxes.Add(checkBox);
+                    pickers.Add(picker);
                     y += yStride;
-                    if (y + hLabel > toggleLightDarkModeButton.Top) {
+                    if (y + hLabel > yBottom) {
                         x += wName + wColor + centerPadding;
-                        y = yPadding;
+                        y = yOffset;
                     }
                 }
-                _colorPickers = colorLabels.ToArray();
+                _colorCheckBoxes = checkBoxes.ToArray();
+                _colorPickers = pickers.ToArray();
+
+                var sepLabel = new Label();
+                sepLabel.BackColor = Color.Gray;
+                sepLabel.AutoSize = false;
+                sepLabel.SetBounds(xPadding + wName + wColor + centerPadding / 2, yOffset, 1, yBottom - yOffset);
+                colorGroup.Controls.Add(sepLabel);
             }
 
             tabControl.SelectedIndex = 0;
@@ -132,6 +147,8 @@ namespace Shapoco.Calctus.UI {
             Appearance_Font_Expr_Size.ValueChanged += (sender, e) => { s.Appearance_Font_Expr.Size = (int)((NumericUpDown)sender).Value; requestAppearancePreview(); };
             Appearance_Font_Expr_Bold.CheckedChanged += (sender, e) => { s.Appearance_Font_Expr.Bold = ((CheckBox)sender).Checked; requestAppearancePreview(); };
             Appearance_Font_Expr_Italic.CheckedChanged += (sender, e) => { s.Appearance_Font_Expr.Italic = ((CheckBox)sender).Checked; requestAppearancePreview(); };
+            colorSelectAllCheckBox.CheckedChanged += ColorSelectAllCheckBox_CheckedChanged;
+            resetColorButton.Click += ResetColorButton_Click;
             swapColorRbButton.Click += SwapColorRbButton_Click;
             shiftColorHueButton.Click += RotateColorHueButton_Click;
             toggleLightDarkModeButton.Click += ToggleLightDarkModeButton_Click;
@@ -358,15 +375,53 @@ namespace Shapoco.Calctus.UI {
             }
         }
 
+        private void ColorSelectAllCheckBox_CheckedChanged(object sender, EventArgs e) {
+            var state = ((CheckBox)sender).CheckState;
+            if (state != CheckState.Indeterminate) {
+                var allChecked = (state == CheckState.Checked);
+                _suppressColorCheckBoxCheckedChanged = true;
+                foreach (var cb in _colorCheckBoxes) cb.Checked = allChecked;
+                _suppressColorCheckBoxCheckedChanged = false;
+            }
+            swapColorRbButton.Enabled = state != CheckState.Unchecked;
+            shiftColorHueButton.Enabled = state != CheckState.Unchecked;
+        }
+        private void ColorCheckBox_CheckedChanged(object sender, EventArgs e) {
+            if (_suppressColorCheckBoxCheckedChanged) return;
+            if (_colorCheckBoxes.All(p => p.Checked)) {
+                colorSelectAllCheckBox.Checked = true;
+            }
+            else if(!_colorCheckBoxes.Any(p => p.Checked)) {
+                colorSelectAllCheckBox.Checked = false;
+            }
+            else {
+                colorSelectAllCheckBox.CheckState = CheckState.Indeterminate;
+            }
+        }
         private void ColorBox_SelectedColorChanged(object sender, EventArgs e) {
             colorPickerToSetting((ColorPickerBox)sender);
         }
         private void colorPickerToSetting(ColorPickerBox picker) {
-            var prop = typeof(Settings).GetProperty((string)picker.Tag);
+            var prop = (PropertyInfo)(picker.Tag);
             if ((Color)prop.GetValue(Settings.Instance) != picker.SelectedColor) {
                 prop.SetValue(Settings.Instance, picker.SelectedColor);
                 requestAppearancePreview();
             }
+        }
+
+        private void ResetColorButton_Click(object sender, EventArgs e) {
+            var ans = MessageBox.Show(
+                "Are you sure you want to reset the color settings? This operation cannot be undone.",
+                Application.ProductName, MessageBoxButtons.OKCancel, MessageBoxIcon.Warning);
+            if (ans != DialogResult.OK) return;
+
+            var s = Settings.Instance;
+            var defaults = new Settings(false);
+            foreach (var prop in Settings.ColorProperties.Values) {
+                prop.SetValue(s, prop.GetValue(defaults));
+            }
+            reloadColorSettings();
+            requestAppearancePreview();
         }
 
         private void ToggleLightDarkModeButton_Click(object sender, EventArgs e) {
@@ -375,19 +430,25 @@ namespace Shapoco.Calctus.UI {
             requestAppearancePreview();
         }
         private void RotateColorHueButton_Click(object sender, EventArgs e) {
-            Settings.Instance.RotateColorHue(60);
+            var checkedProps = _colorCheckBoxes.Where(p => p.Checked).Select(p => (PropertyInfo)p.Tag);
+            foreach (var prop in checkedProps) {
+                Settings.Instance.RotateColorHue(prop, 60);
+            }
             reloadColorSettings();
             requestAppearancePreview();
         }
         private void SwapColorRbButton_Click(object sender, EventArgs e) {
-            Settings.Instance.SwapColorRb();
+            var checkedProps = _colorCheckBoxes.Where(p => p.Checked).Select(p => (PropertyInfo)p.Tag);
+            foreach (var prop in checkedProps) {
+                Settings.Instance.SwapColorRb(prop);
+            }
             reloadColorSettings();
             requestAppearancePreview();
         }
         private void reloadColorSettings() {
             var s = Settings.Instance;
             foreach (var picker in _colorPickers) {
-                var prop = typeof(Settings).GetProperty((string)picker.Tag);
+                var prop = (PropertyInfo)(picker.Tag);
                 picker.SelectedColor = Color.FromArgb(255, (Color)prop.GetValue(s));
             }
         }

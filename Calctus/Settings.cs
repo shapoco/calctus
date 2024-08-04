@@ -6,6 +6,7 @@ using System.Threading.Tasks;
 using System.Windows.Forms;
 using System.Drawing;
 using System.IO;
+using System.Reflection;
 using Shapoco.Texts;
 using Shapoco.Drawings;
 using Shapoco.Calctus.Model;
@@ -21,24 +22,26 @@ namespace Shapoco.Calctus {
         private const string ColorSettingNamePrefix = "Appearance_Color_";
 
         private static Settings _instance = null;
-        public static readonly Settings Instance = _instance == null ? (_instance = new Settings()) : _instance;
+        public static readonly Settings Instance = _instance == null ? (_instance = new Settings(true)) : _instance;
 
         public static string Filename => Program.DebugMode ? "Settings.Debug.cfg" : "Settings.cfg";
 
-        private Settings() {
-            try {
-                AppDataManager.UseAssemblyPath = File.Exists(PathInInstallDirectory);
+        public Settings(bool loadSettings) {
+            if (loadSettings) {
+                try {
+                    AppDataManager.UseAssemblyPath = File.Exists(PathInInstallDirectory);
 #if DEBUG
-                Console.WriteLine("Setting file found in install directory: \"" + PathInInstallDirectory + "\"");
+                    Console.WriteLine("Setting file found in install directory: \"" + PathInInstallDirectory + "\"");
 #endif
+                }
+                catch { }
+#if DEBUG
+                Console.WriteLine("Setting file path: \"" + AppDataManager.ActiveDataPath + "\"");
+#endif
+                var dic = new Dictionary<string, string>();
+                AppDataManager.LoadPropertiesFromRoamingAppData(this, Filename, dic);
+                migrateOldSettings(dic);
             }
-            catch { }
-#if DEBUG
-            Console.WriteLine("Setting file path: \"" + AppDataManager.ActiveDataPath + "\"");
-#endif
-            var dic = new Dictionary<string, string>();
-            AppDataManager.LoadPropertiesFromRoamingAppData(this, Filename, dic);
-            migrateOldSettings(dic);
         }
 
         private void migrateOldSettings(Dictionary<string, string> dic) {
@@ -150,19 +153,15 @@ namespace Shapoco.Calctus {
             }
         }
 
-        public void RotateColorHue(int delta) {
-            foreach (var prop in ColorProperties.Values) {
-                var color = (Color)prop.GetValue(this);
-                color.ToHsv(out float h, out float s, out float v);
-                prop.SetValue(this, ColorEx.HsvToRgb(h + delta, s, v));
-            }
+        public void RotateColorHue(PropertyInfo prop, int delta) {
+            var color = (Color)prop.GetValue(this);
+            color.ToHsv(out float h, out float s, out float v);
+            prop.SetValue(this, ColorEx.HsvToRgb(h + delta, s, v));
         }
 
-        public void SwapColorRb() {
-            foreach (var prop in ColorProperties.Values) {
-                var color = (Color)prop.GetValue(this);
-                prop.SetValue(this, Color.FromArgb(255, color.B, color.G, color.R));
-            }
+        public void SwapColorRb(PropertyInfo prop) {
+            var color = (Color)prop.GetValue(this);
+            prop.SetValue(this, Color.FromArgb(255, color.B, color.G, color.R));
         }
 
         public string UserConstants { get; set; } = "";
