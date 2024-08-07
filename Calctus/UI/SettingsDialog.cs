@@ -33,7 +33,9 @@ namespace Shapoco.Calctus.UI {
             try {
                 this.Font = new Font("Arial", SystemFonts.DefaultFont.Size);
             }
-            catch { }
+            catch (Exception ex) {
+                Log.Here().W(ex);
+            }
 
             using (var g = this.CreateGraphics()) {
                 var colorTextSize = Size.Ceiling(g.MeasureString("#AAAAAA", this.Font));
@@ -239,7 +241,9 @@ namespace Shapoco.Calctus.UI {
                 Script_Enable.Checked = scriptGroup.Enabled = s.Script_Enable;
                 Script_FolderPath.Text = s.Script_FolderPath;
             }
-            catch { }
+            catch (Exception ex) {
+                Log.Here().W(ex);
+            }
         }
 
         private void setNudValue(NumericUpDown nud, decimal value) {
@@ -323,6 +327,7 @@ namespace Shapoco.Calctus.UI {
                 }
             }
             catch (Exception ex) {
+                Log.Here().E(ex);
                 MessageBox.Show("Failed to move files:\r\n\r\n" + ex.Message, 
                     Application.ProductName, MessageBoxButtons.OK, MessageBoxIcon.Error);
             }
@@ -340,6 +345,7 @@ namespace Shapoco.Calctus.UI {
                     }
                 }
                 catch (Exception ex) {
+                    Log.Here().E(ex);
                     MessageBox.Show("The files were successfully copied, but the original files failed to be deleted.:\r\n\r\n" + ex.Message,
                         Application.ProductName, MessageBoxButtons.OK, MessageBoxIcon.Exclamation);
                 }
@@ -371,6 +377,7 @@ namespace Shapoco.Calctus.UI {
                 System.Diagnostics.Process.Start(path);
             }
             catch (Exception ex) {
+                Log.Here().E(ex);
                 MessageBox.Show(ex.Message, Application.ProductName, MessageBoxButtons.OK, MessageBoxIcon.Error);
             }
         }
@@ -518,6 +525,7 @@ namespace Shapoco.Calctus.UI {
                 System.Diagnostics.Process.Start(Script_FolderPath.Text);
             }
             catch(Exception ex) {
+                Log.Here().E(ex);
                 MessageBox.Show(ex.Message, Application.ProductName, MessageBoxButtons.OK, MessageBoxIcon.Error);
             }
         }

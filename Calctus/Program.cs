@@ -32,9 +32,11 @@ namespace Shapoco.Calctus {
         static void Main(string[] args) {
 #if DEBUG
             if (!DebugMode) {
-                Console.WriteLine("==== DEBUG MODE DISABLED ====");
+                Log.Here().I("==== DEBUG MODE DISABLED ====");
             }
+            Log.StartLogging();
 #endif
+            Log.Here().I(Application.ProductName + " ver." + Application.ProductVersion);
 
             bool cliMode = (args.Length >= 2) && (args[0] == "-c");
             if (cliMode) {
@@ -51,6 +53,7 @@ namespace Shapoco.Calctus {
                 Maths.quad.Test();
                 Maths.QuadMath.Test();
                 Model.Functions.BuiltInFuncLibrary.Instance.DoTest();
+                Model.Values.ApFixedVal.DoTest();
                 DocumentGenerator.GenerateDocumentRst();
                 DocumentGenerator.GenerateDocumentation();
 #endif
@@ -59,6 +62,9 @@ namespace Shapoco.Calctus {
                 Application.Run(new UI.MainForm());
                 Settings.Instance.Save();
             }
+
+            Log.Here().I("Exiting...");
+            Log.EndLogging();
         }
     }
 }

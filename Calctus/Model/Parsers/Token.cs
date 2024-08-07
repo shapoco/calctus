@@ -23,10 +23,10 @@ namespace Shapoco.Calctus.Model.Parsers {
 
         public override string ToString() {
             if (Type == TokenType.Eos) {
-                return "[EOS]";
+                return "[EOS] (" + Position + ")";
             }
             else { 
-                return "'" + Text + "'";
+                return "'" + Text + "' (" + Position + ")";
             }
         }
 

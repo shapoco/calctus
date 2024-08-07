@@ -4,6 +4,7 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 using Shapoco.Maths;
+using Shapoco.Calctus.Model.Formats;
 using Shapoco.Calctus.Model.Values;
 using Shapoco.Calctus.Model.Maths;
 
@@ -35,7 +36,7 @@ namespace Shapoco.Calctus.Model.Functions.BuiltIns {
             "Magnitude of vector `x`",
             (e, a) => {
                 var arrayVal = (ListVal)a[0];
-                var fmt = arrayVal.Length > 0 ? arrayVal[0].FormatFlags : Formats.FormatFlags.Default;
+                var fmt = arrayVal.Length > 0 ? arrayVal[0].FormatHint : FormatHint.Default;
                 return MathEx.Sqrt(arrayVal.AsDecimalArray.Sum(p => p * p)).ToVal(fmt);
             },
             new FuncTest("3,4", "5"),

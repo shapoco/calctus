@@ -22,7 +22,7 @@ namespace Shapoco.Calctus.Model.Functions.BuiltIns {
             (e, a) => {
                 var min = a[0].AsDecimal;
                 var max = a[1].AsDecimal;
-                return (min + (decimal)rng.NextDouble() * (max - min)).ToVal(a[0].FormatFlags);
+                return (min + (decimal)rng.NextDouble() * (max - min)).ToVal(a[0].FormatHint);
             });
 
         public readonly BuiltInFuncDef rand32 = new BuiltInFuncDef("rand32()",

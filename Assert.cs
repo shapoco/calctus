@@ -3,14 +3,18 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
+using System.Reflection;
 using Shapoco.Calctus.Model;
 using Shapoco.Calctus.Model.Maths;
 using Shapoco.Maths;
 
 namespace Shapoco {
     public static class Assert {
+        public delegate MethodBase GetCurrentMethodFunc();
+        public static readonly GetCurrentMethodFunc Here = MethodBase.GetCurrentMethod;
+
         public static void Fail(string msg) {
-            Console.Error.WriteLine("TEST FAILD!! : " + msg);
+            Log.Here().E("TEST FAILD!! : " + msg);
         }
 
         public static void Equal<T>(string subject, T a, T b) {

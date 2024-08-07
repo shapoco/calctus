@@ -15,10 +15,10 @@ namespace Shapoco.Calctus.Model.Functions.BuiltIns {
 
         public readonly BuiltInFuncDef gcd = new BuiltInFuncDef("gcd(array...)",
             "Greatest common divisor of elements of the `array`.",
-            (e, a) => MathEx.Gcd(a.ToDecimalArray()).ToVal(a[0].FormatFlags));
+            (e, a) => MathEx.Gcd(a.ToDecimalArray()).ToVal(a[0].FormatHint));
 
         public readonly BuiltInFuncDef lcm = new BuiltInFuncDef("lcm(array...)",
             "Least common multiple of elements of the `array`.",
-            (e, a) => MathEx.Lcm(a.ToDecimalArray()).ToVal(a[0].FormatFlags));
+            (e, a) => MathEx.Lcm(a.ToDecimalArray()).ToVal(a[0].FormatHint));
     }
 }

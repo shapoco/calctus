@@ -22,9 +22,7 @@ namespace Shapoco.Calctus.Model.Sheets {
             Items.Add(new SheetItem());
         }
         public Sheet(string path) {
-#if DEBUG
-            Console.WriteLine("Loading sheet from: '" + path + "'");
-#endif
+            Log.Here().I("Loading sheet from: '" + path + "'");
             using (var reader = new StreamReader(path)) {
                 while (!reader.EndOfStream) {
                     Items.Add(new SheetItem(reader.ReadLine()));
@@ -33,9 +31,7 @@ namespace Shapoco.Calctus.Model.Sheets {
         }
 
         public void Save(string path) {
-#if DEBUG
-            Console.WriteLine("Saving sheet to: '" + path + "'");
-#endif
+            Log.Here().I("Saving sheet to: '" + path + "'");
             var dir = Path.GetDirectoryName(path);
             if (!Directory.Exists(dir)) {
                 Directory.CreateDirectory(dir);

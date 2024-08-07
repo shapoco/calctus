@@ -10,6 +10,8 @@ using Shapoco.Calctus.Model.Values;
 namespace Shapoco.Calctus.Model.Parsers {
     // todo StringReader に以降
     class StringReaderDep {
+        public const int InvalidPos = int.MinValue / 2;
+
         private readonly string _text;
         private DeprecatedTextPosition _pos;
 

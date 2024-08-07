@@ -26,9 +26,11 @@ namespace Shapoco.Calctus.Model.Expressions {
                 return OnEval(e);
             }
             catch (EvalError ex) {
+                Log.Here().W(ex);
                 throw ex;
             }
             catch (Exception ex) {
+                Log.Here().W(ex);
                 throw new EvalError(e, Token, ex.Message);
             }
         }

@@ -64,7 +64,7 @@ namespace Shapoco.Calctus.Model.Standards {
                     return true;
                 }
                 catch(Exception ex) {
-                    Console.WriteLine("*WARNING: " + nameof(SiPrefix) + "." + nameof(TryParse) + "(): " + ex.Message);
+                    Log.Here().I(ex);
                     return false;
                 }
             }

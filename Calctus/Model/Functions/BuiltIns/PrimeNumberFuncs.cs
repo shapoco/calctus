@@ -23,6 +23,6 @@ namespace Shapoco.Calctus.Model.Functions.BuiltIns {
 
         public readonly BuiltInFuncDef primeFact = new BuiltInFuncDef("primeFact(*x)",
             "Returns prime factors of `x`.",
-            (e, a) => MathEx.PrimeFactors(a[0].AsDecimal).ToVal(a[0].FormatFlags));
+            (e, a) => MathEx.PrimeFactors(a[0].AsDecimal).ToVal(a[0].FormatHint));
     }
 }

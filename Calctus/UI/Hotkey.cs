@@ -61,7 +61,7 @@ namespace Shapoco.Calctus.UI {
                 }
                 if (!success) {
                     //MessageBox.Show("Hotkey register failed.", Application.ProductName, MessageBoxButtons.OK, MessageBoxIcon.Error);
-                    Console.WriteLine("Hotkey register failed.");
+                    Log.Here().E("Hotkey register failed.");
                 }
             }
 

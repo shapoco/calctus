@@ -28,8 +28,11 @@ namespace Shapoco.Calctus.Model.Formats {
             else if (val is bool boolVal) {
                 return ToLiteralString(boolVal);
             }
+            else if (val is apfixed apfixedVal) {
+                return ApFixedToString(apfixedVal, args);
+            }
             else if (val is Frac fracVal) {
-                return fracVal.ToString();
+                return FracToString(fracVal);
             }
             else if (val is Val valVal) {
                 return valVal.ToString(args);
@@ -50,31 +53,30 @@ namespace Shapoco.Calctus.Model.Formats {
 
         public static string DecimalToString(decimal val, ToStringArgs args) {
             var isInteger = val.IsInteger();
-            var fmtStyle = args.Flags.GetStyle();
-            var radix = args.Flags.GetRadix();
+            var fmt = args.Format;
 
-            if (fmtStyle == FormatStyle.WebColor && isInteger && 0 <= val && val <= 0xffffff) {
+            if (fmt.Style == FormatStyle.WebColor && isInteger && 0 <= val && val <= 0xffffff) {
                 return ColorSpace.ToHtmlStyle((int)val);
             }
-            else if (fmtStyle == FormatStyle.Character && isInteger && char.MinValue <= val && val <= char.MaxValue) {
+            else if (fmt.Style == FormatStyle.Character && isInteger && char.MinValue <= val && val <= char.MaxValue) {
                 return CharToCStyleLiteralString((char)val, args.Usage);
             }
-            else if (fmtStyle == FormatStyle.SiPrefixed) {
+            else if (fmt.Style == FormatStyle.SiPrefixed) {
                 return SiPrefix.ToString(val, args);
             }
-            else if (fmtStyle == FormatStyle.KibiPrefixed) {
+            else if (fmt.Style == FormatStyle.BinaryPrefixed) {
                 return BinaryPrefix.ToString(val, args);
             }
-            else if ((radix == Radix.Hexadecimal || radix == Radix.Binary || radix == Radix.Octal) && isInteger) {
+            else if ((fmt.Radix == Radix.Hexadecimal || fmt.Radix == Radix.Binary || fmt.Radix == Radix.Octal) && isInteger) {
                 return DecimalToCStyleBinaryLiteral(val, args, true);
             }
-            else if (fmtStyle == FormatStyle.DateTime) {
+            else if (fmt.Style == FormatStyle.DateTime) {
                 return DateTimeFormat.FormatAsStringLiteral(val, args.Usage.HasFlag(StringUsage.DateTimeQuotationFlag));
             }
-            else if (fmtStyle == FormatStyle.TimeSpan) {
+            else if (fmt.Style == FormatStyle.TimeSpan) {
                 return TimeSpanFormat.FormatAsStringLiteral(val, args.Usage.HasFlag(StringUsage.DateTimeQuotationFlag));
             }
-            else if (fmtStyle == FormatStyle.DayOfWeek && isInteger && 0 <= val && val <= 6) {
+            else if (fmt.Style == FormatStyle.DayOfWeek && isInteger && 0 <= val && val <= 6) {
                 return DecimalToDayOfWeekString(val, args);
             }
             else {
@@ -112,8 +114,8 @@ namespace Shapoco.Calctus.Model.Formats {
         }
 
         public static string DecimalToCStyleBinaryLiteral(decimal fval , ToStringArgs args, bool allowENotation) {
-            var radix = args.Flags.GetRadix();
-            int radixBase = radix.GetBaseNumber();
+            var radix = args.Format.Radix;
+            int radixBase = radix.ToBaseNumber();
 
             var ival = Math.Truncate(fval);
 
@@ -138,7 +140,7 @@ namespace Shapoco.Calctus.Model.Formats {
                     case Radix.Hexadecimal:
                     case Radix.Binary:
                     case Radix.Octal:
-                        return radix.GetCStylePrefix() + Convert.ToString((Int64)ival, radixBase);
+                        return CStyleBinary.GetPrefix(radix) + Convert.ToString((Int64)ival, radixBase);
                     default: throw new NotSupportedException();
                 }
             }
@@ -160,6 +162,43 @@ namespace Shapoco.Calctus.Model.Formats {
             else {
                 return DecimalToCStyleDecimalLiteral(val, args, true);
             }
+        }
+
+        // todo 暫定実装 Formatter.ApFixedToString
+        public static string ApFixedToString(apfixed val, ToStringArgs args) {
+            var radix = args.Format.Radix;
+            if (radix == Radix.Decimal) {
+                // todo Formatter.ApFixedToString() 10進のときの多ビット対応
+                return DecimalToCStyleDecimalLiteral((decimal)val, ToStringArgs.ForLiteral(), true);
+            }
+            else {
+                var sb = new StringBuilder(CStyleBinary.GetPrefix(radix));
+                var radixBase = radix.ToBaseNumber();
+                if (args.Format.Options.HasFlag(FormatOption.ApFixedWithPoint)) {
+                    val.ToBinaryStringWithPoint(radixBase, sb);
+                }
+                else {
+                    val.ToRawBinaryString(radixBase, sb);
+                }
+                sb.Append(FixedPointFormatToString(val.Format));
+                return sb.ToString();
+            }
+        }
+
+        public static string FixedPointFormatToString(FixedPointFormat fpfmt) {
+            if (fpfmt.FracWidth > 0) {
+                return (fpfmt.Signed ? 's' : 'u') + fpfmt.IntWidth.ToString() + '.' + fpfmt.FracWidth.ToString();
+            }
+            else {
+                return (fpfmt.Signed ? 's' : 'u') + fpfmt.IntWidth.ToString();
+            }
+        }
+
+        public static string FracToString(Frac val) {
+            var args = ToStringArgs.ForLiteral();
+            return 
+                DecimalToCStyleDecimalLiteral(val.Nume, args, false) + OpCodes.Frac.GetSymbol() +
+                DecimalToCStyleDecimalLiteral(val.Deno, args, false);
         }
 
         public static string StringToCStyleLiteral(string val, ToStringArgs args) {

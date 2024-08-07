@@ -36,7 +36,7 @@ namespace Shapoco.Calctus.Model.Functions.BuiltIns {
 
         public readonly BuiltInFuncDef dayOfWeek = new BuiltInFuncDef("dayOfWeek(*t)",
             "Returns day of week of datetime, expressed as 0 (Sunday)..6 (Saturday).",
-            (e, a) => ((int)UnixTime.ToLocalTime(a[0].AsDecimal).DayOfWeek).ToRealVal(FormatFlags.DayOfWeek));
+            (e, a) => ((int)UnixTime.ToLocalTime(a[0].AsDecimal).DayOfWeek).ToRealVal(FormatHint.DayOfWeek));
 
         public readonly BuiltInFuncDef dayOfMonth = new BuiltInFuncDef("dayOfMonth(*t)",
             "Returns day component of datetime, expressed as 1..31.",
@@ -83,7 +83,7 @@ namespace Shapoco.Calctus.Model.Functions.BuiltIns {
 
         public readonly BuiltInFuncDef toSeconds = new BuiltInFuncDef("toSeconds(*x)",
             "Converts from epoch time to seconds.",
-            (e, a) => a[0].Format(FormatFlags.Decimal),
+            (e, a) => a[0].Format(FormatHint.Default),
             new FuncTest("#+123.12:34:56.789#", "(((123*24)+12)*60+34)*60+56.789"));
 
         public readonly BuiltInFuncDef fromDays = new BuiltInFuncDef("fromDays(*x)",
@@ -103,7 +103,7 @@ namespace Shapoco.Calctus.Model.Functions.BuiltIns {
 
         public readonly BuiltInFuncDef fromSeconds = new BuiltInFuncDef("fromSeconds(*x)",
             "Converts from seconds to epoch time.",
-            (e, a) => a[0].Format(FormatFlags.TimeSpan),
+            (e, a) => a[0].Format(FormatHint.TimeSpan),
             new FuncTest("123.45", "#+0:02:03.45#"));
     }
 }

@@ -181,13 +181,12 @@ namespace Shapoco.Calctus.UI.Sheets {
 
                     case TokenType.Literal:
                         if (t is LiteralToken lt) {
-                            var fmt = lt.Value.FormatFlags;
-                            var style = fmt.GetStyle();
-                            if (lt.Value is BoolVal || style == FormatStyle.Character) {
+                            var fmt = lt.Value.FormatHint;
+                            if (lt.Value is BoolVal || fmt.Style == FormatStyle.Character) {
                                 // BoolVal
                                 setForeColor(t, s.Appearance_Color_Special_Literals);
                             }
-                            else if (fmt == FormatFlags.WebColor) {
+                            else if (fmt.Style == FormatStyle.WebColor) {
                                 // WebColorの強調表示
                                 var back = Color.FromArgb((0xff << 24) | lt.Value.AsInt);
                                 var gray = ColorEx.GrayScale(back);
@@ -195,7 +194,7 @@ namespace Shapoco.Calctus.UI.Sheets {
                                 setBackColor(t, back);
                                 setForeColor(t, fore);
                             }
-                            else if (lt.Value is RealVal && style != FormatStyle.DateTime && style != FormatStyle.TimeSpan) {
+                            else if ((lt.Value is RealVal || lt.Value is ApFixedVal) && fmt.Style != FormatStyle.DateTime && fmt.Style != FormatStyle.TimeSpan) {
                                 var postfixLen = lt.PostfixLength;
                                 setForeColor(t.Position.Index + t.Text.Length - postfixLen, postfixLen, s.Appearance_Color_SI_Prefix);
                                 //Match m;

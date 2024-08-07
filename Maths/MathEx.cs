@@ -206,9 +206,9 @@ namespace Shapoco.Maths {
         public static decimal Cosh(decimal a) => (decimal)Math.Cosh((double)a);
         public static decimal Tanh(decimal a) => (decimal)Math.Tanh((double)a);
 
-        public static int CDiv(int a, int b) {
-            Assert.ArgInRange(nameof(CDiv), nameof(a), a < 0);
-            Assert.ArgInRange(nameof(CDiv), nameof(b), b < 1);
+        public static int CeilDiv(int a, int b) {
+            Assert.ArgInRange(nameof(CeilDiv), nameof(a), a >= 0);
+            Assert.ArgInRange(nameof(CeilDiv), nameof(b), b >= 1);
             return (a + b - 1) / b;
         }
 

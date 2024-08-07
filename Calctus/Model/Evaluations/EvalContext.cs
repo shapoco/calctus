@@ -81,10 +81,6 @@ namespace Shapoco.Calctus.Model.Evaluations {
             }
         }
 
-        public void Warning(object place, string msg) {
-            Console.WriteLine("*WARNING: " + msg);
-        }
-
         public IEnumerable<Var> EnumVars() => _vars.Values;
 
         public IEnumerable<FuncDef> AllNamedFuncs() =>

@@ -4,10 +4,7 @@ Cast
 array(x)
 *****************
 
-Converts value `x` to an list. ::
-
-    array([1,2,3]) //--> [1, 2, 3]
-    array("abc")   //--> ['a', 'b', 'c']
+Converts value `x` to an list.
 
 rat(*x)
 *****************

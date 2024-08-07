@@ -90,7 +90,7 @@ namespace Shapoco.Calctus.Model.Expressions {
                         var buff = aVal.AsLong;
                         buff &= ~mask;
                         buff |= (bVal.AsLong << iRight) & mask;
-                        aVal = new RealVal(buff, aVal.FormatFlags);
+                        aVal = new RealVal(buff, aVal.FormatHint);
                     }
                     aVarRef.Value = aVal;
                     return bVal;
@@ -108,7 +108,7 @@ namespace Shapoco.Calctus.Model.Expressions {
                 var a = aVal.AsDecimal;
                 var b = bVal.AsDecimal;
                 var step = a < b ? 1 : -1;
-                return MathEx.Range(a, b, step, inclusive).ToVal(aVal.FormatFlags);
+                return MathEx.Range(a, b, step, inclusive).ToVal(aVal.FormatHint);
             }
             else if (OpCode == OpCodes.Frac) {
                 // 分数の生成

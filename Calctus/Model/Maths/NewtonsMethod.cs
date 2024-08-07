@@ -18,7 +18,7 @@ namespace Shapoco.Calctus.Model.Maths {
 
         public static Val Solve(EvalContext e, FuncDef f, Val paramVal0 = null, Val paramVal1 = null) {
             // パラメータの評価
-            var fmt = FormatFlags.Default;
+            var fmt = FormatHint.Default;
 
             // スコープの生成
             var scope = new EvalContext(e);
@@ -62,13 +62,13 @@ namespace Shapoco.Calctus.Model.Maths {
                     }
                     var paramValArray = (Val[])paramVal0.Raw;
                     if (paramValArray.Length > 0) {
-                        fmt = paramValArray[0].FormatFlags;
+                        fmt = paramValArray[0].FormatHint;
                     }
                 }
                 else {
                     // スカラ値で指定された場合
                     inits.Add(paramVal0.AsDecimal);
-                    fmt = paramVal0.FormatFlags;
+                    fmt = paramVal0.FormatHint;
                 }
                 determineHTol(inits, out h, out tol);
             }
@@ -76,10 +76,7 @@ namespace Shapoco.Calctus.Model.Maths {
                 throw new ArgumentException();
             }
 
-#if DEBUG
-            Console.WriteLine("Solve:");
-            Console.WriteLine("  " + inits.Count + " inits, xMin=" + xMin + ", xMax=" + xMax + ", h=" + h + ", tol=" + tol);
-#endif
+            Log.Here().I("Solve:\r\n" + inits.Count + " inits, xMin=" + xMin + ", xMax=" + xMax + ", h=" + h + ", tol=" + tol);
 
             // ニュートン法
             var sols = new List<decimal>();
@@ -92,9 +89,7 @@ namespace Shapoco.Calctus.Model.Maths {
             }
             sols.Sort();
 
-#if DEBUG
-            Console.WriteLine("  " + sols.Count + " raw sols, numMaxIter=" + numMaxIter);
-#endif
+            Log.Here().I(sols.Count + " raw sols, numMaxIter=" + numMaxIter);
 
             // 近接する解をまとめる
             sols = reduceSols(sols, tol);

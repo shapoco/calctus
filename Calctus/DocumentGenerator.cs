@@ -44,9 +44,9 @@ namespace Shapoco.Calctus {
 
 #if DEBUG
         public static void GenerateDocumentRst() {
-            Console.WriteLine("AppDataManager.AssemblyPath = '" + AppDataManager.AssemblyPath + "'");
+            Log.Here().I("AppDataManager.AssemblyPath = '" + AppDataManager.AssemblyPath + "'");
             if (!AppDataManager.AssemblyPath.EndsWith(@"\bin\Debug")) return;
-            Console.WriteLine("Generating embedded function documentation...");
+            Log.Here().I("Generating embedded function documentation...");
 
             var categories = BuiltInFuncLibrary.Instance.Categories.OrderBy(p => p.DocTitle).ToArray();
 
@@ -99,9 +99,9 @@ namespace Shapoco.Calctus {
         }
 
         public static void GenerateDocumentation() {
-            Console.WriteLine("AppDataManager.AssemblyPath = '" + AppDataManager.AssemblyPath + "'");
+            Log.Here().I("AppDataManager.AssemblyPath = '" + AppDataManager.AssemblyPath + "'");
             if (!AppDataManager.AssemblyPath.EndsWith(@"\bin\Debug")) return;
-            Console.WriteLine("Generating embedded function documentation...");
+            Log.Here().I("Generating embedded function documentation...");
 
             var categories = BuiltInFuncLibrary.Instance.Categories.OrderBy(p => p.DocTitle).ToArray();
 

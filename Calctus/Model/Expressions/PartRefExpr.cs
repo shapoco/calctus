@@ -44,7 +44,7 @@ namespace Shapoco.Calctus.Model.Expressions {
                 if (w < 64) {
                     val &= (1L << w) - 1L;
                 }
-                return new RealVal(val, obj.FormatFlags);
+                return new RealVal(val, obj.FormatHint);
             }
         }
     }

@@ -28,8 +28,8 @@ namespace Shapoco.Calctus.Model.Values {
         public abstract bool IsInteger { get; }
         public abstract bool IsSerializable { get; }
 
-        public virtual FormatFlags FormatFlags => FormatFlags.Default;
-        public virtual Val Format(FormatFlags fmt) => this;
+        public virtual FormatHint FormatHint => FormatHint.Default;
+        public virtual Val Format(FormatHint fmt) => this;
 
         // RealVal への変換はフォーマットを確実に引き継ぐため
         // OnAsRealVal() で型変換したあとここで Format() する
@@ -96,17 +96,17 @@ namespace Shapoco.Calctus.Model.Values {
         public virtual Val LogicOr(EvalContext ctx, Val b) => throw new NotSupportedException();
 
         public override string ToString() => ToStringForDisplay();
-        public string ToString(ToStringArgs args) => Formatter.ObjectToString(Raw, new ToStringArgs(args, FormatFlags));
-        public string ToStringForDisplay() => Formatter.ObjectToString(Raw, new ToStringArgs(FormatFlags, new FormatSettings(), StringUsage.ForDisplay));
+        public string ToString(ToStringArgs args) => Formatter.ObjectToString(Raw, new ToStringArgs(args, FormatHint));
+        public string ToStringForDisplay() => Formatter.ObjectToString(Raw, new ToStringArgs(FormatHint, new FormatSettings(), StringUsage.ForDisplay));
         public string ToStringForValue(EvalContext e) {
             if (IsSerializable) {
-                return Formatter.ObjectToString(Raw, ToStringArgs.ForValue(e, FormatFlags));
+                return Formatter.ObjectToString(Raw, ToStringArgs.ForValue(e, FormatHint));
             }
             else {
                 throw new InvalidCastException(this.CalctusTypeName + " cannot be converted to string.");
             }
         }
-        public string ToStringForLiteral() => Formatter.ObjectToString(Raw, ToStringArgs.ForLiteral());
+        public string ToStringForLiteral() => Formatter.ObjectToString(Raw, ToStringArgs.ForLiteral(FormatHint));
 
         public override int GetHashCode() => Raw.GetHashCode();
     }

@@ -44,10 +44,8 @@ namespace Shapoco {
                 lex.AssertEos();
                 return true;
             }
-            catch (Exception e) {
-#if DEBUG
-                Console.WriteLine("*W: " + nameof(FontSettings) + "." + nameof(TryParse) + "() : " + e.Message);
-#endif
+            catch (Exception ex) {
+                Log.Here().W(ex);
                 return false;
             }
         }
@@ -136,8 +134,8 @@ namespace Shapoco {
                 font = new Font(name, size, style);
                 return true;
             }
-            catch {
-                Console.WriteLine("*W: new Font(\"" + name + "\", " + size + ", " + style + ") failed.");
+            catch (Exception ex) {
+                Log.Here().W(ex);
                 font = null;
                 return false;
             }

@@ -13,52 +13,47 @@ namespace Shapoco.Calctus.Model.Values {
         public static readonly RealVal Zero = new RealVal(0);
         public static readonly RealVal One = new RealVal(1);
 
-        public static FormatFlags FormatFrom(Val val) {
-            if (val is RealVal realVal) return realVal.FormatFlags;
-            return FormatFlags.Decimal;
-        }
+        public RealVal(decimal val, FormatHint fmt = null) : base(val, fmt) { }
 
-        public RealVal(decimal val, FormatFlags fmt = FormatFlags.Default) : base(val, fmt) { }
-
-        protected override Val OnFormat(FormatFlags fmt) => new RealVal(_raw, fmt);
+        protected override Val OnFormat(FormatHint fmt) => new RealVal(_raw, fmt);
 
         public override bool IsInteger => _raw.IsInteger();
 
         public override bool IsSerializable => true;
 
         public override Val UnaryPlus(EvalContext e) => this;
-        public override Val ArithInv(EvalContext e) => new RealVal(-_raw, FormatFlags);
-        public override Val BitNot(EvalContext e) => new RealVal(~this.AsLong, FormatFlags);
+        public override Val ArithInv(EvalContext e) => new RealVal(-_raw, FormatHint);
+        public override Val BitNot(EvalContext e) => new RealVal(~this.AsLong, FormatHint);
 
-        public override Val Add(EvalContext e, Val b) => new RealVal(_raw + rawOf(b), FormatFlags);
-        public override Val Sub(EvalContext e, Val b) => new RealVal(_raw - rawOf(b), FormatFlags);
-        public override Val Mul(EvalContext e, Val b) => new RealVal(_raw * rawOf(b), FormatFlags);
-        public override Val Div(EvalContext e, Val b) => new RealVal(_raw / rawOf(b), FormatFlags);
-        public override Val IDiv(EvalContext e, Val b) => new RealVal(Math.Truncate(_raw / rawOf(b)), FormatFlags);
-        public override Val Mod(EvalContext e, Val b) => new RealVal(_raw % rawOf(b), FormatFlags);
+        public override Val Add(EvalContext e, Val b) => new RealVal(_raw + rawOf(b), FormatHint);
+        public override Val Sub(EvalContext e, Val b) => new RealVal(_raw - rawOf(b), FormatHint);
+        public override Val Mul(EvalContext e, Val b) => new RealVal(_raw * rawOf(b), FormatHint);
+        public override Val Div(EvalContext e, Val b) => new RealVal(_raw / rawOf(b), FormatHint);
+        public override Val IDiv(EvalContext e, Val b) => new RealVal(Math.Truncate(_raw / rawOf(b)), FormatHint);
+        public override Val Mod(EvalContext e, Val b) => new RealVal(_raw % rawOf(b), FormatHint);
 
         public override bool Grater(EvalContext ctx, Val b) => _raw > rawOf(b);
         public override bool Equals(EvalContext ctx, Val b) => _raw == rawOf(b);
 
-        public override Val LogicShiftL(EvalContext e, Val b) => new RealVal(this.AsLong << b.AsInt, FormatFlags);
-        public override Val LogicShiftR(EvalContext e, Val b) => new RealVal((UInt64)this.AsLong >> b.AsInt, FormatFlags);
+        public override Val LogicShiftL(EvalContext e, Val b) => new RealVal(this.AsLong << b.AsInt, FormatHint);
+        public override Val LogicShiftR(EvalContext e, Val b) => new RealVal((UInt64)this.AsLong >> b.AsInt, FormatHint);
         public override Val ArithShiftL(EvalContext e, Val b) {
             var a = this.AsLong;
             var sign = a & (1L << 63);
             var lshift = (a << b.AsInt) & 0x7fffffffffffffffL;
-            return new RealVal(sign | lshift, FormatFlags);
+            return new RealVal(sign | lshift, FormatHint);
         }
-        public override Val ArithShiftR(EvalContext e, Val b) => new RealVal(this.AsLong >> b.AsInt, FormatFlags);
+        public override Val ArithShiftR(EvalContext e, Val b) => new RealVal(this.AsLong >> b.AsInt, FormatHint);
 
-        public override Val BitAnd(EvalContext e, Val b) => new RealVal(this.AsLong & b.AsLong, FormatFlags);
-        public override Val BitXor(EvalContext e, Val b) => new RealVal(this.AsLong ^ b.AsLong, FormatFlags);
-        public override Val BitOr(EvalContext e, Val b) => new RealVal(this.AsLong | b.AsLong, FormatFlags);
+        public override Val BitAnd(EvalContext e, Val b) => new RealVal(this.AsLong & b.AsLong, FormatHint);
+        public override Val BitXor(EvalContext e, Val b) => new RealVal(this.AsLong ^ b.AsLong, FormatHint);
+        public override Val BitOr(EvalContext e, Val b) => new RealVal(this.AsLong | b.AsLong, FormatHint);
 
         public override Val LogicNot(EvalContext ctx) => throw new InvalidOperationException();
         public override Val LogicAnd(EvalContext ctx, Val b) => throw new InvalidOperationException();
         public override Val LogicOr(EvalContext ctx, Val b) => throw new InvalidOperationException();
 
-        protected override RealVal OnAsRealVal() => new RealVal((decimal)Raw, FormatFlags);
+        protected override RealVal OnAsRealVal() => new RealVal((decimal)Raw, FormatHint);
         public override decimal AsDecimal => _raw;
         public override Frac AsFrac => (Frac)_raw;
         public override double AsDouble => (double)_raw;

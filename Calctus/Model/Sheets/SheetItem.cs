@@ -52,11 +52,13 @@ namespace Shapoco.Calctus.Model.Sheets {
                 }
                 catch (Exception ex) {
                     // 構文解析エラー
+                    Log.Here().W(ex);
                     SetExprTree(exprText, Expr.Empty, ex);
                 }
             }
             catch (Exception ex) {
                 // 字句解析エラー
+                Log.Here().W(ex);
                 SetExprTree(exprText, Expr.Empty, ex);
             }
         }
@@ -79,6 +81,7 @@ namespace Shapoco.Calctus.Model.Sheets {
                     SetStatus(ExprTree.Eval(e), null, null);
                 }
                 catch (Exception ex) {
+                    Log.Here().W(ex);
                     SetStatus(NullVal.Instance, null, ex);
                 }
             }

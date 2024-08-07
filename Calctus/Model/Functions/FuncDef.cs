@@ -151,7 +151,7 @@ namespace Shapoco.Calctus.Model.Functions {
         private Val OnCallWrap(EvalContext e, Val[] args) {
             var retVal = OnCall(e, args);
             if (Args.FormatSourceArgIndex >= 0) {
-                retVal = retVal.Format(args[Args.FormatSourceArgIndex].FormatFlags);
+                retVal = retVal.Format(args[Args.FormatSourceArgIndex].FormatHint);
             }
             return retVal;
         }
@@ -195,14 +195,16 @@ namespace Shapoco.Calctus.Model.Functions {
         /// <summary>
         /// 関数本体の実装をシンプルにするために引数を Val と real の間で変換する。
         /// </summary>
-        public static Func<EvalContext, Val[], Val> ArgToDecimal(Func<EvalContext, decimal[], decimal> func, FormatFlags fmt = FormatFlags.Default) {
+        public static Func<EvalContext, Val[], Val> ArgToDecimal(Func<EvalContext, decimal[], decimal> func, FormatHint fmt = null) {
+            fmt = fmt.OrDefault();
             return (e, a) => func(e, a.Select(p => p.AsDecimal).ToArray()).ToVal(fmt);
         }
 
         /// <summary>
         /// 関数本体の実装をシンプルにするために引数を Val と long の間で変換する。
         /// </summary>
-        public static Func<EvalContext, Val[], Val> ArgToLong(Func<EvalContext, long[], long> func, FormatFlags fmt = FormatFlags.Default) {
+        public static Func<EvalContext, Val[], Val> ArgToLong(Func<EvalContext, long[], long> func, FormatHint fmt = null) {
+            fmt = fmt.OrDefault();
             return (e, a) => func(e, a.Select(p => p.AsLong).ToArray()).ToRealVal(fmt);
         }
     }

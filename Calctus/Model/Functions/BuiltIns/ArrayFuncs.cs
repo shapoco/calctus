@@ -24,22 +24,22 @@ namespace Shapoco.Calctus.Model.Functions.BuiltIns {
 
         public readonly BuiltInFuncDef range_2 = new BuiltInFuncDef("range(start, stop)",
             "Returns an array consists of sequence of numbers greater than or equal to `start` and less than `stop`.",
-            (e, a) => MathEx.Range(a[0].AsDecimal, a[1].AsDecimal, 0, false).ToVal(a[0].FormatFlags),
+            (e, a) => MathEx.Range(a[0].AsDecimal, a[1].AsDecimal, 0, false).ToVal(a[0].FormatHint),
             new FuncTest("3,9", "[3,4,5,6,7,8]"));
 
         public readonly BuiltInFuncDef range_3 = new BuiltInFuncDef("range(start, stop, step)",
             "Returns an array consists of sequence of numbers greater than or equal to `start` and less than `stop` with common difference `step`.",
-            (e, a) => MathEx.Range(a[0].AsDecimal, a[1].AsDecimal, a[2].AsDecimal, false).ToVal(a[0].FormatFlags),
+            (e, a) => MathEx.Range(a[0].AsDecimal, a[1].AsDecimal, a[2].AsDecimal, false).ToVal(a[0].FormatHint),
             new FuncTest("3,9,2", "[3,5,7]"));
 
         public readonly BuiltInFuncDef rangeInclusive_2 = new BuiltInFuncDef("rangeInclusive(start, stop)",
             "Returns an array consists of sequence of numbers greater than or equal to `start` and less than or equal to `stop`.",
-            (e, a) => MathEx.Range(a[0].AsDecimal, a[1].AsDecimal, 0, true).ToVal(a[0].FormatFlags),
+            (e, a) => MathEx.Range(a[0].AsDecimal, a[1].AsDecimal, 0, true).ToVal(a[0].FormatHint),
             new FuncTest("3,9", "[3,4,5,6,7,8,9]"));
 
         public readonly BuiltInFuncDef rangeInclusive_3 = new BuiltInFuncDef("rangeInclusive(start, stop, step)",
             "Returns an array consists of sequence of numbers greater than or equal to `start` and less than or equal to `stop` with common difference `step`.",
-            (e, a) => MathEx.Range(a[0].AsDecimal, a[1].AsDecimal, a[2].AsDecimal, true).ToVal(a[0].FormatFlags),
+            (e, a) => MathEx.Range(a[0].AsDecimal, a[1].AsDecimal, a[2].AsDecimal, true).ToVal(a[0].FormatHint),
             new FuncTest("3,9,2", "[3,5,7,9]"));
 
         public readonly BuiltInFuncDef arrayComp = new BuiltInFuncDef("arrayComp(array0, array1)",

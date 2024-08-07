@@ -28,6 +28,6 @@ namespace Shapoco.Calctus.Model.Functions.BuiltIns {
 
         public readonly BuiltInFuncDef esRatio = new BuiltInFuncDef("esRatio(series, *x)",
             "Two E-series resistor values that provide the closest value to the voltage divider ratio `x` (`series`=3, 6, 12, 24, 48, 96, or 192).",
-            (e, a) => PreferredNumbers.FindSplitPair(ESeries.GetSeries(a[0].AsInt), a[1].AsDecimal).ToVal(a[1].FormatFlags));
+            (e, a) => PreferredNumbers.FindSplitPair(ESeries.GetSeries(a[0].AsInt), a[1].AsDecimal).ToVal(a[1].FormatHint));
     }
 }

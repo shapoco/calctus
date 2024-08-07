@@ -11,63 +11,55 @@ using Shapoco.Calctus.Model.Evaluations;
 namespace Shapoco.Calctus.Model.Values {
     static class ValExtensions {
         public static BoolVal ToVal(this bool val) => BoolVal.From(val);
-        public static RealVal ToVal(this decimal val, FormatFlags fmt = FormatFlags.Default) => new RealVal(val, fmt);
+        public static RealVal ToVal(this decimal val, FormatHint fmt = null) => new RealVal(val, fmt.OrDefault());
         public static Val ToVal(this Frac val) => FracVal.Normalize(val);
         public static StrVal ToVal(this string val) => new StrVal(val);
         public static RealVal ToVal(this DayOfWeek val) => (RealVal)DateTimeVal.DayOfWeekList[(int)val];
 
         public static ListVal ToVal(this Val[] val) => new ListVal(val);
-        public static ListVal ToVal(this decimal[] val, FormatFlags fmt = FormatFlags.Default) => new ListVal(val.ToValArray(fmt));
-        public static ListVal ToVal(this byte[] val, FormatFlags fmt = FormatFlags.Hexadecimal) => new ListVal(val.ToValArray(fmt));
-        public static ListVal ToVal(this int[] val, FormatFlags fmt = FormatFlags.Default) => new ListVal(val.ToValArray(fmt));
-        public static ListVal ToVal(this long[] val, FormatFlags fmt = FormatFlags.Default) => new ListVal(val.ToValArray(fmt));
+        public static ListVal ToVal(this decimal[] val, FormatHint fmt = null) => new ListVal(val.ToValArray(fmt.OrDefault()));
+        public static ListVal ToVal(this byte[] val, FormatHint fmt = null) => new ListVal(val.ToValArray(fmt.OrDefault(FormatHint.Hexadecimal)));
+        public static ListVal ToVal(this int[] val, FormatHint fmt = null) => new ListVal(val.ToValArray(fmt.OrDefault()));
+        public static ListVal ToVal(this long[] val, FormatHint fmt = null) => new ListVal(val.ToValArray(fmt.OrDefault()));
         public static ListVal ToVal(this string[] val) => new ListVal(val.ToValArray());
 
-        public static RealVal ToRealVal(this int val, FormatFlags fmt = FormatFlags.Default) => new RealVal(val, fmt);
-        public static RealVal ToRealVal(this long val, FormatFlags fmt = FormatFlags.Default) => new RealVal(val, fmt);
-        public static RealVal ToRealVal(this char val, FormatFlags fmt = FormatFlags.Character) => new RealVal(val, fmt);
+        public static RealVal ToRealVal(this int val, FormatHint fmt = null) => new RealVal(val, fmt.OrDefault());
+        public static RealVal ToRealVal(this long val, FormatHint fmt = null) => new RealVal(val, fmt.OrDefault());
+        public static RealVal ToRealVal(this char val, FormatHint fmt = null) => new RealVal(val, fmt.OrDefault(FormatHint.Character));
 
         // todo 廃止: ToIntVal
-        public static RealVal ToIntVal(this decimal val) => new RealVal(val, FormatFlags.Decimal);
-        public static RealVal ToIntVal(this int val) => new RealVal(val, FormatFlags.Decimal);
-        public static RealVal ToIntVal(this long val) => new RealVal(val, FormatFlags.Decimal);
-        public static RealVal ToIntVal(this char val) => new RealVal(val, FormatFlags.Decimal);
+        public static RealVal ToIntVal(this decimal val) => new RealVal(val, FormatHint.Default);
+        public static RealVal ToIntVal(this int val) => new RealVal(val, FormatHint.Default);
+        public static RealVal ToIntVal(this long val) => new RealVal(val, FormatHint.Default);
+        public static RealVal ToIntVal(this char val) => new RealVal(val, FormatHint.Default);
 
         // todo 廃止: ToHexVal
-        public static RealVal ToHexVal(this decimal val) => new RealVal(val, FormatFlags.Hexadecimal);
-        public static RealVal ToHexVal(this int val) => new RealVal(val, FormatFlags.Hexadecimal);
-        public static RealVal ToHexVal(this long val) => new RealVal(val, FormatFlags.Hexadecimal);
-        public static RealVal ToHexVal(this char val) => new RealVal(val, FormatFlags.Character);
+        public static RealVal ToHexVal(this decimal val) => new RealVal(val, FormatHint.Hexadecimal);
+        public static RealVal ToHexVal(this int val) => new RealVal(val, FormatHint.Hexadecimal);
+        public static RealVal ToHexVal(this long val) => new RealVal(val, FormatHint.Hexadecimal);
+        public static RealVal ToHexVal(this char val) => new RealVal(val, FormatHint.Character);
 
         // todo 廃止: ToCharVal
-        public static RealVal ToCharVal(this decimal val) => new RealVal(val, FormatFlags.Character);
-        public static RealVal ToCharVal(this int val) => new RealVal(val, FormatFlags.Character);
-        public static RealVal ToCharVal(this long val) => new RealVal(val, FormatFlags.Character);
-        public static RealVal ToCharVal(this char val) => new RealVal(val, FormatFlags.Character);
+        public static RealVal ToCharVal(this decimal val) => new RealVal(val, FormatHint.Character);
+        public static RealVal ToCharVal(this int val) => new RealVal(val, FormatHint.Character);
+        public static RealVal ToCharVal(this long val) => new RealVal(val, FormatHint.Character);
+        public static RealVal ToCharVal(this char val) => new RealVal(val, FormatHint.Character);
 
-        public static RealVal ToDateTimeVal(this decimal val) => new RealVal(val, FormatFlags.DateTime);
-        public static RealVal ToDateTimeVal(this int val) => new RealVal(val, FormatFlags.DateTime);
-        public static RealVal ToDateTimeVal(this long val) => new RealVal(val, FormatFlags.DateTime);
+        public static RealVal ToDateTimeVal(this decimal val) => new RealVal(val, FormatHint.DateTime);
+        public static RealVal ToDateTimeVal(this int val) => new RealVal(val, FormatHint.DateTime);
+        public static RealVal ToDateTimeVal(this long val) => new RealVal(val, FormatHint.DateTime);
 
-        public static RealVal ToTimeSpanVal(this decimal val) => new RealVal(val, FormatFlags.TimeSpan);
-        public static RealVal ToTimeSpanVal(this int val) => new RealVal(val, FormatFlags.TimeSpan);
-        public static RealVal ToTimeSpanVal(this long val) => new RealVal(val, FormatFlags.TimeSpan);
+        public static RealVal ToTimeSpanVal(this decimal val) => new RealVal(val, FormatHint.TimeSpan);
+        public static RealVal ToTimeSpanVal(this int val) => new RealVal(val, FormatHint.TimeSpan);
+        public static RealVal ToTimeSpanVal(this long val) => new RealVal(val, FormatHint.TimeSpan);
 
         // todo 廃止: ToColorVal
-        public static RealVal ToColorVal(this decimal val) => new RealVal(val, FormatFlags.WebColor);
-        public static RealVal ToColorVal(this int val) => new RealVal(val, FormatFlags.WebColor);
-        public static RealVal ToColorVal(this long val) => new RealVal(val, FormatFlags.WebColor);
+        public static RealVal ToColorVal(this decimal val) => new RealVal(val, FormatHint.WebColor);
+        public static RealVal ToColorVal(this int val) => new RealVal(val, FormatHint.WebColor);
+        public static RealVal ToColorVal(this long val) => new RealVal(val, FormatHint.WebColor);
 
-        public static Val[] ToValArray(this decimal[] val, FormatFlags fmt = FormatFlags.Default) {
-            ListVal.CheckArrayLength(val.Length);
-            var array = new Val[val.Length];
-            for(int i = 0; i < val.Length; i++) {
-                array[i] = new RealVal(val[i], fmt);
-            }
-            return array;
-        }
-
-        public static Val[] ToValArray(this char[] val, FormatFlags fmt = FormatFlags.Character) {
+        public static Val[] ToValArray(this decimal[] val, FormatHint fmt = null) {
+            fmt = fmt.OrDefault();
             ListVal.CheckArrayLength(val.Length);
             var array = new Val[val.Length];
             for (int i = 0; i < val.Length; i++) {
@@ -76,7 +68,8 @@ namespace Shapoco.Calctus.Model.Values {
             return array;
         }
 
-        public static Val[] ToValArray(this byte[] val, FormatFlags fmt = FormatFlags.Hexadecimal) {
+        public static Val[] ToValArray(this char[] val, FormatHint fmt = null) {
+            fmt = fmt.OrDefault(FormatHint.Character);
             ListVal.CheckArrayLength(val.Length);
             var array = new Val[val.Length];
             for (int i = 0; i < val.Length; i++) {
@@ -85,7 +78,8 @@ namespace Shapoco.Calctus.Model.Values {
             return array;
         }
 
-        public static Val[] ToValArray(this int[] val, FormatFlags fmt = FormatFlags.Default) {
+        public static Val[] ToValArray(this byte[] val, FormatHint fmt = null) {
+            fmt = fmt.OrDefault(FormatHint.Hexadecimal);
             ListVal.CheckArrayLength(val.Length);
             var array = new Val[val.Length];
             for (int i = 0; i < val.Length; i++) {
@@ -94,7 +88,18 @@ namespace Shapoco.Calctus.Model.Values {
             return array;
         }
 
-        public static Val[] ToValArray(this long[] val, FormatFlags fmt = FormatFlags.Default) {
+        public static Val[] ToValArray(this int[] val, FormatHint fmt = null) {
+            fmt = fmt.OrDefault();
+            ListVal.CheckArrayLength(val.Length);
+            var array = new Val[val.Length];
+            for (int i = 0; i < val.Length; i++) {
+                array[i] = new RealVal(val[i], fmt);
+            }
+            return array;
+        }
+
+        public static Val[] ToValArray(this long[] val, FormatHint fmt = null) {
+            fmt = fmt.OrDefault();
             ListVal.CheckArrayLength(val.Length);
             var array = new Val[val.Length];
             for (int i = 0; i < val.Length; i++) {

@@ -68,7 +68,7 @@ namespace Shapoco.Calctus.Model.Parsers {
                     return new Token(TokenType.Eos, Position, null);
                 }
                 else {
-                    throw new LexerError(Position, "Internal error: Parser overrun");
+                    throw Log.Here().E(new LexerError(Position, "Internal error: Parser overrun"));
                 }
             }
 
@@ -93,7 +93,7 @@ namespace Shapoco.Calctus.Model.Parsers {
                 return tok;
             }
 
-            throw new LexerError(Position, "Unknown token starts with " + CStyleEscaping.EscapeAndQuote((char)_sr.Peek()));
+            throw Log.Here().E(new LexerError(Position, "Unknown token starts with " + CStyleEscaping.EscapeAndQuote((char)_sr.Peek())));
         }
 
         private bool readIfNumericLiteral(out Token tok) {
@@ -152,7 +152,7 @@ namespace Shapoco.Calctus.Model.Parsers {
             else if (readIfId(out string postfix)) {
                 if (postfix.Length == 1 && SiPrefix.TryCharToExp(postfix[0], out int siExp)) {
                     val *= MathEx.Pow10(siExp * 3);
-                    return _sr.FinishToken(TokenType.Literal, new RealVal(val, FormatFlags.SiPrefixed), postfix.Length);
+                    return _sr.FinishToken(TokenType.Literal, new RealVal(val, FormatHint.SiPrefixed), postfix.Length);
                 }
                 else if (postfix.Length == 2 && BinaryPrefix.TryCharToExp(postfix[0], out int kibiExp) && postfix[1] == 'i') {
                     if (kibiExp >= 0) {
@@ -161,10 +161,10 @@ namespace Shapoco.Calctus.Model.Parsers {
                     else {
                         val /= (1L << (-kibiExp * 10));
                     }
-                    return _sr.FinishToken(TokenType.Literal, new RealVal(val, FormatFlags.BinaryPrefixed), postfix.Length);
+                    return _sr.FinishToken(TokenType.Literal, new RealVal(val, FormatHint.BinaryPrefixed), postfix.Length);
                 }
                 else {
-                    throw new LexerError(postfixPos, _sr.Position.Index - postfixPos.Index, "Invalid postfix: " + CStyleEscaping.EscapeAndQuote(postfix));
+                    throw Log.Here().E(new LexerError(postfixPos, _sr.Position.Index - postfixPos.Index, "Invalid postfix: " + CStyleEscaping.EscapeAndQuote(postfix)));
                 }
             }
             else {
@@ -174,16 +174,62 @@ namespace Shapoco.Calctus.Model.Parsers {
 
         // 0x、0b、0o の続き
         private Token hexBinOctLiteralFollowing(Radix radix) {
-            var dec = NumberLexer.Expect(_sr, radix, true).ToDecimal(radix + " value", 0, ulong.MaxValue);
-            FormatFlags fmt;
-            switch (radix) {
-                case Radix.Hexadecimal: fmt = FormatFlags.Hexadecimal; break;
-                case Radix.Binary: fmt = FormatFlags.Binary; break;
-                case Radix.Octal: fmt = FormatFlags.Octal; break;
-                default: throw new NotImplementedException("Bad radix: " + radix);
+            var intDitits = NumberLexer.Expect(_sr, radix, true);
+
+            if (_sr.ReadIf('.')) {
+                return apfixedLiteralFollowing(radix, intDitits);
             }
-            if (dec > long.MaxValue) dec -= ((decimal)0x100000000) * ((decimal)0x100000000);
-            return _sr.FinishToken(TokenType.Literal, new RealVal(dec, fmt));
+            else if (tryEatApfixedFormat(out FixedPointFormat fixedFmt, out int postfixStart)) {
+                return apfixedRawLiteralFollowing(postfixStart, radix, intDitits, fixedFmt);
+            }
+
+            // todo バイナリ表現の最大値の検討 Lexer.hexBinOctLiteralFollowing()
+            var dec = intDitits.ToDecimal(radix + " value", 0, ulong.MaxValue);
+            if (dec > long.MaxValue) dec -= ((decimal)(1 << 32)) * ((decimal)(1 << 32));
+            return _sr.FinishToken(TokenType.Literal, new RealVal(dec, FormatHint.From(FormatStyle.Default, radix)));
+        }
+
+        private FixedPointFormat eatApfixedFormat() {
+            if (tryEatApfixedFormat(out FixedPointFormat fixedFmt, out int startPos)) return fixedFmt;
+            throw Log.Here().E(_sr.ExpectFailed("ApFixed format"));
+        }
+
+        private bool tryEatApfixedFormat(out FixedPointFormat fixedFmt, out int startPos) {
+            bool signed;
+            startPos = _sr.Position.Index;
+            if (_sr.ReadIf('u')) signed = false;
+            else if (_sr.ReadIf('s')) signed = true;
+            else {
+                startPos = StringReaderDep.InvalidPos;
+                fixedFmt = FixedPointFormat.Empty;
+                return false;
+            }
+
+            int iw = NumberLexer.Expect(_sr, Radix.Decimal, true).ToInt();
+            int fw = 0;
+            if (_sr.ReadIf('.')) {
+                fw = NumberLexer.Expect(_sr, Radix.Decimal, true).ToInt();
+            }
+
+            fixedFmt = new FixedPointFormat(signed, iw + fw, fw);
+            return true;
+        }
+
+        private Token apfixedLiteralFollowing(Radix radix, NumberSequence intDigits) {
+            var fracDigits = NumberLexer.Expect(_sr, radix, true);
+            var postfixStart = _sr.Position.Index;
+            var fixedFmt = eatApfixedFormat();
+            var raw = apfixed.FromBinaryDigits(
+                radix.ToBaseNumber(), fixedFmt, intDigits.ToByteArray(), fracDigits.ToByteArray());
+            var val = new ApFixedVal(raw, FormatHint.From(FormatStyle.Default, radix, FormatOption.ApFixedWithPoint));
+            return _sr.FinishToken(TokenType.Literal, val, _sr.Position.Index - postfixStart);
+        }
+
+        private Token apfixedRawLiteralFollowing(int postfixStart, Radix radix, NumberSequence digits, FixedPointFormat fixedFmt) {
+            var raw = apfixed.FromBinaryDigits(
+                radix.ToBaseNumber(), fixedFmt, digits.ToByteArray());
+            var val = new ApFixedVal(raw, FormatHint.From(FormatStyle.Default, radix));
+            return _sr.FinishToken(TokenType.Literal, val, _sr.Position.Index - postfixStart);
         }
 
         // 識別子またはキーワード
@@ -266,7 +312,7 @@ namespace Shapoco.Calctus.Model.Parsers {
             if (_sr.ReadIf('\'')) {
                 char c = expectStringChar();
                 _sr.Expect('\'');
-                token = _sr.FinishToken(TokenType.Literal, new RealVal(c, FormatFlags.Character));
+                token = _sr.FinishToken(TokenType.Literal, new RealVal(c, FormatHint.Character));
                 return true;
             }
             else {
@@ -306,7 +352,7 @@ namespace Shapoco.Calctus.Model.Parsers {
                         code.Append(NumberLexer.ExpectChar(_sr, Radix.Hexadecimal));
                         return (char)code.ToInt();
                     default:
-                        throw new LexerError(_sr.TokenPosition, "Unrecognized escaped char: " + CStyleEscaping.EscapeAndQuote(c));
+                        throw Log.Here().E(new LexerError(_sr.TokenPosition, "Unrecognized escaped char: " + CStyleEscaping.EscapeAndQuote(c)));
                 }
             }
             else {
@@ -375,15 +421,15 @@ namespace Shapoco.Calctus.Model.Parsers {
                         ((col & 0xf0) << 8) | ((col & 0xf0) << 4) |
                         ((col & 0xf) << 4) | (col & 0xf);
                 }
-                return _sr.FinishToken(TokenType.Literal, new RealVal(col, FormatFlags.WebColor));
+                return _sr.FinishToken(TokenType.Literal, new RealVal(col, FormatHint.WebColor));
             }
             else {
-                throw _sr.InvalidToken();
+                throw Log.Here().E(_sr.InvalidToken());
             }
 
             if (readIfSign(out int sign)) {
                 // todo readDateTimeFollowing() タイムゾーン対応
-                throw new NotImplementedException();
+                throw Log.Here().E(new NotImplementedException());
             }
             _sr.Expect('#');
 
@@ -400,7 +446,7 @@ namespace Shapoco.Calctus.Model.Parsers {
                 unixTime += t;
             }
 
-            return _sr.FinishToken(TokenType.Literal, new RealVal(unixTime, FormatFlags.DateTime));
+            return _sr.FinishToken(TokenType.Literal, new RealVal(unixTime, FormatHint.DateTime));
         }
 
         private decimal expectedTime() {
@@ -436,7 +482,7 @@ namespace Shapoco.Calctus.Model.Parsers {
             _sr.Expect('#');
 
             t *= sign;
-            return _sr.FinishToken(TokenType.Literal, new RealVal(t, FormatFlags.TimeSpan));
+            return _sr.FinishToken(TokenType.Literal, new RealVal(t, FormatHint.TimeSpan));
         }
 
         // 分、秒
@@ -490,7 +536,8 @@ namespace Shapoco.Calctus.Model.Parsers {
                 symbols = list.ToArray();
                 return symbols.Length > 0;
             }
-            catch {
+            catch (Exception ex) {
+                Log.Here().I(ex);
                 symbols = null;
                 return false;
             }
@@ -498,14 +545,6 @@ namespace Shapoco.Calctus.Model.Parsers {
 
         public static bool IsFirstIdChar(char c) => char.IsLetter(c) || c == '_';
         public static bool IsFollowingIdChar(char c) => char.IsLetter(c) || char.IsDigit(c) || c == '_';
-
-        public static void Test(string exprStr) {
-            Lexer lex = new Lexer(exprStr);
-            while (!lex.Eos) {
-                Console.Write("'" + lex.Pop().Text + "'\t");
-            }
-            Console.WriteLine();
-        }
 
     }
 }

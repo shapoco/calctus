@@ -221,9 +221,7 @@ namespace Shapoco.Calctus.UI.Sheets {
             _layoutValidated = false;
             if (deep) _deepRelayout = true;
             Invalidate();
-#if DEBUG
-            Console.WriteLine("Layout Invalidated");
-#endif
+            Log.Here().I("Layout Invalidated");
         }
 
         public void ItemMoveUp() {
@@ -668,7 +666,7 @@ namespace Shapoco.Calctus.UI.Sheets {
             if (index < 0 || _sheet.Items.Count <= index) return null;
 
             // 式が演算子のみで構成されている場合は RPN操作とみなす
-            if (!Model.Parsers.Lexer.TryGetRpnSymbols(_sheet.Items[index].ExprText, out Token[] symbols)) {
+            if (!Lexer.TryGetRpnSymbols(_sheet.Items[index].ExprText, out Token[] symbols)) {
                 return null;
             }
 
@@ -831,9 +829,7 @@ namespace Shapoco.Calctus.UI.Sheets {
 
                 scrollTo(_focusedIndex);
             }
-#if DEBUG
-            Console.WriteLine("SelectedIndex = " + _focusedIndex);
-#endif
+            Log.Here().T("SelectedIndex = " + _focusedIndex);
         }
 
         // 指定の ViewItem のインデックスを返す
@@ -915,9 +911,9 @@ namespace Shapoco.Calctus.UI.Sheets {
         private void validateLayout(Graphics g) {
             if (_sheet == null) return;
             if (_layoutValidated) return;
-#if DEBUG
-            Console.WriteLine("Relayout");
-#endif
+            
+            Log.Here().T("Relayout");
+            
             if (_deepRelayout) {
                 foreach (var noteItem in _sheet.Items) {
                     ((SheetViewItem)noteItem.Tag).RelayoutText();
@@ -995,10 +991,10 @@ namespace Shapoco.Calctus.UI.Sheets {
         private void processRecalcRequest() {
             if (_sheet == null) return;
             if (!_recalcRequested) return;
-#if DEBUG
+
             var sw = new System.Diagnostics.Stopwatch();
             sw.Start();
-#endif
+
             var ctx = _sheet.Run();
             ctx.Undef(Sheet.LastAnsId, true);
 
@@ -1028,10 +1024,9 @@ namespace Shapoco.Calctus.UI.Sheets {
 
             // グラフ描画リクエストの処理
             GraphForm.RequestPlot(_sheet, ctx.PlotCalls.ToArray());
-#if DEBUG
+
             sw.Stop();
-            Console.WriteLine("Recalc " + sw.ElapsedMilliseconds + "ms");
-#endif
+            Log.Here().I("Recalc " + sw.ElapsedMilliseconds + "ms");
         }
 
     }

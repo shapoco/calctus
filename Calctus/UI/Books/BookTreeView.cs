@@ -51,7 +51,7 @@ namespace Shapoco.Calctus.UI.Books {
                 Samples = new SampleBook();
                 this.Nodes.Add(Samples);
                 Samples.Expand();
-                Console.WriteLine("Sample book directory: '" + Samples.DirectoryPath + "'");
+                Log.Here().I("Sample book directory: '" + Samples.DirectoryPath + "'");
             }
             _sidePaneContextMenu.Items.AddRange(new ToolStripItem[] {
                 _copyToNotebookButton,
@@ -288,9 +288,7 @@ namespace Shapoco.Calctus.UI.Books {
         }
 
         public void RequestScanFiles() {
-#if DEBUG
-            Console.WriteLine("File scan requested.");
-#endif
+            Log.Here().I("File scan requested.");
             _fileScanTimer.Stop();
             _fileScanTimer.Interval = 500;
             _fileScanTimer.Start();
@@ -306,7 +304,7 @@ namespace Shapoco.Calctus.UI.Books {
                 Samples.ScanFiles();
             }
             catch (Exception ex) {
-                Console.WriteLine("File scan failed: " + ex.Message);
+                Log.Here().E("File scan failed: " + ex.Message);
             }
             _suppressSelectedChange = false;
             if (selectedNode != null && selectedNode.TreeView == null) {

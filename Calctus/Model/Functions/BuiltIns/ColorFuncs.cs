@@ -19,7 +19,7 @@ namespace Shapoco.Calctus.Model.Functions.BuiltIns {
 
         public readonly BuiltInFuncDef rgb_1 = new BuiltInFuncDef("rgb(*rgb)",
             "Converts the `rgb` to web-color representation.",
-            (e, a) => a[0].Format(FormatFlags.WebColor));
+            (e, a) => a[0].Format(FormatHint.WebColor));
 
         public readonly BuiltInFuncDef hsv2rgb = new BuiltInFuncDef("hsv2rgb(h, s, v)",
             "Converts from H, S, V to 24 bit RGB color value.",

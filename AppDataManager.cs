@@ -125,7 +125,7 @@ namespace Shapoco {
                     }
                 }
                 catch (Exception ex) {
-                    Console.Error.WriteLine(ex);
+                    Log.Here().E(ex);
                 }
             }
         }

@@ -26,11 +26,11 @@ namespace Shapoco.Calctus.Model.Functions.BuiltIns {
 
         public readonly BuiltInFuncDef unpack_2 = new BuiltInFuncDef("unpack(array, x)",
             "Divide the value of `x` into `n` elements of `b` bit width.",
-            (e, a) => LongMath.Unpack(a[0].AsIntArray, a[1].AsLong).ToVal(a[1].FormatFlags));
+            (e, a) => LongMath.Unpack(a[0].AsIntArray, a[1].AsLong).ToVal(a[1].FormatHint));
 
         public readonly BuiltInFuncDef unpack_3 = new BuiltInFuncDef("unpack(b, n, x)",
             "Separate the value of `x` into `n` elements of `b` bit width.",
-            (e, a) => LongMath.Unpack(a[0].AsInt, a[1].AsInt, a[2].AsLong).ToVal(a[2].FormatFlags));
+            (e, a) => LongMath.Unpack(a[0].AsInt, a[1].AsInt, a[2].AsLong).ToVal(a[2].FormatHint));
 
         public readonly BuiltInFuncDef swapNib = new BuiltInFuncDef("swapNib(*x@)",
             "Swaps the nibble of each byte of `x`.",

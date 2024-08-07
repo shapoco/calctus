@@ -74,7 +74,7 @@ namespace Shapoco.Windows {
                             _eventTimer.Start();
                         }
                         catch (Exception ex) {
-                            Console.WriteLine("*ERROR: WndProc:" + ex.ToString());
+                            Log.Here().E(ex);
                         }
                     }));
                     if (_nextHandle != IntPtr.Zero) {

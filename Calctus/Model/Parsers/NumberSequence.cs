@@ -34,7 +34,7 @@ namespace Shapoco.Calctus.Model.Parsers {
         }
 
         public decimal ToDecimal(string label = "Number", decimal min = 0, decimal max = decimal.MaxValue) {
-            int radixNum = Radix.GetBaseNumber();
+            int radixNum = Radix.ToBaseNumber();
             decimal result = 0;
             for (int i = 0; i < _buf.Count; i++) {
                 int n = _buf[i];
@@ -57,7 +57,7 @@ namespace Shapoco.Calctus.Model.Parsers {
         }
 
         public decimal ToFraction() {
-            int radixNum = Radix.GetBaseNumber();
+            int radixNum = Radix.ToBaseNumber();
             decimal result = 0;
             for (int i = _buf.Count - 1; i >= 0; i--) {
                 int n = _buf[i];
@@ -69,5 +69,7 @@ namespace Shapoco.Calctus.Model.Parsers {
             }
             return result;
         }
+
+        public byte[] ToByteArray() => _buf.Select(p => (byte)p).ToArray();
     }
 }

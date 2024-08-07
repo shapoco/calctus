@@ -60,6 +60,7 @@
     <Compile Include="Calctus\BasicExtensions.cs" />
     <Compile Include="Calctus\DocumentGenerator.cs" />
     <Compile Include="Calctus\ExprTest.cs" />
+    <Compile Include="Calctus\Model\Formats\FormatHint.cs" />
     <Compile Include="Calctus\Model\Formats\NumericFormat.cs" />
     <Compile Include="Calctus\Model\Formats\ToStringArgs.cs" />
     <Compile Include="Calctus\Model\Functions\ArgDef.cs" />
@@ -101,10 +102,18 @@
     <Compile Include="Calctus\Model\Functions\BuiltIns\Sum_AverageFuncs.cs" />
     <Compile Include="Calctus\Model\Functions\BuiltIns\TrigonometricFuncs.cs" />
     <Compile Include="Calctus\Model\Functions\FuncTest.cs" />
+    <Compile Include="Calctus\Model\Values\ApFixedVal.cs" />
     <Compile Include="Calctus\UI\ColorPickerBox.cs">
       <SubType>Component</SubType>
     </Compile>
     <Compile Include="IParsable.cs" />
+    <Compile Include="Log.cs" />
+    <Compile Include="Maths\BitArrays\BitScanner.cs" />
+    <Compile Include="Maths\FixedPointFormat.cs" />
+    <Compile Include="Maths\BitArrays\BitArray.cs" />
+    <Compile Include="Maths\BitArrays\BitArrayEx.cs" />
+    <Compile Include="Texts\CStyleBinary.cs" />
+    <Compile Include="Types.cs" />
     <Compile Include="Texts\CStyleEscaping.cs" />
     <Compile Include="Texts\SimpleLexer.cs" />
     <Compile Include="Calctus\TestResult.cs" />
@@ -150,7 +159,7 @@
     <Compile Include="Calctus\Model\Values\ScalarVal.cs" />
     <Compile Include="Calctus\Model\Values\StrVal.cs" />
     <Compile Include="Maths\ufixed113.cs" />
-    <Compile Include="Maths\Frac.cs" />
+    <Compile Include="Maths\frac.cs" />
     <Compile Include="Calctus\Model\Values\FracVal.cs" />
     <Compile Include="Calctus\CalctusError.cs" />
     <Compile Include="Calctus\Model\Evaluations\EvalContext.cs" />

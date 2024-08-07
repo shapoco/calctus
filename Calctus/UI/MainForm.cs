@@ -136,7 +136,7 @@ namespace Shapoco.Calctus.UI {
             if (Test.NumErrors != 0 || Test.NumWarnings != 0 || Test.NumUntested != 0) {
                 testResultLabel.Text = Test.NumSuccess + " Success";
                 if (Test.NumErrors > 0) {
-                    testResultLabel.Text += ", " + Test.NumErrors + " Errors";
+                    testResultLabel.Text += ", " + Test.NumErrors + " Failed";
                 }
                 if (Test.NumWarnings > 0) {
                     testResultLabel.Text += ", " + Test.NumWarnings + " Warnings";
@@ -166,6 +166,8 @@ namespace Shapoco.Calctus.UI {
             }
             bottomPanel.Controls.Add(testResultLabel);
             testResultLabel.Width = testResultLabel.PreferredWidth * 11 / 10;
+            testResultLabel.Cursor = Cursors.Hand;
+            testResultLabel.DoubleClick += (sender, e) => { Log.OpenOutputFileInApp(); };
 #endif
 
             try {
@@ -232,7 +234,7 @@ namespace Shapoco.Calctus.UI {
                     _activeBookItem.Save();
                 }
                 catch (Exception ex) {
-                    Console.WriteLine("Save failed: " + ex.Message);
+                    Log.Here().E("Save failed: " + ex.Message);
                 }
             }
             notifyIcon.Visible = false;
@@ -499,7 +501,7 @@ namespace Shapoco.Calctus.UI {
                 sheet.Save(path);
             }
             catch (Exception ex) {
-                Console.WriteLine("Failed to save scratch pad: " + ex.Message);
+                Log.Here().E("Failed to save scratch pad: " + ex.Message);
             }
         }
 
@@ -515,7 +517,7 @@ namespace Shapoco.Calctus.UI {
                 }
             }
             catch (Exception ex) {
-                Console.WriteLine("Failed to delete old history: " + ex.Message);
+                Log.Here().E("Failed to delete old history: " + ex.Message);
             }
         }
 
@@ -608,10 +610,8 @@ namespace Shapoco.Calctus.UI {
             try {
                 var lastSync = bookItem.LastSynchronized;
                 var lastMod = File.GetLastWriteTime(bookItem.FilePath);
-#if DEBUG
-                Console.WriteLine("Last Synchronized: " + lastSync);
-                Console.WriteLine("Last Modified    : " + lastMod);
-#endif
+                Log.Here().I("Last Synchronized: " + lastSync);
+                Log.Here().I("Last Modified    : " + lastMod);
                 if (lastMod > lastSync) {
                     if (!bookItem.HasUnsavedChanges || DialogResult.Yes == MessageBox.Show(
                             "The sheet file '" + Path.GetFileName(bookItem.FilePath) + "' has been modified externally. Ignore local changes and reload ?",
@@ -623,7 +623,7 @@ namespace Shapoco.Calctus.UI {
                 }
             }
             catch(Exception ex) {
-                Console.WriteLine(ex.Message);
+                Log.Here().E(ex.Message);
             }
         }
 

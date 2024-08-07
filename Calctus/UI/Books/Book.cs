@@ -39,14 +39,10 @@ namespace Shapoco.Calctus.UI.Books {
         public void ScanFiles() {
             var dirPath = DirectoryPath;
             if (!Directory.Exists(dirPath)) {
-#if DEBUG
-                Console.WriteLine("Directory not found: '" + dirPath + "'");
-#endif
+                Log.Here().W("Directory not found: '" + dirPath + "'");
                 return;
             }
-#if DEBUG
-            Console.WriteLine("Scanning directory: '" + dirPath + "'");
-#endif
+            Log.Here().I("Scanning directory: '" + dirPath + "'");
             var existingFiles = Directory.GetFiles(dirPath, "*.txt").ToList();
             var tempNodes = new List<BookItem>();
             var deletedNodes = new List<BookItem>();

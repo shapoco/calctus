@@ -101,7 +101,7 @@ namespace Shapoco.Calctus.UI {
                 _clipListener.Dispose();
             }
             catch (Exception ex) {
-                Console.WriteLine(ex);
+                Log.Here().E(ex);
             }
             Instance = null;
         }
@@ -128,7 +128,7 @@ namespace Shapoco.Calctus.UI {
                 updateExprBox();
             }
             catch (Exception ex) {
-                Console.WriteLine(ex);
+                Log.Here().E(ex);
                 System.Media.SystemSounds.Beep.Play();
             }
         }
@@ -190,7 +190,7 @@ namespace Shapoco.Calctus.UI {
                 }
             }
             catch (Exception ex) {
-                Console.WriteLine(nameof(updateExprBox) + " : " + ex.Message);
+                Log.Here().E(ex);
             }
 
             var selStart = _exprBox.SelectionStart;

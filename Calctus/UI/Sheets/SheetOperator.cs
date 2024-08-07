@@ -80,7 +80,7 @@ namespace Shapoco.Calctus.UI.Sheets {
             var sheet = _view.Sheet;
             for (int i = 0; i < expr.Length; i++) {
                 int insertPos = index + i;
-                Console.WriteLine(i + ", " + insertPos);
+                Log.Here().I(i + ", " + insertPos);
                 if (i == 0 && insertPos < sheet.Items.Count && string.IsNullOrEmpty(sheet.Items[insertPos].ExprText) && overwriteEmptyLine) {
                     // overwriteEmptyLine が true かつ挿入箇所が空行の場合は上書き
                     b.ChangeExpression(insertPos, expr[i]);
