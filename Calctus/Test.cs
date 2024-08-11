@@ -34,7 +34,7 @@ namespace Shapoco.Calctus {
                 }
 
                 if (success) {
-                    Success(TestExpr + " == " + ExpectedStr);
+                    Success(TestExpr + " == " + ExpectedStr + ", act: " + actStr);
                 }
                 else {
                     Fail(TestExpr + " != " + ExpectedStr + ", act: " + actStr);

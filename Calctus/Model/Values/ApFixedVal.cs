@@ -39,15 +39,15 @@ namespace Shapoco.Calctus.Model.Values {
         protected override Val OnFormat(FormatHint fmt) => new ApFixedVal(Raw, fmt);
 
 #if DEBUG
-        public static void DoTest() {
+        public static void Test() {
             var e = new EvalContext();
-            Test.AssertEqual(e, "0x1234u16", "0x1234s16");
-            Test.AssertEqual(e, "0x7777s16 + 0x1234u16", "0x89abu16");
-            Test.AssertEqual(e, "0x7777s16 - 0x1234u16", "0x6543u16");
-            Test.AssertEqual(e, "-0x7777u16", "0x18889s17");
-            Test.AssertEqual(e, "0x1234u16 - 0x7777u16", "0x19abds17");
-            Test.AssertEqual(e, "0b0001001000110100u16", "0x1234u16");
-            Test.AssertEqual(e, "0o011064u16", "0x1234u16");
+            Calctus.Test.AssertEqual(e, "0x1234u16 == 0x1234s16", "true");
+            Calctus.Test.AssertEqual(e, "0x7777s16 + 0x1234u16", "0x089abs17");
+            Calctus.Test.AssertEqual(e, "0x7777s16 - 0x1234u16", "0x06543s17");
+            Calctus.Test.AssertEqual(e, "-0x7777u16", "0xf8889s17");
+            Calctus.Test.AssertEqual(e, "0x1234u16 - 0x7777u16", "0x19abds17");
+            Calctus.Test.AssertEqual(e, "0b0001001000110100u16", "0x1234u16");
+            Calctus.Test.AssertEqual(e, "0o011064u16", "0x1234u16");
         }
 #endif
     }

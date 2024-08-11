@@ -221,7 +221,7 @@ namespace Shapoco.Calctus.UI.Sheets {
             _layoutValidated = false;
             if (deep) _deepRelayout = true;
             Invalidate();
-            Log.Here().I("Layout Invalidated");
+            Log.Here().T("Layout Invalidated");
         }
 
         public void ItemMoveUp() {

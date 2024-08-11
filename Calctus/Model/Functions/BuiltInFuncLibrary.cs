@@ -33,7 +33,7 @@ namespace Shapoco.Calctus.Model.Functions {
         }
 
 #if DEBUG
-        public void DoTest() {
+        public void Test() {
             var e = new EvalContext();
             foreach (var func in NativeFunctions) {
                 func.DoTest(e);

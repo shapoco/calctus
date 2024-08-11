@@ -22,5 +22,25 @@ namespace Shapoco {
                 default: throw new NotSupportedException();
             }
         }
+
+        public static int ToBinaryDigitBits(this Radix radix) {
+            switch (radix) {
+                case Radix.Decimal: throw new ArgumentException(radix.ToString() + " is not binary radix.", nameof(radix));
+                case Radix.Hexadecimal: return 4;
+                case Radix.Binary: return 1;
+                case Radix.Octal: return 3;
+                default: throw new NotSupportedException();
+            }
+        }
+        
+        public static string ToRustStylePrefix(this Radix radix) {
+            switch (radix) {
+                case Radix.Decimal: return "";
+                case Radix.Hexadecimal: return "0x";
+                case Radix.Binary: return "0b";
+                case Radix.Octal: return "0o";
+                default: throw new NotSupportedException();
+            }
+        }
     }
 }

@@ -149,11 +149,18 @@ namespace Shapoco.Calctus.Model.Functions {
         }
 
         private Val OnCallWrap(EvalContext e, Val[] args) {
-            var retVal = OnCall(e, args);
-            if (Args.FormatSourceArgIndex >= 0) {
-                retVal = retVal.Format(args[Args.FormatSourceArgIndex].FormatHint);
+            try {
+                var retVal = OnCall(e, args);
+                if (Args.FormatSourceArgIndex >= 0) {
+                    retVal = retVal.Format(args[Args.FormatSourceArgIndex].FormatHint);
+                }
+                return retVal;
             }
-            return retVal;
+            catch(Exception ex) {
+                Log.Here().W(ex);
+                Log.Here().W("Function call failed: " + this.ToString());
+                throw ex;
+            }
         }
 
         protected abstract Val OnCall(EvalContext e, Val[] args);

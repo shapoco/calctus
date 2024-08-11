@@ -21,7 +21,7 @@ namespace Shapoco.Maths {
 
         // 指数関数
         public static decimal Pow(decimal a, decimal b) {
-            if (Math.Floor(b) == b && int.MinValue <= b && b <= int.MaxValue) {
+            if (b.IsInteger() && int.MinValue <= b && b <= int.MaxValue) {
                 return PowN(a, (int)b);
             }
             else {
@@ -29,8 +29,7 @@ namespace Shapoco.Maths {
             }
         }
 
-        public static decimal PowN(decimal xReal, int y) {
-            decimal x = xReal;
+        public static decimal PowN(decimal x, int y) {
             decimal ret = 1;
             if (y > 0) {
                 while (true) {
@@ -288,6 +287,43 @@ namespace Shapoco.Maths {
             return array;
         }
 
+        public static uint Bit(this uint x, int ibit) {
+            const int stride = sizeof(uint) * 8;
+            if (ibit < 0 || stride <= ibit) Shapoco.Log.Here().ArgException(nameof(ibit));
+            return (x >> ibit) & 1u;
+        }
+
+        public static UInt32 FillBlank(this UInt32 seg, bool signed, int width) {
+            const int stride = sizeof(uint) * 8;
+            if (width <= 0 || stride < width) throw Shapoco.Log.Here().ArgException(nameof(width));
+            if (width == stride) return seg;
+            UInt32 mask = 1u;
+            mask <<= (stride - width);
+            mask -= 1u;
+            mask <<= width;
+            if (signed && (seg.Bit(width - 1) != 0)) {
+                return seg | mask;
+            }
+            else {
+                return seg & ~mask;
+            }
+        }
+
+        public static uint Add(this uint a, uint b, uint carryIn, out uint carryOut) {
+            const int stride = sizeof(uint) * 8;
+            ulong tmp = (ulong)a + b + carryIn;
+            carryOut = (uint)(tmp >> stride);
+            return (uint)tmp;
+        }
+
+        public static uint CatSlice(this uint hi, uint lo, int shift) {
+            const int stride = sizeof(uint) * 8;
+            if (shift < 0 || stride < shift) Shapoco.Log.Here().ArgException(nameof(shift));
+            if (shift == 0) return lo;
+            if (shift == stride) return hi;
+            return (hi << (stride - shift)) | (lo >> shift);
+        }
+
         public static long ToLong(decimal val) {
             val = Math.Round(val);
             if (val < long.MinValue && long.MaxValue < val) throw new OverflowException("Out of range of int64.");
@@ -307,6 +343,24 @@ namespace Shapoco.Maths {
             val = Math.Round(val);
             if (val < byte.MinValue && byte.MaxValue < val) throw new OverflowException("Out of range of byte.");
             return (byte)val;
+        }
+
+        public static void Test() {
+            {
+                if (FillBlank(0xf654321fu, false, 1).NotEqHex(0x1u)) throw Shapoco.Log.Here().TestFailException();
+                if (FillBlank(0xf654321fu, false, 4).NotEqHex(0xfu)) throw Shapoco.Log.Here().TestFailException();
+                if (FillBlank(0xf654321fu, false, 16).NotEqHex(0x321fu)) throw Shapoco.Log.Here().TestFailException();
+                if (FillBlank(0xf654321fu, false, 19).NotEqHex(0x4321fu)) throw Shapoco.Log.Here().TestFailException();
+                if (FillBlank(0xf654321fu, false, 31).NotEqHex(0x7654321fu)) throw Shapoco.Log.Here().TestFailException();
+                if (FillBlank(0xf654321fu, false, 32).NotEqHex(0xf654321fu)) throw Shapoco.Log.Here().TestFailException();
+                if (FillBlank(0xf654321fu, true, 1).NotEqHex(0xffffffffu)) throw Shapoco.Log.Here().TestFailException();
+                if (FillBlank(0xf654321fu, true, 4).NotEqHex(0xffffffffu)) throw Shapoco.Log.Here().TestFailException();
+                if (FillBlank(0xf654321fu, true, 16).NotEqHex(0x0000321fu)) throw Shapoco.Log.Here().TestFailException();
+                if (FillBlank(0xf654321fu, true, 19).NotEqHex(0xfffc321fu)) throw Shapoco.Log.Here().TestFailException();
+                if (FillBlank(0x7654321fu, true, 31).NotEqHex(0xf654321fu)) throw Shapoco.Log.Here().TestFailException();
+                if (FillBlank(0x7654321fu, true, 32).NotEqHex(0x7654321fu)) throw Shapoco.Log.Here().TestFailException();
+                if (FillBlank(0xf654321fu, true, 32).NotEqHex(0xf654321fu)) throw Shapoco.Log.Here().TestFailException();
+            }
         }
     }
 }

@@ -185,8 +185,9 @@ namespace Shapoco.Calctus.Model.Parsers {
 
             // todo バイナリ表現の最大値の検討 Lexer.hexBinOctLiteralFollowing()
             var dec = intDitits.ToDecimal(radix + " value", 0, ulong.MaxValue);
-            if (dec > long.MaxValue) dec -= ((decimal)(1 << 32)) * ((decimal)(1 << 32));
-            return _sr.FinishToken(TokenType.Literal, new RealVal(dec, FormatHint.From(FormatStyle.Default, radix)));
+            if (dec > long.MaxValue) dec -= ((decimal)(1L << 32)) * ((decimal)(1L << 32));
+            var val = new RealVal(dec, FormatHint.From(FormatStyle.Default, radix));
+            return _sr.FinishToken(TokenType.Literal, val);
         }
 
         private FixedPointFormat eatApfixedFormat() {
@@ -220,14 +221,13 @@ namespace Shapoco.Calctus.Model.Parsers {
             var postfixStart = _sr.Position.Index;
             var fixedFmt = eatApfixedFormat();
             var raw = apfixed.FromBinaryDigits(
-                radix.ToBaseNumber(), fixedFmt, intDigits.ToByteArray(), fracDigits.ToByteArray());
+                fixedFmt, radix, intDigits.ToByteArray(), fracDigits.ToByteArray());
             var val = new ApFixedVal(raw, FormatHint.From(FormatStyle.Default, radix, FormatOption.ApFixedWithPoint));
             return _sr.FinishToken(TokenType.Literal, val, _sr.Position.Index - postfixStart);
         }
 
         private Token apfixedRawLiteralFollowing(int postfixStart, Radix radix, NumberSequence digits, FixedPointFormat fixedFmt) {
-            var raw = apfixed.FromBinaryDigits(
-                radix.ToBaseNumber(), fixedFmt, digits.ToByteArray());
+            var raw = apfixed.FromBinaryDigits(fixedFmt, radix, digits.ToByteArray());
             var val = new ApFixedVal(raw, FormatHint.From(FormatStyle.Default, radix));
             return _sr.FinishToken(TokenType.Literal, val, _sr.Position.Index - postfixStart);
         }

@@ -5,7 +5,7 @@ using System.Text;
 using System.Threading.Tasks;
 
 namespace Shapoco.Texts {
-    public class TokenBuffer {
+    class TokenBuffer {
         private string _s;
         private int _i = 0;
         private StringBuilder _buf = new StringBuilder();
@@ -29,26 +29,27 @@ namespace Shapoco.Texts {
         //    _i -= n;
         //}
 
-        public char EatDigit(out byte digit, int radix = 10, string rule = "number") {
+        public char EatDigit(out byte digit, Radix radix = Radix.Decimal, string rule = "number") {
             if (EatIfDigit(out char c, out digit, radix)) return c;
             throw CreateExpectedException(rule);
         }
 
-        public bool EatIfDigit(out char c, out byte value, int radix = 10) {
-            if (radix < 2 || 16 < radix) {
+        public bool EatIfDigit(out char c, out byte value, Radix radix = Radix.Decimal) {
+            var baseNumber = radix.ToBaseNumber();
+            if (baseNumber < 2 || 16 < baseNumber) {
                 throw CreateException(nameof(radix) + " out of range for " + nameof(TokenBuffer) + "." + nameof(EatIfDigit) + "()");
             }
 
-            if (EatIf('0', (char)('0' + Math.Min(10, radix) - 1), out c)) {
+            if (EatIf('0', (char)('0' + Math.Min(10, baseNumber) - 1), out c)) {
                 value = (byte)(c - '0');
                 return true;
             }
-            else if (radix >= 10) {
-                if (EatIf('a', (char)('a' + (radix - 10) - 1), out c)) {
+            else if (baseNumber >= 10) {
+                if (EatIf('a', (char)('a' + (baseNumber - 10) - 1), out c)) {
                     value = (byte)(c - 'a' + 10);
                     return true;
                 }
-                else if (EatIf('A', (char)('A' + (radix - 10) - 1), out c)) {
+                else if (EatIf('A', (char)('A' + (baseNumber - 10) - 1), out c)) {
                     value = (byte)(c - 'A' + 10);
                     return true;
                 }
@@ -72,12 +73,12 @@ namespace Shapoco.Texts {
         }
 
         public bool EatIfIdStart(out char c)
-            => EatIfAlpha(out c) || EatIf('_');
+            => EatIfAlpha(out c) || TryEat('_');
 
         public bool EatIfIdFollowing(out char c)
             => EatIfIdStart(out c) || EatIfDigit(out c, out _);
 
-        private bool EatIf(char min, char max, out char c) {
+        public bool EatIf(char min, char max, out char c) {
             var ci = Peek();
             var ret = min <= ci && ci <= max;
             if (ret) c = Eat();
@@ -85,7 +86,11 @@ namespace Shapoco.Texts {
             return ret;
         }
 
-        public bool EatIf(char c) {
+        public void Eat(char c) {
+            if (!TryEat(c)) throw CreateExpectedException(CStyleEscaping.EscapeAndQuote(c));
+        }
+
+        public bool TryEat(char c) {
             var ret = Peek() == c;
             if (ret) Eat();
             return ret;

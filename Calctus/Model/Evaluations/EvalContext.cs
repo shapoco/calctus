@@ -17,6 +17,7 @@ namespace Shapoco.Calctus.Model.Evaluations {
         private Dictionary<string, Var> _vars = new Dictionary<string, Var>();
         public readonly EvalSettings EvalSettings;
         public readonly FormatSettings FormatSettings;
+        public readonly RandomEx Rng;
         public readonly List<PlotCall> PlotCalls = new List<PlotCall>();
         public readonly int Depth;
 
@@ -27,6 +28,7 @@ namespace Shapoco.Calctus.Model.Evaluations {
         public EvalContext() {
             EvalSettings = new EvalSettings();
             FormatSettings = new FormatSettings();
+            Rng = new RandomEx();
             Depth = 0;
             foreach(var constVar in BuiltInConstants.EnumConstants()) {
                 _vars.Add(constVar.Name.Text, constVar);
@@ -43,6 +45,7 @@ namespace Shapoco.Calctus.Model.Evaluations {
             }
             EvalSettings = (EvalSettings)src.EvalSettings.Clone();
             FormatSettings = (FormatSettings)src.FormatSettings.Clone();
+            Rng = src.Rng;
         }
 
         public bool Ref(Token name , bool allowCreate, out Var v) {

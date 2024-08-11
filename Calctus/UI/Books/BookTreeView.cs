@@ -304,7 +304,7 @@ namespace Shapoco.Calctus.UI.Books {
                 Samples.ScanFiles();
             }
             catch (Exception ex) {
-                Log.Here().E("File scan failed: " + ex.Message);
+                Log.Here().E(ex);
             }
             _suppressSelectedChange = false;
             if (selectedNode != null && selectedNode.TreeView == null) {

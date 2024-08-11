@@ -51,7 +51,7 @@ namespace Shapoco.Maths {
         }
 
         public static long Reverse(int nbits, long val) {
-            if (nbits < 1 || 64 < nbits) throw new ArgumentOutOfRangeException();
+            if (nbits < 1 || 64 < nbits) throw Log.Here().ArgException(nameof(nbits));
             var tmp = val;
             long ret = 0;
             for (int i = 0; i < nbits; i++) {

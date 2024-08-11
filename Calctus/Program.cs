@@ -31,6 +31,7 @@ namespace Shapoco.Calctus {
         [STAThread]
         static void Main(string[] args) {
 #if DEBUG
+            Log.LogLevel = LogLevel.Trace;
             if (!DebugMode) {
                 Log.Here().I("==== DEBUG MODE DISABLED ====");
             }
@@ -45,15 +46,19 @@ namespace Shapoco.Calctus {
             }
             else {
 #if DEBUG
-                DocumentGenerator.WriteVersion();
-
-                //Model.Formats.ValFormat.Test();
-                Model.Standards.PreferredNumbers.Test();
+                Maths.MathEx.Test();
+                Maths.BitArrays.BitArray.Test();
+                Maths.BitArrays.BitScan.Test();
+                Maths.BitArrays.SegScan.Test();
+                Maths.apfixed.Test();
                 Maths.ufixed113.Test();
                 Maths.quad.Test();
                 Maths.QuadMath.Test();
-                Model.Functions.BuiltInFuncLibrary.Instance.DoTest();
-                Model.Values.ApFixedVal.DoTest();
+                Model.Standards.PreferredNumbers.Test();
+                Model.Functions.BuiltInFuncLibrary.Instance.Test();
+                Model.Values.ApFixedVal.Test();
+                
+                DocumentGenerator.WriteVersion();
                 DocumentGenerator.GenerateDocumentRst();
                 DocumentGenerator.GenerateDocumentation();
 #endif

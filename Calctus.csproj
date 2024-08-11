@@ -13,7 +13,7 @@
     <AutoGenerateBindingRedirects>true</AutoGenerateBindingRedirects>
     <Deterministic>false</Deterministic>
     <TargetFrameworkProfile />
-    <LangVersion>8.0</LangVersion>
+    <LangVersion>10.0</LangVersion>
   </PropertyGroup>
   <PropertyGroup Condition=" '$(Configuration)|$(Platform)' == 'Debug|AnyCPU' ">
     <PlatformTarget>AnyCPU</PlatformTarget>
@@ -24,7 +24,7 @@
     <DefineConstants>DEBUG;TRACE</DefineConstants>
     <ErrorReport>prompt</ErrorReport>
     <WarningLevel>4</WarningLevel>
-    <LangVersion>8.0</LangVersion>
+    <LangVersion>10.0</LangVersion>
   </PropertyGroup>
   <PropertyGroup Condition=" '$(Configuration)|$(Platform)' == 'Release|AnyCPU' ">
     <PlatformTarget>AnyCPU</PlatformTarget>
@@ -34,10 +34,11 @@
     <DefineConstants>TRACE</DefineConstants>
     <ErrorReport>prompt</ErrorReport>
     <WarningLevel>4</WarningLevel>
-    <LangVersion>8.0</LangVersion>
+    <LangVersion>10.0</LangVersion>
   </PropertyGroup>
   <PropertyGroup>
     <ApplicationIcon>icon.ico</ApplicationIcon>
+    <LangVersion>10.0</LangVersion>
   </PropertyGroup>
   <ItemGroup>
     <Reference Include="Microsoft.VisualBasic" />
@@ -108,10 +109,12 @@
     </Compile>
     <Compile Include="IParsable.cs" />
     <Compile Include="Log.cs" />
-    <Compile Include="Maths\BitArrays\BitScanner.cs" />
-    <Compile Include="Maths\FixedPointFormat.cs" />
+    <Compile Include="Maths\IntFormat.cs" />
     <Compile Include="Maths\BitArrays\BitArray.cs" />
-    <Compile Include="Maths\BitArrays\BitArrayEx.cs" />
+    <Compile Include="Maths\BitArrays\BitScan.cs" />
+    <Compile Include="Maths\FixedPointFormat.cs" />
+    <Compile Include="Maths\BitArrays\SegScan.cs" />
+    <Compile Include="Maths\RandomEx.cs" />
     <Compile Include="Texts\CStyleBinary.cs" />
     <Compile Include="Types.cs" />
     <Compile Include="Texts\CStyleEscaping.cs" />

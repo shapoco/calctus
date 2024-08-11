@@ -23,7 +23,7 @@ namespace Shapoco.Calctus.Model.Formats {
         StringQuotationFlag = (1 << 1),
         DateTimeQuotationFlag = (1 << 2),
         ForValue = 0,
-        ForDisplay = CharEscapingFlag,
+        ForDisplay = CharEscapingFlag | StringQuotationFlag,
         ForLiteral = CharEscapingFlag | StringQuotationFlag | DateTimeQuotationFlag,
     }
 }

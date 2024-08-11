@@ -5,7 +5,7 @@ using System.Text;
 using Shapoco.Maths;
 
 namespace Shapoco.Texts {
-    public class SimpleLexer {
+    class SimpleLexer {
         private TokenBuffer _in;
         private bool _autoSkipWhite;
         public TokenBuffer Input => _in;
@@ -23,7 +23,7 @@ namespace Shapoco.Texts {
         }
 
         public void Pop(string token) {
-            if (!TryPop(token)) throw _in.CreateExpectedException("'" + CStyleEscaping.Escape(token) + "'");
+            if (!TryPop(token)) throw _in.CreateExpectedException(CStyleEscaping.EscapeAndQuote(token));
         }
 
         public string PopId() {
@@ -41,13 +41,51 @@ namespace Shapoco.Texts {
             throw _in.CreateExpectedException("String");
         }
 
+        public string TryPopDigitSequence(Radix radix, out byte[] digits) {
+            if (TryEatNumbers(out digits, radix)) return _in.PopToken();
+            throw _in.CreateExpectedException("Digit sequence");
+        }
+
         public void AssertEos() {
             if (!Eos) throw _in.CreateExpectedException("EOS");
         }
 
+        public void Pop(char[] cands, out char token) {
+            if (!TryPop(cands, out token)) _in.CreateExpectedException(cands.ToStringForDisplay());
+        }
+
+        public bool TryPop(char[] cands, out char token) {
+            foreach(var c in cands) {
+                if (_in.TryEat(c)) {
+                    token = c;
+                    _in.PopToken();
+                    return true;
+                }
+            }
+            token = '\0';
+            return false;
+        }
+
+        public bool TryPop(char token) {
+            if (_autoSkipWhite) _in.SkipWhite();
+            if (_in.TryEat(token)) {
+                _in.PopToken();
+                return true;
+            }
+            else {
+                return false;
+            }
+        }
+
         public bool TryPop(string token) {
             if (_autoSkipWhite) _in.SkipWhite();
-            return _in.TryEat(token);
+            if (_in.TryEat(token)) {
+                _in.PopToken();
+                return true;
+            }
+            else {
+                return false;
+            }
         }
 
         public bool TryPopId(out string token) {
@@ -73,14 +111,14 @@ namespace Shapoco.Texts {
                 return false;
             }
 
-            if (_in.EatIf('.')) {
+            if (_in.TryEat('.')) {
                 value += DigitsAsFraction(EatNumbers());
             }
 
-            if (_in.EatIf('e')) {
+            if (_in.TryEat('e')) {
                 int sign = 1;
-                if (_in.EatIf('-')) sign = -1;
-                else _in.EatIf('+');
+                if (_in.TryEat('-')) sign = -1;
+                else _in.TryEat('+');
                 var exp = DigitsAsInteger(EatNumbers());
                 value *= MathEx.Log10(sign * exp);
             }
@@ -91,9 +129,9 @@ namespace Shapoco.Texts {
 
         public bool TryPopCStyleString(out string value) {
             if (_autoSkipWhite) _in.SkipWhite();
-            if (_in.EatIf('\"')) {
+            if (_in.TryEat('\"')) {
                 var sb = new StringBuilder();
-                while (!_in.EatIf('\"')) {
+                while (!_in.TryEat('\"')) {
                     sb.Append(EatStringChar());
                 }
                 value = sb.ToString();
@@ -106,15 +144,16 @@ namespace Shapoco.Texts {
             }
         }
 
-        public static decimal DigitsAsInteger(byte[] digits, int radix = 10) {
+        public static decimal DigitsAsInteger(byte[] digits, Radix radix = Radix.Decimal) {
+            var baseNumber = radix.ToBaseNumber();
             decimal val = 0;
             foreach (var d in digits) {
-                val = (val * radix) + d;
+                val = (val * baseNumber) + d;
             }
             return val;
         }
 
-        public decimal DigitsAsFraction(byte[] digits, int radix = 10) {
+        public decimal DigitsAsFraction(byte[] digits) {
             decimal val = 0;
             for (int i = digits.Length - 1; i >= 0; i++) {
                 val = (val + digits[0]) / 10;
@@ -122,12 +161,12 @@ namespace Shapoco.Texts {
             return val;
         }
 
-        public byte[] EatNumbers(int radix = 10) {
+        public byte[] EatNumbers(Radix radix = Radix.Decimal) {
             if (TryEatNumbers(out byte[] digits, radix)) return digits;
             throw _in.CreateExpectedException("Numbers");
         }
 
-        public bool TryEatNumbers(out byte[] digits, int radix = 10) {
+        public bool TryEatNumbers(out byte[] digits, Radix radix = Radix.Decimal) {
             if (_in.EatIfDigit(out _, out byte d, radix)) {
                 var list = new List<byte>();
                 list.Add(d);
@@ -144,7 +183,7 @@ namespace Shapoco.Texts {
         }
 
         public char EatStringChar() {
-            if (_in.EatIf('\\')) {
+            if (_in.TryEat('\\')) {
                 byte[] d = new byte[4];
                 var c = _in.Eat();
                 switch (c) {
@@ -160,14 +199,14 @@ namespace Shapoco.Texts {
                     case '\"': return '"';
                     case '0': return '\0';
                     case 'x':
-                        _in.EatDigit(out d[1], 16);
-                        _in.EatDigit(out d[0], 16);
+                        _in.EatDigit(out d[1], Radix.Hexadecimal);
+                        _in.EatDigit(out d[0], Radix.Hexadecimal);
                         return (char)((d[1] << 4) | d[0] << 0);
                     case 'u':
-                        _in.EatDigit(out d[3], 16);
-                        _in.EatDigit(out d[2], 16);
-                        _in.EatDigit(out d[1], 16);
-                        _in.EatDigit(out d[0], 16);
+                        _in.EatDigit(out d[3], Radix.Hexadecimal);
+                        _in.EatDigit(out d[2], Radix.Hexadecimal);
+                        _in.EatDigit(out d[1], Radix.Hexadecimal);
+                        _in.EatDigit(out d[0], Radix.Hexadecimal);
                         return (char)((d[1] << 12) | (d[1] << 8) | (d[1] << 4) | (d[0] << 0));
                     default:
                         throw _in.CreateException("Unrecognized escaped char: \"\\" + CStyleEscaping.Escape(c.ToString()) + "\"");
@@ -178,5 +217,6 @@ namespace Shapoco.Texts {
             }
         }
 
+        public void SkipWhite() => _in.SkipWhite();
     }
 }

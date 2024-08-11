@@ -30,7 +30,9 @@ namespace Shapoco.Calctus.Model.Values {
         // todo 廃止: ToIntVal
         public static RealVal ToIntVal(this decimal val) => new RealVal(val, FormatHint.Default);
         public static RealVal ToIntVal(this int val) => new RealVal(val, FormatHint.Default);
+        public static RealVal ToIntVal(this uint val) => new RealVal(val, FormatHint.Default);
         public static RealVal ToIntVal(this long val) => new RealVal(val, FormatHint.Default);
+        public static RealVal ToIntVal(this ulong val) => new RealVal(val, FormatHint.Default);
         public static RealVal ToIntVal(this char val) => new RealVal(val, FormatHint.Default);
 
         // todo 廃止: ToHexVal

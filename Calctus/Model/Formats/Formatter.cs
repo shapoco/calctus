@@ -173,12 +173,11 @@ namespace Shapoco.Calctus.Model.Formats {
             }
             else {
                 var sb = new StringBuilder(CStyleBinary.GetPrefix(radix));
-                var radixBase = radix.ToBaseNumber();
                 if (args.Format.Options.HasFlag(FormatOption.ApFixedWithPoint)) {
-                    val.ToBinaryStringWithPoint(radixBase, sb);
+                    val.ToBinaryStringWithPoint(radix, sb);
                 }
                 else {
-                    val.ToRawBinaryString(radixBase, sb);
+                    val.ToRawBinaryString(radix, sb);
                 }
                 sb.Append(FixedPointFormatToString(val.Format));
                 return sb.ToString();

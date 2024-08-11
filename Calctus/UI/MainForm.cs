@@ -234,7 +234,7 @@ namespace Shapoco.Calctus.UI {
                     _activeBookItem.Save();
                 }
                 catch (Exception ex) {
-                    Log.Here().E("Save failed: " + ex.Message);
+                    Log.Here().E(ex);
                 }
             }
             notifyIcon.Visible = false;
@@ -501,7 +501,7 @@ namespace Shapoco.Calctus.UI {
                 sheet.Save(path);
             }
             catch (Exception ex) {
-                Log.Here().E("Failed to save scratch pad: " + ex.Message);
+                Log.Here().E(ex);
             }
         }
 
@@ -517,7 +517,7 @@ namespace Shapoco.Calctus.UI {
                 }
             }
             catch (Exception ex) {
-                Log.Here().E("Failed to delete old history: " + ex.Message);
+                Log.Here().E(ex);
             }
         }
 
@@ -623,7 +623,7 @@ namespace Shapoco.Calctus.UI {
                 }
             }
             catch(Exception ex) {
-                Log.Here().E(ex.Message);
+                Log.Here().E(ex);
             }
         }
 
