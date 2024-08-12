@@ -8,25 +8,28 @@ namespace Shapoco.Maths {
     struct FixedPointFormat {
         public static readonly FixedPointFormat Empty = new FixedPointFormat();
 
-        public readonly bool Signed;
-        public readonly int Width;
-        public readonly int FracWidth;
+        public IntFormat RawFormat;
+
+        public bool Signed => RawFormat.Signed;
+        public int Width => RawFormat.Width;
+        public int FracWidth;
         public int IntWidth => Width - FracWidth;
         public int SignWidth => Signed ? 1 : 0;
         public int WidthWithoutSign => Width - SignWidth;
         public int IntWidthWithoutSign => IntWidth - SignWidth;
 
-        public IntFormat RawFormat => new IntFormat(Signed, Width);
+        public bool IsEmpty => RawFormat.IsEmpty;
 
         private FixedPointFormat(bool dummy = false) {
-            this.Signed = false;
-            this.Width = 0;
+            this.RawFormat = IntFormat.Empty;
             this.FracWidth = 0;
         }
 
-        public FixedPointFormat(bool signed, int width, int fracWidth) {
-            this.Signed = signed;
-            this.Width = width;
+        public FixedPointFormat(bool signed, int width, int fracWidth)
+            : this(new IntFormat(signed, width), fracWidth) { }
+
+        public FixedPointFormat(IntFormat fmt, int fracWidth) {
+            this.RawFormat = fmt;
             this.FracWidth = fracWidth;
         }
 

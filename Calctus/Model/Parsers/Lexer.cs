@@ -100,15 +100,15 @@ namespace Shapoco.Calctus.Model.Parsers {
             var pos = _sr.Position;
             if (NumberLexer.TryParseChar(_sr, Radix.Decimal, out char first)) {
                 if (first == '0' && (_sr.ReadIf('x'))) {
-                    tok = hexBinOctLiteralFollowing(Radix.Hexadecimal);
+                    tok = hexBinOctLiteralFollowing(Radix.Hex);
                     return true;
                 }
                 else if (first == '0' && (_sr.ReadIf('b'))) {
-                    tok = hexBinOctLiteralFollowing(Radix.Binary);
+                    tok = hexBinOctLiteralFollowing(Radix.Bin);
                     return true;
                 }
                 else if (first == '0' && (_sr.ReadIf('o'))) {
-                    tok = hexBinOctLiteralFollowing(Radix.Octal);
+                    tok = hexBinOctLiteralFollowing(Radix.Oct);
                     return true;
                 }
                 else {
@@ -368,16 +368,16 @@ namespace Shapoco.Calctus.Model.Parsers {
                     case '\"': return '"';
                     case '0': return '\0';
                     case 'x':
-                        code = new NumberSequence(Radix.Hexadecimal, _sr.Position);
-                        code.Append(NumberLexer.ExpectChar(_sr, Radix.Hexadecimal));
-                        code.Append(NumberLexer.ExpectChar(_sr, Radix.Hexadecimal));
+                        code = new NumberSequence(Radix.Hex, _sr.Position);
+                        code.Append(NumberLexer.ExpectChar(_sr, Radix.Hex));
+                        code.Append(NumberLexer.ExpectChar(_sr, Radix.Hex));
                         return (char)code.ToInt();
                     case 'u':
-                        code = new NumberSequence(Radix.Hexadecimal, _sr.Position);
-                        code.Append(NumberLexer.ExpectChar(_sr, Radix.Hexadecimal));
-                        code.Append(NumberLexer.ExpectChar(_sr, Radix.Hexadecimal));
-                        code.Append(NumberLexer.ExpectChar(_sr, Radix.Hexadecimal));
-                        code.Append(NumberLexer.ExpectChar(_sr, Radix.Hexadecimal));
+                        code = new NumberSequence(Radix.Hex, _sr.Position);
+                        code.Append(NumberLexer.ExpectChar(_sr, Radix.Hex));
+                        code.Append(NumberLexer.ExpectChar(_sr, Radix.Hex));
+                        code.Append(NumberLexer.ExpectChar(_sr, Radix.Hex));
+                        code.Append(NumberLexer.ExpectChar(_sr, Radix.Hex));
                         return (char)code.ToInt();
                     default:
                         throw Log.Here().E(new LexerError(_sr.TokenPosition, "Unrecognized escaped char: " + CStyleEscaping.EscapeAndQuote(c)));
@@ -409,7 +409,7 @@ namespace Shapoco.Calctus.Model.Parsers {
         // 日付リテラルの続き
         private Token readDateTimeFollowingOrWebColor() {
             const int NOW = -1;
-            var num0 = NumberLexer.Expect(_sr, Radix.Hexadecimal, false);
+            var num0 = NumberLexer.Expect(_sr, Radix.Hex, false);
             int y = NOW, m = NOW, d = NOW;
             decimal t = NOW;
             if (_sr.ReadIf('/')) {

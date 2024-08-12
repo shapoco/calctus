@@ -42,16 +42,16 @@ namespace Shapoco.Calctus.Model.Parsers {
             bool hit;
             switch (radix) {
                 case Radix.Decimal: hit = sr.ReadIf('0', '9', out c); break;
-                case Radix.Hexadecimal: hit = sr.ReadIf('0', '9', out c) || sr.ReadIf('a', 'f', out c) || sr.ReadIf('A', 'F', out c); break;
-                case Radix.Binary: hit = sr.ReadIf('0', '1', out c); break;
-                case Radix.Octal: hit = sr.ReadIf('0', '7', out c); break;
+                case Radix.Hex: hit = sr.ReadIf('0', '9', out c) || sr.ReadIf('a', 'f', out c) || sr.ReadIf('A', 'F', out c); break;
+                case Radix.Bin: hit = sr.ReadIf('0', '1', out c); break;
+                case Radix.Oct: hit = sr.ReadIf('0', '7', out c); break;
                 default: throw new NotImplementedException();
             }
             return hit;
         }
 
         public static void ReadFollowing(StringReaderDep sr, NumberSequence num, bool allowUnderscore) {
-            var radix = (num.Radix == Radix.Hexadecimal) ? Radix.Hexadecimal : Radix.Decimal;
+            var radix = (num.Radix == Radix.Hex) ? Radix.Hex : Radix.Decimal;
             char c;
             while (true) {
                 if (allowUnderscore && sr.ReadIf('_')) {

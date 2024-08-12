@@ -7,16 +7,16 @@ using System.Threading.Tasks;
 namespace Shapoco.Calctus.Model.Formats {
     class FormatHint {
         public static readonly FormatHint Default = new FormatHint(FormatStyle.Default, Radix.Decimal);
-        public static readonly FormatHint Hexadecimal = new FormatHint(FormatStyle.Default, Radix.Hexadecimal);
-        public static readonly FormatHint Octal = new FormatHint(FormatStyle.Default, Radix.Octal);
-        public static readonly FormatHint Binary = new FormatHint(FormatStyle.Default, Radix.Binary);
-        public static readonly FormatHint Character = new FormatHint(FormatStyle.Character, Radix.Hexadecimal);
+        public static readonly FormatHint Hexadecimal = new FormatHint(FormatStyle.Default, Radix.Hex);
+        public static readonly FormatHint Octal = new FormatHint(FormatStyle.Default, Radix.Oct);
+        public static readonly FormatHint Binary = new FormatHint(FormatStyle.Default, Radix.Bin);
+        public static readonly FormatHint Character = new FormatHint(FormatStyle.Character, Radix.Hex);
         public static readonly FormatHint SiPrefixed = new FormatHint(FormatStyle.SiPrefixed);
         public static readonly FormatHint BinaryPrefixed = new FormatHint(FormatStyle.BinaryPrefixed);
         public static readonly FormatHint DayOfWeek = new FormatHint(FormatStyle.DayOfWeek);
         public static readonly FormatHint DateTime = new FormatHint(FormatStyle.DateTime); // todo 廃止 FormatHint.DateTime
         public static readonly FormatHint TimeSpan = new FormatHint(FormatStyle.TimeSpan); // todo 廃止? FormatHint.TimeSpan
-        public static readonly FormatHint WebColor = new FormatHint(FormatStyle.WebColor, Radix.Hexadecimal);
+        public static readonly FormatHint WebColor = new FormatHint(FormatStyle.WebColor, Radix.Hex);
 
         private static readonly Dictionary<string, FormatHint> _instances = new Dictionary<string, FormatHint>();
         public static FormatHint From(FormatStyle style = FormatStyle.Default, Radix radix = Radix.Decimal, FormatOption options = FormatOption.None) {

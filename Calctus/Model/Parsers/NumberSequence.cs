@@ -20,10 +20,10 @@ namespace Shapoco.Calctus.Model.Parsers {
             if ('0' <= c && c <= '9') {
                 _buf.Add(c - '0');
             }
-            else if (Radix == Radix.Hexadecimal && 'a' <= c && c <= 'f') {
+            else if (Radix == Radix.Hex && 'a' <= c && c <= 'f') {
                 _buf.Add(10 + (c - 'a'));
             }
-            else if (Radix == Radix.Hexadecimal && 'A' <= c && c <= 'F') {
+            else if (Radix == Radix.Hex && 'A' <= c && c <= 'F') {
                 _buf.Add(10 + (c - 'A'));
             }
             Length += 1;

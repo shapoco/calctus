@@ -106,7 +106,7 @@ namespace Shapoco {
 
         public static string LastTestMessage { get; private set; }
 
-        public static bool NotEqHex(this object a, object b) => NotEq(a, b, Radix.Hexadecimal);
+        public static bool NotEqHex(this object a, object b) => NotEq(a, b, Radix.Hex);
         public static bool NotEq(this object a, object b, Radix radix = Radix.Decimal) {
             if ((a == null && b == null) || (a != null && a.Equals(b))) {
                 return false;
@@ -117,7 +117,7 @@ namespace Shapoco {
             }
         }
 
-        public static bool NotEqHex<T>(this T[] a, T[] b) => NotEq(a, b, Radix.Hexadecimal);
+        public static bool NotEqHex<T>(this T[] a, T[] b) => NotEq(a, b, Radix.Hex);
         public static bool NotEq<T>(this T[] a, T[] b, Radix radix = Radix.Decimal) {
             if (a.Length != b.Length) {
                 LastTestMessage = "Array length differ: " + a.Length + " != " + b.Length;

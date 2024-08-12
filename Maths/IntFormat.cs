@@ -6,13 +6,22 @@ using System.Threading.Tasks;
 
 namespace Shapoco.Maths {
     struct IntFormat {
-        public readonly bool Signed;
-        public readonly int Width;
+        public static readonly IntFormat Empty = new IntFormat(false, 0, false);
+
+        public bool Signed;
+        public int Width;
+
+        public int SignWidth => Signed ? 1 : 0;
+        public int WidthWithoutSign => Width - SignWidth;
+
+        public bool IsEmpty => Width <= 0;
 
         public IntFormat(bool signed, int width) {
-#if DEBUG
-            if (width < 1) Log.Here().ArgException(nameof(width));
-#endif
+            this.Signed = signed;
+            this.Width = width;
+        }
+
+        private IntFormat(bool signed, int width, bool dummy) {
             this.Signed = signed;
             this.Width = width;
         }

@@ -67,7 +67,7 @@ namespace Shapoco.Calctus.Model.Formats {
             else if (fmt.Style == FormatStyle.BinaryPrefixed) {
                 return BinaryPrefix.ToString(val, args);
             }
-            else if ((fmt.Radix == Radix.Hexadecimal || fmt.Radix == Radix.Binary || fmt.Radix == Radix.Octal) && isInteger) {
+            else if ((fmt.Radix == Radix.Hex || fmt.Radix == Radix.Bin || fmt.Radix == Radix.Oct) && isInteger) {
                 return DecimalToCStyleBinaryLiteral(val, args, true);
             }
             else if (fmt.Style == FormatStyle.DateTime) {
@@ -137,9 +137,9 @@ namespace Shapoco.Calctus.Model.Formats {
                         var ret = Convert.ToString(abs64val);
                         if (ival < 0) ret = "-" + ret;
                         return ret;
-                    case Radix.Hexadecimal:
-                    case Radix.Binary:
-                    case Radix.Octal:
+                    case Radix.Hex:
+                    case Radix.Bin:
+                    case Radix.Oct:
                         return CStyleBinary.GetPrefix(radix) + Convert.ToString((Int64)ival, radixBase);
                     default: throw new NotSupportedException();
                 }
@@ -170,21 +170,26 @@ namespace Shapoco.Calctus.Model.Formats {
 #if DEBUG
             Log.Here().T("args.Format=" + args.Format);
 #endif
+            var sb = new StringBuilder();
             if (radix == Radix.Decimal) {
-                // todo Formatter.ApFixedToString() 10進のときの多ビット対応
-                return DecimalToCStyleDecimalLiteral((decimal)val, ToStringArgs.ForLiteral(), true);
+                if (args.Format.Options.HasFlag(FormatOption.ApFixedWithPoint)) {
+                    val.ToDecimalStringWithPoint(sb, args.Settings.DecimalLengthToDisplay);
+                }
+                else {
+                    val.ToRawDecimalString(sb);
+                }
             }
             else {
-                var sb = new StringBuilder(CStyleBinary.GetPrefix(radix));
+                sb.Append(CStyleBinary.GetPrefix(radix));
                 if (args.Format.Options.HasFlag(FormatOption.ApFixedWithPoint)) {
                     val.ToBinaryStringWithPoint(radix, sb);
                 }
                 else {
                     val.ToRawBinaryString(radix, sb);
                 }
-                sb.Append(FixedPointFormatToString(val.Format));
-                return sb.ToString();
             }
+            sb.Append(FixedPointFormatToString(val.Format));
+            return sb.ToString();
         }
 
         public static string FixedPointFormatToString(FixedPointFormat fpfmt) {

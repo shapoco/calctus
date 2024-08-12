@@ -199,14 +199,14 @@ namespace Shapoco.Texts {
                     case '\"': return '"';
                     case '0': return '\0';
                     case 'x':
-                        _in.EatDigit(out d[1], Radix.Hexadecimal);
-                        _in.EatDigit(out d[0], Radix.Hexadecimal);
+                        _in.EatDigit(out d[1], Radix.Hex);
+                        _in.EatDigit(out d[0], Radix.Hex);
                         return (char)((d[1] << 4) | d[0] << 0);
                     case 'u':
-                        _in.EatDigit(out d[3], Radix.Hexadecimal);
-                        _in.EatDigit(out d[2], Radix.Hexadecimal);
-                        _in.EatDigit(out d[1], Radix.Hexadecimal);
-                        _in.EatDigit(out d[0], Radix.Hexadecimal);
+                        _in.EatDigit(out d[3], Radix.Hex);
+                        _in.EatDigit(out d[2], Radix.Hex);
+                        _in.EatDigit(out d[1], Radix.Hex);
+                        _in.EatDigit(out d[0], Radix.Hex);
                         return (char)((d[1] << 12) | (d[1] << 8) | (d[1] << 4) | (d[0] << 0));
                     default:
                         throw _in.CreateException("Unrecognized escaped char: \"\\" + CStyleEscaping.Escape(c.ToString()) + "\"");

@@ -7,6 +7,8 @@ using Shapoco.Texts;
 
 namespace Shapoco.Maths.BitArrays {
     struct BitArray : IComparable<BitArray> {
+        public static readonly BitArray Empty = new BitArray(false);
+
 #if DEBUG
         public static bool Verbose = false;
 #endif
@@ -25,6 +27,8 @@ namespace Shapoco.Maths.BitArrays {
         public bool Signed => _signed;
         public readonly UInt32[] Segments;
 
+        public IntFormat Format => new IntFormat(_signed, Width);
+
         public int SignWidth => Signed ? 1 : 0;
         public int WidthWithoutSign => Signed ? Width - 1 : Width;
         public int LastSegmentWidth => ((Width - 1) & (Stride - 1)) + 1;
@@ -36,6 +40,16 @@ namespace Shapoco.Maths.BitArrays {
 
         public int NumSegments => BitWidthToSegment(Width);
 
+        public static BitArray FromInt(int n) {
+            int width = MathEx.CeilLog2((uint)Math.Abs(n));
+            bool signed = (n < 0);
+            if (signed) width += 1;
+            return FromInt(new IntFormat(signed, width), n);
+        }
+
+        public static BitArray FromInt(IntFormat fmt, int n)
+            => new BitArray(fmt, new UInt32[] { (UInt32)n }, false);
+
         public static BitArray Parse(string s) {
             var lexer = new SimpleLexer(s, autoSkipWhite: false);
             lexer.SkipWhite();
@@ -44,61 +58,62 @@ namespace Shapoco.Maths.BitArrays {
             lexer.SkipWhite();
 
             Radix radix = Radix.Decimal;
-            if (lexer.TryPop("0x")) radix = Radix.Hexadecimal;
-            else if (lexer.TryPop("0b")) radix = Radix.Binary;
-            else if (lexer.TryPop("0o")) radix = Radix.Octal;
+            if (lexer.TryPop("0x")) radix = Radix.Hex;
+            else if (lexer.TryPop("0b")) radix = Radix.Bin;
+            else if (lexer.TryPop("0o")) radix = Radix.Oct;
 
-            if (minus && radix != Radix.Decimal)
-                throw Log.Here().E(lexer.Input.CreateException("Minus symbol can be applied for decimal."));
+            if (minus && radix != Radix.Decimal) {
+                throw Log.Here().E(lexer.Input.CreateException("Minus symbol can be applied only for decimal."));
+            }
 
             lexer.TryPopDigitSequence(radix, out byte[] digits);
 
-            int width = 0;
+            IntFormat fmt = new IntFormat(false , 0);
 
             char sign;
             if (lexer.TryPop(new char[] { 'u', 's' }, out sign)) {
-                lexer.TryPopDigitSequence(Radix.Hexadecimal, out byte[] intWidthDigits);
-                width = (int)SimpleLexer.DigitsAsInteger(intWidthDigits, Radix.Decimal);
+                lexer.TryPopDigitSequence(Radix.Hex, out byte[] intWidthDigits);
+                fmt.Width = (int)SimpleLexer.DigitsAsInteger(intWidthDigits, Radix.Decimal);
             }
             else if (radix == Radix.Decimal) {
                 throw Log.Here().E(lexer.Input.CreateExpectedException("'u' or 's'"));
             }
             else {
                 sign = 'u';
-                width = digits.Length * radix.ToBinaryDigitBits();
+                fmt.Width = digits.Length * radix.ToBinaryDigitBits();
             }
             lexer.SkipWhite();
             lexer.AssertEos();
 
-            bool signed = (sign == 's');
+            fmt.Signed = (sign == 's');
             if (radix == Radix.Decimal) {
-                return FromDecimalDigits(signed, width, minus, digits);
+                return FromDecimalDigits(fmt, minus, digits);
             }
             else {
-                return FromBinaryDigits(signed, width, radix, digits);
+                return FromBinaryDigits(fmt, radix, digits);
             }
         }
 
-        public static BitArray FromBinaryDigits(bool signed, int width, Radix radix, byte[] digits) {
+        public static BitArray FromBinaryDigits(IntFormat fmt, Radix radix, byte[] digits) {
             int step = radix.ToBinaryDigitBits();
-            var bits = new BitArray(signed, width);
+            var bits = new BitArray(fmt);
             int ibit = 0;
             for (int i = digits.Length - 1; i >= 0; i--) {
                 byte digit = digits[i];
                 for (int j = 0; j < step; j++) {
-                    if (ibit >= width) break;
+                    if (ibit >= fmt.Width) break;
                     bits[ibit++] = digit & 1u;
                     digit >>= 1;
                 }
-                if (ibit >= width) break;
+                if (ibit >= fmt.Width) break;
             }
             bits.FillBlankSelf();
             return bits;
         }
 
-        public static BitArray FromDecimalDigits(bool signed, int width, bool minus, byte[] digits) {
-            if (!signed && minus) throw Log.Here().ArgException(nameof(signed) + "=false, " + nameof(minus) + "=true");
-            var bits = new BitArray(signed, width);
+        public static BitArray FromDecimalDigits(IntFormat fmt, bool minus, byte[] digits) {
+            if (!fmt.Signed && minus) throw Log.Here().ArgException(nameof(fmt.Signed) + "=false, " + nameof(minus) + "=true");
+            var bits = new BitArray(fmt);
             foreach (var digit in digits) {
                 bits.Mul10AddSelf(digit);
             }
@@ -117,26 +132,38 @@ namespace Shapoco.Maths.BitArrays {
             if (carry != 0u) throw Log.Here().E(new OverflowException());
         }
 
-        public BitArray(bool signed, int width, UInt32[] segs, bool forceCopy) {
+        public BitArray(IntFormat fmt, UInt32[] segs, bool forceCopy) {
 #if DEBUG
-            if (width < 1) throw Log.Here().ArgException(nameof(width));
+            if (fmt.Width < 1) throw Log.Here().ArgException(nameof(fmt.Width));
 #endif
-            var nsegs = BitWidthToSegment(width);
+            var nsegs = BitWidthToSegment(fmt.Width);
             if (segs.Length != nsegs || forceCopy) {
-                var newArray = new UInt32[nsegs];
+                var newArray = CreateArray(fmt.Width);
                 Array.Copy(segs, newArray, Math.Min(nsegs, segs.Length));
                 segs = newArray;
             }
 
-            this._signed = signed;
-            this.Width = width;
+            this._signed = fmt.Signed;
+            this.Width = fmt.Width;
             this.Segments = segs;
 
             FillBlankSelf();
         }
 
+        public BitArray(bool signed, int width, UInt32[] segs, bool forceCopy)
+            : this(new IntFormat(signed, width), segs, forceCopy) { }
+
+        public BitArray(IntFormat fmt)
+            : this(fmt, CreateArray(fmt.Width), false) { }
+
         public BitArray(bool signed, int width)
-            : this(signed, width, new UInt32[BitWidthToSegment(width)], false) { }
+            : this(new IntFormat( signed, width), CreateArray(width), false) { }
+
+        private BitArray(bool dummy) {
+            this._signed = false;
+            this.Width = 0;
+            this.Segments = null;
+        }
 
         public UInt32 this[int ibit] {
             get {
@@ -193,8 +220,13 @@ namespace Shapoco.Maths.BitArrays {
             if (from > toExclusive) throw Log.Here().ArgException(nameof(from) + ", " + nameof(toExclusive));
 #endif
             if (from == toExclusive) return;
+#if true
+            for (int ibit = from; ibit < toExclusive; ibit++) {
+                this[ibit] = value;
+            }
+#else
             int segFrom = BitWidthToSegment(from);
-            int segTo = toExclusive / Stride;
+            int segTo = BitIndexToSegment(toExclusive, out _);
             var segVal = value == 0u ? 0u : ~(UInt32)0u;
             for (int ibit = from; ibit < segFrom * Stride; ibit++) {
                 this[ibit] = value;
@@ -205,6 +237,7 @@ namespace Shapoco.Maths.BitArrays {
             for (int ibit = segTo * Stride; ibit < toExclusive; ibit++) {
                 this[ibit] = value;
             }
+#endif
         }
 
         public static UInt32 GetLastSegmentMask(int width) {
@@ -234,8 +267,8 @@ namespace Shapoco.Maths.BitArrays {
         }
 
         public BitArray ArithInvert() {
-            var w = Width + (Signed ? 1 : 0);
-            var bits = Clone(0, w, true);
+            var w = Width + (Signed ? 0 : 1);
+            var bits = Clone(0, true, w);
             bits.ArithInvertSelf();
             return bits;
         }
@@ -292,7 +325,8 @@ namespace Shapoco.Maths.BitArrays {
             var signed = Signed || b.Signed || sub;
 
             if (sub) {
-                b = b.Clone(0, b.Width + 1, true);
+                // todo b.Clone(0, true, b.Width) --> AsSigned()
+                b = b.Clone(0, true, b.Width + 1);
                 b.ArithInvertSelf();
             }
 
@@ -356,6 +390,9 @@ namespace Shapoco.Maths.BitArrays {
         }
 
         public BitArray IntDiv(BitArray b, out BitArray m) {
+#if true
+            return DivCoreSigned(this, b, -1, out m, false, out _);
+#else
             var a = this;
             var signedQ = a.Signed || b.Signed; // 商の符号有無
             var signedM = a.Signed; // 余の符号有無
@@ -364,55 +401,69 @@ namespace Shapoco.Maths.BitArrays {
             b = b.Abs(out int signB);
             var negativeQ = (signA < 0) ^ (signB < 0); // 商は負
             var negativeM = (signA < 0); // 余は負
-            var q = UnsignedDivCore(a, b, signedQ, -1, out m, false, out _); // 整数除算実行
+            var qFmt = new IntFormat(signedQ, a.Width);
+            var q = DivCoreUnsigned(a, b, qFmt, IntFormat.Empty, out m, false, out _); // 整数除算実行
             if (negativeQ) q.ArithInvertSelf(); // 商の符号反転
-            if (signedM) m = m.Clone(0, m.Width + (extendM ? 1 : 0), true); // 
+            if (signedM) m = m.Clone(0, true,  m.Width + (extendM ? 1 : 0)); // 
             if (negativeM) m.ArithInvertSelf();
+            return q;
+#endif
+        }
+
+        public static BitArray DivCoreSigned(BitArray a, BitArray b, int qWidth, out BitArray m, bool fracMode, out int fracWidth) {
+            var qSigned = a.Signed || b.Signed; // 商の符号有無
+            var mSigned = a.Signed; // 余の符号有無
+            if (qWidth <= 0) {
+                // 商の幅の自動決定
+                qWidth = a.Width;
+                if (qSigned && !a.Signed) qWidth += 1;
+            }
+            var mWidth = b.Width; // 余のビット幅
+            if (a.Signed && !b.Signed) mWidth++; // 余のビットを符号の分だけ拡張
+            a = a.Abs(out int aSign);
+            b = b.Abs(out int bSign);
+            var qNegative = (aSign < 0) ^ (bSign < 0); // 商は負
+            var mNegative = (aSign < 0); // 余は負
+            var qFmt = new IntFormat(qSigned, qWidth);
+            var mFmt = new IntFormat(mSigned, mWidth);
+            var q = DivCoreUnsigned(a, b, qFmt, mFmt, out m, fracMode, out fracWidth); // 除算実行
+            if (qNegative) q.ArithInvertSelf(); // 商の符号反転
+            if (mNegative) m.ArithInvertSelf(); // 余の符号反転
             return q;
         }
 
-        // todo 性能改善: BitArray.DivCore
-        /// <summary>除算のコア実装</summary>
-        /// <param name="a">被除数</param>
-        /// <param name="b">除数</param>
-        /// <param name="signedQ">商の符号有無</param>
-        /// <param name="widthQ">商の符号有無</param>
-        /// <param name="mod">余</param>
-        /// <param name="fracMode">小数除算モード</param>
-        /// <param name="fracWidth">小数除算モード時、結果の小数部の桁数</param>
-        /// <returns>商</returns>
-        public static BitArray UnsignedDivCore(BitArray a, BitArray b, bool signedQ, int widthQ, out BitArray mod, bool fracMode, out int fracWidth) {
+        // todo 性能改善: BitArray.DivCoreUnsigned
+        public static BitArray DivCoreUnsigned(BitArray a, BitArray b, IntFormat qFmt, IntFormat mFmt, out BitArray m, bool fracMode, out int fracWidth) {
 #if DEBUG
             if (a.Signed) throw Log.Here().ArgException(nameof(a) + "." + nameof(a.Signed));
             if (b.Signed) throw Log.Here().ArgException(nameof(b) + "." + nameof(b.Signed));
 #endif
             if (b.IsZero) throw Log.Here().E(new DivideByZeroException());
-            if (widthQ <= 0) widthQ = a.Width;
-
-            var modWidth = b.Width;
+            if (qFmt.Width <= 0) qFmt.Width = a.Width;
+            if (mFmt.Width <= 0) mFmt.Width = b.Width;
 
             if (a.IsZero) {
                 fracWidth = 0;
-                mod = new BitArray(false, modWidth);
-                return new BitArray(signedQ, widthQ);
+                m = new BitArray(mFmt);
+                return new BitArray(qFmt);
             }
 
-            var origWidthA = a.Width;
-            var msbA = a.FindMostSignificantBit();
+            var aOrigWidth = a.Width;
+            var aMsb = a.FindMostSignificantBit();
 
-            int msbB, xLsb, xWidth, msbQ;
+            int bMsb, xLsb, xWidth, qMsb;
             if (fracMode) {
-                b = b.Trim(out msbB, out _);
-                xLsb = msbA + 1 - widthQ - (b.Width - 1);
-                xWidth = widthQ + (b.Width - 1);
-                msbQ = widthQ - 1;
-                fracWidth = (origWidthA - (msbA + 1)) + msbB;
+                b = b.Trim(out bMsb, out _);
+                xLsb = aMsb + 1 - qFmt.Width - (b.Width - 1);
+                xWidth = qFmt.Width + (b.Width - 1);
+                qMsb = qFmt.Width - 1;
+                fracWidth = (aOrigWidth - (aMsb + 1)) + bMsb;
             }
             else {
-                b = b.TrimLeft(out msbB);
+                b = b.TrimLeft(out bMsb);
                 xLsb = 0;
-                xWidth = msbA + 1;
-                msbQ = widthQ - b.Width;
+                xWidth = aMsb + 1;
+                qMsb = qFmt.Width - b.Width;
                 fracWidth = 0;
             }
 
@@ -423,19 +474,19 @@ namespace Shapoco.Maths.BitArrays {
             string traceString = null;
             if (Verbose) {
                 Log.Here().T(
-                    "msbA=" + msbA + ", " +
+                    "aMsb=" + aMsb + ", " +
                     //"lsbA=" + lsbA + ", " +
-                    "cloneStartA=" + xLsb + ", " +
-                    "cloneWidthA=" + xWidth + ", " +
+                    "xLsb=" + xLsb + ", " +
+                    "xWidth=" + xWidth + ", " +
                     "x=" + x + ", " +
                     "b=" + b + ", " +
-                    "msbB=" + msbB + ", " +
-                    "shift=" + fracWidth);
+                    "bMsb=" + bMsb + ", " +
+                    "fracWidth=" + fracWidth);
             }
 #endif
 
-            var q = new BitArray(signedQ, widthQ + (signedQ ? 1 : 0));
-            for (int ibitQ = msbQ; ibitQ >= 0; ibitQ--) {
+            var q = new BitArray(qFmt);
+            for (int ibitQ = qMsb; ibitQ >= 0; ibitQ--) {
 #if DEBUG
                 if (Verbose) traceString = "[" + ibitQ + "] " + "q=" + q + ", " + "x=" + x;
 #endif
@@ -451,7 +502,7 @@ namespace Shapoco.Maths.BitArrays {
 #endif
             }
 
-            mod = x.Clone(0, modWidth);
+            m = x.Clone(0, mFmt);
             return q;
         }
 
@@ -490,8 +541,10 @@ namespace Shapoco.Maths.BitArrays {
             var bw = b.Width;
             UInt32 carry = 0u;
             for (int ibitB = 0; ibitB < bw + 1; ibitB++) {
-                UInt32 bit = this[offsetA + ibitB] - (b[ibitB] + carry);
-                this[offsetA + ibitB] = bit & 1u;
+                int ibitA = offsetA + ibitB;
+                if (ibitA >= aw) break;
+                UInt32 bit = this[ibitA] - (b[ibitB] + carry);
+                this[ibitA] = bit & 1u;
                 carry = (bit >> 1) & 1u;
             }
         }
@@ -563,19 +616,20 @@ namespace Shapoco.Maths.BitArrays {
             }
         }
 
-        public BitArray Clone() => Clone(0, Width, Signed);
-        public BitArray Clone(int start, int width) => Clone(start, width, Signed);
-        public BitArray Clone(int start, int width, bool signed) {
+        public BitArray Clone() => Clone(0, new IntFormat(Signed, Width));
+        public BitArray Clone(int start, int width) => Clone(start, new IntFormat(Signed, width));
+        public BitArray Clone(int start, bool signed, int width) => Clone(start, new IntFormat(signed, width));
+        public BitArray Clone(int start, IntFormat fmt) {
 #if DEBUG
-            if (width < 0) throw Log.Here().ArgException(nameof(width));
+            if (fmt.Width < 0) throw Log.Here().ArgException(nameof(fmt.Width));
 #endif
             // todo BitArray.Clone() アライメント取れてるときは Array.CopyTo を使う
-            var segs = CreateArray(width);
+            var segs = CreateArray(fmt.Width);
             var scan = new SegScan(this, start);
             for (int iseg = 0; iseg < segs.Length; iseg++) {
                 segs[iseg] = scan.Read();
             }
-            return new BitArray(signed, width, segs, false);
+            return new BitArray(fmt, segs, false);
         }
 
         public static UInt32[] CreateArray(int width) => new UInt32[BitWidthToSegment(width)];
@@ -612,7 +666,7 @@ namespace Shapoco.Maths.BitArrays {
         }
 
         public override string ToString() {
-            return "0x" + ToBinaryString(Radix.Hexadecimal) + FormatString;
+            return "0x" + ToBinaryString(Radix.Hex) + FormatString;
         }
 
         public string ToBinaryString(Radix radix) {
@@ -621,7 +675,7 @@ namespace Shapoco.Maths.BitArrays {
             return sb.ToString();
         }
 
-        public void ToBinaryString(Radix radix, StringBuilder digits) {
+        public void ToBinaryString(Radix radix, StringBuilder sb) {
             int w = Width;
             int digitWidth = radix.ToBinaryDigitBits();
             int shift = (w - 1) % digitWidth;
@@ -631,11 +685,28 @@ namespace Shapoco.Maths.BitArrays {
                 var bit = scan.Read();
                 digit |= bit << shift;
                 if (shift-- <= 0 || i + 1 == w) {
-                    digits.Append(DigitToChar(digit));
+                    sb.Append(DigitToChar(digit));
                     shift = digitWidth - 1;
                     digit = 0u;
                 }
             }
+        }
+
+        public string ToRawDecimalString() {
+            var sb = new StringBuilder();
+            ToRawDecimalString(sb);
+            return sb.ToString();
+        }
+
+        public void ToRawDecimalString(StringBuilder sb) {
+            var bits = this.Clone(0, false, this.Width);
+            var ten = BitArray.FromInt(10);
+            var stack = new Stack<char>();
+            do {
+                bits = bits.IntDiv(ten, out BitArray m);
+                stack.Push(CStyleBinary.ToChar((int)m.ToDecimal()));
+            } while (!bits.IsZero);
+            while (stack.Count > 0) sb.Append(stack.Pop());
         }
 
         public static char DigitToChar(uint digit) {
@@ -719,12 +790,13 @@ namespace Shapoco.Maths.BitArrays {
             testBinaryOp("0x1000u16", '/', "0x10u16", "0x100u16");
             testBinaryOp("0x5500u16", '/', "0x10u16", "0x550u16");
             testBinaryOp("0x5555u16", '/', "0x5u16", "0x1111u16");
-            testBinaryOp("0x8000s16", '/', "0x100u16", "0x1ff80s17");
-            testBinaryOp("0x89abs16", '/', "-10s8", "0xbd5s17");
+            testBinaryOp("0x5555u16", '/', "-5s16", "-4369s17");
+            testBinaryOp("0x8000s16", '/', "0x100u16", "0x1ff80s16");
+            testBinaryOp("0x89abs16", '/', "-10s8", "0xbd5s16");
             testBinaryOp("10000u16", '/', "3u16", "3333u16");
-            testBinaryOp("-10000s16", '/', "3s16", "-3333s17");
-            testBinaryOp("10000s16", '/', "-3s16", "-3333s17");
-            testBinaryOp("-10000s16", '/', "-3s16", "3333s17");
+            testBinaryOp("-10000s16", '/', "3s16", "-3333s16");
+            testBinaryOp("10000s16", '/', "-3s16", "-3333s16");
+            testBinaryOp("-10000s16", '/', "-3s16", "3333s16");
             testBinaryOp("0x100000000000u48", '/', "0x10u8", "0x10000000000u48");
             testBinaryOp("10000000000000u48", '/', "3u8", "3333333333333u48");
 

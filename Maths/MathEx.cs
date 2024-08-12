@@ -110,6 +110,20 @@ namespace Shapoco.Maths {
             return ret + (decimal)Math.Log10((double)a);
         }
 
+        public static int CeilLog2(UInt64 a) {
+            int min = 0, max = 64;
+            while (min + 1 < max) {
+                int mid = (min + max) / 2;
+                if (a <= (1ul << mid)) {
+                    max = mid;
+                }
+                else {
+                    min = mid;
+                }
+            }
+            return max;
+        }
+
         public static decimal Log2(decimal a, bool highAccuracy) {
             if (highAccuracy) {
                 return (decimal)(decimal)QuadMath.Log2((quad)(decimal)a);
@@ -118,6 +132,9 @@ namespace Shapoco.Maths {
                 return (decimal)(Math.Log((double)a) / Math.Log(2));
             }
         }
+
+        public static int CeilLog2(decimal a, bool highAccuracy) 
+            => (int)Math.Ceiling(Log2(a, highAccuracy));
 
         /// <summary>
         /// a が 0 の場合は 0 を返し、それ以外の場合は floor(log10(abs(a))) を返す。
@@ -346,21 +363,33 @@ namespace Shapoco.Maths {
         }
 
         public static void Test() {
-            {
-                if (FillBlank(0xf654321fu, false, 1).NotEqHex(0x1u)) throw Shapoco.Log.Here().TestFailException();
-                if (FillBlank(0xf654321fu, false, 4).NotEqHex(0xfu)) throw Shapoco.Log.Here().TestFailException();
-                if (FillBlank(0xf654321fu, false, 16).NotEqHex(0x321fu)) throw Shapoco.Log.Here().TestFailException();
-                if (FillBlank(0xf654321fu, false, 19).NotEqHex(0x4321fu)) throw Shapoco.Log.Here().TestFailException();
-                if (FillBlank(0xf654321fu, false, 31).NotEqHex(0x7654321fu)) throw Shapoco.Log.Here().TestFailException();
-                if (FillBlank(0xf654321fu, false, 32).NotEqHex(0xf654321fu)) throw Shapoco.Log.Here().TestFailException();
-                if (FillBlank(0xf654321fu, true, 1).NotEqHex(0xffffffffu)) throw Shapoco.Log.Here().TestFailException();
-                if (FillBlank(0xf654321fu, true, 4).NotEqHex(0xffffffffu)) throw Shapoco.Log.Here().TestFailException();
-                if (FillBlank(0xf654321fu, true, 16).NotEqHex(0x0000321fu)) throw Shapoco.Log.Here().TestFailException();
-                if (FillBlank(0xf654321fu, true, 19).NotEqHex(0xfffc321fu)) throw Shapoco.Log.Here().TestFailException();
-                if (FillBlank(0x7654321fu, true, 31).NotEqHex(0xf654321fu)) throw Shapoco.Log.Here().TestFailException();
-                if (FillBlank(0x7654321fu, true, 32).NotEqHex(0x7654321fu)) throw Shapoco.Log.Here().TestFailException();
-                if (FillBlank(0xf654321fu, true, 32).NotEqHex(0xf654321fu)) throw Shapoco.Log.Here().TestFailException();
+            var rng = new Random();    
+            if (CeilLog2(0).NotEqHex(1)) throw Shapoco.Log.Here().TestFailException();
+            if (CeilLog2(1).NotEqHex(1)) throw Shapoco.Log.Here().TestFailException();
+            for (int i = 1; i< 64; i++ ) {
+                if (CeilLog2((1ul << i) - 1).NotEqHex(i)) throw Shapoco.Log.Here().TestFailException();
+                if (CeilLog2(1ul << i).NotEqHex(i)) throw Shapoco.Log.Here().TestFailException();
+                if (CeilLog2((1ul << i) + 1).NotEqHex(i+1)) throw Shapoco.Log.Here().TestFailException();
             }
+            if (CeilLog2(UInt64.MaxValue).NotEqHex(64)) throw Shapoco.Log.Here().TestFailException();
+            for (int i = 0; i < 100; i++) {
+                var val = (UInt64)(rng.NextDouble() * UInt64.MaxValue);
+                if (CeilLog2(val).NotEqHex(CeilLog2((decimal)val, true))) throw Shapoco.Log.Here().TestFailException();
+            }
+
+            if (FillBlank(0xf654321fu, false, 1).NotEqHex(0x1u)) throw Shapoco.Log.Here().TestFailException();
+            if (FillBlank(0xf654321fu, false, 4).NotEqHex(0xfu)) throw Shapoco.Log.Here().TestFailException();
+            if (FillBlank(0xf654321fu, false, 16).NotEqHex(0x321fu)) throw Shapoco.Log.Here().TestFailException();
+            if (FillBlank(0xf654321fu, false, 19).NotEqHex(0x4321fu)) throw Shapoco.Log.Here().TestFailException();
+            if (FillBlank(0xf654321fu, false, 31).NotEqHex(0x7654321fu)) throw Shapoco.Log.Here().TestFailException();
+            if (FillBlank(0xf654321fu, false, 32).NotEqHex(0xf654321fu)) throw Shapoco.Log.Here().TestFailException();
+            if (FillBlank(0xf654321fu, true, 1).NotEqHex(0xffffffffu)) throw Shapoco.Log.Here().TestFailException();
+            if (FillBlank(0xf654321fu, true, 4).NotEqHex(0xffffffffu)) throw Shapoco.Log.Here().TestFailException();
+            if (FillBlank(0xf654321fu, true, 16).NotEqHex(0x0000321fu)) throw Shapoco.Log.Here().TestFailException();
+            if (FillBlank(0xf654321fu, true, 19).NotEqHex(0xfffc321fu)) throw Shapoco.Log.Here().TestFailException();
+            if (FillBlank(0x7654321fu, true, 31).NotEqHex(0xf654321fu)) throw Shapoco.Log.Here().TestFailException();
+            if (FillBlank(0x7654321fu, true, 32).NotEqHex(0x7654321fu)) throw Shapoco.Log.Here().TestFailException();
+            if (FillBlank(0xf654321fu, true, 32).NotEqHex(0xf654321fu)) throw Shapoco.Log.Here().TestFailException();
         }
     }
 }
