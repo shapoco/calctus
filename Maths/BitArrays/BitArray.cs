@@ -449,7 +449,7 @@ namespace Shapoco.Maths.BitArrays {
             }
 
             var aOrigWidth = a.Width;
-            var aMsb = a.FindMostSignificantBit();
+            var aMsb = a.FindMostSignificantBit(true);
 
             int bMsb, xLsb, xWidth, qMsb;
             if (fracMode) {
@@ -507,12 +507,12 @@ namespace Shapoco.Maths.BitArrays {
         }
 
         // todo 性能改善 BitArray.FindMostSignificantBit()
-        public int FindMostSignificantBit() {
-            var higherBlankBit = IsNegative ? 1u : 0u;
+        public int FindMostSignificantBit(bool skipNegativeSignBits) {
+            var higherBlankBit = (IsNegative && skipNegativeSignBits) ? 1u : 0u;
             var w = Width;
             int msb = w - 1;
             while (this[msb] == higherBlankBit && msb >= 0) msb--;
-            if (Signed) msb += 1;
+            if (Signed && skipNegativeSignBits) msb += 1;
             return msb;
         }
 
@@ -568,7 +568,7 @@ namespace Shapoco.Maths.BitArrays {
                 lsb = 0;
                 return new BitArray(Signed, 1);
             }
-            msb = leftTrim ? FindMostSignificantBit() : Width - 1;
+            msb = leftTrim ? FindMostSignificantBit(true) : Width - 1;
             lsb = rightTrim ? FindLeastSignificantBit() : 0;
             return Clone(lsb, msb + 1 - lsb);
         }
@@ -666,25 +666,26 @@ namespace Shapoco.Maths.BitArrays {
         }
 
         public override string ToString() {
-            return "0x" + ToBinaryString(Radix.Hex) + FormatString;
+            return "0x" + ToBinaryString(Radix.Hex, true) + FormatString;
         }
 
-        public string ToBinaryString(Radix radix) {
+        public string ToBinaryString(Radix radix, bool allowShrink) {
             var sb = new StringBuilder();
-            ToBinaryString(radix, sb);
+            ToBinaryString(radix, sb, allowShrink);
             return sb.ToString();
         }
 
-        public void ToBinaryString(Radix radix, StringBuilder sb) {
+        public void ToBinaryString(Radix radix, StringBuilder sb, bool allowShrink) {
             int w = Width;
+            int msb = (IsNegative || !allowShrink) ? (w - 1) : Math.Max(0, FindMostSignificantBit(false));
             int digitWidth = radix.ToBinaryDigitBits();
-            int shift = (w - 1) % digitWidth;
+            int shift = msb % digitWidth;
             UInt32 digit = 0u;
-            var scan = new BitScan(this, w - 1, -w);
-            for (int i = 0; i < w; i++) {
+            var scan = new BitScan(this, msb, -msb - 1);
+            for (int i = 0; i <= msb; i++) {
                 var bit = scan.Read();
                 digit |= bit << shift;
-                if (shift-- <= 0 || i + 1 == w) {
+                if (shift-- <= 0 || i == msb) {
                     sb.Append(DigitToChar(digit));
                     shift = digitWidth - 1;
                     digit = 0u;

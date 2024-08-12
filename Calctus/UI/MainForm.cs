@@ -135,9 +135,7 @@ namespace Shapoco.Calctus.UI {
             testResultLabel.Dock = DockStyle.Right;
             if (Test.NumErrors != 0 || Test.NumWarnings != 0 || Test.NumUntested != 0) {
                 testResultLabel.Text = Test.NumSuccess + " Success";
-                if (Test.NumErrors > 0) {
-                    testResultLabel.Text += ", " + Test.NumErrors + " Failed";
-                }
+                testResultLabel.Text += ", " + Test.NumErrors + " Failed";
                 if (Test.NumWarnings > 0) {
                     testResultLabel.Text += ", " + Test.NumWarnings + " Warnings";
                 }

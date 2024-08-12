@@ -196,8 +196,8 @@ namespace Shapoco.Maths {
 
         public void ToBinaryStringWithPoint(Radix radix, StringBuilder sb) {
             if (IntWidth > 0) {
-                var msb = Math.Max(FracWidth, _bits.FindMostSignificantBit());
-                _bits.Clone(FracWidth, false, msb + 1 - FracWidth).ToBinaryString(radix, sb);
+                var msb = Math.Max(FracWidth, _bits.FindMostSignificantBit(false));
+                _bits.Clone(FracWidth, true, msb + 1 - FracWidth).ToBinaryString(radix, sb, true);
             }
             else {
                 sb.Append('0');
@@ -209,7 +209,7 @@ namespace Shapoco.Maths {
                 if (lsb < 0) lsb = FracWidth - 1;
                 else lsb = Math.Min(FracWidth - 1, lsb);
                 var fw = MathEx.CeilDiv(FracWidth - lsb, digitBits) * digitBits;
-                _bits.Clone(FracWidth - fw, false, fw).ToBinaryString(radix, sb);
+                _bits.Clone(FracWidth - fw, false, fw).ToBinaryString(radix, sb, false);
             }
             else {
                 sb.Append('0');
@@ -223,7 +223,7 @@ namespace Shapoco.Maths {
         }
 
         public void ToRawBinaryString(Radix radix, StringBuilder sb)
-            => _bits.ToBinaryString(radix, sb);
+            => _bits.ToBinaryString(radix, sb, true);
 
         public string ToRawDecimalString() {
             var sb = new StringBuilder();
@@ -498,9 +498,9 @@ namespace Shapoco.Maths {
             doTestParse("1234.99609375u12.8", "0x4d2.ffu12.8");
             doTestParse("0.1u4.28", "0x01999999u4.28");
             doTestParse("-0.1s4.28", "0xfe666667s4.28");
-            if (Parse("0x0u7.5").ToRawBinaryString(Radix.Hex).NotEq("000")) throw Log.Here().TestFailException();
-            if (Parse("0x0u7.5").ToRawBinaryString(Radix.Oct).NotEq("0000")) throw Log.Here().TestFailException();
-            if (Parse("0x0u7.5").ToRawBinaryString(Radix.Bin).NotEq("000000000000")) throw Log.Here().TestFailException();
+            if (Parse("0x0u7.5").ToRawBinaryString(Radix.Hex).NotEq("0")) throw Log.Here().TestFailException();
+            if (Parse("0x0u7.5").ToRawBinaryString(Radix.Oct).NotEq("0")) throw Log.Here().TestFailException();
+            if (Parse("0x0u7.5").ToRawBinaryString(Radix.Bin).NotEq("0")) throw Log.Here().TestFailException();
             if (Parse("0x0u7.5").ToRawDecimalString().NotEq("0")) throw Log.Here().TestFailException();
             if (Parse("0xABCu7.5").ToRawBinaryString(Radix.Hex).NotEq("abc")) throw Log.Here().TestFailException();
             if (Parse("0xABCu7.5").ToRawBinaryString(Radix.Oct).NotEq("5274")) throw Log.Here().TestFailException();
