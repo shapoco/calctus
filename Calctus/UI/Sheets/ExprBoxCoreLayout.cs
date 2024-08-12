@@ -21,7 +21,9 @@ namespace Shapoco.Calctus.UI.Sheets {
     class ExprBoxCoreLayout {
         private static readonly Regex ExponentPattern = new Regex("[eE]-?[1-9][0-9]*(_[0-9]+)*$");
         private static readonly Regex DecimalPattern = new Regex(@"^(?<int>0|[1-9][0-9]*(_[0-9]+)*)(\.(?<frac>[0-9]+(_[0-9]+)*))?");
-        private static readonly Regex HexBinOctPattern = new Regex(@"^(0[xX](?<hex>[0-9a-fA-F]+(_[0-9a-fA-F]+)*)|0[bB](?<bin>[01]+(_[01]+)*)|0(?<oct>[0-7]+(_[0-7]+)*))");
+        private static readonly Regex HexPattern = new Regex(@"^0[xX](?<int>[0-9a-fA-F]+(_[0-9a-fA-F]+)*)(\.(?<frac>[0-9a-fA-F]+(_[0-9a-fA-F]+)*))?");
+        private static readonly Regex BinPattern = new Regex(@"^0[bB](?<int>[01]+(_[01]+)*)(\.(?<frac>[01]+(_[01]+)*))?");
+        private static readonly Regex OctPattern = new Regex(@"^0[oO](?<int>[0-7]+(_[0-7]+)*)(\.(?<int>[0-7]+(_[0-7]+)*))?");
 
         public event EventHandler PreferredSizeChanged;
 
@@ -105,10 +107,17 @@ namespace Shapoco.Calctus.UI.Sheets {
             foreach (var t in _tokens) {
                 if (t.Type == TokenType.Literal) {
                     Match m;
-                    if (s.NumberFormat_Separator_Hexadecimal && (m = HexBinOctPattern.Match(t.Text)).Success && !m.Value.Contains("_")) {
-                        insertSeparators(t, m.Groups["hex"], 4, false);
-                        insertSeparators(t, m.Groups["bin"], 4, false);
-                        insertSeparators(t, m.Groups["oct"], 4, false);
+                    if (s.NumberFormat_Separator_Hexadecimal && (m = HexPattern.Match(t.Text)).Success && !m.Value.Contains("_")) {
+                        insertSeparators(t, m.Groups["int"], 4, false);
+                        insertSeparators(t, m.Groups["frac"], 4, true);
+                    }
+                    else if (s.NumberFormat_Separator_Hexadecimal && (m = BinPattern.Match(t.Text)).Success && !m.Value.Contains("_")) {
+                        insertSeparators(t, m.Groups["int"], 4, false);
+                        insertSeparators(t, m.Groups["frac"], 4, true);
+                    }
+                    else if (s.NumberFormat_Separator_Hexadecimal && (m = OctPattern.Match(t.Text)).Success && !m.Value.Contains("_")) {
+                        insertSeparators(t, m.Groups["int"], 4, false);
+                        insertSeparators(t, m.Groups["frac"], 4, true);
                     }
                     else if (s.NumberFormat_Separator_Thousands && (m = DecimalPattern.Match(t.Text)).Success && !m.Value.Contains("_")) {
                         insertSeparators(t, m.Groups["int"], 3, false); // 整数部
@@ -201,6 +210,16 @@ namespace Shapoco.Calctus.UI.Sheets {
                                 //if ((m = ExponentPattern.Match(t.Text)).Success) {
                                 //    // 指数の強調表示
                                 //    setForeColor(t.Position.Index + m.Index, m.Length, s.Appearance_Color_SI_Prefix);
+                                //}
+                                if (t.Text.Length > 2) {
+                                    var prefix = t.Text.Substring(0, 2).ToLower();
+                                    if (prefix == "0x" || prefix == "0b" || prefix == "0o") {
+                                        setForeColor(t.Position.Index + 1, 1, s.Appearance_Color_SI_Prefix);
+                                    }
+                                }
+                                //var dotPos = t.Text.IndexOf('.');
+                                //if (dotPos >= 0) {
+                                //    setForeColor(t.Position.Index + dotPos, 1, s.Appearance_Color_SI_Prefix);
                                 //}
                             }
                             else {
@@ -303,7 +322,7 @@ namespace Shapoco.Calctus.UI.Sheets {
         }
 
         public Token GetTokenAt(int i, TokenType type) {
-            foreach(var token in _tokens) {
+            foreach (var token in _tokens) {
                 if (string.IsNullOrEmpty(token.Text)) continue;
                 if (token.Position.Index <= i && i <= token.Position.Index + token.Text.Length && token.Type == type) {
                     return token;

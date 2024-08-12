@@ -196,7 +196,8 @@ namespace Shapoco.Maths {
 
         public void ToBinaryStringWithPoint(Radix radix, StringBuilder sb) {
             if (IntWidth > 0) {
-                _bits.Clone(FracWidth, false, IntWidth).ToBinaryString(radix, sb);
+                var msb = Math.Max(FracWidth, _bits.FindMostSignificantBit());
+                _bits.Clone(FracWidth, false, msb + 1 - FracWidth).ToBinaryString(radix, sb);
             }
             else {
                 sb.Append('0');
@@ -204,7 +205,10 @@ namespace Shapoco.Maths {
             sb.Append('.');
             if (FracWidth > 0) {
                 var digitBits = radix.ToBinaryDigitBits();
-                var fw = MathEx.CeilDiv(FracWidth, digitBits) * digitBits;
+                var lsb = _bits.FindLeastSignificantBit();
+                if (lsb < 0) lsb = FracWidth - 1;
+                else lsb = Math.Min(FracWidth - 1, lsb);
+                var fw = MathEx.CeilDiv(FracWidth - lsb, digitBits) * digitBits;
                 _bits.Clone(FracWidth - fw, false, fw).ToBinaryString(radix, sb);
             }
             else {
@@ -509,22 +513,22 @@ namespace Shapoco.Maths {
             if (Parse("0xABCDEFABCDEFABCDEFu58.14").ToRawBinaryString(Radix.Hex).NotEq("abcdefabcdefabcdef")) throw Log.Here().TestFailException();
             if (Parse("0xABCDEFABCDEFABCDEFu58.14").ToRawBinaryString(Radix.Oct).NotEq("527467575274675752746757")) throw Log.Here().TestFailException();
             if (Parse("0xABCDEFABCDEFABCDEFu58.14").ToRawBinaryString(Radix.Bin).NotEq("101010111100110111101111101010111100110111101111101010111100110111101111")) throw Log.Here().TestFailException();
-            if (Parse("0x0u7.5").ToBinaryStringWithPoint(Radix.Hex).NotEq("00.00")) throw Log.Here().TestFailException();
-            if (Parse("0x0u7.5").ToBinaryStringWithPoint(Radix.Oct).NotEq("000.00")) throw Log.Here().TestFailException();
-            if (Parse("0x0u7.5").ToBinaryStringWithPoint(Radix.Bin).NotEq("0000000.00000")) throw Log.Here().TestFailException();
+            if (Parse("0x0u7.5").ToBinaryStringWithPoint(Radix.Hex).NotEq("0.0")) throw Log.Here().TestFailException();
+            if (Parse("0x0u7.5").ToBinaryStringWithPoint(Radix.Oct).NotEq("0.0")) throw Log.Here().TestFailException();
+            if (Parse("0x0u7.5").ToBinaryStringWithPoint(Radix.Bin).NotEq("0.0")) throw Log.Here().TestFailException();
             if (Parse("0x0u7.5").ToDecimalStringWithPoint(0).NotEq("0")) throw Log.Here().TestFailException();
             if (Parse("0x0u7.5").ToDecimalStringWithPoint(8).NotEq("0.0")) throw Log.Here().TestFailException();
-            if (Parse("0xABCu7.5").ToBinaryStringWithPoint(Radix.Hex).NotEq("55.e0")) throw Log.Here().TestFailException();
-            if (Parse("0xABCu7.5").ToBinaryStringWithPoint(Radix.Oct).NotEq("125.70")) throw Log.Here().TestFailException();
-            if (Parse("0xABCu7.5").ToBinaryStringWithPoint(Radix.Bin).NotEq("1010101.11100")) throw Log.Here().TestFailException();
+            if (Parse("0xABCu7.5").ToBinaryStringWithPoint(Radix.Hex).NotEq("55.e")) throw Log.Here().TestFailException();
+            if (Parse("0xABCu7.5").ToBinaryStringWithPoint(Radix.Oct).NotEq("125.7")) throw Log.Here().TestFailException();
+            if (Parse("0xABCu7.5").ToBinaryStringWithPoint(Radix.Bin).NotEq("1010101.111")) throw Log.Here().TestFailException();
             if (Parse("0xABCu7.5").ToDecimalStringWithPoint(0).NotEq("85")) throw Log.Here().TestFailException();
             if (Parse("0xABCu7.5").ToDecimalStringWithPoint(1).NotEq("85.8")) throw Log.Here().TestFailException();
             if (Parse("0xABCu7.5").ToDecimalStringWithPoint(2).NotEq("85.87")) throw Log.Here().TestFailException();
             if (Parse("0xABCu7.5").ToDecimalStringWithPoint(3).NotEq("85.875")) throw Log.Here().TestFailException();
             if (Parse("0xABCu7.5").ToDecimalStringWithPoint(4).NotEq("85.875")) throw Log.Here().TestFailException();
-            if (Parse("0xABCs7.5").ToBinaryStringWithPoint(Radix.Hex).NotEq("55.e0")) throw Log.Here().TestFailException();
-            if (Parse("0xABCs7.5").ToBinaryStringWithPoint(Radix.Oct).NotEq("125.70")) throw Log.Here().TestFailException();
-            if (Parse("0xABCs7.5").ToBinaryStringWithPoint(Radix.Bin).NotEq("1010101.11100")) throw Log.Here().TestFailException();
+            if (Parse("0xABCs7.5").ToBinaryStringWithPoint(Radix.Hex).NotEq("55.e")) throw Log.Here().TestFailException();
+            if (Parse("0xABCs7.5").ToBinaryStringWithPoint(Radix.Oct).NotEq("125.7")) throw Log.Here().TestFailException();
+            if (Parse("0xABCs7.5").ToBinaryStringWithPoint(Radix.Bin).NotEq("1010101.111")) throw Log.Here().TestFailException();
             if (Parse("0xABCs7.5").ToDecimalStringWithPoint(0).NotEq("-42")) throw Log.Here().TestFailException();
             if (Parse("0xABCs7.5").ToDecimalStringWithPoint(1).NotEq("-42.1")) throw Log.Here().TestFailException();
             if (Parse("0xABCs7.5").ToDecimalStringWithPoint(2).NotEq("-42.12")) throw Log.Here().TestFailException();

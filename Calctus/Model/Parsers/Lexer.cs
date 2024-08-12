@@ -125,21 +125,18 @@ namespace Shapoco.Calctus.Model.Parsers {
         }
 
         private Token decLiteralFollowing(NumberSequence intDigits) {
-            decimal decVal = 0;
             NumberSequence fracDigits = null;
 
             NumberLexer.ReadFollowing(_sr, intDigits, true);
-            decVal = intDigits.ToDecimal();
 
             if (_sr.ReadIf('.')) {
                 var next = _sr.Peek();
                 if (next < '0' || '9' < next) {
                     // .. と ..= のために巻き戻す
                     _sr.Backtrack();
-                    return _sr.FinishToken(TokenType.Literal, new RealVal(decVal));
+                    return _sr.FinishToken(TokenType.Literal, new RealVal(intDigits.ToDecimal()));
                 }
                 fracDigits = NumberLexer.Expect(_sr, Radix.Decimal, true);
-                decVal += fracDigits.ToFraction();
             }
 
             var postfixPos = _sr.Position;
@@ -147,6 +144,7 @@ namespace Shapoco.Calctus.Model.Parsers {
                 int sign = 1;
                 if (_sr.ReadIf('-')) sign = -1;
                 var exp = sign * NumberLexer.Expect(_sr, Radix.Decimal, true).ToInt();
+                var decVal = constructDecimal(intDigits, fracDigits);
                 decVal *= MathEx.Pow10(exp);
                 var postfixLen = _sr.Position.Index - postfixPos.Index;
                 return _sr.FinishToken(TokenType.Literal, new RealVal(decVal), postfixLen);
@@ -161,15 +159,13 @@ namespace Shapoco.Calctus.Model.Parsers {
                 else {
                     var raw = apfixed.FromDecimalDigits(apxFmt, Radix.Decimal, false, intDigits.ToByteArray(), fracDigits.ToByteArray());
                     var hint = FormatHint.From(FormatStyle.Default, Radix.Decimal, FormatOption.ApFixedWithPoint);
-#if DEBUG
-                    Log.Here().T("hint=" + hint);
-#endif
                     val = new ApFixedVal(raw, hint);
                     //val = new ApFixedVal(raw, FormatHint.From(FormatStyle.Default, Radix.Decimal, FormatOption.ApFixedWithPoint));
                 }
                 return _sr.FinishToken(TokenType.Literal, val, postfixLen);
             }
             else if (readIfId(out string postfix)) {
+                var decVal = constructDecimal(intDigits, fracDigits);
                 if (postfix.Length == 1 && SiPrefix.TryCharToExp(postfix[0], out int siExp)) {
                     decVal *= MathEx.Pow10(siExp * 3);
                     return _sr.FinishToken(TokenType.Literal, new RealVal(decVal, FormatHint.SiPrefixed), postfix.Length);
@@ -188,8 +184,17 @@ namespace Shapoco.Calctus.Model.Parsers {
                 }
             }
             else {
+                var decVal = constructDecimal(intDigits, fracDigits);
                 return _sr.FinishToken(TokenType.Literal, new RealVal(decVal));
             }
+        }
+
+        private decimal constructDecimal(NumberSequence intDigits, NumberSequence fracDigits) {
+            decimal decVal = intDigits.ToDecimal();
+            if (fracDigits != null) {
+                decVal += fracDigits.ToFraction();
+            }
+            return decVal;
         }
 
         // 0x、0b、0o の続き

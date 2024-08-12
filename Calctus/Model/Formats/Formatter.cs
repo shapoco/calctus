@@ -167,9 +167,6 @@ namespace Shapoco.Calctus.Model.Formats {
         // todo 暫定実装 Formatter.ApFixedToString
         public static string ApFixedToString(apfixed val, ToStringArgs args) {
             var radix = args.Format.Radix;
-#if DEBUG
-            Log.Here().T("args.Format=" + args.Format);
-#endif
             var sb = new StringBuilder();
             if (radix == Radix.Decimal) {
                 if (args.Format.Options.HasFlag(FormatOption.ApFixedWithPoint)) {
