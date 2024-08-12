@@ -360,7 +360,7 @@ namespace Shapoco.Maths {
             b = b.Abs(out int signB);
             var negative = (signA < 0) ^ (signB < 0);
             var width = iw + fw;
-            var q = BitArray.DivCore(a, b, signed, width, out int shift, out _);
+            var q = BitArray.UnsignedDivCore(a, b, signed, width, out _, true, out int shift);
             if (shift > 0) q.LogicShiftRightSelf(shift);
             else if (shift < 0) q.LogicShiftLeftSelf(-shift);
             if (negative) q.ArithInvertSelf();

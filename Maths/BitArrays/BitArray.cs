@@ -355,79 +355,103 @@ namespace Shapoco.Maths.BitArrays {
             return bitsC;
         }
 
-        public BitArray Div(BitArray b, out BitArray mod) {
+        public BitArray IntDiv(BitArray b, out BitArray m) {
             var a = this;
-            var signed = a.Signed || b.Signed;
+            var signedQ = a.Signed || b.Signed; // 商の符号有無
+            var signedM = a.Signed; // 余の符号有無
+            var extendM = a.Signed && !b.Signed; // 余を符号の分だけ拡張するか否か
             a = a.Abs(out int signA);
             b = b.Abs(out int signB);
-            var negative = (signA < 0) ^ (signB < 0);
-
-            var q = DivCore(a, b, signed, -1, out int shift, out mod);
-#if DEBUG
-            string traceStr = null;
-            if (Verbose) traceStr = "q=" + q.ToStringForDebug() + " >> " + shift;
-#endif
-            q.LogicShiftRightSelf(shift);
-#if DEBUG
-            if (Verbose) Log.Here().T(traceStr + " --> " + q.ToStringForDebug());
-#endif
-            if (negative) q.ArithInvertSelf();
+            var negativeQ = (signA < 0) ^ (signB < 0); // 商は負
+            var negativeM = (signA < 0); // 余は負
+            var q = UnsignedDivCore(a, b, signedQ, -1, out m, false, out _); // 整数除算実行
+            if (negativeQ) q.ArithInvertSelf(); // 商の符号反転
+            if (signedM) m = m.Clone(0, m.Width + (extendM ? 1 : 0), true); // 
+            if (negativeM) m.ArithInvertSelf();
             return q;
         }
 
-        public static BitArray DivCore(BitArray a, BitArray b, bool signed, int width, out int shift, out BitArray mod) {
+        // todo 性能改善: BitArray.DivCore
+        /// <summary>除算のコア実装</summary>
+        /// <param name="a">被除数</param>
+        /// <param name="b">除数</param>
+        /// <param name="signedQ">商の符号有無</param>
+        /// <param name="widthQ">商の符号有無</param>
+        /// <param name="mod">余</param>
+        /// <param name="fracMode">小数除算モード</param>
+        /// <param name="fracWidth">小数除算モード時、結果の小数部の桁数</param>
+        /// <returns>商</returns>
+        public static BitArray UnsignedDivCore(BitArray a, BitArray b, bool signedQ, int widthQ, out BitArray mod, bool fracMode, out int fracWidth) {
 #if DEBUG
-            if (a.Signed) throw Log.Here().ArgException(nameof(a) + nameof(BitArray.Signed));
-            if (b.Signed) throw Log.Here().ArgException(nameof(b) + nameof(BitArray.Signed));
+            if (a.Signed) throw Log.Here().ArgException(nameof(a) + "." + nameof(a.Signed));
+            if (b.Signed) throw Log.Here().ArgException(nameof(b) + "." + nameof(b.Signed));
 #endif
             if (b.IsZero) throw Log.Here().E(new DivideByZeroException());
-            if (width <= 0) width = a.Width;
+            if (widthQ <= 0) widthQ = a.Width;
+
+            var modWidth = b.Width;
 
             if (a.IsZero) {
-                shift = 0;
-                mod = new BitArray(signed, b.Width);
-                return new BitArray(signed, width);
+                fracWidth = 0;
+                mod = new BitArray(false, modWidth);
+                return new BitArray(signedQ, widthQ);
             }
 
-            var bw = b.Width;
-            b = b.Trim(out int msbB, out _);
-
-            var aw = a.Width;
+            var origWidthA = a.Width;
             var msbA = a.FindMostSignificantBit();
-            var lsbA = msbA + 1 - width;
-            a = a.Clone(lsbA - (b.Width - 1), width + (b.Width - 1));
-            shift = (aw - (msbA + 1)) + msbB;
+
+            int msbB, xLsb, xWidth, msbQ;
+            if (fracMode) {
+                b = b.Trim(out msbB, out _);
+                xLsb = msbA + 1 - widthQ - (b.Width - 1);
+                xWidth = widthQ + (b.Width - 1);
+                msbQ = widthQ - 1;
+                fracWidth = (origWidthA - (msbA + 1)) + msbB;
+            }
+            else {
+                b = b.TrimLeft(out msbB);
+                xLsb = 0;
+                xWidth = msbA + 1;
+                msbQ = widthQ - b.Width;
+                fracWidth = 0;
+            }
+
+            //var lsbA = a.FindLeastSignificantBit();
+
+            var x = a.Clone(xLsb, xWidth);
 #if DEBUG
             string traceString = null;
             if (Verbose) {
                 Log.Here().T(
                     "msbA=" + msbA + ", " +
-                    "lsbA=" + lsbA + ", " +
-                    "a=" + a + ", " +
+                    //"lsbA=" + lsbA + ", " +
+                    "cloneStartA=" + xLsb + ", " +
+                    "cloneWidthA=" + xWidth + ", " +
+                    "x=" + x + ", " +
                     "b=" + b + ", " +
                     "msbB=" + msbB + ", " +
-                    "shift=" + shift);
+                    "shift=" + fracWidth);
             }
 #endif
 
-            var q = new BitArray(signed, width + (signed ? 1 : 0));
-            for (int ibitQ = width - 1; ibitQ >= 0; ibitQ--) {
+            var q = new BitArray(signedQ, widthQ + (signedQ ? 1 : 0));
+            for (int ibitQ = msbQ; ibitQ >= 0; ibitQ--) {
 #if DEBUG
-                if (Verbose) traceString = "[" + ibitQ + "] " + "q=" + q + ", " + "a=" + a;
+                if (Verbose) traceString = "[" + ibitQ + "] " + "q=" + q + ", " + "x=" + x;
 #endif
-                if (a.compareForDiv(b, ibitQ) >= 0) {
-                    a.subSelfForDiv(b, ibitQ);
+                if (x.compareForDiv(b, ibitQ) >= 0) {
+                    x.subSelfForDiv(b, ibitQ);
                     q[ibitQ] = 1u;
                 }
                 else {
                     q[ibitQ] = 0u;
                 }
 #if DEBUG
-                if (Verbose) Log.Here().T(traceString + " --> q[" + ibitQ + "]=" + q[ibitQ] + ", a=" + a);
+                if (Verbose) Log.Here().T(traceString + " --> q[" + ibitQ + "]=" + q[ibitQ] + ", x=" + x);
 #endif
             }
 
-            mod = new BitArray(a.Signed, b.Width);
+            mod = x.Clone(0, modWidth);
             return q;
         }
 
@@ -483,6 +507,7 @@ namespace Shapoco.Maths.BitArrays {
             return 1;
         }
 
+        public BitArray TrimLeft(out int msb) => trim(true, false, out msb, out _);
         public BitArray Trim(out int msb, out int lsb) => trim(true, true, out msb, out lsb);
         private BitArray trim(bool leftTrim, bool rightTrim, out int msb, out int lsb) {
             if (IsZero) {
@@ -490,8 +515,8 @@ namespace Shapoco.Maths.BitArrays {
                 lsb = 0;
                 return new BitArray(Signed, 1);
             }
-            msb = FindMostSignificantBit();
-            lsb = FindLeastSignificantBit();
+            msb = leftTrim ? FindMostSignificantBit() : Width - 1;
+            lsb = rightTrim ? FindLeastSignificantBit() : 0;
             return Clone(lsb, msb + 1 - lsb);
         }
 
@@ -637,12 +662,14 @@ namespace Shapoco.Maths.BitArrays {
         public static BitArray operator +(BitArray a, BitArray b) => a.Add(b);
         public static BitArray operator -(BitArray a, BitArray b) => a.Sub(b);
         public static BitArray operator *(BitArray a, BitArray b) => a.Mul(b);
-        public static BitArray operator /(BitArray a, BitArray b) => a.Div(b, out _);
-        /*
+        public static BitArray operator /(BitArray a, BitArray b) => a.IntDiv(b, out _);
+        public static BitArray operator %(BitArray a, BitArray b) { a.IntDiv(b, out BitArray mod); return mod; }
         
+        /*
         public static BitArray operator <<(BitArray a, int n) => a.LogicShiftLeft(n);
         public static BitArray operator >>(BitArray a, int n) => a.ArithShiftRight(n);
         */
+
         public static bool operator ==(BitArray a, BitArray b) => a.Equals(b);
         public static bool operator !=(BitArray a, BitArray b) => !a.Equals((object)b);
         public static bool operator >(BitArray a, BitArray b) => a.CompareTo(b) > 0;
@@ -664,38 +691,58 @@ namespace Shapoco.Maths.BitArrays {
                     }
                 }
             }
-            doTestParse("0x0u8", "0u8");
-            doTestParse("0x1234u16", "4660u16");
-            doTestParse("0x12345678abcdu48", "20015998348237u48");
-            doTestParse("0x92345678abcds48", "-120721490007091s48");
-            doTestBinaryOp(
+            
+            testParse("0x0u8", "0u8");
+            testParse("0x1234u16", "4660u16");
+            testParse("0x12345678abcdu48", "20015998348237u48");
+            testParse("0x92345678abcds48", "-120721490007091s48");
+            
+            testBinaryOp(
                 "18716516548761564187165487973534u128", '+',
                 "79456185330078728708723456062187u128",
                 "98172701878840292895888944035721u129");
-            doTestBinaryOp(
+            
+            testBinaryOp(
                 "18716516548761564187165487973534u128", '-',
                 "79456185330078728708723456062187u128",
                 "-60739668781317164521557968088653s129");
-            doTestBinaryOp("0x0u8", '*', "0x0u8", "0x0u16");
-            doTestBinaryOp("0x10u8", '*', "0x10u8", "0x100u16");
-            doTestBinaryOp("0x1234u16", '*', "0x5678u16", "0x6260060u32");
-            doTestBinaryOp("0x12u8", '*', "0x3456u16", "0x3ae0cu24");
-            doTestBinaryOp("0x1234u16", '*', "0x56u8", "0x61d78u24");
-            doTestBinaryOp("0xabs8", '*', "0xcdefs16", "0x109fa5s24");
-            doTestBinaryOp("0xffffffffu32", '*', "0xffffffffu32", "0xfffffffe00000001u64");
-            doTestBinaryOp("0x100000000u33", '*', "0x100000000u33", "0x10000000000000000u66");
+            
+            testBinaryOp("0x0u8", '*', "0x0u8", "0x0u16");
+            testBinaryOp("0x10u8", '*', "0x10u8", "0x100u16");
+            testBinaryOp("0x1234u16", '*', "0x5678u16", "0x6260060u32");
+            testBinaryOp("0x12u8", '*', "0x3456u16", "0x3ae0cu24");
+            testBinaryOp("0x1234u16", '*', "0x56u8", "0x61d78u24");
+            testBinaryOp("0xabs8", '*', "0xcdefs16", "0x109fa5s24");
+            testBinaryOp("0xffffffffu32", '*', "0xffffffffu32", "0xfffffffe00000001u64");
+            testBinaryOp("0x100000000u33", '*', "0x100000000u33", "0x10000000000000000u66");
 
-            doTestBinaryOp("0x1000u16", '/', "0x10u16", "0x100u16");
-            doTestBinaryOp("0x5500u16", '/', "0x10u16", "0x550u16");
-            doTestBinaryOp("0x5555u16", '/', "0x5u16", "0x1111u16");
-            doTestBinaryOp("0x8000s16", '/', "0x100u16", "0x1ff80s17");
-            doTestBinaryOp("0x89abs16", '/', "-10s8", "0xbd5s17");
-            doTestBinaryOp("10000u16", '/', "3u16", "3333u16");
-            doTestBinaryOp("-10000s16", '/', "3s16", "-3333s17");
-            doTestBinaryOp("10000s16", '/', "-3s16", "-3333s17");
-            doTestBinaryOp("-10000s16", '/', "-3s16", "3333s17");
-            doTestBinaryOp("0x100000000000u48", '/', "0x10u8", "0x10000000000u48");
-            doTestBinaryOp("10000000000000u48", '/', "3u8", "3333333333333u48");
+            testBinaryOp("0x1000u16", '/', "0x10u16", "0x100u16");
+            testBinaryOp("0x5500u16", '/', "0x10u16", "0x550u16");
+            testBinaryOp("0x5555u16", '/', "0x5u16", "0x1111u16");
+            testBinaryOp("0x8000s16", '/', "0x100u16", "0x1ff80s17");
+            testBinaryOp("0x89abs16", '/', "-10s8", "0xbd5s17");
+            testBinaryOp("10000u16", '/', "3u16", "3333u16");
+            testBinaryOp("-10000s16", '/', "3s16", "-3333s17");
+            testBinaryOp("10000s16", '/', "-3s16", "-3333s17");
+            testBinaryOp("-10000s16", '/', "-3s16", "3333s17");
+            testBinaryOp("0x100000000000u48", '/', "0x10u8", "0x10000000000u48");
+            testBinaryOp("10000000000000u48", '/', "3u8", "3333333333333u48");
+
+            testBinaryOp("0u16", '%', "5u8", "0u8");
+            testBinaryOp("3u16", '%', "5u8", "3u8");
+            testBinaryOp("5u16", '%', "5u8", "0u8");
+            testBinaryOp("7u16", '%', "5u8", "2u8");
+            testBinaryOp("10u16", '%', "5u8", "0u8");
+            testBinaryOp("14u16", '%', "5u8", "4u8");
+            testBinaryOp("1234u16", '%', "1u8", "0u8");
+            testBinaryOp("1234u16", '%', "100u8", "34u8");
+            testBinaryOp("-1234s16", '%', "100u8", "-34s9");
+            testBinaryOp("1234u16", '%', "-100s8", "34u8");
+            testBinaryOp("-1234s16", '%', "-100s8", "-34s8");
+            testBinaryOp("123456789123456789u57", '%', "333333333333u39", "122456913579u39");
+            testBinaryOp("-123456789123456789s58", '%', "333333333333u39", "-122456913579s40");
+            testBinaryOp("123456789123456789u57", '%', "-333333333333s40", "122456913579u40");
+            testBinaryOp("-123456789123456789s58", '%', "-333333333333s40", "-122456913579s40");
         }
 
         private static void doTestGetSegment(BitArray bits) {
@@ -712,7 +759,7 @@ namespace Shapoco.Maths.BitArrays {
             }
         }
 
-        private static void doTestParse(string aStr, string bStr) {
+        private static void testParse(string aStr, string bStr) {
             var a = Parse(aStr);
             var b = Parse(bStr);
             string label = a.ToStringForDebug() + " != " + b.ToStringForDebug();
@@ -721,7 +768,7 @@ namespace Shapoco.Maths.BitArrays {
             if (a.Width.NotEq(b.Width)) throw Log.Here().TestFailException(label);
         }
 
-        private static void doTestBinaryOp(string aStr, char op, string bStr, string cStr) {
+        private static void testBinaryOp(string aStr, char op, string bStr, string cStr) {
             try { doTestBinaryOpInner(aStr, op, bStr, cStr); }
             catch { Verbose = true; doTestBinaryOpInner(aStr, op, bStr, cStr); }
         }
@@ -736,6 +783,7 @@ namespace Shapoco.Maths.BitArrays {
                 case '-': cAct = a - b; break;
                 case '*': cAct = a * b; break;
                 case '/': cAct = a / b; break;
+                case '%': cAct = a % b; break;
                 default: throw new NotImplementedException();
             }
             string label = a.ToStringForDebug() + " " + op + " " + b.ToStringForDebug() + " = " + cAct.ToStringForDebug() + " != " + cExp.ToStringForDebug();
