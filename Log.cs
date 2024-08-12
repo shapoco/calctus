@@ -63,11 +63,13 @@ namespace Shapoco {
         public static object I(string scope, object msgObj) { WriteLine(LogLevel.Info, scope, msgObj); return msgObj; }
         public static object W(string scope, object msgObj) { WriteLine(LogLevel.Warning, scope, msgObj); return msgObj; }
         public static object E(string scope, object msgObj) { WriteLine(LogLevel.Error, scope, msgObj); return msgObj; }
+        public static object F(string scope, object msgObj) { WriteLine(LogLevel.Fatal, scope, msgObj); return msgObj; }
 
         public static Exception T(string scope, Exception ex) { WriteLine(LogLevel.Trace, scope, DescribeException(ex)); return ex; }
         public static Exception I(string scope, Exception ex) { WriteLine(LogLevel.Info, scope, DescribeException(ex)); return ex; }
         public static Exception W(string scope, Exception ex) { WriteLine(LogLevel.Warning, scope, DescribeException(ex)); return ex; }
         public static Exception E(string scope, Exception ex) { WriteLine(LogLevel.Error, scope, DescribeException(ex)); return ex; }
+        public static Exception F(string scope, Exception ex) { WriteLine(LogLevel.Fatal, scope, DescribeException(ex)); return ex; }
 
         public static string DescribeException(Exception ex)
             => ex.GetType().Name + "\r\n" + ex.ToString();
@@ -81,20 +83,25 @@ namespace Shapoco {
             if (deltaT > 0) msgStr = '+' + deltaT.ToString() + msgStr;
             msgStr += (msg == null) ? "(null)" : msg.ToString();
             switch (lv) {
-                case LogLevel.Trace: WriteLine("*trace\t" + msgStr); break;
-                case LogLevel.Info: WriteLine("*info\t" + msgStr); break;
-                case LogLevel.Warning: WriteLine("*Warn\t" + msgStr); break;
-                case LogLevel.Error: WriteLine("*ERROR\t" + msgStr); break;
+                case LogLevel.Trace: WriteLine("*trace\t" + msgStr, flush: false); break;
+                case LogLevel.Info: WriteLine("*info\t" + msgStr, flush: false); break;
+                case LogLevel.Warning: WriteLine("*Warn\t" + msgStr, flush: false); break;
+                case LogLevel.Error: WriteLine("*ERROR\t" + msgStr, flush: true); break;
+                case LogLevel.Fatal: WriteLine("*FATAL\t" + msgStr, flush:true); break;
                 default: throw new NotImplementedException();
             }
         }
 
-        public static void WriteLine(object msg) {
+        public static void WriteLine(object msg, bool flush = false) {
             if (msg == null) return;
             var msgStr = msg.ToString();
             msgStr = msgStr.Replace("\n", "\n\t\t");
             Console.Error.WriteLine(msgStr);
             Writer?.WriteLine(msgStr);
+            if (flush) {
+                Console.Error.Flush();
+                Writer?.Flush();
+            }
         }
 
         public static string LastTestMessage { get; private set; }
@@ -185,10 +192,12 @@ namespace Shapoco {
         public static object I(this MethodBase mb, object msgObj = null) => Log.I(PositionStringFrom(mb), msgObj);
         public static object W(this MethodBase mb, object msgObj = null) => Log.W(PositionStringFrom(mb), msgObj);
         public static object E(this MethodBase mb, object msgObj = null) => Log.E(PositionStringFrom(mb), msgObj);
+        public static object F(this MethodBase mb, object msgObj = null) => Log.E(PositionStringFrom(mb), msgObj);
         public static Exception T(this MethodBase mb, Exception ex) => Log.T(PositionStringFrom(mb), ex);
         public static Exception I(this MethodBase mb, Exception ex) => Log.I(PositionStringFrom(mb), ex);
         public static Exception W(this MethodBase mb, Exception ex) => Log.W(PositionStringFrom(mb), ex);
         public static Exception E(this MethodBase mb, Exception ex) => Log.E(PositionStringFrom(mb), ex);
+        public static Exception F(this MethodBase mb, Exception ex) => Log.F(PositionStringFrom(mb), ex);
 
         public static Exception ArgException(this MethodBase mb, string argName, string msg = null) {
             var scope = PositionStringFrom(mb);
@@ -210,5 +219,6 @@ namespace Shapoco {
         Info,
         Warning,
         Error,
+        Fatal,
     }
 }

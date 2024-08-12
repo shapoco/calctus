@@ -36,13 +36,19 @@ namespace Shapoco.Maths {
         public static apfixed Parse(string s) {
             var lexer = new SimpleLexer(s, autoSkipWhite: false);
             lexer.SkipWhite();
+
+            bool minus = lexer.TryPop("-");
+            lexer.SkipWhite();
+
             Radix radix = Radix.Decimal;
             if (lexer.TryPop("0x")) radix = Radix.Hexadecimal;
             else if (lexer.TryPop("0b")) radix = Radix.Binary;
             else if (lexer.TryPop("0o")) radix = Radix.Octal;
-            else throw Log.Here().E(lexer.Input.CreateExpectedException("\"0x\", \"0b\", or \"0o\""));
             int baseNumber = radix.ToBaseNumber();
-            
+
+            if (minus && radix != Radix.Decimal)
+                throw Log.Here().E(lexer.Input.CreateException("Minus symbol can be applied for decimal."));
+
             lexer.TryPopDigitSequence(radix, out byte[] intDigits);
             byte[] fracDigits = null;
             if (lexer.TryPop('.')) {
@@ -50,8 +56,7 @@ namespace Shapoco.Maths {
             }
 
             int intWidth = 0, fracWidth = 0;
-            char sign = 'u';
-
+            char sign;
             if (lexer.TryPop(new char[] { 'u', 's' }, out sign)) {
                 lexer.TryPopDigitSequence(Radix.Hexadecimal, out byte[] intWidthDigits);
                 intWidth = (int)SimpleLexer.DigitsAsInteger(intWidthDigits, Radix.Decimal);
@@ -61,9 +66,10 @@ namespace Shapoco.Maths {
                 }
             }
             else if (radix == Radix.Decimal) {
-                Log.Here().E(lexer.Input.CreateExpectedException("'u' or 's'"));
+                throw Log.Here().E(lexer.Input.CreateExpectedException("'u' or 's'"));
             }
             else {
+                sign = 'u';
                 intWidth = intDigits.Length * radix.ToBinaryDigitBits();
                 if (fracDigits != null) {
                     fracWidth = fracDigits.Length * radix.ToBinaryDigitBits();
@@ -73,13 +79,85 @@ namespace Shapoco.Maths {
             lexer.AssertEos();
 
             bool signed = (sign == 's');
-            var fmt = new FixedPointFormat(signed, intWidth, fracWidth);
-            if (fracDigits == null) {
-                return FromBinaryDigits(fmt, radix, intDigits);
+            var fmt = new FixedPointFormat(signed, intWidth + fracWidth, fracWidth);
+            if (radix == Radix.Decimal) {
+                if (fracDigits == null) {
+                    return FromDecimalDigits(fmt, radix, minus, intDigits);
+                }
+                else {
+                    return FromDecimalDigits(fmt, radix, minus, intDigits, fracDigits);
+                }
             }
             else {
-                return FromBinaryDigits(fmt, radix, intDigits, fracDigits);
+           if (fracDigits == null) {
+                    return FromBinaryDigits(fmt, radix, intDigits);
+                }
+                else {
+                    return FromBinaryDigits(fmt, radix, intDigits, fracDigits);
+                }
             }
+        }
+
+        public static apfixed FromDecimalDigits(FixedPointFormat fmt, Radix radix, bool minus, byte[] digits) {
+            if (!fmt.Signed && minus) throw Log.Here().ArgException(nameof(fmt.Signed) + "=false, " + nameof(minus) + "=true");
+            var bits = BitArray.FromDecimalDigits(fmt.Signed, fmt.Width, minus, digits);
+            return new apfixed(bits, fmt.FracWidth);
+        }
+
+        public static apfixed FromDecimalDigits(FixedPointFormat fmt, Radix radix, bool minus, byte[] intDigits, byte[] fracDigits) {
+            if (!fmt.Signed && minus) throw Log.Here().ArgException(nameof(fmt.Signed) + "=false, " + nameof(minus) + "=true");
+
+            var bits = BitArray.FromDecimalDigits(fmt.Signed, fmt.Width, false, intDigits);
+            bits.LogicShiftLeftSelf(fmt.FracWidth);
+#if DEBUG
+            if (Verbose) {
+                var sb = new StringBuilder();
+                foreach (var dig in fracDigits) {
+                    sb.Append(Convert.ToString(dig, 16));
+                }
+                Log.Here().T("fracDigits=" + sb.ToString());
+            }
+#endif
+            fracDigits = (byte[])fracDigits.Clone();
+            bool notZero = false;
+            for (int ibit = fmt.FracWidth - 1; ibit >= 0; ibit--) {
+                byte carry = 0;
+                notZero = false;
+                for (int idig = fracDigits.Length - 1; idig >= 0; idig--) {
+                    byte tmp = (byte)(fracDigits[idig] * 2 + carry);
+                    carry = (byte)(tmp / 10);
+                    tmp = (byte)(tmp % 10);
+                    notZero |= tmp != 0;
+                    fracDigits[idig] = tmp;
+                }
+#if DEBUG
+                if (carry >= 2) throw Log.Here().F(new InvalidOperationException());
+#endif
+                bits[ibit] = carry & 1u;
+#if DEBUG
+                if (Verbose) {
+                    var sb = new StringBuilder();
+                    foreach (var dig in fracDigits) {
+                        sb.Append(Convert.ToString(dig, 16));
+                    }
+                    Log.Here().T(
+                        "ibit=" + ibit + ", " +
+                        "carry=" + carry + ", " +
+                        "fracDigits=" + sb.ToString() + ", " +
+                        "bits=" + bits.ToStringForDebug());
+                }
+#endif
+            }
+
+            bits.FillBlankSelf();
+            if (minus) bits.ArithInvertSelf();
+
+            return new apfixed(bits, fmt.FracWidth);
+        }
+
+        public static apfixed FromBinaryDigits(FixedPointFormat fmt, Radix radix, byte[] digits) {
+            var bits = BitArray.FromBinaryDigits(fmt.Signed, fmt.Width, radix, digits);
+            return new apfixed(bits, fmt.FracWidth);
         }
 
         public static apfixed FromBinaryDigits(FixedPointFormat fmt, Radix radix, byte[] intDigits, byte[] fracDigits) {
@@ -111,11 +189,6 @@ namespace Shapoco.Maths {
             }
 
             return new apfixed(work, fmt.FracWidth);
-        }
-
-        public static apfixed FromBinaryDigits(FixedPointFormat fmt, Radix radix, byte[] digits) {
-            var bits = BitArray.FromBinaryDigits(fmt.Signed, fmt.Width, radix, digits);
-            return new apfixed(bits, fmt.FracWidth);
         }
 
         private apfixed(FixedPointFormat fmt, UInt32[] array, bool forceCopy) {
@@ -196,6 +269,11 @@ namespace Shapoco.Maths {
             }
         }
 
+        public string ToStringForDebug() {
+            try { return ToString() + "(" + ToDecimal() + ")"; }
+            catch { return ToString(); }
+        }
+
         public override string ToString() {
             return "0x" + ToBinaryStringWithPoint(Radix.Hexadecimal) + Format.ToString();
         }
@@ -263,13 +341,30 @@ namespace Shapoco.Maths {
         private static apfixed add(apfixed a, apfixed b, bool sub) {
             var iw = Math.Max(a.IntWidthWithoutSign, b.IntWidthWithoutSign) + Math.Max(a.SignWidth, b.SignWidth) + 1;
             var fw = Math.Max(a.FracWidth, b.FracWidth);
-            var o = a._bits.Add(b._bits, sub, a.FracWidth - fw, b.FracWidth - fw, iw + fw);
+            var o = a._bits.AddSub(b._bits, sub, a.FracWidth - fw, b.FracWidth - fw, iw + fw);
             return new apfixed(o, fw);
         }
 
         public apfixed Mul(apfixed b) {
             var bits = _bits.Mul(b._bits);
             return new apfixed(bits, FracWidth + b.FracWidth);
+        }
+
+        public apfixed Div(apfixed apfB) {
+            var a = this._bits;
+            var b = apfB._bits;
+            var iw = this.IntWidth + apfB.FracWidth;
+            var fw = apfB.FracWidth;
+            var signed = a.Signed || b.Signed;
+            a = a.Abs(out int signA);
+            b = b.Abs(out int signB);
+            var negative = (signA < 0) ^ (signB < 0);
+            var width = iw + fw;
+            var q = BitArray.DivCore(a, b, signed, width, out int shift, out _);
+            if (shift > 0) q.LogicShiftRightSelf(shift);
+            else if (shift < 0) q.LogicShiftLeftSelf(-shift);
+            if (negative) q.ArithInvertSelf();
+            return new apfixed(q, FracWidth);
         }
 
         /*
@@ -456,6 +551,9 @@ namespace Shapoco.Maths {
 
         public static apfixed operator +(apfixed a, apfixed b) => a.Add(b);
         public static apfixed operator -(apfixed a, apfixed b) => a.Sub(b);
+        public static apfixed operator *(apfixed a, apfixed b) => a.Mul(b);
+        public static apfixed operator /(apfixed a, apfixed b) => a.Div(b);
+
         /*
         public static apfixed operator *(apfixed a, apfixed b) => a.Mul(b, out _);
         public static apfixed operator /(apfixed a, apfixed b) { a.Div(b, out apfixed q); return q; }
@@ -523,6 +621,56 @@ namespace Shapoco.Maths {
 #if DEBUG
         public static void Test() {
             runTest();
+            doTestParse("100u8", "0x64u8");
+            doTestParse("100.5u8.8", "0x64.80u8.8");
+            doTestParse("100.25u8.8", "0x64.40u8.8");
+            doTestParse("100.125u8.8", "0x64.20u8.8");
+            doTestParse("100.0625u8.8", "0x64.10u8.8");
+            doTestParse("100.03125u8.8", "0x64.08u8.8");
+            doTestParse("100.00390625u8.8", "0x64.01u8.8");
+            doTestParse("100.33203125u8.8", "0x64.55u8.8");
+            doTestParse("100.19921875u8.8", "0x64.33u8.8");
+            doTestParse("100.99609375u8.8", "0x64.ffu8.8");
+            doTestParse("0.1u4.28", "0x01999999u4.28");
+            doTestParse("-0.1s4.28", "0xfe666667s4.28");
+            doTestBinaryOp("100u8", '/', "25u8", "4u8");
+        }
+
+        private static void doTestParse(string aStr, string bStr) {
+            try { doTestParseInner(aStr, bStr); }
+            catch { Verbose = true; doTestParseInner(aStr, bStr); }
+        }
+
+        private static void doTestParseInner(string aStr, string bStr) {
+            var a = Parse(aStr);
+            var b = Parse(bStr);
+            string label = a.ToStringForDebug() + " != " + b.ToStringForDebug();
+            if (a.NotEq(b)) throw Log.Here().TestFailException(label);
+            if (a.Sign.NotEq(b.Sign)) throw Log.Here().TestFailException(label);
+            if (a.Width.NotEq(b.Width)) throw Log.Here().TestFailException(label);
+        }
+
+        private static void doTestBinaryOp(string aStr, char op, string bStr, string cStr) {
+            try { doTestBinaryOpInner(aStr, op, bStr, cStr); }
+            catch { Verbose = true; doTestBinaryOpInner(aStr, op, bStr, cStr); }
+        }
+
+        private static void doTestBinaryOpInner(string aStr, char op, string bStr, string cStr) {
+            var a = Parse(aStr);
+            var b = Parse(bStr);
+            var cExp = Parse(cStr);
+            apfixed cAct;
+            switch (op) {
+                case '+': cAct = a + b; break;
+                case '-': cAct = a - b; break;
+                case '*': cAct = a * b; break;
+                case '/': cAct = a / b; break;
+                default: throw new NotImplementedException();
+            }
+            string label = a.ToStringForDebug() + " " + op + " " + b.ToStringForDebug() + " = " + cExp.ToStringForDebug();
+            if (cAct.Sign.NotEq(cExp.Sign)) throw Log.Here().TestFailException(label);
+            if (cAct.Width.NotEq(cExp.Width)) throw Log.Here().TestFailException(label);
+            if (cAct.NotEq(cExp)) throw Log.Here().TestFailException(label);
         }
 
         private static void runTest() {

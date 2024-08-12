@@ -33,6 +33,9 @@ namespace Shapoco.Calctus.Model.Formats {
                 }
                 if (ret == null) {
                     ret = new FormatHint(style, radix, options);
+#if DEBUG
+                    Log.Here().T("FormatHint created: " + ret);
+#endif
                 }
                 _instances[key] = ret;
             }
@@ -48,6 +51,8 @@ namespace Shapoco.Calctus.Model.Formats {
             this.Radix = radix;
             this.Options = options;
         }
+
+        public FormatHint Clone(Radix radix) => From(this.Style, radix, this.Options);
 
         public override int GetHashCode() => ((int)Style * 0x1000000) + ((int)Radix * 0x10000) + (int)Options;
 

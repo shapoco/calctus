@@ -34,7 +34,7 @@ namespace Shapoco.Calctus.Model.Parsers {
             _tokenBuf.Clear();
         }
 
-        public void Trackback() {
+        public void Backtrack() {
             _pos.Index -= 1;
             _tokenBuf.Remove(_tokenBuf.Length - 1, 1);
         }

@@ -124,20 +124,22 @@ namespace Shapoco.Calctus.Model.Parsers {
             }
         }
 
-        private Token decLiteralFollowing(NumberSequence integBuf) {
-            decimal val = 0;
+        private Token decLiteralFollowing(NumberSequence intDigits) {
+            decimal decVal = 0;
+            NumberSequence fracDigits = null;
 
-            NumberLexer.ReadFollowing(_sr, integBuf, true);
-            val = integBuf.ToDecimal();
+            NumberLexer.ReadFollowing(_sr, intDigits, true);
+            decVal = intDigits.ToDecimal();
 
             if (_sr.ReadIf('.')) {
                 var next = _sr.Peek();
                 if (next < '0' || '9' < next) {
                     // .. と ..= のために巻き戻す
-                    _sr.Trackback();
-                    return _sr.FinishToken(TokenType.Literal, new RealVal(val));
+                    _sr.Backtrack();
+                    return _sr.FinishToken(TokenType.Literal, new RealVal(decVal));
                 }
-                val += NumberLexer.Expect(_sr, Radix.Decimal, true).ToFraction();
+                fracDigits = NumberLexer.Expect(_sr, Radix.Decimal, true);
+                decVal += fracDigits.ToFraction();
             }
 
             var postfixPos = _sr.Position;
@@ -145,30 +147,48 @@ namespace Shapoco.Calctus.Model.Parsers {
                 int sign = 1;
                 if (_sr.ReadIf('-')) sign = -1;
                 var exp = sign * NumberLexer.Expect(_sr, Radix.Decimal, true).ToInt();
-                val *= MathEx.Pow10(exp);
+                decVal *= MathEx.Pow10(exp);
                 var postfixLen = _sr.Position.Index - postfixPos.Index;
-                return _sr.FinishToken(TokenType.Literal, new RealVal(val), postfixLen);
+                return _sr.FinishToken(TokenType.Literal, new RealVal(decVal), postfixLen);
+            }
+            else if (tryEatApfixedFormat(out FixedPointFormat apxFmt, out _)) {
+                var postfixLen = _sr.Position.Index - postfixPos.Index;
+                ApFixedVal val;
+                if (fracDigits == null) {
+                    var raw = apfixed.FromDecimalDigits(apxFmt, Radix.Decimal, false, intDigits.ToByteArray());
+                    val = new ApFixedVal(raw, FormatHint.From(FormatStyle.Default, Radix.Decimal));
+                }
+                else {
+                    var raw = apfixed.FromDecimalDigits(apxFmt, Radix.Decimal, false, intDigits.ToByteArray(), fracDigits.ToByteArray());
+                    var hint = FormatHint.From(FormatStyle.Default, Radix.Decimal, FormatOption.ApFixedWithPoint);
+#if DEBUG
+                    Log.Here().T("hint=" + hint);
+#endif
+                    val = new ApFixedVal(raw, hint);
+                    //val = new ApFixedVal(raw, FormatHint.From(FormatStyle.Default, Radix.Decimal, FormatOption.ApFixedWithPoint));
+                }
+                return _sr.FinishToken(TokenType.Literal, val, postfixLen);
             }
             else if (readIfId(out string postfix)) {
                 if (postfix.Length == 1 && SiPrefix.TryCharToExp(postfix[0], out int siExp)) {
-                    val *= MathEx.Pow10(siExp * 3);
-                    return _sr.FinishToken(TokenType.Literal, new RealVal(val, FormatHint.SiPrefixed), postfix.Length);
+                    decVal *= MathEx.Pow10(siExp * 3);
+                    return _sr.FinishToken(TokenType.Literal, new RealVal(decVal, FormatHint.SiPrefixed), postfix.Length);
                 }
                 else if (postfix.Length == 2 && BinaryPrefix.TryCharToExp(postfix[0], out int kibiExp) && postfix[1] == 'i') {
                     if (kibiExp >= 0) {
-                        val *= (1L << (kibiExp * 10));
+                        decVal *= (1L << (kibiExp * 10));
                     }
                     else {
-                        val /= (1L << (-kibiExp * 10));
+                        decVal /= (1L << (-kibiExp * 10));
                     }
-                    return _sr.FinishToken(TokenType.Literal, new RealVal(val, FormatHint.BinaryPrefixed), postfix.Length);
+                    return _sr.FinishToken(TokenType.Literal, new RealVal(decVal, FormatHint.BinaryPrefixed), postfix.Length);
                 }
                 else {
                     throw Log.Here().E(new LexerError(postfixPos, _sr.Position.Index - postfixPos.Index, "Invalid postfix: " + CStyleEscaping.EscapeAndQuote(postfix)));
                 }
             }
             else {
-                return _sr.FinishToken(TokenType.Literal, new RealVal(val));
+                return _sr.FinishToken(TokenType.Literal, new RealVal(decVal));
             }
         }
 
@@ -195,39 +215,47 @@ namespace Shapoco.Calctus.Model.Parsers {
             throw Log.Here().E(_sr.ExpectFailed("ApFixed format"));
         }
 
-        private bool tryEatApfixedFormat(out FixedPointFormat fixedFmt, out int startPos) {
+        private bool tryEatApfixedFormat(out FixedPointFormat apxFmt, out int startPos) {
             bool signed;
             startPos = _sr.Position.Index;
             if (_sr.ReadIf('u')) signed = false;
             else if (_sr.ReadIf('s')) signed = true;
             else {
                 startPos = StringReaderDep.InvalidPos;
-                fixedFmt = FixedPointFormat.Empty;
+                apxFmt = FixedPointFormat.Empty;
                 return false;
             }
 
-            int iw = NumberLexer.Expect(_sr, Radix.Decimal, true).ToInt();
+            if (!NumberLexer.TryParse(_sr,Radix.Decimal, false, out NumberSequence seq)) {
+                // uXX.XX と u(マイクロ) の区別のため、数字が続かない場合は巻き戻す
+                _sr.Backtrack();
+                startPos = StringReaderDep.InvalidPos;
+                apxFmt = FixedPointFormat.Empty;
+                return false;
+            }
+
+            int iw = seq.ToInt();
             int fw = 0;
             if (_sr.ReadIf('.')) {
                 fw = NumberLexer.Expect(_sr, Radix.Decimal, true).ToInt();
             }
 
-            fixedFmt = new FixedPointFormat(signed, iw + fw, fw);
+            apxFmt = new FixedPointFormat(signed, iw + fw, fw);
             return true;
         }
 
         private Token apfixedLiteralFollowing(Radix radix, NumberSequence intDigits) {
             var fracDigits = NumberLexer.Expect(_sr, radix, true);
             var postfixStart = _sr.Position.Index;
-            var fixedFmt = eatApfixedFormat();
+            var apxFmt = eatApfixedFormat();
             var raw = apfixed.FromBinaryDigits(
-                fixedFmt, radix, intDigits.ToByteArray(), fracDigits.ToByteArray());
+                apxFmt, radix, intDigits.ToByteArray(), fracDigits.ToByteArray());
             var val = new ApFixedVal(raw, FormatHint.From(FormatStyle.Default, radix, FormatOption.ApFixedWithPoint));
             return _sr.FinishToken(TokenType.Literal, val, _sr.Position.Index - postfixStart);
         }
 
-        private Token apfixedRawLiteralFollowing(int postfixStart, Radix radix, NumberSequence digits, FixedPointFormat fixedFmt) {
-            var raw = apfixed.FromBinaryDigits(fixedFmt, radix, digits.ToByteArray());
+        private Token apfixedRawLiteralFollowing(int postfixStart, Radix radix, NumberSequence digits, FixedPointFormat apxFmt) {
+            var raw = apfixed.FromBinaryDigits(apxFmt, radix, digits.ToByteArray());
             var val = new ApFixedVal(raw, FormatHint.From(FormatStyle.Default, radix));
             return _sr.FinishToken(TokenType.Literal, val, _sr.Position.Index - postfixStart);
         }

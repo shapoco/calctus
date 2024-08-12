@@ -7,6 +7,9 @@ using Shapoco.Texts;
 
 namespace Shapoco.Maths.BitArrays {
     struct BitArray : IComparable<BitArray> {
+#if DEBUG
+        public static bool Verbose = false;
+#endif
         public const int Stride = sizeof(UInt32) * 8;
         public const int Clog2Stride =
             Stride <= 8 ? 0 :
@@ -16,8 +19,10 @@ namespace Shapoco.Maths.BitArrays {
             Stride <= 128 ? 7 :
             0;
 
+        private bool _signed;
+
         public readonly int Width;
-        public readonly bool Signed;
+        public bool Signed => _signed;
         public readonly UInt32[] Segments;
 
         public int SignWidth => Signed ? 1 : 0;
@@ -49,16 +54,17 @@ namespace Shapoco.Maths.BitArrays {
             lexer.TryPopDigitSequence(radix, out byte[] digits);
 
             int width = 0;
-            char sign = 'u';
 
+            char sign;
             if (lexer.TryPop(new char[] { 'u', 's' }, out sign)) {
                 lexer.TryPopDigitSequence(Radix.Hexadecimal, out byte[] intWidthDigits);
                 width = (int)SimpleLexer.DigitsAsInteger(intWidthDigits, Radix.Decimal);
             }
             else if (radix == Radix.Decimal) {
-                Log.Here().E(lexer.Input.CreateExpectedException("'u' or 's'"));
+                throw Log.Here().E(lexer.Input.CreateExpectedException("'u' or 's'"));
             }
             else {
+                sign = 'u';
                 width = digits.Length * radix.ToBinaryDigitBits();
             }
             lexer.SkipWhite();
@@ -91,11 +97,11 @@ namespace Shapoco.Maths.BitArrays {
         }
 
         public static BitArray FromDecimalDigits(bool signed, int width, bool minus, byte[] digits) {
+            if (!signed && minus) throw Log.Here().ArgException(nameof(signed) + "=false, " + nameof(minus) + "=true");
             var bits = new BitArray(signed, width);
             foreach (var digit in digits) {
                 bits.Mul10AddSelf(digit);
             }
-            if (!signed && minus) throw Log.Here().ArgException(nameof(signed) + "=false, " + nameof(minus) + "=true");
             bits.FillBlankSelf();
             if (minus) bits.ArithInvertSelf();
             return bits;
@@ -122,7 +128,7 @@ namespace Shapoco.Maths.BitArrays {
                 segs = newArray;
             }
 
-            this.Signed = signed;
+            this._signed = signed;
             this.Width = width;
             this.Segments = segs;
 
@@ -235,11 +241,15 @@ namespace Shapoco.Maths.BitArrays {
         }
 
         public BitArray Abs(out int origSign) {
-            origSign = Sign;
-            if (!Signed) return this;
-            var bits = Clone(0, Width, false);
-            if (origSign < 0) bits.ArithInvertSelf();
+            var bits = Clone(0, Width);
+            bits.AbsSelf(out origSign);
             return bits;
+        }
+
+        public void AbsSelf(out int origSign) {
+            origSign = Sign;
+            _signed = false;
+            if (origSign < 0) ArithInvertSelf();
         }
 
         public void FillBlankSelf() {
@@ -271,10 +281,10 @@ namespace Shapoco.Maths.BitArrays {
             else return 1;
         }
 
-        public BitArray Add(BitArray b) => Add(b, false);
-        public BitArray Sub(BitArray b) => Add(b, true);
+        public BitArray Add(BitArray b) => AddSub(b, false);
+        public BitArray Sub(BitArray b) => AddSub(b, true);
 
-        public BitArray Add(BitArray b, bool sub, int ibitA = 0, int ibitB = 0, int width = -1) {
+        public BitArray AddSub(BitArray b, bool sub, int ibitA = 0, int ibitB = 0, int width = -1) {
             if (width <= 0) {
                 width = Math.Max(this.WidthWithoutSign, b.WidthWithoutSign) + Math.Max(this.SignWidth, b.SignWidth) + 1;
             }
@@ -304,6 +314,7 @@ namespace Shapoco.Maths.BitArrays {
             var signedC = a.Signed || b.Signed;
             a = a.Abs(out int signA);
             b = b.Abs(out int signB);
+            var negative = (signA < 0) ^ (signB < 0);
 
             var segsA = a.Segments;
             var segsB = b.Segments;
@@ -315,7 +326,7 @@ namespace Shapoco.Maths.BitArrays {
             var accum = new UInt64[nsegAB];
             for (int isegB = 0; isegB < nsegB; isegB++) {
                 for (int isegA = 0; isegA < nsegA; isegA++) {
-                    accum[isegB + isegA] += (UInt64)segsA[isegA] * segsB[isegB];
+                    accum[isegA + isegB] += (UInt64)segsA[isegA] * segsB[isegB];
                 }
             }
 
@@ -340,10 +351,170 @@ namespace Shapoco.Maths.BitArrays {
             }
 
             var bitsC = new BitArray(signedC, widthC, segsC, false);
-
-            if ((signA < 0) ^ (signB < 0)) bitsC.ArithInvertSelf();
-
+            if (negative) bitsC.ArithInvertSelf();
             return bitsC;
+        }
+
+        public BitArray Div(BitArray b, out BitArray mod) {
+            var a = this;
+            var signed = a.Signed || b.Signed;
+            a = a.Abs(out int signA);
+            b = b.Abs(out int signB);
+            var negative = (signA < 0) ^ (signB < 0);
+
+            var q = DivCore(a, b, signed, -1, out int shift, out mod);
+#if DEBUG
+            string traceStr = null;
+            if (Verbose) traceStr = "q=" + q.ToStringForDebug() + " >> " + shift;
+#endif
+            q.LogicShiftRightSelf(shift);
+#if DEBUG
+            if (Verbose) Log.Here().T(traceStr + " --> " + q.ToStringForDebug());
+#endif
+            if (negative) q.ArithInvertSelf();
+            return q;
+        }
+
+        public static BitArray DivCore(BitArray a, BitArray b, bool signed, int width, out int shift, out BitArray mod) {
+#if DEBUG
+            if (a.Signed) throw Log.Here().ArgException(nameof(a) + nameof(BitArray.Signed));
+            if (b.Signed) throw Log.Here().ArgException(nameof(b) + nameof(BitArray.Signed));
+#endif
+            if (b.IsZero) throw Log.Here().E(new DivideByZeroException());
+            if (width <= 0) width = a.Width;
+
+            if (a.IsZero) {
+                shift = 0;
+                mod = new BitArray(signed, b.Width);
+                return new BitArray(signed, width);
+            }
+
+            var bw = b.Width;
+            b = b.Trim(out int msbB, out _);
+
+            var aw = a.Width;
+            var msbA = a.FindMostSignificantBit();
+            var lsbA = msbA + 1 - width;
+            a = a.Clone(lsbA - (b.Width - 1), width + (b.Width - 1));
+            shift = (aw - (msbA + 1)) + msbB;
+#if DEBUG
+            string traceString = null;
+            if (Verbose) {
+                Log.Here().T(
+                    "msbA=" + msbA + ", " +
+                    "lsbA=" + lsbA + ", " +
+                    "a=" + a + ", " +
+                    "b=" + b + ", " +
+                    "msbB=" + msbB + ", " +
+                    "shift=" + shift);
+            }
+#endif
+
+            var q = new BitArray(signed, width + (signed ? 1 : 0));
+            for (int ibitQ = width - 1; ibitQ >= 0; ibitQ--) {
+#if DEBUG
+                if (Verbose) traceString = "[" + ibitQ + "] " + "q=" + q + ", " + "a=" + a;
+#endif
+                if (a.compareForDiv(b, ibitQ) >= 0) {
+                    a.subSelfForDiv(b, ibitQ);
+                    q[ibitQ] = 1u;
+                }
+                else {
+                    q[ibitQ] = 0u;
+                }
+#if DEBUG
+                if (Verbose) Log.Here().T(traceString + " --> q[" + ibitQ + "]=" + q[ibitQ] + ", a=" + a);
+#endif
+            }
+
+            mod = new BitArray(a.Signed, b.Width);
+            return q;
+        }
+
+        // todo 性能改善 BitArray.FindMostSignificantBit()
+        public int FindMostSignificantBit() {
+            var higherBlankBit = IsNegative ? 1u : 0u;
+            var w = Width;
+            int msb = w - 1;
+            while (this[msb] == higherBlankBit && msb >= 0) msb--;
+            if (Signed) msb += 1;
+            return msb;
+        }
+
+        // todo 性能改善 BitArray.FindLeastSignificantBit()
+        public int FindLeastSignificantBit() {
+            var w = Width;
+            int lsb = 0;
+            while (this[lsb] == 0u && lsb < w) lsb++;
+            return lsb < w ? lsb : -1;
+        }
+
+        // todo 性能改善 BitArray.leftAliendCompare()
+        private int compareForDiv(BitArray b, int offsetA) {
+            var aw = this.Width;
+            var bw = b.Width;
+            for (int ibitB = bw; ibitB >= 0; ibitB--) {
+                var diff = (int)this[offsetA + ibitB] - (int)b[ibitB];
+                if (diff != 0) return diff;
+            }
+            return 0;
+        }
+
+        // todo 性能改善 BitArray.leftAliendSub()
+        private void subSelfForDiv(BitArray b, int offsetA) {
+            var aw = this.Width;
+            var bw = b.Width;
+            UInt32 carry = 0u;
+            for (int ibitB = 0; ibitB < bw + 1; ibitB++) {
+                UInt32 bit = this[offsetA + ibitB] - (b[ibitB] + carry);
+                this[offsetA + ibitB] = bit & 1u;
+                carry = (bit >> 1) & 1u;
+            }
+        }
+
+        // todo 性能改善 BitArray.LeftAlignedCompareTo()
+        private int leftAlignedCompareTo(BitArray b) {
+            var aw = Width;
+            var bw = b.Width;
+            var w = Math.Max(aw, bw);
+            var diff = AddSub(b, true, aw - w, bw - w, w);
+            if (diff.IsNegative) return -1;
+            if (diff.IsZero) return 0;
+            return 1;
+        }
+
+        public BitArray Trim(out int msb, out int lsb) => trim(true, true, out msb, out lsb);
+        private BitArray trim(bool leftTrim, bool rightTrim, out int msb, out int lsb) {
+            if (IsZero) {
+                msb = 0;
+                lsb = 0;
+                return new BitArray(Signed, 1);
+            }
+            msb = FindMostSignificantBit();
+            lsb = FindLeastSignificantBit();
+            return Clone(lsb, msb + 1 - lsb);
+        }
+
+        // todo 性能改善 BitArray.LogicShiftLeftSelf()
+        public void LogicShiftLeftSelf(int shift) {
+            if (shift < 0) throw Log.Here().ArgException(nameof(shift));
+            if (shift == 0) return;
+            var w = Width;
+            for (int ibit = w - 1; ibit >= 0; ibit--) {
+                this[ibit] = this[ibit - shift];
+            }
+            FillBlankSelf();
+        }
+
+        // todo 性能改善 BitArray.LogicShiftRightSelf()
+        public void LogicShiftRightSelf(int shift) {
+            if (shift < 0) throw Log.Here().ArgException(nameof(shift));
+            if (shift == 0) return;
+            var w = Width;
+            for (int ibit = 0; ibit < w; ibit++) {
+                this[ibit] = this[ibit + shift];
+            }
+            FillBlankSelf();
         }
 
         public IEnumerable<UInt32> EnumBits() => EnumBits(0, Width);
@@ -466,11 +637,11 @@ namespace Shapoco.Maths.BitArrays {
         public static BitArray operator +(BitArray a, BitArray b) => a.Add(b);
         public static BitArray operator -(BitArray a, BitArray b) => a.Sub(b);
         public static BitArray operator *(BitArray a, BitArray b) => a.Mul(b);
+        public static BitArray operator /(BitArray a, BitArray b) => a.Div(b, out _);
         /*
-        public static apfixed operator /(BitArray a, BitArray b) { a.Div(b, out apfixed q); return q; }
         
-        public static apfixed operator <<(BitArray a, int n) => a.LogicShiftLeft(n);
-        public static apfixed operator >>(BitArray a, int n) => a.ArithShiftRight(n);
+        public static BitArray operator <<(BitArray a, int n) => a.LogicShiftLeft(n);
+        public static BitArray operator >>(BitArray a, int n) => a.ArithShiftRight(n);
         */
         public static bool operator ==(BitArray a, BitArray b) => a.Equals(b);
         public static bool operator !=(BitArray a, BitArray b) => !a.Equals((object)b);
@@ -513,6 +684,18 @@ namespace Shapoco.Maths.BitArrays {
             doTestBinaryOp("0xabs8", '*', "0xcdefs16", "0x109fa5s24");
             doTestBinaryOp("0xffffffffu32", '*', "0xffffffffu32", "0xfffffffe00000001u64");
             doTestBinaryOp("0x100000000u33", '*', "0x100000000u33", "0x10000000000000000u66");
+
+            doTestBinaryOp("0x1000u16", '/', "0x10u16", "0x100u16");
+            doTestBinaryOp("0x5500u16", '/', "0x10u16", "0x550u16");
+            doTestBinaryOp("0x5555u16", '/', "0x5u16", "0x1111u16");
+            doTestBinaryOp("0x8000s16", '/', "0x100u16", "0x1ff80s17");
+            doTestBinaryOp("0x89abs16", '/', "-10s8", "0xbd5s17");
+            doTestBinaryOp("10000u16", '/', "3u16", "3333u16");
+            doTestBinaryOp("-10000s16", '/', "3s16", "-3333s17");
+            doTestBinaryOp("10000s16", '/', "-3s16", "-3333s17");
+            doTestBinaryOp("-10000s16", '/', "-3s16", "3333s17");
+            doTestBinaryOp("0x100000000000u48", '/', "0x10u8", "0x10000000000u48");
+            doTestBinaryOp("10000000000000u48", '/', "3u8", "3333333333333u48");
         }
 
         private static void doTestGetSegment(BitArray bits) {
@@ -539,6 +722,11 @@ namespace Shapoco.Maths.BitArrays {
         }
 
         private static void doTestBinaryOp(string aStr, char op, string bStr, string cStr) {
+            try { doTestBinaryOpInner(aStr, op, bStr, cStr); }
+            catch { Verbose = true; doTestBinaryOpInner(aStr, op, bStr, cStr); }
+        }
+
+        private static void doTestBinaryOpInner(string aStr, char op, string bStr, string cStr) {
             var a = Parse(aStr);
             var b = Parse(bStr);
             var cExp = Parse(cStr);
@@ -547,9 +735,10 @@ namespace Shapoco.Maths.BitArrays {
                 case '+': cAct = a + b; break;
                 case '-': cAct = a - b; break;
                 case '*': cAct = a * b; break;
+                case '/': cAct = a / b; break;
                 default: throw new NotImplementedException();
             }
-            string label = a.ToStringForDebug() + " * " + b.ToStringForDebug() + " = " + cExp.ToStringForDebug();
+            string label = a.ToStringForDebug() + " " + op + " " + b.ToStringForDebug() + " = " + cAct.ToStringForDebug() + " != " + cExp.ToStringForDebug();
             if (cAct.Sign.NotEq(cExp.Sign)) throw Log.Here().TestFailException(label);
             if (cAct.Width.NotEq(cExp.Width)) throw Log.Here().TestFailException(label);
             if (cAct.NotEq(cExp)) throw Log.Here().TestFailException(label);

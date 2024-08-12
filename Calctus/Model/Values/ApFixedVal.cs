@@ -31,6 +31,7 @@ namespace Shapoco.Calctus.Model.Values {
 
         public override Val Add(EvalContext ctx, Val b) => new ApFixedVal(_raw + ((ApFixedVal)b)._raw, FormatHint);
         public override Val Sub(EvalContext ctx, Val b) => new ApFixedVal(_raw - ((ApFixedVal)b)._raw, FormatHint);
+        public override Val Mul(EvalContext ctx, Val b) => new ApFixedVal(_raw * ((ApFixedVal)b)._raw, FormatHint);
 
         public override bool Equals(EvalContext ctx, Val b) => _raw.Equals(((ApFixedVal)b)._raw);
         public override bool Grater(EvalContext ctx, Val b) => _raw.CompareTo(((ApFixedVal)b)._raw) > 0;

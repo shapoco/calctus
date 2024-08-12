@@ -167,6 +167,9 @@ namespace Shapoco.Calctus.Model.Formats {
         // todo 暫定実装 Formatter.ApFixedToString
         public static string ApFixedToString(apfixed val, ToStringArgs args) {
             var radix = args.Format.Radix;
+#if DEBUG
+            Log.Here().T("args.Format=" + args.Format);
+#endif
             if (radix == Radix.Decimal) {
                 // todo Formatter.ApFixedToString() 10進のときの多ビット対応
                 return DecimalToCStyleDecimalLiteral((decimal)val, ToStringArgs.ForLiteral(), true);

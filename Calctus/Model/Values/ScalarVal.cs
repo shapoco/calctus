@@ -10,8 +10,7 @@ namespace Shapoco.Calctus.Model.Values {
         private readonly FormatHint _numericFormat;
 
         public ScalarVal(TRaw val, FormatHint fmt = null) : base(val) {
-            if (fmt == null) fmt = FormatHint.Default;
-            _numericFormat = fmt;
+            _numericFormat = fmt.OrDefault();
         }
 
         public override bool IsScalar => true;

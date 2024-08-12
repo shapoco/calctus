@@ -13,19 +13,19 @@ namespace Shapoco.Calctus.Model.Functions.BuiltIns {
 
         public readonly BuiltInFuncDef dec = new BuiltInFuncDef("dec(*x)",
             "Converts `x` to decimal representation.",
-            (e, a) => a[0].Format(FormatHint.Default));
+            (e, a) => a[0].Format(a[0].FormatHint.Clone(Radix.Decimal)));
 
         public readonly BuiltInFuncDef hex = new BuiltInFuncDef("hex(*x)",
             "Converts `x` to hexdecimal representation.",
-            (e, a) => a[0].Format(FormatHint.Hexadecimal));
+            (e, a) => a[0].Format(a[0].FormatHint.Clone(Radix.Hexadecimal)));
 
         public readonly BuiltInFuncDef bin = new BuiltInFuncDef("bin(*x)",
             "Converts `x` to binary representation.",
-            (e, a) => a[0].Format(FormatHint.Binary));
+            (e, a) => a[0].Format(a[0].FormatHint.Clone(Radix.Binary)));
 
         public readonly BuiltInFuncDef oct = new BuiltInFuncDef("oct(*x)",
             "Converts `x` to octal representation.",
-            (e, a) => a[0].Format(FormatHint.Octal));
+            (e, a) => a[0].Format(a[0].FormatHint.Clone(Radix.Octal)));
 
         public readonly BuiltInFuncDef si = new BuiltInFuncDef("si(*x)",
             "Converts `x` to SI prefixed representation.",
