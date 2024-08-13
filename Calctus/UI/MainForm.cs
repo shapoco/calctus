@@ -133,28 +133,28 @@ namespace Shapoco.Calctus.UI {
 #if DEBUG
             var testResultLabel = new Label();
             testResultLabel.Dock = DockStyle.Right;
-            if (Test.NumErrors != 0 || Test.NumWarnings != 0 || Test.NumUntested != 0) {
-                testResultLabel.Text = Test.NumSuccess + " Success";
-                testResultLabel.Text += ", " + Test.NumErrors + " Failed";
-                if (Test.NumWarnings > 0) {
-                    testResultLabel.Text += ", " + Test.NumWarnings + " Warnings";
+            if (CalctusTest.NumErrors != 0 || CalctusTest.NumWarnings != 0 || CalctusTest.NumUntested != 0) {
+                testResultLabel.Text = CalctusTest.NumSuccess + " Success";
+                testResultLabel.Text += ", " + CalctusTest.NumErrors + " Failed";
+                if (CalctusTest.NumWarnings > 0) {
+                    testResultLabel.Text += ", " + CalctusTest.NumWarnings + " Warnings";
                 }
-                if (Test.NumUntested > 0) {
-                    testResultLabel.Text += ", " + Test.NumUntested + " Untested";
+                if (CalctusTest.NumUntested > 0) {
+                    testResultLabel.Text += ", " + CalctusTest.NumUntested + " Untested";
                 }
             }
             else {
                 testResultLabel.Text = "All Test Passed";
             }
-            if (Test.NumErrors > 0) {
+            if (CalctusTest.NumErrors > 0) {
                 testResultLabel.BackColor = Color.Red;
                 testResultLabel.ForeColor = Color.White;
             }
-            else if (Test.NumWarnings > 0) {
+            else if (CalctusTest.NumWarnings > 0) {
                 testResultLabel.BackColor = Color.Yellow;
                 testResultLabel.ForeColor = Color.Black;
             }
-            else if (Test.NumUntested > 0) {
+            else if (CalctusTest.NumUntested > 0) {
                 testResultLabel.BackColor = Color.Magenta;
                 testResultLabel.ForeColor = Color.Black;
             }

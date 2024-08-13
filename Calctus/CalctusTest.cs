@@ -8,7 +8,7 @@ using Shapoco.Calctus.Model.Parsers;
 using Shapoco.Calctus.Model.Values;
 
 namespace Shapoco.Calctus {
-    static class Test {
+    static class CalctusTest {
         public static void AssertEqual(EvalContext e, string TestExpr, string ExpectedStr ) {
             try {
                 var expVal = Parser.Parse(ExpectedStr).Eval(e);

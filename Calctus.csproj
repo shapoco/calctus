@@ -190,7 +190,7 @@
     <Compile Include="Calctus\Model\Values\BaseVal.cs" />
     <Compile Include="Calctus\Model\Values\ValExtensions.cs" />
     <Compile Include="Calctus\Settings.cs" />
-    <Compile Include="Calctus\Test.cs" />
+    <Compile Include="Calctus\CalctusTest.cs" />
     <Compile Include="Calctus\UI\AxisSettingsPanel.cs">
       <SubType>Component</SubType>
     </Compile>

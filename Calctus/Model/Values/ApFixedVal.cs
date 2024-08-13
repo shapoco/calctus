@@ -52,17 +52,17 @@ namespace Shapoco.Calctus.Model.Values {
 #if DEBUG
         public static void Test() {
             var e = new EvalContext();
-            Calctus.Test.AssertEqual(e, "0b0001001000110100u16", "0x1234u16");
-            Calctus.Test.AssertEqual(e, "0o011064u16", "0x1234u16");
-            Calctus.Test.AssertEqual(e, "0x1234u16 == 0x1234s16", "true");
-            Calctus.Test.AssertEqual(e, "0x7777s16 + 0x1234u16", "0x089abs17");
-            Calctus.Test.AssertEqual(e, "0x7777s16 - 0x1234u16", "0x06543s17");
-            Calctus.Test.AssertEqual(e, "-0x7777u16", "0xf8889s17");
-            Calctus.Test.AssertEqual(e, "0x1234u16 - 0x7777u16", "0x19abds17");
-            Calctus.Test.AssertEqual(e, "0xabcdu16 >> 4u8", "0x0abcu16");
-            Calctus.Test.AssertEqual(e, "0xabcdu16 >>> 4u8", "0xfabcu16");
-            Calctus.Test.AssertEqual(e, "0x7fcdu16 << 4u8", "0xfcd0u16");
-            Calctus.Test.AssertEqual(e, "0x7fcdu16 <<< 4u8", "0x7cd0u16");
+            CalctusTest.AssertEqual(e, "0b0001001000110100u16 == 0x1234u16", "true");
+            CalctusTest.AssertEqual(e, "0o011064u16 == 0x1234u16", "true");
+            CalctusTest.AssertEqual(e, "0x1234u16 == 0x1234s16", "true");
+            CalctusTest.AssertEqual(e, "0x7777s16 + 0x1234u16", "0x089abs17");
+            CalctusTest.AssertEqual(e, "0x7777s16 - 0x1234u16", "0x06543s17");
+            CalctusTest.AssertEqual(e, "-0x7777u16", "0xf8889s17");
+            CalctusTest.AssertEqual(e, "0x1234u16 - 0x7777u16", "0x19abds17");
+            CalctusTest.AssertEqual(e, "0xabcdu16 >> 4u8", "0x0abcu16");
+            CalctusTest.AssertEqual(e, "0xabcdu16 >>> 4u8", "0xfabcu16");
+            CalctusTest.AssertEqual(e, "0x7fcdu16 << 4u8", "0xfcd0u16");
+            CalctusTest.AssertEqual(e, "0x7fcdu16 <<< 4u8", "0x7cd0u16");
         }
 #endif
     }

@@ -22,7 +22,7 @@ namespace Shapoco.Calctus {
 
 #if DEBUG
         public void DoTest(EvalContext e) {
-            Test.AssertEqual(e, TestExpr, ExpectedStr);
+            CalctusTest.AssertEqual(e, TestExpr, ExpectedStr);
         }
 #endif
     }

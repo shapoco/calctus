@@ -33,7 +33,7 @@ namespace Shapoco.Calctus.Model.Functions {
                 }
             }
             else {
-                Test.Untested("No test defined: " + this);
+                CalctusTest.Untested("No test defined: " + this);
             }
         }
 
