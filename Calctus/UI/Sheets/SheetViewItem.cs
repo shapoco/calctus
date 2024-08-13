@@ -29,6 +29,7 @@ namespace Shapoco.Calctus.UI.Sheets {
         private bool _disposed = false;
         private Size _lastPreferredSize = Size.Empty;
         private bool _ignoreExprChanged = false;
+        private bool _repeatedKeyDown = false;
 
         public SheetViewItem(SheetView view, SheetItem bookItem) : base(view) {
             _view = view;
@@ -41,7 +42,10 @@ namespace Shapoco.Calctus.UI.Sheets {
             ExprBox.InputCandidateProvider = view;
             ExprBox.TextChanged += ExprBox_TextChanged;
             ExprBox.KeyDown += ExprBox_KeyDown;
+            ExprBox.KeyUp += (sender, e) => { _repeatedKeyDown = false; };
             ExprBox.KeyPress += ExprBox_KeyPress;
+            AnsBox.KeyDown += AnsBox_KeyDown;
+            AnsBox.KeyUp += (sender, e) => { _repeatedKeyDown = false; };
             bookItem.ExpressionChanged += BookItem_ExpressionChanged;
             bookItem.AnswerChanged += BookItem_AnswerChanged;
             Children.Add(ExprBox);
@@ -135,27 +139,49 @@ namespace Shapoco.Calctus.UI.Sheets {
         }
 
         private void ExprBox_KeyDown(object sender, KeyEventArgs e) {
+            var box = (ExprBoxCore)sender;
             if (e.Modifiers == Keys.None && e.KeyCode == Keys.Home) {
                 var s = Settings.Instance;
-                if (s.Input_AutoInputAns && IsFreshAnswer && ExprBox.SelectionLength == ExprBox.Text.Length) {
-                    ExprBox.Text = Sheet.LastAnsId;
-                    ExprBox.SelectionStart = 0;
-                    ExprBox.SelectionLength = 0;
+                if (s.Input_AutoInputAns && IsFreshAnswer && box.SelectionLength == box.Text.Length) {
+                    box.Text = Sheet.LastAnsId;
+                    box.SelectionStart = 0;
+                    box.SelectionLength = 0;
+                    e.Handled = true;
+                }
+            }
+            else if (e.Modifiers == Keys.None && e.KeyCode == Keys.Right && !_repeatedKeyDown) {
+                if (box.SelectionStart == box.Text.Length && box.SelectionLength == 0 && AnsBox.Visible) {
+                    // ExprBox の右端で右キーが押下されたら AnsBox をフォーカスする (キーリピート除く)
+                    AnsBox.Focus();
+                    e.Handled = true;
+                }
+            }
+            _repeatedKeyDown = true;
+        }
+
+        private void ExprBox_KeyPress(object sender, KeyPressEventArgs e) {
+            var box = (ExprBoxCore)sender;
+            if (_selectionCancelChars.Contains(e.KeyChar)) {
+                var s = Settings.Instance;
+                if (s.Input_AutoInputAns && IsFreshAnswer && box.SelectionLength == box.Text.Length) {
+                    box.Text = Sheet.LastAnsId;
+                    box.SelectionStart = Sheet.LastAnsId.Length;
+                    box.SelectionLength = 0;
                     e.Handled = true;
                 }
             }
         }
 
-        private void ExprBox_KeyPress(object sender, KeyPressEventArgs e) {
-            if (_selectionCancelChars.Contains(e.KeyChar)) {
-                var s = Settings.Instance;
-                if (s.Input_AutoInputAns && IsFreshAnswer && ExprBox.SelectionLength == ExprBox.Text.Length) {
-                    ExprBox.Text = Sheet.LastAnsId;
-                    ExprBox.SelectionStart = Sheet.LastAnsId.Length;
-                    ExprBox.SelectionLength = 0;
+        private void AnsBox_KeyDown(object sender, KeyEventArgs e) {
+            var box = (ExprBoxCore)sender;
+            if (e.Modifiers == Keys.None && e.KeyCode == Keys.Left && !_repeatedKeyDown) {
+                if (box.SelectionStart == 0 && box.SelectionLength == 0 && ExprBox.Visible) {
+                    // AnsBox の左端で左キーが押下されたら AnsBox をフォーカスする (キーリピート除く)
+                    ExprBox.Focus();
                     e.Handled = true;
                 }
             }
+            _repeatedKeyDown = true;
         }
 
         private void BookItem_ExpressionChanged(object sender, EventArgs e) {
