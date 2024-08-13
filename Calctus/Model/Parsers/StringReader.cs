@@ -11,6 +11,7 @@ namespace Shapoco.Calctus.Model.Parsers {
     // todo StringReader に以降
     class StringReaderDep {
         public const int InvalidPos = int.MinValue / 2;
+        private static readonly char[] _whiteSpaces = new char[] { ' ', '　', '\t', '\r', '\n' };
 
         private readonly string _text;
         private DeprecatedTextPosition _pos;
@@ -29,8 +30,12 @@ namespace Shapoco.Calctus.Model.Parsers {
         public DeprecatedTextPosition TokenPosition => _tokenPos;
         public string TokenString => _tokenBuf.ToString();
 
-        public void Init() {
+        public void StartToken() {
             _tokenPos = _pos;
+            _tokenBuf.Clear();
+        }
+
+        public void DiscardToken() {
             _tokenBuf.Clear();
         }
 
@@ -109,13 +114,20 @@ namespace Shapoco.Calctus.Model.Parsers {
             }
         }
 
-        public void SkipWhite() {
-            while (true) {
-                var ci = Peek();
-                if (ci != ' ' && ci != '\t' && ci != '\r' && ci != '\n' && ci != '　') break;
-                _pos.Count(ci);
-            }
+        public void SkipWhites() {
+            while (trySkip(_whiteSpaces, out _)) { }
         }
+        
+        private bool trySkip(char[] cands, out char c) {
+            c = '\0';
+            if (Eos) return false;
+            c = (char)Peek();
+            if (!cands.Contains(c)) return false;
+            skip();
+            return true;
+        }
+
+        private void skip() => _pos.Count(Peek());
 
         public LexerError UnexpectedEos()
             => new LexerError(_pos, "Unexpected Eos");

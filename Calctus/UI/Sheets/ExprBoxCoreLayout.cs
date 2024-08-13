@@ -29,6 +29,7 @@ namespace Shapoco.Calctus.UI.Sheets {
 
         private readonly Control _owner;
         private TokenQueue _tokens;
+        private Token[] _comments;
         private ExprCharInfo[] _chars = new ExprCharInfo[0];
         private ExprTextSegment[] _segments = new ExprTextSegment[0];
         private Expr _exprObj = Expr.Empty;
@@ -69,13 +70,16 @@ namespace Shapoco.Calctus.UI.Sheets {
 
             if (text == null || text.Trim().Length == 0) {
                 _tokens = new TokenQueue();
+                _comments = new Token[0];
                 _exprObj = Expr.Empty;
                 SyntaxError = LexerError.EmptyError;
             }
             else {
+                Lexer lexer = null;
                 try {
                     // 字句解析
-                    _tokens = new Model.Parsers.Lexer(text).PopToEnd();
+                    lexer = new Lexer(text);
+                    _tokens = lexer.PopToEnd();
 
                     // 不足している括弧の補完
                     _tokens.CompleteParentheses();
@@ -94,8 +98,12 @@ namespace Shapoco.Calctus.UI.Sheets {
                 catch (Exception ex) {
                     // 字句解析エラー
                     _tokens = new TokenQueue();
+                    _comments = new Token[0];
                     _exprObj = Expr.Empty;
                     SyntaxError = ex;
+                }
+                if (lexer != null) {
+                    _comments = lexer.GetComments();
                 }
             }
 
@@ -120,8 +128,8 @@ namespace Shapoco.Calctus.UI.Sheets {
                         insertSeparators(t, m.Groups["frac"], 4, true);
                     }
                     else if (s.NumberFormat_Separator_Thousands && (m = DecimalPattern.Match(t.Text)).Success && !m.Value.Contains("_")) {
-                        insertSeparators(t, m.Groups["int"], 3, false); // 整数部
-                        insertSeparators(t, m.Groups["frac"], 3, true); // 小数部
+                        insertSeparators(t, m.Groups["int"], 3, false);
+                        insertSeparators(t, m.Groups["frac"], 3, true);
                     }
                 }
             }
@@ -140,7 +148,7 @@ namespace Shapoco.Calctus.UI.Sheets {
                 // 各文字の位置を割り出す
                 // クリック座標からカーソル位置を割り出したりするのに使う
                 for (int i = 0; i < text.Length; i++) {
-                    using (var sf = new System.Drawing.StringFormat()) {
+                    using (var sf = new StringFormat()) {
                         if (_chars[i].Shifted) xShift += numericSepWidth;
 
                         // 両端の空白も含めて位置を知るのに MeasureTrailingSpaces が必要
@@ -234,16 +242,18 @@ namespace Shapoco.Calctus.UI.Sheets {
                     case TokenType.Keyword:
                         // 記号とキーワードの強調表示
                         if ((t.Text == "(" || t.Text == ")") && parDepth >= 0) {
-                            _chars[t.Position.Index].Style.ForeColor
-                                = parenthesisColors[parDepth % parenthesisColors.Length];
+                            setForeColor(t, parenthesisColors[parDepth % parenthesisColors.Length]);
                         }
                         else {
-                            for (int i = 0; i < t.Text.Length; i++) {
-                                _chars[t.Position.Index + i].Style.ForeColor = s.Appearance_Color_Symbols;
-                            }
+                            setForeColor(t, s.Appearance_Color_Symbols);
                         }
                         break;
                 }
+            }
+
+            // コメント
+            foreach(var t in _comments) {
+                setForeColor(t, s.Appearance_Color_Comment);
             }
 
             // 色の付いてない文字はデフォルトの色にする
@@ -354,7 +364,7 @@ namespace Shapoco.Calctus.UI.Sheets {
 
             var error = SyntaxError != null ? SyntaxError : _evalError;
 
-            if (_chars.Length > 0 && error != null) {
+            if (_chars.Length > 0 && error != null && error != LexerError.EmptyError) {
                 // 文法エラーの強調表示
                 int errorStart = 0;
                 int errorEnd = _chars.Length;

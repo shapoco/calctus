@@ -12,6 +12,7 @@ namespace Shapoco.Calctus.Model.Parsers {
         Keyword,
         Identifier,
         Eos,
+        Comment,
         Empty
     }
 }

@@ -122,6 +122,7 @@ namespace Shapoco.Calctus {
         public Color Appearance_Color_Parenthesis_2 { get; set; } = Color.FromArgb(192, 128, 255);
         public Color Appearance_Color_Parenthesis_3 { get; set; } = Color.FromArgb(255, 128, 192);
         public Color Appearance_Color_Parenthesis_4 { get; set; } = Color.FromArgb(255, 192, 64);
+        public Color Appearance_Color_Comment { get; set; } = Color.FromArgb(160, 128, 96);
         public Color Appearance_Color_Error { get; set; } = Color.FromArgb(255, 128, 128);
 
         private static Dictionary<string, System.Reflection.PropertyInfo> _colorProperties = null;

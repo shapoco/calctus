@@ -14,56 +14,36 @@ using Shapoco.Calctus.Model.Standards;
 
 namespace Shapoco.Calctus.Model.Parsers {
     class Lexer {
-        //public const string IdPattern = @"[\p{L}_][\p{L}\p{N}_]*";
-        //private static readonly Regex _wordRegexes = new Regex(IdPattern);
-
-        // 演算子以外の記号
-        //private static readonly Regex GeneralSymbolRule = new Regex(@"[()\[\],:?]");
-
-        // キーワード
-        //private static readonly Regex KeywordRule
-        //    = new Regex(@"(" + String.Join("|", Keyword.EnumKeywords().Select(p => p.Token)) + @")\b");
-
         private StringReaderDep _sr;
         private bool _eosReaded = false;
-
-        // 長い順に並べた演算子記号
-        //private readonly Regex OpSymbolRule;
-
-        // 数値リテラル
-        //private readonly ValFormat[] _numberFormatters;
-        //private readonly Regex[] _literalRegexes;
-
+        private bool _firstPop = true;
+        private List<Token> _comments = new List<Token>();
+        public Token[] GetComments() => _comments.ToArray();
 
         public Lexer(string exprStr, int pos = 0) {
-            //// 全ての記号にマッチする正規表現の生成
-            //var opSymbols = OpDef.AllOperatorSymbols
-            //    .OrderByDescending(p => p.Length)
-            //    .Select(p => "(" + Regex.Escape(p) + ")")
-            //    .ToArray();
-            //OpSymbolRule = new Regex("(" + string.Join("|", opSymbols) + ")");
-            //
-            //_numberFormatters = ValFormat.NativeFormats;
-            //_literalRegexes = _numberFormatters.Select(p => p.Pattern).ToArray();
-
             _sr = new StringReaderDep(exprStr, pos);
-
         }
 
         public DeprecatedTextPosition Position => _sr.Position;
         public bool Eos {
             get {
-                _sr.SkipWhite();
+                skipWhites();
                 return _sr.Eos;
             }
         }
 
         /// <summary>トークンを1つ読み出す</summary>
         public Token Pop() {
-            _sr.SkipWhite();
+            bool firstPop = _firstPop;
+            _firstPop = false;
+
+            skipWhites();
 
             if (Eos) {
-                if (!_eosReaded) {
+                if (firstPop) {
+                    throw Log.Here().I(LexerError.EmptyError);
+                }
+                else if (!_eosReaded) {
                     _eosReaded = true;
                     return new Token(TokenType.Eos, Position, null);
                 }
@@ -72,7 +52,7 @@ namespace Shapoco.Calctus.Model.Parsers {
                 }
             }
 
-            _sr.Init();
+            _sr.StartToken();
             Token tok;
             if (readIfNumericLiteral(out tok)) {
                 return tok;
@@ -540,6 +520,43 @@ namespace Shapoco.Calctus.Model.Parsers {
                 return true;
             }
             return false;
+        }
+
+        private void skipWhites() {
+            _sr.SkipWhites();
+            while (tryEatComment()) {
+                _sr.SkipWhites();
+            }
+        }
+
+        private bool tryEatComment() {
+            if (_sr.Eos) return false;
+            if (_sr.Peek() != '#') return false;
+            _sr.StartToken();
+            _sr.Read();
+            bool ret = false;
+            if (_sr.Eos) {
+                ret = true;
+            }
+            else if (_sr.ReadIf('\r')) {
+                _sr.ReadIf('\n');
+                ret = true;
+            }
+            else if (_sr.ReadIf(' ') || _sr.ReadIf('　') || _sr.ReadIf('\t')) {
+                while (!_sr.Eos && _sr.ReadIf(p => (p != '\r' && p != '\n'), out _)) { /* pass */ }
+                _sr.ReadIf('\r');
+                _sr.ReadIf('\n');
+                ret = true;
+            }
+
+            if (ret) {
+                _comments.Add(_sr.FinishToken(TokenType.Comment));
+            }
+            else {
+                _sr.Backtrack();
+                _sr.DiscardToken();
+            }
+            return ret;
         }
 
         /// <summary>文字列の末端まで全てのトークンを読み出す</summary>

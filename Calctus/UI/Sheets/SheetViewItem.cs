@@ -7,6 +7,7 @@ using System.Text.RegularExpressions;
 using System.Threading.Tasks;
 using System.Windows.Forms;
 using Shapoco.Calctus.Model;
+using Shapoco.Calctus.Model.Parsers;
 using Shapoco.Calctus.Model.Sheets;
 using Shapoco.Calctus.Model.Functions;
 using Shapoco.Calctus.Model.Functions.BuiltIns;
@@ -207,7 +208,12 @@ namespace Shapoco.Calctus.UI.Sheets {
                 ExprBox.EvalError = SheetItem.EvalError;
             }
             bool ansVisible;
-            if (err == null) {
+            if (err == LexerError.EmptyError) {
+                AnsBox.Text = "";
+                AnsBox.PlaceHolder = "";
+                ansVisible = false;
+            }
+            else if (err == null) {
                 var ansVal = SheetItem.AnsVal;
                 var ansText = SheetItem.AnsText;
                 ansText = (ansVal != null && ansVal.IsSerializable) ? ansText : "";
