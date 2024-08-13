@@ -72,7 +72,6 @@ namespace Shapoco.Calctus.Model.Values {
         public virtual Val Mod(EvalContext ctx, Val b) => throw new NotSupportedException();
 
         // シフト演算
-        // 右項と型を合わせる必要無いので UpConvert しない
         public virtual Val LogicShiftL(EvalContext ctx, Val b) => throw new NotSupportedException();
         public virtual Val LogicShiftR(EvalContext ctx, Val b) => throw new NotSupportedException();
         public virtual Val ArithShiftL(EvalContext ctx, Val b) => throw new NotSupportedException();

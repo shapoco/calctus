@@ -574,25 +574,59 @@ namespace Shapoco.Maths.BitArrays {
         }
 
         // todo 性能改善 BitArray.LogicShiftLeftSelf()
-        public void LogicShiftLeftSelf(int shift) {
+        public void ShiftLeftSelf(int shift, ShiftMode mode) {
             if (shift < 0) throw Log.Here().ArgException(nameof(shift));
             if (shift == 0) return;
-            var w = Width;
-            for (int ibit = w - 1; ibit >= 0; ibit--) {
+            bool arithMode = false;
+            switch (mode) {
+                case ShiftMode.Auto: arithMode = Signed; break;
+                case ShiftMode.Logical: arithMode = false; break;
+                case ShiftMode.Arithmetic: arithMode = true; break;
+                default: throw Log.Here().E(new NotImplementedException());
+            }
+            var loopStart = arithMode ? (Width - 2) : (Width - 1);
+            for (int ibit = loopStart; ibit >= 0; ibit--) {
                 this[ibit] = this[ibit - shift];
             }
             FillBlankSelf();
         }
 
+        public BitArray ShiftLeft(int shift, ShiftMode mode) {
+            var ret = Clone();
+            ret.ShiftLeftSelf(shift, mode);
+            return ret;
+        }
+
         // todo 性能改善 BitArray.LogicShiftRightSelf()
-        public void LogicShiftRightSelf(int shift) {
+        public void ShiftRightSelf(int shift, ShiftMode mode) {
             if (shift < 0) throw Log.Here().ArgException(nameof(shift));
             if (shift == 0) return;
             var w = Width;
-            for (int ibit = 0; ibit < w; ibit++) {
-                this[ibit] = this[ibit + shift];
+            bool arithMode = false;
+            switch (mode) {
+                case ShiftMode.Auto: arithMode = Signed; break;
+                case ShiftMode.Logical: arithMode = false; break;
+                case ShiftMode.Arithmetic: arithMode = true; break;
+                default: throw Log.Here().E(new NotImplementedException());
+            }
+            var overMsb = arithMode ? Msb : 0u;
+            var loopEnd = arithMode ? (w - 1) : w;
+            for (int ibit = 0; ibit < loopEnd; ibit++) {
+                int ibitSrc = ibit + shift;
+                if (ibitSrc < w) {
+                    this[ibit] = this[ibitSrc];
+                }
+                else {
+                    this[ibit] = overMsb;
+                }
             }
             FillBlankSelf();
+        }
+
+        public BitArray ShiftRight(int shift, ShiftMode mode) {
+            var ret = Clone();
+            ret.ShiftRightSelf(shift, mode);
+            return ret;
         }
 
         public IEnumerable<UInt32> EnumBits() => EnumBits(0, Width);
@@ -716,7 +750,7 @@ namespace Shapoco.Maths.BitArrays {
             throw Log.Here().ArgException(nameof(digit));
         }
 
-        // todo 性能改善 apfixed.decimal()
+        // todo 性能改善 apfixed.ToDecimal()
         public decimal ToDecimal() {
             var abs = Abs(out int sign);
             if (sign == 0) return 0m;
@@ -729,6 +763,15 @@ namespace Shapoco.Maths.BitArrays {
             return sign * tmp;
         }
 
+        // todo 性能改善 apfixed.ToInt()
+        public int ToInt32(bool allowOverflow) {
+            var dec = ToDecimal();
+            if (!allowOverflow && (dec <= int.MinValue || int.MaxValue <= dec)) {
+                throw Log.Here().E(new InvalidCastException("The value exceeds the Int32 value range."));
+            }
+            return (int)dec;
+        }
+
         public static BitArray operator -(BitArray a) => a.ArithInvert();
 
         public static BitArray operator +(BitArray a, BitArray b) => a.Add(b);
@@ -737,10 +780,9 @@ namespace Shapoco.Maths.BitArrays {
         public static BitArray operator /(BitArray a, BitArray b) => a.IntDiv(b, out _);
         public static BitArray operator %(BitArray a, BitArray b) { a.IntDiv(b, out BitArray mod); return mod; }
         
-        /*
-        public static BitArray operator <<(BitArray a, int n) => a.LogicShiftLeft(n);
-        public static BitArray operator >>(BitArray a, int n) => a.ArithShiftRight(n);
-        */
+        // << / >> だけでは論理シフトなのか算術シフトなのか曖昧なので定義しない
+        // public static BitArray operator <<(BitArray a, int n) => a.LogicShiftLeft(n);
+        // public static BitArray operator >>(BitArray a, int n) => a.ArithShiftRight(n);
 
         public static bool operator ==(BitArray a, BitArray b) => a.Equals(b);
         public static bool operator !=(BitArray a, BitArray b) => !a.Equals((object)b);
@@ -763,59 +805,102 @@ namespace Shapoco.Maths.BitArrays {
                     }
                 }
             }
-            
+
             testParse("0x0u8", "0u8");
             testParse("0x1234u16", "4660u16");
             testParse("0x12345678abcdu48", "20015998348237u48");
             testParse("0x92345678abcds48", "-120721490007091s48");
-            
+
             testBinaryOp(
-                "18716516548761564187165487973534u128", '+',
+                "18716516548761564187165487973534u128", "+",
                 "79456185330078728708723456062187u128",
                 "98172701878840292895888944035721u129");
-            
+
             testBinaryOp(
-                "18716516548761564187165487973534u128", '-',
+                "18716516548761564187165487973534u128", "-",
                 "79456185330078728708723456062187u128",
                 "-60739668781317164521557968088653s129");
-            
-            testBinaryOp("0x0u8", '*', "0x0u8", "0x0u16");
-            testBinaryOp("0x10u8", '*', "0x10u8", "0x100u16");
-            testBinaryOp("0x1234u16", '*', "0x5678u16", "0x6260060u32");
-            testBinaryOp("0x12u8", '*', "0x3456u16", "0x3ae0cu24");
-            testBinaryOp("0x1234u16", '*', "0x56u8", "0x61d78u24");
-            testBinaryOp("0xabs8", '*', "0xcdefs16", "0x109fa5s24");
-            testBinaryOp("0xffffffffu32", '*', "0xffffffffu32", "0xfffffffe00000001u64");
-            testBinaryOp("0x100000000u33", '*', "0x100000000u33", "0x10000000000000000u66");
 
-            testBinaryOp("0x1000u16", '/', "0x10u16", "0x100u16");
-            testBinaryOp("0x5500u16", '/', "0x10u16", "0x550u16");
-            testBinaryOp("0x5555u16", '/', "0x5u16", "0x1111u16");
-            testBinaryOp("0x5555u16", '/', "-5s16", "-4369s17");
-            testBinaryOp("0x8000s16", '/', "0x100u16", "0x1ff80s16");
-            testBinaryOp("0x89abs16", '/', "-10s8", "0xbd5s16");
-            testBinaryOp("10000u16", '/', "3u16", "3333u16");
-            testBinaryOp("-10000s16", '/', "3s16", "-3333s16");
-            testBinaryOp("10000s16", '/', "-3s16", "-3333s16");
-            testBinaryOp("-10000s16", '/', "-3s16", "3333s16");
-            testBinaryOp("0x100000000000u48", '/', "0x10u8", "0x10000000000u48");
-            testBinaryOp("10000000000000u48", '/', "3u8", "3333333333333u48");
+            testBinaryOp("0x0u8", "*", "0x0u8", "0x0u16");
+            testBinaryOp("0x10u8", "*", "0x10u8", "0x100u16");
+            testBinaryOp("0x1234u16", "*", "0x5678u16", "0x6260060u32");
+            testBinaryOp("0x12u8", "*", "0x3456u16", "0x3ae0cu24");
+            testBinaryOp("0x1234u16", "*", "0x56u8", "0x61d78u24");
+            testBinaryOp("0xabs8", "*", "0xcdefs16", "0x109fa5s24");
+            testBinaryOp("0xffffffffu32", "*", "0xffffffffu32", "0xfffffffe00000001u64");
+            testBinaryOp("0x100000000u33", "*", "0x100000000u33", "0x10000000000000000u66");
 
-            testBinaryOp("0u16", '%', "5u8", "0u8");
-            testBinaryOp("3u16", '%', "5u8", "3u8");
-            testBinaryOp("5u16", '%', "5u8", "0u8");
-            testBinaryOp("7u16", '%', "5u8", "2u8");
-            testBinaryOp("10u16", '%', "5u8", "0u8");
-            testBinaryOp("14u16", '%', "5u8", "4u8");
-            testBinaryOp("1234u16", '%', "1u8", "0u8");
-            testBinaryOp("1234u16", '%', "100u8", "34u8");
-            testBinaryOp("-1234s16", '%', "100u8", "-34s9");
-            testBinaryOp("1234u16", '%', "-100s8", "34u8");
-            testBinaryOp("-1234s16", '%', "-100s8", "-34s8");
-            testBinaryOp("123456789123456789u57", '%', "333333333333u39", "122456913579u39");
-            testBinaryOp("-123456789123456789s58", '%', "333333333333u39", "-122456913579s40");
-            testBinaryOp("123456789123456789u57", '%', "-333333333333s40", "122456913579u40");
-            testBinaryOp("-123456789123456789s58", '%', "-333333333333s40", "-122456913579s40");
+            testBinaryOp("0x1000u16", "/", "0x10u16", "0x100u16");
+            testBinaryOp("0x5500u16", "/", "0x10u16", "0x550u16");
+            testBinaryOp("0x5555u16", "/", "0x5u16", "0x1111u16");
+            testBinaryOp("0x5555u16", "/", "-5s16", "-4369s17");
+            testBinaryOp("0x8000s16", "/", "0x100u16", "0x1ff80s16");
+            testBinaryOp("0x89abs16", "/", "-10s8", "0xbd5s16");
+            testBinaryOp("10000u16", "/", "3u16", "3333u16");
+            testBinaryOp("-10000s16", "/", "3s16", "-3333s16");
+            testBinaryOp("10000s16", "/", "-3s16", "-3333s16");
+            testBinaryOp("-10000s16", "/", "-3s16", "3333s16");
+            testBinaryOp("0x100000000000u48", "/", "0x10u8", "0x10000000000u48");
+            testBinaryOp("10000000000000u48", "/", "3u8", "3333333333333u48");
+
+            testBinaryOp("0u16", "%", "5u8", "0u8");
+            testBinaryOp("3u16", "%", "5u8", "3u8");
+            testBinaryOp("5u16", "%", "5u8", "0u8");
+            testBinaryOp("7u16", "%", "5u8", "2u8");
+            testBinaryOp("10u16", "%", "5u8", "0u8");
+            testBinaryOp("14u16", "%", "5u8", "4u8");
+            testBinaryOp("1234u16", "%", "1u8", "0u8");
+            testBinaryOp("1234u16", "%", "100u8", "34u8");
+            testBinaryOp("-1234s16", "%", "100u8", "-34s9");
+            testBinaryOp("1234u16", "%", "-100s8", "34u8");
+            testBinaryOp("-1234s16", "%", "-100s8", "-34s8");
+            testBinaryOp("123456789123456789u57", "%", "333333333333u39", "122456913579u39");
+            testBinaryOp("-123456789123456789s58", "%", "333333333333u39", "-122456913579s40");
+            testBinaryOp("123456789123456789u57", "%", "-333333333333s40", "122456913579u40");
+            testBinaryOp("-123456789123456789s58", "%", "-333333333333s40", "-122456913579s40");
+
+            {
+                var bools = new bool[] { false, true };
+                var ops = new string[] { "<<", ">>", "<<<", ">>>" };
+                var patterns = new string[] {
+                    "x", // 1
+                    "xy", // 2
+                    "xxy", // 3
+                    "xyyy", // 4
+                    "xxxyxyyy", // 8
+                    "xyyyxxyyxxyyxxxy", // 16
+                    "xyyyxxxxyyyyxxyyxxyyxxxxyyyyxxy", // 31
+                    "xyyyxxxxyyyyxxyyxxyyxxxxyyyyxxxy", // 32
+                    "xyyyxxxxyyyyxxyyxxyyxxxxyyyyxxxxy", // 33
+                    "xyyyxxxyxxxxyyyyxxxxxxxxyyyyyyyyxxxxyyyyxxxxxxxxyyyyxxxxyxxxyyx", // 63
+                    "xyyyxxxyxxxxyyyyxxxxxxxxyyyyyyyyxxxxyyyyxxxxxxxxyyyyxxxxyxxxyyyx", // 64
+                    "xyyyxxxyxxxxyyyyxxxxxxxxyyyyyyyyxxxxyyyyxxxxxxxxyyyyxxxxyxxxyyyyx", // 65
+                    "xyyyxxxyxxxxyyyyxxxxxxxxyyyyyyyyxxxxxxxxyyyyyyyyxxxxxxxxyyyyxxxxyxxxyyyx", // 72
+                };
+
+                foreach (var signed in bools) {
+                    foreach (var op in ops) {
+                        foreach (var polarity in bools) {
+                            foreach (var ptn in patterns) {
+                                string ibits = polarity ?
+                                    ptn.Replace('x', '0').Replace('y', '1') :
+                                    ptn.Replace('x', '1').Replace('y', '0');
+                                var w = ibits.Length;
+                                testShift(signed, op, ibits, 0);
+                                if (w >= 2) testShift(signed, op, ibits, 1);
+                                if (w >= 4) testShift(signed, op, ibits, w / 2);
+                                if (w >= 16) {
+                                    testShift(signed, op, ibits, w * 1 / 5);
+                                    testShift(signed, op, ibits, w * 4 / 5);
+                                }
+                                if (w >= 3) testShift(signed, op, ibits, w - 1);
+                                testShift(signed, op, ibits, w);
+                                testShift(signed, op, ibits, w + 1);
+                            }
+                        }
+                    }
+                }
+            }
         }
 
         private static void doTestGetSegment(BitArray bits) {
@@ -841,22 +926,43 @@ namespace Shapoco.Maths.BitArrays {
             if (a.Width.NotEq(b.Width)) throw Log.Here().TestFailException(label);
         }
 
-        private static void testBinaryOp(string aStr, char op, string bStr, string cStr) {
+        private static void testShift(bool signed, string op, string ibits, int shift) {
+            var w = ibits.Length;
+            char sign = signed ? 's' : 'u';
+            string obits;
+            switch (op) {
+                case "<<": obits = (ibits + new string('0', shift)).Substring(shift, w); break;
+                case "<<<": obits = ibits[0] + (ibits + new string('0', shift)).Substring(shift + 1, w - 1); break;
+                case ">>": obits = (new string('0', shift) + ibits).Substring(0, w); break;
+                case ">>>": obits = (new string(ibits[0], shift) + ibits).Substring(0, w); break;
+                default: throw Log.Here().F(new InvalidOperationException());
+            }
+            ibits = "0b" + ibits + sign + w.ToString();
+            obits = "0b" + obits + sign + w.ToString();
+            //Log.Here().T(ibits + " " + op + " " + shift + "u8 --> " + obits);
+            testBinaryOp(ibits, op, shift + "u8", obits);
+        }
+
+        private static void testBinaryOp(string aStr, string op, string bStr, string cStr) {
             try { doTestBinaryOpInner(aStr, op, bStr, cStr); }
             catch { Verbose = true; doTestBinaryOpInner(aStr, op, bStr, cStr); }
         }
 
-        private static void doTestBinaryOpInner(string aStr, char op, string bStr, string cStr) {
+        private static void doTestBinaryOpInner(string aStr, string op, string bStr, string cStr) {
             var a = Parse(aStr);
             var b = Parse(bStr);
             var cExp = Parse(cStr);
             BitArray cAct;
             switch (op) {
-                case '+': cAct = a + b; break;
-                case '-': cAct = a - b; break;
-                case '*': cAct = a * b; break;
-                case '/': cAct = a / b; break;
-                case '%': cAct = a % b; break;
+                case "+": cAct = a + b; break;
+                case "-": cAct = a - b; break;
+                case "*": cAct = a * b; break;
+                case "/": cAct = a / b; break;
+                case "%": cAct = a % b; break;
+                case "<<": cAct = a.ShiftLeft(b.ToInt32(false), ShiftMode.Logical); break;
+                case ">>": cAct = a.ShiftRight(b.ToInt32(false), ShiftMode.Logical); break;
+                case "<<<": cAct = a.ShiftLeft(b.ToInt32(false), ShiftMode.Arithmetic); break;
+                case ">>>": cAct = a.ShiftRight(b.ToInt32(false), ShiftMode.Arithmetic); break;
                 default: throw new NotImplementedException();
             }
             string label = a.ToStringForDebug() + " " + op + " " + b.ToStringForDebug() + " = " + cAct.ToStringForDebug() + " != " + cExp.ToStringForDebug();

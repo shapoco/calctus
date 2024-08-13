@@ -34,6 +34,15 @@ namespace Shapoco.Calctus.Model.Values {
         public override Val Mul(EvalContext ctx, Val b) => new ApFixedVal(_raw * ((ApFixedVal)b)._raw, FormatHint);
         public override Val Div(EvalContext ctx, Val b) => new ApFixedVal(_raw / ((ApFixedVal)b)._raw, FormatHint);
 
+        public override Val LogicShiftL(EvalContext ctx, Val b) 
+            => new ApFixedVal(_raw.ShiftLeft(((ApFixedVal)b)._raw.ToInt32(false, false), ShiftMode.Logical), FormatHint);
+        public override Val LogicShiftR(EvalContext ctx, Val b)
+            => new ApFixedVal(_raw.ShiftRight(((ApFixedVal)b)._raw.ToInt32(false, false), ShiftMode.Logical), FormatHint);
+        public override Val ArithShiftL(EvalContext ctx, Val b)
+            => new ApFixedVal(_raw.ShiftLeft(((ApFixedVal)b)._raw.ToInt32(false, false), ShiftMode.Arithmetic), FormatHint);
+        public override Val ArithShiftR(EvalContext ctx, Val b)
+            => new ApFixedVal(_raw.ShiftRight(((ApFixedVal)b)._raw.ToInt32(false, false), ShiftMode.Arithmetic), FormatHint);
+
         public override bool Equals(EvalContext ctx, Val b) => _raw.Equals(((ApFixedVal)b)._raw);
         public override bool Grater(EvalContext ctx, Val b) => _raw.CompareTo(((ApFixedVal)b)._raw) > 0;
 
@@ -43,13 +52,17 @@ namespace Shapoco.Calctus.Model.Values {
 #if DEBUG
         public static void Test() {
             var e = new EvalContext();
+            Calctus.Test.AssertEqual(e, "0b0001001000110100u16", "0x1234u16");
+            Calctus.Test.AssertEqual(e, "0o011064u16", "0x1234u16");
             Calctus.Test.AssertEqual(e, "0x1234u16 == 0x1234s16", "true");
             Calctus.Test.AssertEqual(e, "0x7777s16 + 0x1234u16", "0x089abs17");
             Calctus.Test.AssertEqual(e, "0x7777s16 - 0x1234u16", "0x06543s17");
             Calctus.Test.AssertEqual(e, "-0x7777u16", "0xf8889s17");
             Calctus.Test.AssertEqual(e, "0x1234u16 - 0x7777u16", "0x19abds17");
-            Calctus.Test.AssertEqual(e, "0b0001001000110100u16", "0x1234u16");
-            Calctus.Test.AssertEqual(e, "0o011064u16", "0x1234u16");
+            Calctus.Test.AssertEqual(e, "0xabcdu16 >> 4u8", "0x0abcu16");
+            Calctus.Test.AssertEqual(e, "0xabcdu16 >>> 4u8", "0xfabcu16");
+            Calctus.Test.AssertEqual(e, "0x7fcdu16 << 4u8", "0xfcd0u16");
+            Calctus.Test.AssertEqual(e, "0x7fcdu16 <<< 4u8", "0x7cd0u16");
         }
 #endif
     }

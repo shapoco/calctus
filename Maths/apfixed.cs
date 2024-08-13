@@ -109,7 +109,7 @@ namespace Shapoco.Maths {
             if (!fmt.Signed && minus) throw Log.Here().ArgException(nameof(fmt.Signed) + "=false, " + nameof(minus) + "=true");
 
             var bits = BitArray.FromDecimalDigits(fmt.RawFormat, false, intDigits);
-            bits.LogicShiftLeftSelf(fmt.FracWidth);
+            bits.ShiftLeftSelf(fmt.FracWidth, ShiftMode.Logical);
 #if DEBUG
             if (Verbose) {
                 var sb = new StringBuilder();
@@ -163,7 +163,7 @@ namespace Shapoco.Maths {
 
         public static apfixed FromBinaryDigits(FixedPointFormat fmt, Radix radix, byte[] intDigits, byte[] fracDigits) {
             var bits = BitArray.FromBinaryDigits(fmt.RawFormat, radix, intDigits);
-            bits.LogicShiftLeftSelf(fmt.FracWidth);
+            bits.ShiftLeftSelf(fmt.FracWidth, ShiftMode.Logical);
             int digitWidth = radix.ToBinaryDigitBits();
             int ibit = fmt.FracWidth;
             for (int i = 0; i < fracDigits.Length; i++) {
@@ -338,8 +338,8 @@ namespace Shapoco.Maths {
             var fw = this.FracWidth;
             var qWidth = iw + fw;
             var q = BitArray.DivCoreSigned(a, b, qWidth, out  _, true, out int shift);
-            if (shift > 0) q.LogicShiftRightSelf(shift);
-            else if (shift < 0) q.LogicShiftLeftSelf(-shift);
+            if (shift > 0) q.ShiftRightSelf(shift, ShiftMode.Auto);
+            else if (shift < 0) q.ShiftLeftSelf(-shift, ShiftMode.Logical);
             return new apfixed(q, FracWidth);
 #else
             var a = this._bits;
@@ -360,6 +360,9 @@ namespace Shapoco.Maths {
         }
 
         public apfixed ArithInvert() => new apfixed(_bits.ArithInvert(), FracWidth);
+
+        public apfixed ShiftLeft(int shift, ShiftMode mode) => new apfixed(_bits.ShiftLeft(shift, mode), FracWidth);
+        public apfixed ShiftRight(int shift, ShiftMode mode) => new apfixed(_bits.ShiftRight(shift, mode), FracWidth);
 
         /*
         public apfixed SingleShiftLeft(uint carry) {
@@ -433,6 +436,18 @@ namespace Shapoco.Maths {
         public apfixed Abs(out int origSign) => new apfixed(_bits.Abs(out origSign), FracWidth);
 
         public decimal ToDecimal() => _bits.ToDecimal() / MathEx.PowN(2m, FracWidth);
+
+        // todo 性能改善 apfixed.ToInt32()
+        public int ToInt32(bool allowOverflow, bool allowDegrade) {
+            var dec = ToDecimal();
+            if (!allowOverflow && (dec <= int.MinValue || int.MaxValue <= dec)) {
+                throw Log.Here().E(new InvalidCastException("The value exceeds the Int32 value range."));
+            }
+            if (!allowDegrade && !IsInteger) {
+                throw Log.Here().E(new InvalidCastException("The value is not integer."));
+            }
+            return (int)Math.Round(dec);
+        }
 
         /*
         public static implicit operator apfixed(int i) {

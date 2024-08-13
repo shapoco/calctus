@@ -115,6 +115,7 @@
     <Compile Include="Maths\FixedPointFormat.cs" />
     <Compile Include="Maths\BitArrays\SegScan.cs" />
     <Compile Include="Maths\RandomEx.cs" />
+    <Compile Include="Maths\Types.cs" />
     <Compile Include="Texts\CStyleBinary.cs" />
     <Compile Include="Types.cs" />
     <Compile Include="Texts\CStyleEscaping.cs" />
