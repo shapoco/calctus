@@ -42,6 +42,45 @@ namespace Shapoco.Maths {
                 return frac / Math.Round((decimal)Math.Pow(10, -exp));
             }
         }
+
+        public static Int64 ToInt64(this decimal val, CastOptions opts = CastOptions.Strict)
+            => (Int64)roundClip(val, opts, Int64.MinValue, Int64.MaxValue);
+
+        public static Int32 ToInt32(this decimal val, CastOptions opts = CastOptions.Strict)
+            => (Int32)roundClip(val, opts, Int32.MinValue, Int32.MaxValue);
+
+        public static char ToChar(this decimal val, CastOptions opts = CastOptions.Strict)
+            => (char)roundClip(val, opts, char.MinValue, char.MaxValue);
+
+        public static byte ToByte(this decimal val, CastOptions opts = CastOptions.Strict) 
+            =>(byte)roundClip(val, opts, byte.MinValue, byte.MaxValue);
+
+        private static decimal roundClip(decimal val, CastOptions opts, decimal min, decimal max) {
+            if (!opts.HasFlag(CastOptions.AllowDegrade) && !val.IsInteger()) {
+                throw Log.Here().E(new InvalidCastException());
+            }
+
+            if (opts.HasFlag(CastOptions.Round)) {
+                val = Math.Round(val);
+            }
+            else if (opts.HasFlag(CastOptions.Floor)) {
+                val = Math.Floor(val);
+            }
+            else {
+                val = Math.Truncate(val);
+            }
+
+            if (val < min || max < val) {
+                if (!opts.HasFlag(CastOptions.AllowOverflow)) {
+                    throw Log.Here().E(new OverflowException());
+                }
+                else if (opts.HasFlag(CastOptions.Clip)) {
+                    val = MathEx.Clip(min, max, val);
+                }
+            }
+
+            return val;
+        }
     }
 
 }

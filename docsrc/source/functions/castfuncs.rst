@@ -6,16 +6,6 @@ array(x)
 
 Converts value `x` to an list.
 
-rat(*x)
-*****************
-
-Rational fraction approximation of `x`.
-
-rat(*x, max)
-*****************
-
-Rational fraction approximation of `x`.
-
 real(*x)
 *****************
 

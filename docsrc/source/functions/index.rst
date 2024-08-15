@@ -18,6 +18,7 @@ Built-In Functions
     plottingfuncs.rst
     primenumberfuncs.rst
     randomfuncs.rst
+    rationalfuncs.rst
     representaionfuncs.rst
     roundingfuncs.rst
     solvefuncs.rst

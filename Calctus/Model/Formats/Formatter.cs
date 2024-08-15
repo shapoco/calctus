@@ -31,7 +31,7 @@ namespace Shapoco.Calctus.Model.Formats {
             else if (val is apfixed apfixedVal) {
                 return ApFixedToString(apfixedVal, args);
             }
-            else if (val is Frac fracVal) {
+            else if (val is rational fracVal) {
                 return FracToString(fracVal);
             }
             else if (val is Val valVal) {
@@ -93,7 +93,7 @@ namespace Shapoco.Calctus.Model.Formats {
             }
             var decFormat = sbDecFormat.ToString();
 
-            int exp = MathEx.FLog10Abs(val);
+            int exp = MathEx.FloorLog10Abs(val);
             if (allowENotation && args.Settings.ENotationEnabled && exp >= args.Settings.ENotationExpPositiveMin) {
                 if (args.Settings.ENotationAlignment) {
                     exp = (int)Math.Floor((double)exp / 3) * 3;
@@ -120,7 +120,7 @@ namespace Shapoco.Calctus.Model.Formats {
             var ival = Math.Truncate(fval);
 
             // 10進表記、かつ指数表記対象に該当する場合はデフォルトの数値表現を使う
-            int exp = MathEx.FLog10Abs(fval);
+            int exp = MathEx.FloorLog10Abs(fval);
             bool enotation =
                 radix == Radix.Decimal && args.Settings.ENotationEnabled &&
                 (exp >= args.Settings.ENotationExpPositiveMin || exp <= args.Settings.ENotationExpNegativeMax);
@@ -198,7 +198,7 @@ namespace Shapoco.Calctus.Model.Formats {
             }
         }
 
-        public static string FracToString(Frac val) {
+        public static string FracToString(rational val) {
             var args = ToStringArgs.ForLiteral();
             return 
                 DecimalToCStyleDecimalLiteral(val.Nume, args, false) + OpCodes.Frac.GetSymbol() +

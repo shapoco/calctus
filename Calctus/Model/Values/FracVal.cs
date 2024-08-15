@@ -9,9 +9,9 @@ using Shapoco.Calctus.Model.Maths;
 using Shapoco.Calctus.Model.Evaluations;
 
 namespace Shapoco.Calctus.Model.Values {
-    class FracVal : BaseVal<Frac> {
+    class FracVal : BaseVal<rational> {
 
-        public FracVal(Frac val) : base(val) { }
+        public FracVal(rational val) : base(val) { }
 
         public override bool IsScalar => true;
         public override bool IsInteger => false;
@@ -19,19 +19,19 @@ namespace Shapoco.Calctus.Model.Values {
         public override bool IsSerializable => true;
 
         public override decimal AsDecimal => (decimal)_raw;
-        public override Frac AsFrac => _raw;
+        public override rational AsFrac => _raw;
         public override double AsDouble => (double)_raw;
-        public override long AsLong => MathEx.ToLong((decimal)_raw);
-        public override int AsInt => MathEx.ToInt((decimal)_raw);
-        public override char AsChar => MathEx.ToChar((decimal)_raw);
-        public override byte AsByte => MathEx.ToByte((decimal)_raw);
+        public override long AsLong => ((decimal)_raw).ToInt64(CastOptions.AllowDegrade);
+        public override int AsInt => ((decimal)_raw).ToInt32(CastOptions.AllowDegrade);
+        public override char AsChar => ((decimal)_raw).ToChar(CastOptions.AllowDegrade);
+        public override byte AsByte => ((decimal)_raw).ToByte(CastOptions.AllowDegrade);
 
         public override decimal[] AsDecimalArray => new decimal[] { (decimal)_raw };
         public override long[] AsLongArray => new long[] { (long)_raw };
         public override int[] AsIntArray => new int[] { (int)_raw };
         public override byte[] AsByteArray => new byte[] { (byte)_raw };
 
-        public static Val Normalize(Frac f) {
+        public static Val Normalize(rational f) {
             if (f.Deno == 1) {
                 return new RealVal(f.Nume);
             }

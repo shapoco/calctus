@@ -6,7 +6,7 @@ using System.Threading.Tasks;
 using Shapoco.Calctus.Model.Formats;
 
 namespace Shapoco.Calctus.Model.Values {
-    abstract class ScalarVal<TRaw> : BaseVal<TRaw> where TRaw : IComparable<TRaw> {
+    abstract class ScalarVal<TRaw> : BaseVal<TRaw>, IScalarVal where TRaw : IComparable<TRaw> {
         private readonly FormatHint _numericFormat;
 
         public ScalarVal(TRaw val, FormatHint fmt = null) : base(val) {

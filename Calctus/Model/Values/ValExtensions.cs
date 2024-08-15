@@ -12,7 +12,7 @@ namespace Shapoco.Calctus.Model.Values {
     static class ValExtensions {
         public static BoolVal ToVal(this bool val) => BoolVal.From(val);
         public static RealVal ToVal(this decimal val, FormatHint fmt = null) => new RealVal(val, fmt.OrDefault());
-        public static Val ToVal(this Frac val) => FracVal.Normalize(val);
+        public static Val ToVal(this rational val) => FracVal.Normalize(val);
         public static StrVal ToVal(this string val) => new StrVal(val);
         public static RealVal ToVal(this DayOfWeek val) => (RealVal)DateTimeVal.DayOfWeekList[(int)val];
 

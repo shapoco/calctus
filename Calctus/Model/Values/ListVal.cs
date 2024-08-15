@@ -51,7 +51,7 @@ namespace Shapoco.Calctus.Model.Values {
         public override bool IsInteger => false;
 
         public override decimal AsDecimal => throw new InvalidCastException();
-        public override Frac AsFrac => throw new InvalidCastException();
+        public override rational AsFrac => throw new InvalidCastException();
         public override double AsDouble => throw new InvalidCastException();
         public override long AsLong => throw new InvalidCastException();
         public override int AsInt => throw new InvalidCastException();

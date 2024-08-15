@@ -8,7 +8,7 @@ using Shapoco.Calctus.Model.Formats;
 using Shapoco.Maths;
 
 namespace Shapoco.Calctus.Model.Values {
-    class ApFixedVal : ScalarVal<apfixed> {
+    class ApFixedVal : ScalarVal<apfixed>, IBitArrayVal {
         public ApFixedVal(apfixed val, FormatHint fmt = null) : base(val, fmt.OrDefault(FormatHint.Hexadecimal)) { }
 
         public override bool IsInteger => _raw.IsInteger;
@@ -16,7 +16,7 @@ namespace Shapoco.Calctus.Model.Values {
         public override bool IsSerializable => true;
 
         public override decimal AsDecimal => throw new NotImplementedException();
-        public override Frac AsFrac => throw new NotImplementedException();
+        public override rational AsFrac => throw new NotImplementedException();
         public override double AsDouble => throw new NotImplementedException();
         public override long AsLong => throw new NotImplementedException();
         public override int AsInt => throw new NotImplementedException();

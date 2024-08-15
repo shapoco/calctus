@@ -157,6 +157,9 @@ namespace Shapoco.Calctus.Model.Evaluations {
             }
         }
 
+        public void ReportDegrade(object expr = null) {
+            // todo 実装 EvalContext.ReportDegrade
+        }
 
     }
 }

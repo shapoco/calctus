@@ -11,6 +11,7 @@ using Shapoco.Calctus.Model.Evaluations;
 using Shapoco.Calctus.Model.Formats;
 
 namespace Shapoco.Calctus.Model.Functions.BuiltIns {
+    // todo CastFuncs 廃止して as 演算子に移行
     class CastFuncs : BuiltInFuncCategory {
         private static CastFuncs _instance = null;
         public static CastFuncs Instance => _instance != null ? _instance : _instance = new CastFuncs();
@@ -18,15 +19,7 @@ namespace Shapoco.Calctus.Model.Functions.BuiltIns {
 
         public readonly BuiltInFuncDef real = new BuiltInFuncDef("real(*x)",
             "Converts the `x` to a real number.",
-            (e, a) => a[0].AsRealVal());
-
-        public readonly BuiltInFuncDef rat_1 = new BuiltInFuncDef("rat(*x)",
-            "Rational fraction approximation of `x`.",
-            (e, a) => Frac.FindFrac(a[0].AsDecimal).ToVal());
-
-        public readonly BuiltInFuncDef rat_2 = new BuiltInFuncDef("rat(*x, max)",
-            "Rational fraction approximation of `x`.",
-            (e, a) => Frac.FindFrac(a[0].AsDecimal, a[1].AsDecimal, a[1].AsDecimal).ToVal());
+            (e, a) => a[0].CastTo(e, typeof(RealVal)));
 
         public readonly BuiltInFuncDef array = new BuiltInFuncDef("array(x)",
             "Converts value `x` to an list.",

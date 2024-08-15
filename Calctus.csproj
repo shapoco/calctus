@@ -90,6 +90,7 @@
     <Compile Include="Calctus\Model\Functions\BuiltIns\PlottingFuncs.cs" />
     <Compile Include="Calctus\Model\Functions\BuiltIns\PrimeNumberFuncs.cs" />
     <Compile Include="Calctus\Model\Functions\BuiltIns\RandomFuncs.cs" />
+    <Compile Include="Calctus\Model\Functions\BuiltIns\RationalFuncs.cs" />
     <Compile Include="Calctus\Model\Functions\BuiltIns\RepresentaionFuncs.cs" />
     <Compile Include="Calctus\Model\Functions\BuiltIns\SolveFuncs.cs" />
     <Compile Include="Calctus\Model\Functions\BuiltIns\StringFuncs.cs" />
@@ -104,6 +105,11 @@
     <Compile Include="Calctus\Model\Functions\BuiltIns\TrigonometricFuncs.cs" />
     <Compile Include="Calctus\Model\Functions\FuncTest.cs" />
     <Compile Include="Calctus\Model\Values\ApFixedVal.cs" />
+    <Compile Include="Calctus\Model\Values\IBitArrayVal.cs" />
+    <Compile Include="Calctus\Model\Values\IScalarVal.cs" />
+    <Compile Include="Calctus\Model\Values\Types.cs" />
+    <Compile Include="Calctus\Model\Values\ValCastRule.cs" />
+    <Compile Include="Calctus\Model\Values\ValTypes.cs" />
     <Compile Include="Calctus\UI\ColorPickerBox.cs">
       <SubType>Component</SubType>
     </Compile>
@@ -114,6 +120,7 @@
     <Compile Include="Maths\BitArrays\BitScan.cs" />
     <Compile Include="Maths\FixedPointFormat.cs" />
     <Compile Include="Maths\BitArrays\SegScan.cs" />
+    <Compile Include="Maths\IScalar.cs" />
     <Compile Include="Maths\RandomEx.cs" />
     <Compile Include="Maths\Types.cs" />
     <Compile Include="Texts\CStyleBinary.cs" />
@@ -163,7 +170,7 @@
     <Compile Include="Calctus\Model\Values\ScalarVal.cs" />
     <Compile Include="Calctus\Model\Values\StrVal.cs" />
     <Compile Include="Maths\ufixed113.cs" />
-    <Compile Include="Maths\frac.cs" />
+    <Compile Include="Maths\rational.cs" />
     <Compile Include="Calctus\Model\Values\FracVal.cs" />
     <Compile Include="Calctus\CalctusError.cs" />
     <Compile Include="Calctus\Model\Evaluations\EvalContext.cs" />

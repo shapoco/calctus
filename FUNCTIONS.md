@@ -194,14 +194,6 @@ Separate the value of `x` into `n` elements of `b` bit width.
 
 Converts value `x` to an list.
 
-### `rat(*x)`
-
-Rational fraction approximation of `x`.
-
-### `rat(*x, max)`
-
-Rational fraction approximation of `x`.
-
 ### `real(*x)`
 
 Converts the `x` to a real number.
@@ -553,6 +545,18 @@ Generates a 32bit random integer.
 ### `rand64()`
 
 Generates a 64bit random integer.
+
+----
+
+## Rational
+
+### `rat(*x)`
+
+Rational fraction approximation of `x`.
+
+### `rat(*x, max)`
+
+Rational fraction approximation of `x`.
 
 ----
 

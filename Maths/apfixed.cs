@@ -178,6 +178,12 @@ namespace Shapoco.Maths {
             return new apfixed(bits, fmt.FracWidth);
         }
 
+        public apfixed FromInt32(int n) 
+            => new apfixed(BitArray.FromInt64(n), 0);
+
+        public apfixed FromInt32(FixedPointFormat fmt, int n)
+            => new apfixed(BitArray.FromInt64(n).Clone(-fmt.FracWidth, fmt.RawFormat), fmt.FracWidth);
+
         private apfixed(FixedPointFormat fmt, UInt32[] array, bool forceCopy) {
             this.FracWidth = fmt.FracWidth;
             this._bits = new BitArray(fmt.Signed, fmt.Width, array, forceCopy);

@@ -10,16 +10,6 @@ using Shapoco.Calctus.Model.Evaluations;
 
 namespace Shapoco.Calctus.Model.Values {
     abstract class Val {
-        public virtual string CalctusTypeName {
-            get {
-                const string typeNamePostfix = "Val";
-                var typeName = GetType().Name;
-                if (typeName.EndsWith(typeNamePostfix)) {
-                    typeName = typeName.Substring(0, typeName.Length - typeNamePostfix.Length);
-                }
-                return typeName;
-            }
-        }
 
         public object Raw => OnGetRaw();
         protected abstract object OnGetRaw();
@@ -27,6 +17,8 @@ namespace Shapoco.Calctus.Model.Values {
         public abstract bool IsScalar { get; }
         public abstract bool IsInteger { get; }
         public abstract bool IsSerializable { get; }
+
+        public string CalctusTypeName => ValTypes.DisplayTypeNameOf(GetType());
 
         public virtual FormatHint FormatHint => FormatHint.Default;
         public virtual Val Format(FormatHint fmt) => this;
@@ -42,7 +34,7 @@ namespace Shapoco.Calctus.Model.Values {
         protected abstract RealVal OnAsRealVal();
 
         public abstract decimal AsDecimal { get; }
-        public abstract Frac AsFrac { get; }
+        public abstract rational AsFrac { get; }
         public abstract double AsDouble { get; }
         public abstract long AsLong { get; }
         public abstract int AsInt { get; }
@@ -93,6 +85,9 @@ namespace Shapoco.Calctus.Model.Values {
         // 論理演算
         public virtual Val LogicAnd(EvalContext ctx, Val b) => throw new NotSupportedException();
         public virtual Val LogicOr(EvalContext ctx, Val b) => throw new NotSupportedException();
+
+        public Val CastTo(EvalContext e, Type destType) => ValTypes.Cast(e, this, destType);
+        public TDest CastTo<TDest>(EvalContext e) where TDest : Val => ValTypes.Cast<TDest>(e, this);
 
         public override string ToString() => ToStringForDisplay();
         public string ToString(ToStringArgs args) => Formatter.ObjectToString(Raw, new ToStringArgs(args, FormatHint));

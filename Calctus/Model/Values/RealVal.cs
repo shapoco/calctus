@@ -55,12 +55,12 @@ namespace Shapoco.Calctus.Model.Values {
 
         protected override RealVal OnAsRealVal() => new RealVal((decimal)Raw, FormatHint);
         public override decimal AsDecimal => _raw;
-        public override Frac AsFrac => (Frac)_raw;
+        public override rational AsFrac => (rational)_raw;
         public override double AsDouble => (double)_raw;
-        public override long AsLong => MathEx.ToLong(_raw);
-        public override int AsInt => MathEx.ToInt(_raw);
-        public override char AsChar => MathEx.ToChar(_raw);
-        public override byte AsByte => MathEx.ToByte(_raw);
+        public override long AsLong => _raw.ToInt64(CastOptions.AllowDegrade);
+        public override int AsInt => _raw.ToInt32(CastOptions.AllowDegrade);
+        public override char AsChar => _raw.ToChar(CastOptions.AllowDegrade);
+        public override byte AsByte => _raw.ToByte(CastOptions.AllowDegrade);
         
         public override decimal[] AsDecimalArray => new decimal[] { _raw };
         public override long[] AsLongArray => new long[] { (long)_raw }; // todo: 丸め/切り捨ての明示は不要？

@@ -40,15 +40,21 @@ namespace Shapoco.Maths.BitArrays {
 
         public int NumSegments => BitWidthToSegment(Width);
 
-        public static BitArray FromInt(int n) {
-            int width = MathEx.CeilLog2((uint)Math.Abs(n));
+        public static BitArray FromInt64(Int64 n) {
+            // Math.Abs(Int64) は Int64.MinValue に対して戻り値の型(Int64)値域が足りないので MathEx.Abs(Int64) を使う
+            int width = MathEx.CeilLog2(MathEx.Abs(n));
             bool signed = (n < 0);
             if (signed) width += 1;
-            return FromInt(new IntFormat(signed, width), n);
+            return FromUInt64(new IntFormat(signed, width), (UInt64)n);
         }
 
-        public static BitArray FromInt(IntFormat fmt, int n)
-            => new BitArray(fmt, new UInt32[] { (UInt32)n }, false);
+        public static BitArray FromUInt64(IntFormat fmt, UInt64 n) {
+            var hi = (UInt32)((n >> Stride) & 0xffffffff);
+            var lo = (UInt32)(n & 0xffffffff);
+            return (fmt.Width <= Stride) ?
+                new BitArray(fmt, new UInt32[] { lo }, false) :
+                new BitArray(fmt, new UInt32[] { lo, hi }, false);
+        }
 
         public static BitArray Parse(string s) {
             var lexer = new SimpleLexer(s, autoSkipWhite: false);
@@ -735,7 +741,7 @@ namespace Shapoco.Maths.BitArrays {
 
         public void ToRawDecimalString(StringBuilder sb) {
             var bits = this.Clone(0, false, this.Width);
-            var ten = BitArray.FromInt(10);
+            var ten = BitArray.FromInt64(10);
             var stack = new Stack<char>();
             do {
                 bits = bits.IntDiv(ten, out BitArray m);

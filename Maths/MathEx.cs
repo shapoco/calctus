@@ -137,9 +137,15 @@ namespace Shapoco.Maths {
             => (int)Math.Ceiling(Log2(a, highAccuracy));
 
         /// <summary>
+        /// Int64 の値の絶対値。Math.Abs(Int64) の戻り値が Int64 のため Abs(Int64.MinValue) を出力できないことに対応。
+        /// </summary>
+        public static UInt64 Abs(Int64 val)
+            => (val >= 0) ? (UInt64)val : ((UInt64)~val + 1ul);
+
+        /// <summary>
         /// a が 0 の場合は 0 を返し、それ以外の場合は floor(log10(abs(a))) を返す。
         /// </summary>
-        public static int FLog10Abs(decimal a) {
+        public static int FloorLog10Abs(decimal a) {
             if (a == 0) {
                 return 0;
             }
@@ -208,19 +214,6 @@ namespace Shapoco.Maths {
                 return Lcm(lcmRecursive(x, il, im), lcmRecursive(x, im + 1, ir));
             }
         }
-
-        // 三角関数
-        // 暫定的に System.Math の関数を使用する
-        public static decimal Sin(decimal a) => (decimal)Math.Sin((double)a);
-        public static decimal Cos(decimal a) => (decimal)Math.Cos((double)a);
-        public static decimal Tan(decimal a) => (decimal)Math.Tan((double)a);
-        public static decimal Asin(decimal a) => (decimal)Math.Asin((double)a);
-        public static decimal Acos(decimal a) => (decimal)Math.Acos((double)a);
-        public static decimal Atan(decimal a) => (decimal)Math.Atan((double)a);
-        public static decimal Atan2(decimal a, decimal b) => (decimal)Math.Atan2((double)a, (double)b);
-        public static decimal Sinh(decimal a) => (decimal)Math.Sinh((double)a);
-        public static decimal Cosh(decimal a) => (decimal)Math.Cosh((double)a);
-        public static decimal Tanh(decimal a) => (decimal)Math.Tanh((double)a);
 
         public static int CeilDiv(int a, int b) {
             Assert.ArgInRange(nameof(CeilDiv), nameof(a), a >= 0);
@@ -341,29 +334,17 @@ namespace Shapoco.Maths {
             return (hi << (stride - shift)) | (lo >> shift);
         }
 
-        public static long ToLong(decimal val) {
-            val = Math.Round(val);
-            if (val < long.MinValue && long.MaxValue < val) throw new OverflowException("Out of range of int64.");
-            return (long)val;
-        }
-        public static int ToInt(decimal val) {
-            val = Math.Round(val);
-            if (val < int.MinValue && int.MaxValue < val) throw new OverflowException("Out of range of int32.");
-            return (int)val;
-        }
-        public static char ToChar(decimal val) {
-            val = Math.Round(val);
-            if (val < char.MinValue && char.MaxValue < val) throw new OverflowException("Out of range of char.");
-            return (char)val;
-        }
-        public static byte ToByte(decimal val) {
-            val = Math.Round(val);
-            if (val < byte.MinValue && byte.MaxValue < val) throw new OverflowException("Out of range of byte.");
-            return (byte)val;
-        }
-
         public static void Test() {
-            var rng = new Random();    
+            var rng = new Random();
+
+            if (Abs(Int64.MinValue).NotEqHex(0x8000000000000000ul)) throw Shapoco.Log.Here().TestFailException();
+            if (Abs(Int64.MinValue + 1).NotEqHex(0x7ffffffffffffffful)) throw Shapoco.Log.Here().TestFailException();
+            if (Abs(-1L).NotEqHex(1ul)) throw Shapoco.Log.Here().TestFailException();
+            if (Abs(0L).NotEqHex(0ul)) throw Shapoco.Log.Here().TestFailException();
+            if (Abs(1L).NotEqHex(1ul)) throw Shapoco.Log.Here().TestFailException();
+            if (Abs(Int64.MaxValue - 1).NotEqHex(0x7ffffffffffffffeul)) throw Shapoco.Log.Here().TestFailException();
+            if (Abs(Int64.MaxValue).NotEqHex(0x7ffffffffffffffful)) throw Shapoco.Log.Here().TestFailException();
+
             if (CeilLog2(0).NotEqHex(1)) throw Shapoco.Log.Here().TestFailException();
             if (CeilLog2(1).NotEqHex(1)) throw Shapoco.Log.Here().TestFailException();
             for (int i = 1; i< 64; i++ ) {

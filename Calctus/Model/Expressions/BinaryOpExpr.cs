@@ -115,13 +115,15 @@ namespace Shapoco.Calctus.Model.Expressions {
                 var a = A.Eval(e);
                 var b = B.Eval(e);
                 if (!e.EvalSettings.FractionEnabled) {
-                    return A.Eval(e).Div(e, B.Eval(e));
+                    return a.Div(e, b);
                 }
                 else if (b is FracVal) {
                     return a.AsRealVal().Div(e, b);
                 }
                 else {
-                    return FracVal.Normalize(new Frac(a.AsDecimal, b.AsDecimal));
+                    var ret = FracVal.Normalize(rational.FromDecimal(a.AsDecimal, b.AsDecimal, out bool deg));
+                    if (deg) e.ReportDegrade(this);
+                    return ret;
                 }
             }
             else if (OpCode == OpCodes.Pow) {
