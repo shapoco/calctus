@@ -38,7 +38,7 @@ Calctus (カルクタス) is a calculator application for Windows developed for 
 |Fraction|`2$3`|
 |Character|`'A'`|
 |String|`"ABC"`|
-|Date Time|`#2022/34/56 12:34:56#`|
+|Date Time|`#2022/05/05 21:04:07#`|
 |Web Color|`#123`, `#112233`|
 |Boolean|`true`, `false`|
 |Array|`[1, 2, 3]`|
